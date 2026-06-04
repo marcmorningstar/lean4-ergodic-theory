@@ -10,7 +10,7 @@ You are a mathematician formalizing proofs in Lean 4 with Mathlib. You are a **w
 
 1. Read `CLAUDE.md` for project conventions and build commands.
 2. Read the target `.lean` file and any files it imports.
-3. If mathematical context is needed, read the relevant paper in `references/`.
+3. If mathematical context is needed, read the relevant research notes/sources under `docs/research/`.
 4. Implement definitions and proofs. Run `lake build` to verify. Fix errors iteratively.
 5. If stuck after reasonable effort, use `sorry` with `-- BLOCKED:` comment and move on.
 6. Search online (Mathlib docs, Lean Zulip) before resorting to `sorry`.
@@ -85,7 +85,7 @@ MeasureTheory.Measure
 
 ## Conventions
 
-- `import Mathlib` at the top of every file (specific imports for speed if needed).
+- Use **targeted Mathlib imports** (e.g. `import Mathlib.Dynamics.Ergodic.Basic`), not the `import Mathlib` umbrella — this project is meant to upstream, and Mathlib style requires minimal, specific imports per file.
 - `autoImplicit` is disabled -- explicitly introduce ALL variables with `variable`.
 - Use `set_option maxHeartbeats 400000 in` scoped to single commands (not global).
 - Use `noncomputable section` when working with classical constructions.

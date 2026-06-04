@@ -1,80 +1,43 @@
 # DevContainer Reference
 
+A minimal Lean 4 + Mathlib development container, plus the Firecrawl CLI wired
+to the host's self-hosted instance for web research.
+
 ## What the container provides
 
-After rebuild, the container supports all three `make` targets out of the box:
+| Tool | Purpose |
+|---|---|
+| elan | Lean toolchain manager (toolchain resolved per-project from `lean-toolchain`) |
+| `lake` | Lean build tool (ships with the toolchain) |
+| `build-essential`, `git`, `curl`, `ca-certificates`, `sudo` | basics for elan/lake and `post-create.sh` |
+| Node.js + `firecrawl-cli` | installed by `post-create.sh`; web search/scrape via the host's self-hosted Firecrawl |
 
-| Target           | Command          | What it does                              |
-|------------------|------------------|-------------------------------------------|
-| `make lean`      | `lake build`     | Typecheck all Lean 4 source files         |
-| `make papers`    | `xelatex` × 3   | Build the three companion PDFs            |
-| `make blueprint` | `latexmk`        | Build the blueprint PDF                   |
-| `make all`       | all of the above | Full build                                |
+## Build commands
 
-## Installed tooling
+```bash
+lake build      # build the Oseledets library (alias: make build)
+make clean      # lake clean
+```
 
-### Already in the previous Dockerfile
-
-| Package          | Purpose                                      |
-|------------------|----------------------------------------------|
-| `curl`           | Download elan installer                      |
-| `ca-certificates`| HTTPS for git/curl                           |
-| `git`            | Version control, lake dependency fetching    |
-| `build-essential`| C compiler needed by some lake/Lean steps    |
-| `sudo`           | DevContainer user privilege escalation       |
-| `python3`        | Required by Pygments / leanblueprint         |
-| elan             | Lean toolchain manager (installed via script)|
-
-### Added in this update
-
-**APT packages:**
-
-| Package                      | Purpose                                              |
-|------------------------------|------------------------------------------------------|
-| `python3-pip`                | Install Python packages (Pygments, leanblueprint)    |
-| `python3-dev`                | Python headers for native pip builds (`pygraphviz`)  |
-| `graphviz`                   | Runtime tooling used by `pygraphviz` / blueprint deps |
-| `graphviz-dev`               | Graphviz headers needed to build `pygraphviz`        |
-| `pkg-config`                 | Lets `pygraphviz` discover Graphviz during install   |
-| `texlive-xetex`             | XeLaTeX engine — papers use `fontspec` (Unicode)     |
-| `texlive-latex-extra`        | LaTeX packages: `minted`, `enumitem`, `booktabs`, `mathtools` |
-| `texlive-science`            | Additional math/science LaTeX packages               |
-| `texlive-fonts-recommended`  | Standard fonts for TeX                               |
-| `latexmk`                    | Build automation — used by `make blueprint`          |
-
-**Python packages (pip):**
-
-| Package         | Purpose                                                      |
-|-----------------|--------------------------------------------------------------|
-| `Pygments`      | Syntax highlighting backend for `minted` (Lean code blocks)  |
-| `leanblueprint` | Lean 4 blueprint tooling — brings `plasTeX`, `plastexdepgraph`, `plastexshowmore` |
+With a warm Mathlib cache this is fast; a cold cache (`lake exe cache get`)
+downloads precompiled oleans rather than compiling Mathlib from source.
 
 ## Post-create script
 
 `post-create.sh` runs automatically after container creation:
 
-1. Installs the Lean toolchain pinned in `lean-toolchain` (currently `leanprover/lean4:v4.30.0-rc2`)
-2. Runs `lake update` to resolve dependencies
-3. Runs `lake exe cache get` to fetch precompiled Mathlib oleans (~2 GB download, saves hours of compilation)
-
-## Image size
-
-- Base image (debian:trixie-slim): ~80 MB
-- With system packages + TeX Live: ~1.2 GB
-- After post-create (Lean toolchain + Mathlib cache): ~4–5 GB total
+1. Installs the Lean toolchain pinned in `lean-toolchain` (currently `leanprover/lean4:v4.30.0-rc2`).
+2. Fetches the precompiled Mathlib cache (`lake exe cache get`).
+3. Installs Node.js + `firecrawl-cli` and points it at the host's self-hosted
+   Firecrawl instance (`http://host.docker.internal:3002`, no auth) via
+   `firecrawl login`. See the project `CLAUDE.md` for usage.
 
 ## Picking up work after rebuild
 
-After the container rebuilds, `post-create.sh` handles Lean setup automatically. To verify everything works:
+After the container rebuilds, `post-create.sh` handles setup automatically.
+Verify with:
 
 ```bash
-make all        # full build: lean + papers + blueprint
-```
-
-Or individually:
-
-```bash
-lake build      # ~2 min with cached oleans, ~45 min without
-make papers     # ~30 seconds
-make blueprint  # ~10 seconds
+lake build                 # Lean library builds clean
+firecrawl --status         # Firecrawl configured (ignore "account info" line)
 ```

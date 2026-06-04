@@ -4,9 +4,13 @@ defaultTargets = ["Oseledets"]
 [leanOptions]
 autoImplicit = false
 
+# Pinned to the exact revision recorded in lake-manifest.json so it stays
+# coupled to lean-toolchain (v4.30.0-rc2) and the prebuilt Mathlib cache.
+# Bump this rev (and re-run `lake update`) deliberately when upgrading.
 [[require]]
 name = "mathlib"
 git = "https://github.com/leanprover-community/mathlib4.git"
+rev = "34f7a6cd150fd7a166958d989d5abab56e9e3d15"
 
 [[lean_lib]]
 name = "Oseledets"

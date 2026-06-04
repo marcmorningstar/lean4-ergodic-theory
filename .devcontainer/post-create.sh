@@ -11,11 +11,12 @@ TOOLCHAIN=$(cat lean-toolchain | tr -d '[:space:]')
 echo "Installing toolchain: $TOOLCHAIN"
 elan default "$TOOLCHAIN"
 
-# 2. Update lake dependencies
-echo "Updating lake dependencies..."
-lake update
-
-# 3. If Mathlib is a dependency, fetch precompiled cache
+# 2. If Mathlib is a dependency, fetch precompiled cache.
+#    NOTE: we deliberately do NOT run `lake update` here — the committed
+#    lake-manifest.json pins the exact dependency revisions that match
+#    lean-toolchain and the prebuilt cache. `lake update` would float mathlib
+#    to latest `main`, risking a toolchain mismatch and a multi-hour source
+#    build. Run `lake update` by hand only when intentionally bumping deps.
 if grep -q "mathlib" lakefile.lean 2>/dev/null || grep -q "mathlib" lakefile.toml 2>/dev/null; then
     echo "Mathlib detected as dependency. Fetching precompiled cache..."
     echo "This may take a few minutes on first run."

@@ -2,61 +2,34 @@
 # Lean 4 DevContainer Dockerfile
 # Base: debian:trixie-slim (Debian 13, current stable)
 #
-# Includes:
-#   - elan (Lean toolchain manager)
-#   - TeX Live (XeLaTeX, latexmk, minted)
-#   - Python 3 + pip (Pygments, leanblueprint)
+# Provides just enough to build a Lean 4 + Mathlib project:
+#   - elan (Lean toolchain manager; the toolchain is resolved per-project
+#     from lean-toolchain by post-create.sh)
+#   - build-essential / git / curl for elan + lake
+#
+# Node.js and the Firecrawl CLI are installed at container-create time by
+# post-create.sh (not baked here), keeping this image small.
 #
 # Memory Requirements:
-#   - Without Mathlib: 4GB RAM minimum
-#   - With Mathlib:    8GB RAM minimum (16GB recommended)
+#   - With Mathlib: 8GB RAM minimum (16GB recommended)
 # ============================================
 
 FROM debian:trixie-slim
 
-# Install system packages:
-#   build-essential, git, curl  — basics for elan/lake
-#   python3, python3-pip        — Pygments (minted), leanblueprint (blueprint)
-#   python3-dev                 — Python headers needed for native pip wheels
-#   graphviz, graphviz-dev      — pygraphviz runtime and headers for leanblueprint
-#   pkg-config                  — helps pygraphviz locate Graphviz during build
-#   texlive-xetex               — XeLaTeX engine (fontspec)
-#   texlive-latex-extra         — minted, enumitem, booktabs, mathtools
-#   texlive-science             — additional math/science packages
-#   texlive-fonts-recommended   — standard fonts
-#   latexmk                     — build automation for blueprint
-#   ngspice, libngspice0,       — SPICE engine + shared library for PySpice
-#     libngspice0-dev             (autonomous-dynamics-circuit); the -dev pkg
-#                                 provides the unversioned libngspice.so symlink
+# Minimal system packages:
+#   build-essential — C toolchain some lake/Lean steps need
+#   git             — version control + lake dependency fetching
+#   curl            — download the elan installer
+#   ca-certificates — HTTPS for git/curl
+#   sudo            — devcontainer user privilege escalation (post-create.sh)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     ca-certificates \
     git \
     build-essential \
     sudo \
-    python3 \
-    python3-pip \
-    python3-dev \
-    graphviz \
-    graphviz-dev \
-    pkg-config \
-    ngspice \
-    libngspice0 \
-    libngspice0-dev \
-    texlive-xetex \
-    texlive-latex-extra \
-    texlive-science \
-    texlive-fonts-recommended \
-    latexmk \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
-
-# Install Python packages:
-#   Pygments     — syntax highlighting for minted
-#   leanblueprint — Lean 4 blueprint tooling (includes plasTeX)
-RUN pip3 install --no-cache-dir --break-system-packages \
-    Pygments \
-    leanblueprint
 
 # Set environment variables for elan
 ENV ELAN_HOME=/usr/local/elan \
