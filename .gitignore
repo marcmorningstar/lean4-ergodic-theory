@@ -1,0 +1,28 @@
+# Firecrawl CLI local cache / scrape output
+.firecrawl/
+
+# Lean 4 build artifacts
+/.lake/
+/build/
+*.olean
+*.ilean
+*.trace
+
+# Claude Code session state — agent worktrees are temporary working copies
+# created during parallel agent execution, not source.
+.claude/worktrees/
+.claude/sessions/
+.claude/cache/
+.claude/local/
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# Editor
+*~
+*.swp
+.vscode/
+
+# Scratch
+prompt.md

@@ -1,0 +1,12 @@
+name = "Oseledets"
+defaultTargets = ["Oseledets"]
+
+[leanOptions]
+autoImplicit = false
+
+[[require]]
+name = "mathlib"
+git = "https://github.com/leanprover-community/mathlib4.git"
+
+[[lean_lib]]
+name = "Oseledets"
