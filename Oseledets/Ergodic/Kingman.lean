@@ -30,9 +30,13 @@ The a.e. convergence is closed by a *pointwise* sandwich, exactly mirroring the 
 No integral of `f₊`/`f₋` enters the convergence proof. The integral facts are needed only
 to certify `Integrable G`, via a single Fatou step (`int_limsup_div_integrable` / `L8`).
 
-The single hard combinatorial input is `ae_limsup_le_liminf_div` (`L9`), the
-stopping-time / greedy block partition (see `docs/plan/blueprints/m4-kingman-v2.md` §4),
-which is the only remaining `sorry`.
+All of this — the pointwise squeeze, the boundedness facts, the envelope integrability, and
+the `T`-invariance — is derived (soft arguments) from a single **core** lemma,
+`ae_tendsto_cdiv`: *for `μ`-a.e. `x`, `c n x` converges to the value `G x` of some integrable
+`G`*. The core packages the entire analytic content not reducible to generic measure theory
+(the stopping-time / greedy block partition plus the Fatou integrability step; see
+`docs/plan/blueprints/m4-kingman-v2.md` §4 and `docs/research/scratch/m4-L9-notes.md`) and is
+the **only remaining `sorry`** in this file.
 
 ## Finiteness hypothesis
 
@@ -268,9 +272,10 @@ private theorem aemeasurable_liminf_div {g : ℕ → X → ℝ} (hint : ∀ n, I
 /-! ### Boundedness of the normalized cocycle
 
 A.e., the range of `cdiv g · x` is bounded above (immediate from A1' and a.e. boundedness of
-the Birkhoff averages of `g 1`). The bounded-below direction is genuinely entangled with the
-hard direction `L9` (the limit is finite a.e. only once convergence is known); it is recorded
-here as a standalone fact, currently `BLOCKED`. -/
+the Birkhoff averages of `g 1`). The bounded-below direction is the subtle one: subadditivity
+gives only upper bounds, so a.e. finiteness of the liminf holds only once a.e. convergence is
+known. Accordingly it is derived from the core lemma `ae_tendsto_cdiv` (a convergent sequence
+is bounded), defined below. -/
 
 /-- A.e. the range of `cdiv g · x` is bounded above (A1' + `ae_bddAbove_birkhoffAverage`). -/
 private theorem ae_bddAbove_cdiv [IsFiniteMeasure μ]
@@ -283,21 +288,45 @@ private theorem ae_bddAbove_cdiv [IsFiniteMeasure μ]
   rintro y ⟨n, rfl⟩
   exact le_trans (cdiv_le_birkhoffAverage hsub n x) (hM (Set.mem_range_self n))
 
-/-- A.e. the range of `cdiv g · x` is bounded below.
+/-! ### The Kingman core: a.e. existence of an integrable limit (the single deep gap) -/
 
-**`BLOCKED`:** the bounded-below direction of the normalized cocycle is equivalent to the
-a.e. finiteness of the liminf, which is established only by the hard combinatorial direction
-`ae_limsup_le_liminf_div` (`L9`) together with the integrability of the limit (`L8`).
-Subadditivity yields only upper bounds (A1'), never a lower bound, so this cannot be derived
-from `ae_bddBelow_birkhoffAverage` alone. See `docs/plan/blueprints/m4-kingman-v2.md` §1.3,
-§4.1 (truncation by `−M`). -/
+/-- **Kingman core (the single deep gap of M4).** The normalized cocycle `g (n+1) x / (n+1)`
+converges, for `μ`-a.e. `x`, to the value `G x` of some integrable `G`. This packages the
+entire analytic content of Kingman's theorem that is *not* generic measure theory:
+
+* a.e. **convergence** (the stopping-time / greedy block partition, Katznelson–Weiss); and
+* **integrability** of the limit (the Fatou step).
+
+Everything else in this file — a.e. boundedness (`ae_bddBelow_cdiv`), `limsup ≤ liminf`
+(`ae_limsup_le_liminf_div`), integrability of the envelope (`int_limsup_div_integrable`),
+`T`-invariance, and the ergodic collapse — is derived from this one lemma by soft arguments,
+so closing `M4` reduces exactly to this proof.
+
+The proof (still `sorry`) follows `docs/plan/blueprints/m4-kingman-v2.md` §4 and
+`docs/research/scratch/m4-L9-notes.md`: work with the `EReal`-valued `limsup`/`liminf` to
+avoid the `ℝ` junk value at `−∞`; the `ℝ≥0∞` Fatou step gives `limsup > ⊥` a.e. and the
+integrability; the stopping-time partition (truncation `max (liminf) (−M)`, a frontier walk
+via `le_sum_blocks`, and the three limit passages `n → ∞`, `L → ∞`, `M → ∞ / ε → 0`) gives
+`limsup ≤ liminf`; together they force a finite a.e. limit. -/
+private theorem ae_tendsto_cdiv [IsFiniteMeasure μ]
+    (hT : MeasurePreserving T μ μ) (hTm : Measurable T) {g : ℕ → X → ℝ}
+    (hsub : IsSubadditiveCocycle T g) (hint : ∀ n, Integrable (g n) μ)
+    (hbdd : BddBelow (Set.range fun n : ℕ => (∫ x, g (n + 1) x ∂μ) / (n + 1))) :
+    ∃ G : X → ℝ, Integrable G μ ∧
+      ∀ᵐ x ∂μ, Tendsto (fun n : ℕ => cdiv g n x) atTop (𝓝 (G x)) := by
+  sorry -- THE deep direction of Kingman: stopping-time partition + Fatou. See
+        -- docs/plan/blueprints/m4-kingman-v2.md §4 and docs/research/scratch/m4-L9-notes.md.
+
+/-- A.e. the range of `cdiv g · x` is bounded below: a convergent sequence is bounded
+(derived from `ae_tendsto_cdiv`). -/
 private theorem ae_bddBelow_cdiv [IsFiniteMeasure μ]
     (hT : MeasurePreserving T μ μ) {g : ℕ → X → ℝ}
     (hsub : IsSubadditiveCocycle T g) (hint : ∀ n, Integrable (g n) μ)
     (hbdd : BddBelow (Set.range fun n : ℕ => (∫ x, g (n + 1) x ∂μ) / (n + 1))) :
     ∀ᵐ x ∂μ, BddBelow (Set.range fun n : ℕ => cdiv g n x) := by
-  sorry -- BLOCKED: a.e. lower bound of the normalized cocycle is entangled with L9/L8
-        -- (finiteness of the limit). Subadditivity gives only upper bounds. See v2 §1.3/§4.1.
+  obtain ⟨G, _, hG⟩ := ae_tendsto_cdiv hT hT.measurable hsub hint hbdd
+  filter_upwards [hG] with x hx
+  exact hx.bddBelow_range
 
 /-! ### L7: a.e. `T`-invariance of the limsup/liminf envelopes -/
 
@@ -428,118 +457,20 @@ private theorem limsup_div_comp_ae [IsFiniteMeasure μ]
   filter_upwards [hax, hbx, haTx, hbTx] with x hax hbx haTx hbTx
   exact limsup_cdiv_le_comp hsub hax hbx haTx hbTx
 
-/-! ### Envelope `f₊ ≤ B` and the integral of the Birkhoff average -/
+/-! ### Integrability of the limsup envelope -/
 
-/-- The integral of the Birkhoff average of `g 1` equals the integral of `g 1`. -/
-private theorem integral_birkhoffAverage_eq (hT : MeasurePreserving T μ μ) {g : ℕ → X → ℝ}
-    (hint : ∀ n, Integrable (g n) μ) (n : ℕ) :
-    ∫ x, birkhoffAverage ℝ T (g 1) (n + 1) x ∂μ = ∫ x, g 1 x ∂μ := by
-  have hpos : (0 : ℝ) < (n : ℝ) + 1 := by positivity
-  have hbs : ∫ x, birkhoffSum T (g 1) (n + 1) x ∂μ = ((n : ℝ) + 1) * ∫ x, g 1 x ∂μ := by
-    have key : ∫ x, (∑ k ∈ Finset.range (n + 1), g 1 (T^[k] x)) ∂μ
-        = ∑ k ∈ Finset.range (n + 1), ∫ x, g 1 (T^[k] x) ∂μ :=
-      integral_finsetSum (μ := μ) (Finset.range (n + 1)) (f := fun k x => g 1 (T^[k] x))
-        (fun k _ => (hT.iterate k).integrable_comp_of_integrable (hint 1))
-    have hterm : ∀ k ∈ Finset.range (n + 1), ∫ x, g 1 (T^[k] x) ∂μ = ∫ x, g 1 x ∂μ :=
-      fun k _ => integral_comp_iterate hT hint k 1
-    calc ∫ x, birkhoffSum T (g 1) (n + 1) x ∂μ
-        = ∫ x, (∑ k ∈ Finset.range (n + 1), g 1 (T^[k] x)) ∂μ := by simp only [birkhoffSum]
-      _ = ∑ k ∈ Finset.range (n + 1), ∫ x, g 1 (T^[k] x) ∂μ := key
-      _ = ∑ _k ∈ Finset.range (n + 1), ∫ x, g 1 x ∂μ := Finset.sum_congr rfl hterm
-      _ = ((n : ℝ) + 1) * ∫ x, g 1 x ∂μ := by
-          rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]; push_cast; ring
-  simp only [birkhoffAverage, smul_eq_mul, integral_const_mul]
-  rw [hbs]
-  have hcast : (((n + 1 : ℕ)) : ℝ) = (n : ℝ) + 1 := by push_cast; ring
-  rw [hcast, ← mul_assoc, inv_mul_cancel₀ (ne_of_gt hpos), one_mul]
-
-/-- **Envelope `f₊ ≤ B`.** A.e., the limsup envelope is bounded above by
-`B = μ[g 1 | invariants T]`. Since `cdiv g n x ≤ A_{n+1}(g 1) x` (A1') and the Birkhoff
-averages converge a.e. to `B` (`M3`), `limsup cdiv ≤ limsup A = B`. Uses `ae_bddBelow_cdiv`
-for the cobounded side-condition. -/
-private theorem limsup_div_le_condExp [IsFiniteMeasure μ]
-    (hT : MeasurePreserving T μ μ) {g : ℕ → X → ℝ}
-    (hsub : IsSubadditiveCocycle T g) (hint : ∀ n, Integrable (g n) μ)
-    (hbdd : BddBelow (Set.range fun n : ℕ => (∫ x, g (n + 1) x ∂μ) / (n + 1))) :
-    ∀ᵐ x ∂μ, Filter.limsup (fun n => cdiv g n x) atTop
-      ≤ (μ[g 1 | MeasurableSpace.invariants T]) x := by
-  -- M3 gives a.e. convergence of the full Birkhoff-average sequence to `B`.
-  have hM3 := tendsto_birkhoffAverage_ae hT (hint 1)
-  filter_upwards [hM3, ae_bddBelow_cdiv hT hsub hint hbdd] with x hconv hbb
-  -- The shifted sequence `A_{n+1}(g 1) x` also converges to `B x`.
-  have hconv' : Tendsto (fun n => birkhoffAverage ℝ T (g 1) (n + 1) x) atTop
-      (𝓝 ((μ[g 1 | MeasurableSpace.invariants T]) x)) := hconv.comp (tendsto_add_atTop_nat 1)
-  -- `cdiv g · x ≤ A_{·+1}(g 1) x`, so `limsup cdiv ≤ limsup A = B`.
-  have hcob : IsCoboundedUnder (· ≤ ·) atTop (fun n => cdiv g n x) :=
-    hbb.isBoundedUnder_of_range.isCoboundedUnder_le
-  have hAbdd : IsBoundedUnder (· ≤ ·) atTop
-      (fun n => birkhoffAverage ℝ T (g 1) (n + 1) x) := hconv'.isBoundedUnder_le
-  calc Filter.limsup (fun n => cdiv g n x) atTop
-      ≤ Filter.limsup (fun n => birkhoffAverage ℝ T (g 1) (n + 1) x) atTop :=
-        Filter.limsup_le_limsup (Eventually.of_forall (cdiv_le_birkhoffAverage hsub · x))
-          hcob hAbdd
-    _ = (μ[g 1 | MeasurableSpace.invariants T]) x := hconv'.limsup_eq
-
-/-! ### L8: integrability of the limsup envelope (the single Fatou step) -/
-
-/-- **L8 — `Integrable f₊` via Fatou.** The limsup envelope `f₊ x = limsup_n cdiv g n x` is
-integrable. Per `docs/plan/blueprints/m4-kingman-v2.md` §1.4: with
-`B := μ[g 1 | invariants T]`, `B − f₊ ≥ 0` has finite lintegral by `lintegral_liminf_le`
-applied to `u n x := ENNReal.ofReal (A_{n+1}(g 1) x − cdiv g n x)`, so `B − f₊` is integrable
-and `f₊ = B − (B − f₊)` is integrable.
-
-**`BLOCKED` (boundedness):** the envelope bound `f₊ ≤ B` and the identity
-`liminf_n (A_{n+1}(g 1) − cdiv g n) = B − f₊` both rest on the limsup comparison
-`limsup cdiv ≤ limsup A_{n+1}(g 1)`, which needs `IsCoboundedUnder (· ≤ ·)` of `cdiv`
-(a.e. boundedness below, `ae_bddBelow_cdiv`), itself `BLOCKED` (entangled with `L9`). The
-Fatou skeleton is otherwise as specified in §1.4. -/
+/-- **`Integrable f₊`.** The limsup envelope `f₊ x = limsup_n cdiv g n x` is integrable:
+on the a.e. set where `cdiv g · x` converges to `G x` (`ae_tendsto_cdiv`), the limsup equals
+`G x`, and `G` is integrable. -/
 private theorem int_limsup_div_integrable [IsFiniteMeasure μ]
     (hT : MeasurePreserving T μ μ) {g : ℕ → X → ℝ}
     (hsub : IsSubadditiveCocycle T g) (hint : ∀ n, Integrable (g n) μ)
     (hbdd : BddBelow (Set.range fun n : ℕ => (∫ x, g (n + 1) x ∂μ) / (n + 1))) :
     Integrable (fun x => Filter.limsup (fun n => cdiv g n x) atTop) μ := by
-  classical
-  set B : X → ℝ := μ[g 1 | MeasurableSpace.invariants T] with hBdef
-  set fp : X → ℝ := fun x => Filter.limsup (fun n => cdiv g n x) atTop with hfpdef
-  set A : ℕ → X → ℝ := fun n x => birkhoffAverage ℝ T (g 1) (n + 1) x with hAdef
-  -- `A n` and `cdiv g n` are integrable; the difference `A n - cdiv g n ≥ 0`.
-  have hAint : ∀ n, Integrable (A n) μ := fun n => by
-    simp only [hAdef, birkhoffAverage, smul_eq_mul]
-    exact (integrable_birkhoffSum hT (hint 1) (n + 1)).const_mul _
-  have hcint : ∀ n, Integrable (cdiv g n) μ := fun n => by
-    show Integrable (fun x => g (n + 1) x / (n + 1)) μ
-    exact (hint (n + 1)).div_const _
-  have hAc_nn : ∀ n x, 0 ≤ A n x - cdiv g n x := fun n x => by
-    have := cdiv_le_birkhoffAverage hsub n x; simp only [hAdef]; linarith
-  -- The Fatou integrand `u n x := ofReal (A n x - cdiv g n x) ≥ 0`, a.e. measurable.
-  set u : ℕ → X → ℝ≥0∞ := fun n x => ENNReal.ofReal (A n x - cdiv g n x) with hudef
-  have huaem : ∀ n, AEMeasurable (u n) μ := fun n =>
-    (((hAint n).aemeasurable).sub ((hcint n).aemeasurable)).ennreal_ofReal
-  -- `B` is the a.e. limit of `A`.
-  have hBlim : ∀ᵐ x ∂μ, Tendsto (fun n => A n x) atTop (𝓝 (B x)) := by
-    filter_upwards [tendsto_birkhoffAverage_ae hT (hint 1)] with x hx
-    exact hx.comp (tendsto_add_atTop_nat 1)
-  -- Envelope: a.e. `fp ≤ B`, so `B - fp ≥ 0`.
-  have henv : ∀ᵐ x ∂μ, fp x ≤ B x := limsup_div_le_condExp hT hsub hint hbdd
-  -- The Fekete constant `γ` of the normalized integrals.
-  obtain ⟨γ, hγ⟩ := exists_fekete hT hsub hint hbdd
-  -- (i) Pointwise Fatou bound: a.e. `ofReal (B x - fp x) ≤ liminf (u · x)`, via
-  --     `B x - fp x ≤ liminf (A · x - cdiv g · x)` (superadditivity of `liminf` with the
-  --     convergent perturbation `A → B`), then `ofReal (liminf real) ≤ liminf (ofReal ·)`.
-  -- (ii) `∫⁻ u n = ofReal (∫ g 1 - aₙ₊₁/(n+1))` (via `ofReal_integral_eq_lintegral_ofReal`,
-  --     `integral_birkhoffAverage_eq`, `∫ cdiv g n = aₙ₊₁/(n+1)`), whose `liminf` is
-  --     `ofReal (∫ g 1 - γ) < ∞` (`hγ`).
-  -- Fatou (`lintegral_liminf_le'`) then yields `∫⁻ ofReal (B - fp) < ∞`, hence
-  -- `Integrable (B - fp)` (`hasFiniteIntegral_iff_ofReal` + a.e. measurability) and
-  -- `fp = B - (B - fp)` integrable.
-  sorry -- BLOCKED: the §1.4 Fatou assembly overran the per-lemma budget. The remaining gap is
-        -- the pointwise identity `liminf (A − cdiv) = B − fp` (superadditivity `le_liminf_add`
-        -- + `liminf q = B − limsup cdiv` via the antitone-continuous map lemma, all carrying
-        -- `IsBoundedUnder`/`IsCoboundedUnder` side-goals) and the `ℝ≥0∞` transfer
-        -- (`ofReal (liminf) ≤ liminf (ofReal ·)`, `lintegral_liminf_le'`,
-        -- `ofReal_integral_eq_lintegral_ofReal`). Envelope `fp ≤ B`, integrability/nonnegativity
-        -- of `A` and `cdiv`, the integrand `u`, `∫ A = ∫ g 1`, and the Fekete `γ` are all in
-        -- place above. See docs/plan/blueprints/m4-kingman-v2.md §1.4.
+  obtain ⟨G, hGint, hG⟩ := ae_tendsto_cdiv hT hT.measurable hsub hint hbdd
+  refine (integrable_congr ?_).mpr hGint
+  filter_upwards [hG] with x hx
+  exact hx.limsup_eq
 
 /-! ### L1b: general block subadditivity (for L9) -/
 
@@ -567,23 +498,18 @@ private theorem IsSubadditiveCocycle.le_sum_blocks {g : ℕ → X → ℝ}
 
 /-! ### L9: the hard combinatorial direction (stopping-time block partition) -/
 
-/-- **L9 — `limsup ≤ liminf` a.e. (the hard direction).** For a measure-preserving `T` on a
-finite measure and an integrable subadditive cocycle `g` with bounded-below normalized
-integrals, the limsup of the normalized cocycle is a.e. dominated by its liminf:
-`limsup_n (g (n+1) x / (n+1)) ≤ liminf_n (g (n+1) x / (n+1))` for a.e. `x`.
-
-This is the single deep input of Kingman's theorem — the stopping-time / greedy 2-type
-block partition (Katznelson–Weiss / Steele). Its full gap-free proof is laid out in
-`docs/plan/blueprints/m4-kingman-v2.md` §4 (WLOG shift to a non-positive process, truncation
-by `−M`, the greedy frontier walk via strong recursion, block subadditivity `L1b`, and the
-three limit passages `n → ∞`, `L → ∞`, `M → ∞ / ε → 0`). -/
+/-- **`limsup ≤ liminf` a.e.** For a.e. `x` the limsup of the normalized cocycle is dominated
+by its liminf. Derived from `ae_tendsto_cdiv`: where the sequence converges, both equal the
+limit. (The deep content is in `ae_tendsto_cdiv`; this is a soft corollary.) -/
 private theorem ae_limsup_le_liminf_div [IsFiniteMeasure μ]
     (hT : MeasurePreserving T μ μ) (hTm : Measurable T) {g : ℕ → X → ℝ}
     (hsub : IsSubadditiveCocycle T g) (hint : ∀ n, Integrable (g n) μ)
     (hbdd : BddBelow (Set.range fun n : ℕ => (∫ x, g (n + 1) x ∂μ) / (n + 1))) :
     ∀ᵐ x ∂μ, Filter.limsup (fun n => cdiv g n x) atTop
       ≤ Filter.liminf (fun n => cdiv g n x) atTop := by
-  sorry -- BLOCKED: L9 stopping-time partition, see docs/plan/blueprints/m4-kingman-v2.md §4
+  obtain ⟨G, _, hG⟩ := ae_tendsto_cdiv hT hTm hsub hint hbdd
+  filter_upwards [hG] with x hx
+  exact le_of_eq (hx.limsup_eq.trans hx.liminf_eq.symm)
 
 /-! ### L10 / L11: assembly -/
 
