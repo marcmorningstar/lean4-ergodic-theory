@@ -16,12 +16,15 @@ filtration form** (milestone **M10** / layer **L6.1**), stated in Lean as
 
 ## Current phase
 
-**Phase 2 (condExp ∘ measure-preserving, M2) — COMPLETE.** `condExp_invariants_comp`
-proved (via `ae_eq_condExp_of_forall_setIntegral_eq` + a `setIntegral_comp_of_invariants`
-helper + `MeasurableSpace.measurable_invariants_of_semiconj`); build green, axioms clean,
-open `sorry`s 9 → 8. (Phases 0–1 before: skeleton QA-passed; cocycle identity +
-measurability proved.) **Next: Phase 3 = M1 (maximal ergodic inequality) — the keystone
-(see Routing insight below), fully blueprinted in `docs/plan/blueprints/m1-maximal-ergodic.md`.**
+**Phase 3 = M1 (maximal ergodic inequality) — COMPLETE (the keystone).**
+`setIntegral_birkhoffSum_pos_nonneg` proved sorry-free via Garsia's argument (~14
+auxiliary lemmas: `maxBirkhoff` + nonneg/succ/measurable/integrable, the constant-pull
+`add_sup'_eq`, the pointwise Garsia inequality `maxBirkhoff_le_add`, `birkhoffSum_congr_ae`,
+the fixed-N crux `setIntegral_maxBirkhoff_pos_nonneg`, monotone/iUnion of the positivity
+sets, and the `f→g` measurable-representative reduction). Build green; main statement
+byte-identical to the QA'd skeleton; axioms `[propext, Classical.choice, Quot.sound]`;
+open `sorry`s 8 → 7. (Phases 0–2 before: skeleton QA-passed; cocycle infra; condExp∘MP.)
+**Next: M3 (Birkhoff) and M4 (Kingman) are now both UNLOCKED by M1.**
 
 ## What is done
 
@@ -48,16 +51,15 @@ measurability proved.) **Next: Phase 3 = M1 (maximal ergodic inequality) — the
   declarations**; `#print axioms oseledets_filtration` = `[propext, sorryAx,
   Classical.choice, Quot.sound]` (only standard axioms + the intended `sorryAx` gaps).
 
-## Open `sorry`s (8 — all intended planned gaps; the implementation backlog)
+## Open `sorry`s (7 — all intended planned gaps; the implementation backlog)
 
-_Phase 1 closed `cocycle_add` + `measurable_cocycle`; Phase 2 closed
-`condExp_invariants_comp` (M2). `Cocycle/Basic` is sorry-free; `Ergodic/Birkhoff` has
-only the two Birkhoff theorems left._
+_Closed so far: `cocycle_add`, `measurable_cocycle` (P1); `condExp_invariants_comp` (P2,
+M2); `setIntegral_birkhoffSum_pos_nonneg` (P3, M1). `Cocycle/Basic` and
+`Ergodic/MaximalErgodic` are sorry-free._
 
 | Decl | File | Milestone |
 |---|---|---|
-| `setIntegral_birkhoffSum_pos_nonneg` | Ergodic/MaximalErgodic | M1 (keystone) |
-| `tendsto_birkhoffAverage_ae` | Ergodic/Birkhoff | M3 |
+| `tendsto_birkhoffAverage_ae` | Ergodic/Birkhoff | M3 (now unlocked: M1+M2 ready) |
 | `tendsto_birkhoffAverage_ae_integral` | Ergodic/Birkhoff | M3 (ergodic) |
 | `tendsto_kingman` | Ergodic/Kingman | M4 |
 | `tendsto_kingman_ergodic` | Ergodic/Kingman | M4 (ergodic) |
@@ -74,13 +76,14 @@ stated and `sorry`; these intermediate lemmas are added when their phase begins.
 
 1. ✅ Phase 0 (skeleton) committed `4ed4225`; blueprints `5b64baa`.
 2. ✅ Phase 1 (cocycle infra) — `cocycle_add`, `measurable_cocycle` proved (`c23b73e`).
-3. ✅ Phase 2 (M2) — `condExp_invariants_comp` proved.
-4. ⏳ **Phase 3 = M1 (maximal ergodic inequality)** — the keystone; blueprint
-   `m1-maximal-ergodic.md`. Unlocks M3 (Birkhoff = M1+M2) and M4 (Kingman via
-   Katznelson–Weiss = M1).
-5. ⏳ Then M3 (Birkhoff, `m3-birkhoff.md`), M4 (Kingman, `m4-kingman.md`), M5
-   (Furstenberg–Kesten), the Lyapunov layers (growth fn, ultrametric, flag,
-   limsup→lim, measurability), and assembly into the target.
+3. ✅ Phase 2 (M2) — `condExp_invariants_comp` proved (`4e5feec`).
+4. ✅ Phase 3 (M1, keystone) — `setIntegral_birkhoffSum_pos_nonneg` proved.
+5. ⏳ **M3 (pointwise Birkhoff)** — now unlocked (= M1 + M2). Use the maximal
+   inequality `setIntegral_birkhoffSum_pos_nonneg` + `condExp_invariants_comp`;
+   blueprint `m3-birkhoff.md`. Prove `tendsto_birkhoffAverage_ae` + the ergodic
+   corollary.
+6. ⏳ **M4 (Kingman)** — also unlocked via Katznelson–Weiss (from M1); blueprint
+   `m4-kingman.md`. Then M5 (Furstenberg–Kesten), the Lyapunov layers, and assembly.
 
 **Proof blueprints** for the three hard theorems (M1/M3/M4) are in
 `docs/plan/blueprints/` — exact Mathlib lemma maps + auxiliary lemmas + pitfalls.
