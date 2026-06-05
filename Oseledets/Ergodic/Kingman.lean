@@ -3,6 +3,8 @@ import Mathlib.Analysis.Subadditive
 import Mathlib.MeasureTheory.Integral.Lebesgue.Add
 import Mathlib.MeasureTheory.Function.ConditionalExpectation.Indicator
 import Mathlib.MeasureTheory.Integral.Bochner.Basic
+import Mathlib.MeasureTheory.Integral.DominatedConvergence
+import Mathlib.Analysis.Asymptotics.SpecificAsymptotics
 import Mathlib.Topology.Instances.EReal.Lemmas
 
 /-!
@@ -840,22 +842,446 @@ private theorem sum_leaders_cocycle_nonpos (g : ℕ → X → ℝ) (n : ℕ) (x 
   refine le_of_eq_of_le (Finset.sum_congr rfl (fun k _ => ?_)) h
   ring
 
+/-! ### L-C: Derriennic's maximal inequality (Karlsson Lemma 3.4 / Prop 3.5)
+
+Karlsson's Λ-set and A-set, and the integral telescoping of `sum_leaders_cocycle_nonpos`
+(L-B) over a `T`-invariant set `B`. -/
+
+/-- The increment of the cocycle: `bcoc g i x = g i x − g (i−1) (T x)`. (Karlsson's `b_i`.) -/
+private def bcoc (g : ℕ → X → ℝ) (i : ℕ) (x : X) : ℝ := g i x - g (i - 1) (T x)
+
+/-- Karlsson's set `Λ_m = {y | inf_{1≤k≤m} (g m y − g (m−k)(T^[k] y)) < 0}`. -/
+private def LambdaSet (g : ℕ → X → ℝ) (m : ℕ) : Set X :=
+  {y | ∃ k, 1 ≤ k ∧ k ≤ m ∧ g m y - g (m - k) (T^[k] y) < 0}
+
+/-- Karlsson's set `A_m = {y | inf_{1≤k≤m} g k y < 0} ⊆ Λ_m`. -/
+private def ASet (g : ℕ → X → ℝ) (m : ℕ) : Set X :=
+  {y | ∃ k, 1 ≤ k ∧ k ≤ m ∧ g k y < 0}
+
+omit [MeasurableSpace X] in
+/-- `A_m ⊆ Λ_m` by subadditivity: `g m y ≤ g (m−k) y + g k (T^[m−k] y)`… actually the
+inclusion uses `g m y ≤ g (m−k) (·)`; we prove it via `g m y − g (m−k)(T^[k] y) ≤ g k y` when
+`k ≤ m`. Indeed `g m y = g (k + (m−k)) y ≤ g k y + g (m−k) (T^[k] y)`. -/
+private theorem ASet_subset_LambdaSet {g : ℕ → X → ℝ} (hsub : IsSubadditiveCocycle T g) (m : ℕ) :
+    ASet g m ⊆ LambdaSet (T := T) g m := by
+  rintro y ⟨k, hk1, hkm, hk⟩
+  refine ⟨k, hk1, hkm, ?_⟩
+  have hdecomp : g m y ≤ g k y + g (m - k) (T^[k] y) := by
+    have := hsub.apply_add_le k (m - k) y
+    rwa [Nat.add_sub_cancel' hkm] at this
+  linarith
+
+omit [MeasurableSpace X] in
+/-- The leader-membership identification (Karlsson, §3.2): an index `k` is a leader of the
+partial sums `S j = g n x − g (n−j)(T^[j] x)` of length `n` exactly when `k < n` and
+`T^[k] x ∈ Λ_{n−k}`. -/
+private theorem mem_leaderSet_iff_mem_LambdaSet (g : ℕ → X → ℝ) (n k : ℕ) (x : X) :
+    k ∈ leaderSet (fun j => g n x - g (n - j) (T^[j] x)) n ↔
+      k < n ∧ T^[k] x ∈ LambdaSet (T := T) g (n - k) := by
+  classical
+  simp only [leaderSet, Finset.mem_filter, Finset.mem_range, LambdaSet, Set.mem_setOf_eq]
+  constructor
+  · rintro ⟨hkn, j, hkj, hjn, hlt⟩
+    refine ⟨hkn, j - k, by omega, by omega, ?_⟩
+    have h1 : T^[j - k] (T^[k] x) = T^[j] x := by
+      rw [← Function.iterate_add_apply]; congr 1; omega
+    have h2 : n - k - (j - k) = n - j := by omega
+    rw [h1, h2]
+    linarith
+  · rintro ⟨hkn, m, hm1, hmnk, hlt⟩
+    refine ⟨hkn, k + m, by omega, by omega, ?_⟩
+    have h1 : T^[m] (T^[k] x) = T^[k + m] x := by
+      rw [← Function.iterate_add_apply]; congr 1; omega
+    have h2 : n - k - m = n - (k + m) := by omega
+    rw [h1, h2] at hlt
+    linarith
+
+omit [MeasurableSpace X] in
+/-- **Telescoping** (Karlsson §3.2): `∑_{k<n} bcoc g (n−k) (T^[k] x) = g n x − g 0 (T^[n] x)`. -/
+private theorem sum_bcoc_telescope (g : ℕ → X → ℝ) (n : ℕ) (x : X) :
+    ∑ k ∈ Finset.range n, bcoc (T := T) g (n - k) (T^[k] x)
+      = g n x - g 0 (T^[n] x) := by
+  set h : ℕ → ℝ := fun k => g (n - k) (T^[k] x) with hh
+  have hterm : ∀ k ∈ Finset.range n, bcoc (T := T) g (n - k) (T^[k] x) = h k - h (k + 1) := by
+    intro k _
+    simp only [hh, bcoc]
+    rw [Function.iterate_succ_apply', show n - k - 1 = n - (k + 1) by omega]
+  rw [Finset.sum_congr rfl hterm, Finset.sum_range_sub' h n]
+  simp only [hh, Nat.sub_zero, Function.iterate_zero, id_eq, Nat.sub_self]
+
+open Classical in
+omit [MeasurableSpace X] in
+/-- **L-B′ — pointwise leader inequality, Λ-form.** Summing the increments `bcoc g (n−k)`
+along the orbit over the indices `k < n` with `T^[k] x ∈ Λ_{n−k}` gives a non-positive number.
+(Recast of `sum_leaders_cocycle_nonpos` via the membership identification.) -/
+private theorem sum_bcoc_lambda_nonpos (g : ℕ → X → ℝ) (n : ℕ) (x : X) :
+    ∑ k ∈ (Finset.range n).filter (fun k => T^[k] x ∈ LambdaSet (T := T) g (n - k)),
+        bcoc (T := T) g (n - k) (T^[k] x) ≤ 0 := by
+  classical
+  have hset : (Finset.range n).filter (fun k => T^[k] x ∈ LambdaSet (T := T) g (n - k))
+      = leaderSet (fun j => g n x - g (n - j) (T^[j] x)) n := by
+    ext k
+    simp only [Finset.mem_filter, Finset.mem_range, mem_leaderSet_iff_mem_LambdaSet]
+  rw [hset]
+  refine le_of_eq_of_le (Finset.sum_congr rfl (fun k _ => ?_)) (sum_leaders_cocycle_nonpos g n x)
+  simp only [bcoc]
+  rw [Function.iterate_succ_apply', show n - k - 1 = n - (k + 1) by omega]
+
+/-- Karlsson's localized increment `ψ_i = 1_{Λ_i} · bcoc g i`. -/
+private noncomputable def psiCoc (g : ℕ → X → ℝ) (i : ℕ) : X → ℝ :=
+  (LambdaSet (T := T) g i).indicator (bcoc (T := T) g i)
+
+open Classical in
+omit [MeasurableSpace X] in
+/-- **L-B″ — indicator form of the pointwise leader inequality.** The full-range orbit sum of
+the localized increments `ψ_{n−k} ∘ T^[k]` is non-positive (it equals the filtered leader sum
+of `sum_bcoc_lambda_nonpos`, the extra terms being zero off `Λ`). -/
+private theorem sum_psiCoc_comp_nonpos (g : ℕ → X → ℝ) (n : ℕ) (x : X) :
+    ∑ k ∈ Finset.range n, psiCoc (T := T) g (n - k) (T^[k] x) ≤ 0 := by
+  classical
+  have hrw : ∑ k ∈ Finset.range n, psiCoc (T := T) g (n - k) (T^[k] x)
+      = ∑ k ∈ (Finset.range n).filter (fun k => T^[k] x ∈ LambdaSet (T := T) g (n - k)),
+          bcoc (T := T) g (n - k) (T^[k] x) := by
+    rw [Finset.sum_filter]
+    refine Finset.sum_congr rfl (fun k _ => ?_)
+    simp only [psiCoc, Set.indicator_apply]
+  rw [hrw]
+  exact sum_bcoc_lambda_nonpos g n x
+
+/-- `bcoc g i = g i − g (i−1) ∘ T` is integrable. -/
+private theorem integrable_bcoc (hT : MeasurePreserving T μ μ) {g : ℕ → X → ℝ}
+    (hint : ∀ n, Integrable (g n) μ) (i : ℕ) : Integrable (bcoc (T := T) g i) μ := by
+  have hcomp : Integrable (fun x => g (i - 1) (T x)) μ :=
+    hT.integrable_comp_of_integrable (hint (i - 1))
+  exact (hint i).sub hcomp
+
+/-- `LambdaSet g m` is null-measurable: a finite union over `1 ≤ k ≤ m` of the null-measurable
+sets `{g m − g (m−k) ∘ T^[k] < 0}`. -/
+private theorem nullMeasurableSet_LambdaSet (hT : MeasurePreserving T μ μ) {g : ℕ → X → ℝ}
+    (hint : ∀ n, Integrable (g n) μ) (m : ℕ) :
+    NullMeasurableSet (LambdaSet (T := T) g m) μ := by
+  classical
+  have hrw : LambdaSet (T := T) g m
+      = ⋃ k ∈ (Finset.Icc 1 m : Finset ℕ), {y | g m y - g (m - k) (T^[k] y) < 0} := by
+    ext y
+    simp only [LambdaSet, Set.mem_setOf_eq, Set.mem_iUnion, Finset.mem_Icc]
+    constructor
+    · rintro ⟨k, hk1, hkm, hlt⟩; exact ⟨k, ⟨hk1, hkm⟩, hlt⟩
+    · rintro ⟨k, ⟨hk1, hkm⟩, hlt⟩; exact ⟨k, hk1, hkm, hlt⟩
+  rw [hrw]
+  refine NullMeasurableSet.biUnion (Finset.Icc 1 m).countable_toSet (fun k _ => ?_)
+  have hg1 : AEMeasurable (g m) μ := (hint m).aemeasurable
+  have hg2 : AEMeasurable (fun y => g (m - k) (T^[k] y)) μ :=
+    (hT.iterate k).integrable_comp_of_integrable (hint (m - k)) |>.aemeasurable
+  exact nullMeasurableSet_lt (hg1.sub hg2) aemeasurable_const
+
+/-- `psiCoc g i` is integrable (indicator of a null-measurable set of an integrable function). -/
+private theorem integrable_psiCoc (hT : MeasurePreserving T μ μ) {g : ℕ → X → ℝ}
+    (hint : ∀ n, Integrable (g n) μ) (i : ℕ) : Integrable (psiCoc (T := T) g i) μ :=
+  (integrable_bcoc hT hint i).indicator₀ (nullMeasurableSet_LambdaSet hT hint i)
+
+/-- Set-integral invariance under `T^[k]` for a measurable `T`-invariant set `s`:
+`∫_s (h ∘ T^[k]) = ∫_s h`. -/
+private theorem setIntegral_comp_iterate_of_invariants
+    (hT : MeasurePreserving T μ μ) {h : X → ℝ} (hh : AEStronglyMeasurable h μ)
+    {s : Set X} (hs : MeasurableSet s) (hsinv : T ⁻¹' s = s) (k : ℕ) :
+    ∫ x in s, h (T^[k] x) ∂μ = ∫ x in s, h x ∂μ := by
+  have hmp : MeasurePreserving (T^[k]) μ μ := hT.iterate k
+  have hsinvk : T^[k] ⁻¹' s = s := by
+    clear hh hs hmp
+    induction k with
+    | zero => simp
+    | succ k ih => rw [Function.iterate_succ', Set.preimage_comp, hsinv, ih]
+  have hmap : Measure.map (T^[k]) μ = μ := hmp.map_eq
+  have hhmap : AEStronglyMeasurable h (Measure.map (T^[k]) μ) := by rw [hmap]; exact hh
+  calc ∫ x in s, h (T^[k] x) ∂μ
+      = ∫ x in T^[k] ⁻¹' s, h (T^[k] x) ∂μ := by rw [hsinvk]
+    _ = ∫ y in s, h y ∂(Measure.map (T^[k]) μ) := (setIntegral_map hs hhmap hmp.aemeasurable).symm
+    _ = ∫ y in s, h y ∂μ := by rw [hmap]
+
+/-- **(★) — integrated leader inequality** (Karlsson Lemma 3.4, the telescoped integral). For a
+measurable `T`-invariant set `B`, the partial sum of localized increment integrals is
+non-positive: `∑_{i=1}^n ∫_{B} ψ_i ≤ 0`, where `ψ_i = 1_{Λ_i} bcoc g i`. -/
+private theorem sum_setIntegral_psiCoc_nonpos
+    (hT : MeasurePreserving T μ μ) {g : ℕ → X → ℝ} (hint : ∀ n, Integrable (g n) μ)
+    {B : Set X} (hB : MeasurableSet B) (hBinv : T ⁻¹' B = B) (n : ℕ) :
+    ∑ i ∈ Finset.Icc 1 n, ∫ x in B, psiCoc (T := T) g i x ∂μ ≤ 0 := by
+  classical
+  -- Integrate the pointwise inequality `∑_{k<n} ψ_{n-k}(T^[k] x) ≤ 0` over `B`.
+  have hpt : ∫ x in B, (∑ k ∈ Finset.range n, psiCoc (T := T) g (n - k) (T^[k] x)) ∂μ ≤ 0 :=
+    integral_nonpos_of_ae (Filter.Eventually.of_forall (fun x => sum_psiCoc_comp_nonpos g n x))
+  -- Pull the finite sum out and apply the change of variables for `T^[k]`.
+  rw [integral_finsetSum (μ := μ.restrict B) (Finset.range n)
+    (f := fun k x => psiCoc (T := T) g (n - k) (T^[k] x))
+    (fun k _ => ((hT.iterate k).integrable_comp_of_integrable
+      (integrable_psiCoc hT hint (n - k))).restrict)] at hpt
+  -- `∫_B ψ_{n-k} ∘ T^[k] = ∫_B ψ_{n-k}`.
+  have hcv : ∀ k ∈ Finset.range n,
+      ∫ x in B, psiCoc (T := T) g (n - k) (T^[k] x) ∂μ
+        = ∫ x in B, psiCoc (T := T) g (n - k) x ∂μ := fun k _ =>
+    setIntegral_comp_iterate_of_invariants hT
+      (integrable_psiCoc hT hint (n - k)).aestronglyMeasurable hB hBinv k
+  rw [Finset.sum_congr rfl hcv] at hpt
+  -- Reindex `i = n - k` over `range n` to `Icc 1 n`.
+  have hreindex : ∑ k ∈ Finset.range n, ∫ x in B, psiCoc (T := T) g (n - k) x ∂μ
+      = ∑ i ∈ Finset.Icc 1 n, ∫ x in B, psiCoc (T := T) g i x ∂μ := by
+    refine Finset.sum_nbij' (fun k => n - k) (fun i => n - i) ?_ ?_ ?_ ?_ ?_
+    · intro k hk; simp only [Finset.mem_range] at hk; simp only [Finset.mem_Icc]; omega
+    · intro i hi; simp only [Finset.mem_Icc] at hi; simp only [Finset.mem_range]; omega
+    · intro k hk; simp only [Finset.mem_range] at hk; dsimp only; omega
+    · intro i hi; simp only [Finset.mem_Icc] at hi; dsimp only; omega
+    · intro k _; rfl
+  rw [hreindex] at hpt
+  exact hpt
+
+/-- **Integrated telescoping** over an invariant set `B`:
+`∑_{i=1}^m ∫_B bcoc g i = ∫_B g m − ∫_B g 0`. -/
+private theorem sum_setIntegral_bcoc_eq
+    (hT : MeasurePreserving T μ μ) {g : ℕ → X → ℝ} (hint : ∀ n, Integrable (g n) μ)
+    {B : Set X} (hB : MeasurableSet B) (hBinv : T ⁻¹' B = B) (m : ℕ) :
+    ∑ i ∈ Finset.Icc 1 m, ∫ x in B, bcoc (T := T) g i x ∂μ
+      = (∫ x in B, g m x ∂μ) - ∫ x in B, g 0 x ∂μ := by
+  classical
+  have hcv : ∀ k ∈ Finset.range m,
+      ∫ x in B, bcoc (T := T) g (m - k) (T^[k] x) ∂μ
+        = ∫ x in B, bcoc (T := T) g (m - k) x ∂μ := fun k _ =>
+    setIntegral_comp_iterate_of_invariants hT
+      (integrable_bcoc hT hint (m - k)).aestronglyMeasurable hB hBinv k
+  have hreindex : ∑ k ∈ Finset.range m, ∫ x in B, bcoc (T := T) g (m - k) x ∂μ
+      = ∑ i ∈ Finset.Icc 1 m, ∫ x in B, bcoc (T := T) g i x ∂μ := by
+    refine Finset.sum_nbij' (fun k => m - k) (fun i => m - i) ?_ ?_ ?_ ?_ ?_
+    · intro k hk; simp only [Finset.mem_range] at hk; simp only [Finset.mem_Icc]; omega
+    · intro i hi; simp only [Finset.mem_Icc] at hi; simp only [Finset.mem_range]; omega
+    · intro k hk; simp only [Finset.mem_range] at hk; dsimp only; omega
+    · intro i hi; simp only [Finset.mem_Icc] at hi; dsimp only; omega
+    · intro k _; rfl
+  calc ∑ i ∈ Finset.Icc 1 m, ∫ x in B, bcoc (T := T) g i x ∂μ
+      = ∑ k ∈ Finset.range m, ∫ x in B, bcoc (T := T) g (m - k) x ∂μ := hreindex.symm
+    _ = ∑ k ∈ Finset.range m, ∫ x in B, bcoc (T := T) g (m - k) (T^[k] x) ∂μ :=
+        (Finset.sum_congr rfl hcv).symm
+    _ = ∫ x in B, (∑ k ∈ Finset.range m, bcoc (T := T) g (m - k) (T^[k] x)) ∂μ :=
+        (integral_finsetSum (μ := μ.restrict B) (Finset.range m)
+          (f := fun k x => bcoc (T := T) g (m - k) (T^[k] x))
+          (fun k _ => ((hT.iterate k).integrable_comp_of_integrable
+            (integrable_bcoc hT hint (m - k))).restrict)).symm
+    _ = ∫ x in B, (g m x - g 0 (T^[m] x)) ∂μ :=
+        integral_congr_ae (Filter.Eventually.of_forall (fun x => sum_bcoc_telescope g m x))
+    _ = (∫ x in B, g m x ∂μ) - ∫ x in B, g 0 (T^[m] x) ∂μ :=
+        integral_sub (hint m).restrict
+          ((hT.iterate m).integrable_comp_of_integrable (hint 0)).restrict
+    _ = (∫ x in B, g m x ∂μ) - ∫ x in B, g 0 x ∂μ := by
+        rw [setIntegral_comp_iterate_of_invariants hT (hint 0).aestronglyMeasurable hB hBinv m]
+
+omit [MeasurableSpace X] in
+/-- `ASet g` is monotone in the length. -/
+private theorem ASet_mono {g : ℕ → X → ℝ} : Monotone (ASet g) := by
+  intro a b hab y hy
+  obtain ⟨k, hk1, hka, hk⟩ := hy
+  exact ⟨k, hk1, le_trans hka hab, hk⟩
+
+/-- `ASet g m` is null-measurable. -/
+private theorem nullMeasurableSet_ASet {g : ℕ → X → ℝ} (hint : ∀ n, Integrable (g n) μ) (m : ℕ) :
+    NullMeasurableSet (ASet g m) μ := by
+  classical
+  have hrw : ASet g m = ⋃ k ∈ (Finset.Icc 1 m : Finset ℕ), {y | g k y < 0} := by
+    ext y; simp only [ASet, Set.mem_setOf_eq, Set.mem_iUnion, Finset.mem_Icc]
+    constructor
+    · rintro ⟨k, hk1, hkm, hlt⟩; exact ⟨k, ⟨hk1, hkm⟩, hlt⟩
+    · rintro ⟨k, ⟨hk1, hkm⟩, hlt⟩; exact ⟨k, hk1, hkm, hlt⟩
+  rw [hrw]
+  exact NullMeasurableSet.biUnion (Finset.Icc 1 m).countable_toSet
+    (fun k _ => nullMeasurableSet_lt (hint k).aemeasurable aemeasurable_const)
+
+/-- **L-C — Derriennic's maximal inequality** (Karlsson Lemma 3.4). For a measurable
+`T`-invariant set `B` on which (a.e.) `liminf (cdiv g · x) < 0`, the normalized integral
+`(∫_B g (n+1))/(n+1)` has non-positive `limsup`. -/
+private theorem limsup_setIntegral_div_nonpos [IsFiniteMeasure μ]
+    (hT : MeasurePreserving T μ μ) {g : ℕ → X → ℝ}
+    (hsub : IsSubadditiveCocycle T g) (hint : ∀ n, Integrable (g n) μ)
+    {B : Set X} (hB : MeasurableSet B) (hBinv : T ⁻¹' B = B)
+    (hBneg : ∀ᵐ x ∂μ, x ∈ B → ∃ k, g (k + 1) x < 0) :
+    Filter.limsup
+      (fun n : ℕ => (((∫ x in B, g (n + 1) x ∂μ) / (n + 1) : ℝ) : EReal)) atTop ≤ 0 := by
+  classical
+  -- The positive part `p := (g 1)⁺`, integrable and nonnegative.
+  set p : X → ℝ := fun y => max (g 1 y) 0 with hpdef
+  have hpint : Integrable p μ := (hint 1).pos_part
+  have hpnn : ∀ y, 0 ≤ p y := fun y => le_max_right _ _
+  -- The tail integrals `dseq i = ∫_{B \ A_i} p`.
+  set dseq : ℕ → ℝ := fun i => ∫ x in B, ((ASet g i)ᶜ).indicator p x ∂μ with hdseqdef
+  -- (1) `B ⊆ᵐ ⋃ A_i`: on `B`, some level is `< 0`.
+  have hBsub : ∀ᵐ x ∂μ, x ∈ B → x ∈ ⋃ i, ASet g i := by
+    filter_upwards [hBneg] with x hx hxB
+    obtain ⟨k, hk⟩ := hx hxB
+    refine Set.mem_iUnion.2 ⟨k + 1, ?_⟩
+    exact ⟨k + 1, by omega, le_refl _, hk⟩
+  -- (2) `dseq i → 0` by dominated convergence on the antitone indicators.
+  have hdseq0 : Tendsto dseq atTop (𝓝 0) := by
+    set F : ℕ → X → ℝ := fun i x => (B ∩ (ASet g i)ᶜ).indicator p x with hFdef
+    have hFnm : ∀ i, NullMeasurableSet (B ∩ (ASet g i)ᶜ) μ := fun i =>
+      hB.nullMeasurableSet.inter (nullMeasurableSet_ASet hint i).compl
+    have hFint : ∀ i, ∫ a, F i a ∂μ = dseq i := by
+      intro i
+      simp only [hFdef, hdseqdef]
+      rw [← Set.indicator_indicator, integral_indicator₀ hB.nullMeasurableSet]
+    have hFm : ∀ i, AEStronglyMeasurable (F i) μ :=
+      fun i => (hpint.aestronglyMeasurable.indicator₀ (hFnm i))
+    have hbound : ∀ i, ∀ᵐ a ∂μ, ‖F i a‖ ≤ p a := by
+      intro i
+      filter_upwards with a
+      simp only [hFdef, Set.indicator_apply, Real.norm_eq_abs]
+      by_cases h : a ∈ B ∩ (ASet g i)ᶜ
+      · simp only [h, if_true, abs_of_nonneg (hpnn a), le_refl]
+      · simp only [h, if_false, abs_zero]; exact hpnn a
+    have hlim : ∀ᵐ a ∂μ, Tendsto (fun i => F i a) atTop (𝓝 0) := by
+      filter_upwards [hBsub] with a hBa
+      by_cases haB : a ∈ B
+      · obtain ⟨j, hj⟩ := Set.mem_iUnion.1 (hBa haB)
+        refine Tendsto.congr' ?_ tendsto_const_nhds
+        filter_upwards [eventually_ge_atTop j] with i hij
+        simp only [hFdef, Set.indicator_apply]
+        have : a ∈ ASet g i := ASet_mono hij hj
+        simp only [Set.mem_inter_iff, Set.mem_compl_iff, this, not_true, and_false, if_false]
+      · refine Tendsto.congr' ?_ tendsto_const_nhds
+        filter_upwards with i
+        simp only [hFdef, Set.indicator_apply]
+        simp only [Set.mem_inter_iff, haB, false_and, if_false]
+    have hconv : Tendsto (fun i => ∫ a, F i a ∂μ) atTop (𝓝 (∫ a, (0 : ℝ) ∂μ)) :=
+      tendsto_integral_of_dominated_convergence p hFm hpint hbound hlim
+    simp only [integral_zero] at hconv
+    exact (funext hFint) ▸ hconv
+  -- (3) Per-level bound: `∫_B bcoc g i ≤ ∫_B ψ_i + dseq i` for `i ≥ 1`.
+  have hpoint : ∀ i, 1 ≤ i → ∀ x,
+      bcoc (T := T) g i x - psiCoc (T := T) g i x ≤ ((ASet g i)ᶜ).indicator p x := by
+    intro i hi1 x
+    -- `bcoc g i x ≤ p x` by subadditivity (i ≥ 1).
+    have hble : bcoc (T := T) g i x ≤ p x := by
+      have hdec : g i x ≤ g 1 x + g (i - 1) (T x) := by
+        have := hsub.apply_add_le 1 (i - 1) x
+        rw [show 1 + (i - 1) = i by omega, Function.iterate_one] at this
+        exact this
+      simp only [bcoc, hpdef]
+      have : g i x - g (i - 1) (T x) ≤ g 1 x := by linarith
+      exact le_trans this (le_max_left _ _)
+    by_cases hΛ : x ∈ LambdaSet (T := T) g i
+    · -- on `Λ_i`: `psiCoc = bcoc`, so LHS = 0 ≤ RHS.
+      simp only [psiCoc, Set.indicator_of_mem hΛ, sub_self]
+      exact Set.indicator_nonneg (fun y _ => hpnn y) x
+    · -- off `Λ_i` (⟹ off `A_i`): `psiCoc = 0`, LHS = bcoc ≤ p = RHS.
+      have hA : x ∉ ASet g i := fun h => hΛ (ASet_subset_LambdaSet hsub i h)
+      simp only [psiCoc, Set.indicator_of_notMem hΛ, sub_zero,
+        Set.indicator_of_mem (Set.mem_compl hA)]
+      exact hble
+  -- (4) The main inequality: `∫_B g (n+1) ≤ ∫_B g 0 + ∑_{i∈Icc 1 (n+1)} dseq i`.
+  have hmain : ∀ n : ℕ, ∫ x in B, g (n + 1) x ∂μ
+      ≤ (∫ x in B, g 0 x ∂μ) + ∑ i ∈ Finset.Icc 1 (n + 1), dseq i := by
+    intro n
+    -- telescoping: `∫_B g(n+1) - ∫_B g 0 = ∑_{Icc 1 (n+1)} ∫_B bcoc g i`.
+    have htel := sum_setIntegral_bcoc_eq hT hint hB hBinv (n + 1)
+    -- per-level: `∫_B bcoc g i ≤ ∫_B ψ_i + dseq i`.
+    have hlevel : ∀ i ∈ Finset.Icc 1 (n + 1),
+        ∫ x in B, bcoc (T := T) g i x ∂μ
+          ≤ (∫ x in B, psiCoc (T := T) g i x ∂μ) + dseq i := by
+      intro i hi
+      simp only [Finset.mem_Icc] at hi
+      have hsub_int : ∫ x in B, (bcoc (T := T) g i x - psiCoc (T := T) g i x) ∂μ ≤ dseq i := by
+        rw [hdseqdef]
+        refine setIntegral_mono_on ?_ ?_ hB (fun x _ => hpoint i hi.1 x)
+        · exact ((integrable_bcoc hT hint i).sub (integrable_psiCoc hT hint i)).restrict
+        · exact (hpint.indicator₀ (nullMeasurableSet_ASet hint i).compl).restrict
+      rw [integral_sub (integrable_bcoc hT hint i).restrict
+        (integrable_psiCoc hT hint i).restrict] at hsub_int
+      linarith
+    -- sum the per-level bounds; use ★ for `∑ ∫_B ψ_i ≤ 0`.
+    have hsumlevel : ∑ i ∈ Finset.Icc 1 (n + 1), ∫ x in B, bcoc (T := T) g i x ∂μ
+        ≤ (∑ i ∈ Finset.Icc 1 (n + 1), ∫ x in B, psiCoc (T := T) g i x ∂μ)
+          + ∑ i ∈ Finset.Icc 1 (n + 1), dseq i := by
+      rw [← Finset.sum_add_distrib]
+      exact Finset.sum_le_sum hlevel
+    have hstar := sum_setIntegral_psiCoc_nonpos hT hint hB hBinv (n + 1)
+    have : ∑ i ∈ Finset.Icc 1 (n + 1), ∫ x in B, bcoc (T := T) g i x ∂μ
+        ≤ ∑ i ∈ Finset.Icc 1 (n + 1), dseq i := by linarith
+    rw [htel] at this
+    linarith
+  -- (5) Conclude: `(∫_B g(n+1))/(n+1) ≤ r n → 0`, so the EReal limsup is `≤ 0`.
+  set r : ℕ → ℝ := fun n =>
+    (∫ x in B, g 0 x ∂μ) / (n + 1) + (∑ i ∈ Finset.Icc 1 (n + 1), dseq i) / (n + 1) with hrdef
+  -- `∑_{Icc 1 (n+1)} dseq = ∑_{range (n+1)} dseq (·+1)`.
+  have hIccrange : ∀ n : ℕ, ∑ i ∈ Finset.Icc 1 (n + 1), dseq i
+      = ∑ j ∈ Finset.range (n + 1), dseq (j + 1) := by
+    intro n
+    refine Finset.sum_nbij' (fun i => i - 1) (fun j => j + 1) ?_ ?_ ?_ ?_ ?_
+    · intro i hi; simp only [Finset.mem_Icc] at hi; simp only [Finset.mem_range]; omega
+    · intro j hj; simp only [Finset.mem_range] at hj; simp only [Finset.mem_Icc]; omega
+    · intro i hi; simp only [Finset.mem_Icc] at hi; dsimp only; omega
+    · intro j hj; dsimp only; omega
+    · intro i hi; simp only [Finset.mem_Icc] at hi; dsimp only; congr 1; omega
+  have hle : ∀ n : ℕ, (∫ x in B, g (n + 1) x ∂μ) / (n + 1) ≤ r n := by
+    intro n
+    rw [hrdef]
+    simp only
+    rw [← add_div]
+    have hpos : (0 : ℝ) < (n : ℝ) + 1 := by positivity
+    exact (div_le_div_iff_of_pos_right hpos).2 (hmain n)
+  have hr0 : Tendsto r atTop (𝓝 0) := by
+    rw [hrdef]
+    have h1 : Tendsto (fun n : ℕ => (∫ x in B, g 0 x ∂μ) / (n + 1)) atTop (𝓝 0) := by
+      simp only [div_eq_mul_inv]
+      have : Tendsto (fun n : ℕ => ((n : ℝ) + 1)⁻¹) atTop (𝓝 0) :=
+        tendsto_inv_atTop_zero.comp (tendsto_atTop_add_const_right _ 1 tendsto_natCast_atTop_atTop)
+      simpa using this.const_mul (∫ x in B, g 0 x ∂μ)
+    have h2 : Tendsto (fun n : ℕ => (∑ i ∈ Finset.Icc 1 (n + 1), dseq i) / (n + 1)) atTop (𝓝 0) := by
+      -- Cesàro: `(m⁻¹) ∑_{j<m} dseq (j+1) → 0`, evaluated at `m = n+1`.
+      have hces : Tendsto (fun m : ℕ => ((m : ℝ))⁻¹ * ∑ j ∈ Finset.range m, dseq (j + 1))
+          atTop (𝓝 0) := Filter.Tendsto.cesaro (hdseq0.comp (tendsto_add_atTop_nat 1))
+      have hshift := hces.comp (tendsto_add_atTop_nat 1)
+      refine hshift.congr (fun n => ?_)
+      simp only [Function.comp]
+      rw [hIccrange n, div_eq_inv_mul,
+        show ((n : ℝ) + 1) = (((n + 1 : ℕ)) : ℝ) by push_cast; ring]
+    simpa using h1.add h2
+  -- limsup in EReal of a sequence dominated by `r → 0`.
+  have hcoe : Tendsto (fun n : ℕ => ((r n : ℝ) : EReal)) atTop (𝓝 ((0 : ℝ) : EReal)) :=
+    (continuous_coe_real_ereal.tendsto _).comp hr0
+  calc Filter.limsup
+        (fun n : ℕ => (((∫ x in B, g (n + 1) x ∂μ) / (n + 1) : ℝ) : EReal)) atTop
+      ≤ Filter.limsup (fun n : ℕ => ((r n : ℝ) : EReal)) atTop := by
+        refine Filter.limsup_le_limsup ?_ ?_ ?_
+        · filter_upwards with n; exact EReal.coe_le_coe_iff.2 (hle n)
+        · exact Filter.isCobounded_le_of_bot
+        · exact Filter.isBounded_le_of_top
+    _ = ((0 : ℝ) : EReal) := hcoe.limsup_eq
+    _ = 0 := by norm_num
+
 /-- **Stopping-time direction (the hard core of Kingman).** A.e. the `EReal` `liminf` of the
-normalized cocycle equals its `EReal` `limsup`. Combined with the unconditional
-`liminf ≤ limsup`, the genuine content is the reverse inequality `limsup ≤ liminf`, proved by
-the **Riesz/Derriennic "leaders" route** (Karlsson, *A proof of the subadditive ergodic
-theorem*); see `docs/research/scratch/m4-step3-derriennic-route.md`. The combinatorial nucleus
-`sum_leaders_nonpos` (L-A) and its pointwise cocycle form `sum_leaders_cocycle_nonpos` (L-B)
-are in place above; the remaining work is Derriennic's maximal inequality (L-C, integrating L-B
-over a `T`-invariant set) and the `E_{α,β}` two-bound contradiction (L-D, mirroring the additive
-`measure_setOf_lt_limsup_eq_zero` in `Birkhoff.lean`). -/
+normalized cocycle equals its `EReal` `limsup`, proved by the Riesz/Derriennic "leaders" route
+(Karlsson, *A proof of the subadditive ergodic theorem*).
+
+Ingredients now in place sorry-free above:
+* **L-A** `sum_leaders_nonpos` — Riesz's combinatorial leader lemma (Lemma 3.2).
+* **L-B** `sum_leaders_cocycle_nonpos` / `sum_psiCoc_comp_nonpos` — pointwise leader inequality.
+* **L-C** `limsup_setIntegral_div_nonpos` — *Derriennic's maximal inequality* (Lemma 3.4):
+  for a measurable `T`-invariant `B` on which a.e. some level `g (k+1) < 0`,
+  `limsup_n (∫_B g (n+1))/(n+1) ≤ 0` in `EReal`. (This is the substantive measure-theoretic
+  step — the telescoped integral `sum_setIntegral_psiCoc_nonpos`, the per-level positive-part
+  bound, and the Cesàro tail `dseq i → 0`.)
+
+Remaining (**L-D**, Karlsson §3.3, *not yet formalized*): the `E_{α,β}` contradiction. For the
+non-positive companion `v n := g n − birkhoffSum T (g 1) n` (subadditive, `v (n+1) ≤ 0`; and
+`ecdiv g − ecdiv v = birkhoffAverage (g 1) (n+1) → μ[g 1 | I]` by M3, so the gap
+`limsup − liminf` is the same for `g` and `v`), Karlsson shows `μ{f − g > α} = 0` for all
+`α > 0` via the **`Tᴹ`-subsequence cocycle** `vᴹ_n := v_{nM} − ∑_{i<n} v_M(Tⁱᴹ)`:
+applying **L-C with `T := T^[M]`** to `vᴹ` (non-positive subadditive for `T^[M]`) and using
+`f_M = f`, `g_M = g` plus the `T^[M]`-Birkhoff convergence of `(1/n)∑ v_M(Tⁱᴹ)` (M3) gives
+`Mα·μ(E) ≤ lim (1/n)∫_E vᴹ_n ≤ Mε`, hence `μ(E) ≤ ε/α → 0`. -/
 private theorem ae_ereal_limsup_le_liminf [IsFiniteMeasure μ]
     (hT : MeasurePreserving T μ μ) (hTm : Measurable T) {g : ℕ → X → ℝ}
     (hsub : IsSubadditiveCocycle T g) (hint : ∀ n, Integrable (g n) μ)
     (hbdd : BddBelow (Set.range fun n : ℕ => (∫ x, g (n + 1) x ∂μ) / (n + 1))) :
     ∀ᵐ x ∂μ, Filter.liminf (fun n => ecdiv g n x) atTop
       = Filter.limsup (fun n => ecdiv g n x) atTop := by
-  sorry -- BLOCKED: stopping-time block partition. THE irreducible hard core of M4.
+  sorry -- BLOCKED: L-D (Karlsson §3.3 `E_{α,β}` contradiction via the `Tᴹ`-subsequence
+  -- cocycle `vᴹ`). L-A/L-B/L-C are proven above; this is the remaining reduction.
 
 /-! ### The Kingman core: a.e. existence of an integrable limit (the single deep gap) -/
 

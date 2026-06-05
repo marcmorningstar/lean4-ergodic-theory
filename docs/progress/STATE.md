@@ -61,13 +61,22 @@ DONE (sorry-free, verified). Only step 3 remains.
      Plus `leaderSet` def + `mem_leaderSet_shift` reindexing engine.
    - ✅ **L-B** (`sum_leaders_cocycle_nonpos`) — pointwise leader inequality for the cocycle
      (instantiate L-A at `S j = g n x − g(n−j)(T^[j]x)`). PROVEN.
-   - ⏳ **L-C** — Derriennic's maximal inequality (Karlsson Lemma 3.4 / Prop 3.5): integrate L-B
-     over a `T`-invariant set `B`, push `T^[k]` through `μ`, telescope, Cesàro tail → 0 via
-     monotone convergence. ~150–250 lines; Mathlib API exists (`integral_comp_iterate`,
-     `setIntegral_birkhoffSum_pos_nonneg`, `tendsto_setIntegral_of_monotone`-style).
-   - ⏳ **L-D** — `E_{α,β}` two-bound contradiction (Karlsson §3.3). For the subadditive case
-     needs the reduction to `v_n = g_n − birkhoffSum(g 1) n` and the `v^M` subsequence cocycle
-     over `T^M`; heavier than the additive mirror. Reuse `measure_setOf_lt_limsup_eq_zero` idioms.
+   - ✅ **L-C** (`limsup_setIntegral_div_nonpos`) — Derriennic's maximal inequality (Karlsson
+     Lemma 3.4): for measurable `T`-invariant `B` with `∀ᵐ x∈B, ∃k, g(k+1)x<0`, the EReal
+     `limsup (∫_B g(n+1))/(n+1) ≤ 0`. PROVEN. Built on new infra: `bcoc` (increment `bᵢ`),
+     `LambdaSet`/`ASet` (Karlsson's Λ/A), `psiCoc` (localized indicator increment),
+     `mem_leaderSet_iff_mem_LambdaSet` (leader ⟺ `T^[k]x∈Λ_{n−k}`), `sum_bcoc_telescope`,
+     `sum_setIntegral_psiCoc_nonpos` (★ telescoped integral ineq), `sum_setIntegral_bcoc_eq`,
+     `setIntegral_comp_iterate_of_invariants`, `ASet_mono`/`nullMeasurableSet_ASet`. Imports
+     added: `MeasureTheory.Integral.DominatedConvergence`, `Analysis.Asymptotics.SpecificAsymptotics`.
+   - ⏳ **L-D** — `E_{α,β}` two-bound contradiction (Karlsson §3.3). The naive additive mirror
+     FAILS: subadditive cocycles give only *upper* maximal inequalities (reverse-Fatou points
+     the wrong way for the lower bound). Karlsson's fix (roadmap in the `ae_ereal_limsup_le_liminf`
+     docstring, Kingman.lean ~1256–1276): the `T^[M]`-subsequence cocycle
+     `vᴹ_n := v_{nM} − ∑_{i<n} v_M(T^[iM])` (non-positive subadditive for `T^[M]`, where
+     `v n := g n − birkhoffSum T (g 1) n`), apply **L-C with `T := T^[M]`** to `vᴹ`, combine with
+     `T^[M]`-Birkhoff (M3) of the block-additive part, then `M→∞ / ε→0`. Infra in place (L-C +
+     `integral_comp_iterate` + invariant-set idioms); missing = `vᴹ` construction + `T^[M]` M3/L-C plumbing.
 4. ✅ **Combine:** `⊥ < limsup ≤ liminf ≤ limsup ≤ B < ⊤` ⇒ finite common value ⇒ `Tendsto`
    to `G := toReal`, integrable — done inside `ae_tendsto_cdiv`.
 
