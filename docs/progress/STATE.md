@@ -18,18 +18,24 @@ filtration form** (milestone **M10** / layer **L6.1**), stated in Lean as
 
 ## Current phase
 
-**M4 = Kingman's subadditive ergodic theorem — REDUCED to a single core lemma.**
-`tendsto_kingman` and `tendsto_kingman_ergodic` are now **proved `sorry`-free**, modulo
-ONE isolated private core lemma `ae_tendsto_cdiv` in `Oseledets/Ergodic/Kingman.lean`:
+**M4 = Kingman's subadditive ergodic theorem — REDUCED to the single combinatorial core.**
+`tendsto_kingman`, `tendsto_kingman_ergodic`, AND the analytic core `ae_tendsto_cdiv` are now
+all **proved `sorry`-free**, modulo ONE isolated private lemma `ae_ereal_limsup_le_liminf` in
+`Oseledets/Ergodic/Kingman.lean`:
 
-> `ae_tendsto_cdiv` — *for `μ`-a.e. `x`, the normalized cocycle `cdiv g n x = g (n+1) x /
-> (n+1)` converges to the value `G x` of some integrable `G`.*
+> `ae_ereal_limsup_le_liminf` — *for `μ`-a.e. `x`, `liminf (ecdiv g · x) = limsup (ecdiv g · x)`
+> in `EReal`* (the load-bearing direction is `limsup ≤ liminf`; the reverse is unconditional).
 
-This packages the entire analytic content of Kingman not reducible to generic measure
-theory (the stopping-time / greedy block partition + the Fatou integrability step).
-**Open `sorry`s 5 → 4** (the two Kingman milestone `sorry`s are discharged; one new core
-`sorry` introduced). Build green; `#print axioms tendsto_kingman` / `…_ergodic` =
-`[propext, sorryAx, Classical.choice, Quot.sound]`. Independent checker: **PASS**.
+This isolates the entire content of Kingman not reducible to generic measure theory or to the
+Fatou integrability step: **the stopping-time / Riesz-leaders block partition** — the single
+irreducible combinatorial nugget. The Fatou finiteness + integrability (step 2) and the
+pointwise-squeeze combine (step 4) are now done and route-agnostic; `ae_tendsto_cdiv` consumes
+the isolated lemma plus those proven pieces. **Open `sorry`s remain 4** (the Kingman gap moved
+from `ae_tendsto_cdiv` down into `ae_ereal_limsup_le_liminf`; no net change in count). Build
+green; `#print axioms tendsto_kingman` / `…_ergodic` = `[propext, sorryAx, Classical.choice,
+Quot.sound]`. Independent checker: **PASS** (verified no circularity — the integrability lemma
+`int_limsup_div_integrable_aux` proves `Integrable (limsup cdiv)` via a pure `ℝ≥0∞` Fatou
+argument using only boundedness *above*, never routing through `ae_tendsto_cdiv`).
 
 Everything else in `Kingman.lean` is `sorry`-free and derives from the core by soft
 arguments: a.e. boundedness (`ae_bddBelow_cdiv`, convergent ⇒ bounded), `limsup ≤ liminf`
@@ -40,22 +46,23 @@ proof. Also: 6 lemmas in `Ergodic/Birkhoff.lean` were de-privatized for reuse
 (`condExp_invariants_comp_self`, `ae_forall_orbit_eq`, `ae_bddAbove/ae_bddBelow_birkhoffAverage`,
 `limsup_eq_of_sub_tendsto_zero`, `measure_setOf_lt_limsup_eq_zero`).
 
-**Next: prove `ae_tendsto_cdiv` (the core).** Plan (`docs/plan/blueprints/m4-kingman-v2.md`
-§4, refined in `docs/research/scratch/m4-L9-notes.md`), do the `limsup`/`liminf` in **EReal**
-to avoid the ℝ junk value at `−∞`:
-1. **Envelope (EReal):** `limsup (↑cdiv) ≤ ↑B < ⊤` a.e., `B = μ[g 1 | invariants T]` — from
-   A1' (`cdiv ≤ birkhoffAverage g₁`) + M3 (`birkhoffAverage g₁ → B`).
-2. **Fatou (`ℝ≥0∞`):** `limsup (↑cdiv) > ⊥` a.e. **and** integrability — `lintegral_liminf_le`
-   on `ofReal (birkhoffAverage g₁ − cdiv) ≥ 0`; the `ℝ≥0∞` liminf genuinely sees `+∞`,
-   excluding the `→ −∞` set without needing boundedness-below. Uses the Fekete `γ`
-   (`exists_fekete`, retained as scaffolding).
-3. **Stopping time (EReal):** `limsup (↑cdiv) ≤ liminf (↑cdiv)` a.e. — THE hard core. Induced
-   stopping sequence `Sⱼ` (recursion), block subadditivity `le_sum_blocks` (retained
-   scaffolding), truncation `max (liminf) (−M)`, three limit passages `n→∞` (Birkhoff on
-   `1_{B_L}`), `L→∞` (`μ(B_L)→0`), `M→∞, ε→0`. See m4-L9-notes.md §A for the induced-sequence
-   encoding (single remainder, no overrun singletons) and §B for the −∞/EReal subtlety.
-4. **Combine:** `⊥ < limsup ≤ liminf ≤ limsup ≤ B < ⊤` ⇒ finite common value ⇒ `Tendsto` to
-   `G := toReal`, integrable.
+**Next: prove `ae_ereal_limsup_le_liminf` (THE last Kingman gap).** Steps 1, 2, 4 below are
+DONE (sorry-free, verified). Only step 3 remains.
+1. ✅ **Envelope (EReal):** `limsup (↑cdiv) ≤ ↑B < ⊤` a.e. (`ae_ereal_limsup_le_condExp`).
+2. ✅ **Fatou (`ℝ≥0∞`):** `limsup (↑cdiv) > ⊥` a.e. (`ae_bot_lt_ereal_limsup`) **and**
+   integrability of `limsup cdiv` (`int_limsup_div_integrable_aux`, pure `ℝ≥0∞` Fatou, no
+   circularity, uses only boundedness above). Helpers: `fdefect`, `integral_fdefect`,
+   `ae_liminf_ofReal_fdefect_lt_top`, `ae_liminf_fdefect_lt_top`.
+3. ⏳ **Stopping time (EReal):** `limsup (↑cdiv) ≤ liminf (↑cdiv)` a.e. — THE hard core, now
+   the lone `sorry` (`ae_ereal_limsup_le_liminf`, Kingman.lean:705). **ROUTE DECISION: use the
+   Derriennic / Riesz "leaders" proof** (`docs/research/scratch/m4-step3-derriennic-route.md`),
+   NOT the Avila–Bochi truncation in m4-L9-notes.md §A. Its hard core is one finite induction
+   (Riesz leader lemma `sum_leaders_nonpos`, no measure theory), and its a.e.-convergence
+   scaffolding reuses the proven `measure_setOf_lt_limsup_eq_zero` `E_{α,β}` machinery from
+   `Birkhoff.lean`. Sub-lemmas L-A (leader lemma), L-B (telescoping `b n = a n − a(n-1)∘T`),
+   L-C (Derriennic maximal inequality), L-D (`E_{α,β}` two-bound contradiction).
+4. ✅ **Combine:** `⊥ < limsup ≤ liminf ≤ limsup ≤ B < ⊤` ⇒ finite common value ⇒ `Tendsto`
+   to `G := toReal`, integrable — done inside `ae_tendsto_cdiv`.
 
 Then M5 (Furstenberg–Kesten, `Cocycle/FurstenbergKesten.lean`, blueprint
 `m5-furstenberg-kesten.md`), the Lyapunov layers (`lyapunov-to-target.md`), and assembly
@@ -81,7 +88,7 @@ into the target `oseledets_filtration`.
 
 | Decl | File | Milestone |
 |---|---|---|
-| `ae_tendsto_cdiv` | Ergodic/Kingman | M4 (the core — stopping-time + Fatou; the only Kingman gap) |
+| `ae_ereal_limsup_le_liminf` | Ergodic/Kingman | M4 (the lone core — stopping-time/Riesz-leaders; the only Kingman gap) |
 | `furstenbergKesten_top` | Cocycle/FurstenbergKesten | M5 |
 | `furstenbergKesten_bot` | Cocycle/FurstenbergKesten | M5 |
 | `oseledets_filtration` | MultiplicativeErgodic | M10 (TARGET) |
