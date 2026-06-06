@@ -77,11 +77,19 @@ DONE (sorry-free, verified). Only step 3 remains.
      `vM_subadditive` (subadditive for `T^[M]`), `vM_nonpos` (n≥1), `vM_integrable`,
      `vM_measurePreserving`.
    - ⏳ **L-D second half** — the lone remaining `sorry`, isolated in `ae_ereal_limsup_le_liminf_nonpos`
-     (Kingman.lean ~1465). The `E_{α}` contradiction: for `α>0`, `E := {liminf(ecdiv g)+α < limsup}`
-     (measurable, `T`-invariant); apply **L-C with `T:=T^[M]`** to `vM g M` on `E`, combine with
-     `T^[M]`-Birkhoff (M3) of `(1/n)∑ g M(T^[iM])` to get `Mα·μ(E) ≤ lim(1/n)∫_E vM(n+1) ≤ Mε`,
-     so `μ(E) ≤ ε/α → 0`; union over `α=1/k`. Full roadmap in the lemma's docstring. All algebra
-     (`vM_*`) + L-A/L-B/L-C now in place; remaining = the `E_{α}` measure-theoretic contradiction.
+     (Kingman.lean ~1573). The `E_{α}` contradiction (Karlsson §3.3). Now PARTIALLY built:
+     - ✅ **LD-a** `liminf_div_comp_ae` (+ `liminf_cdiv_le_comp`, `liminf_eq_of_sub_tendsto_zero`) —
+       a.e. `T`-invariance of the ℝ-valued liminf envelope (mirrors `limsup_div_comp_ae`); now also
+       wired into `tendsto_kingman`. NOTE: insufficient for `E_α` directly (for the non-positive
+       cocycle `liminf cdiv` can be `⊥`, `BddBelow` fails) → still need an **EReal** invariance
+       analogue of `ae_eq_comp_of_le_comp` (rational/±∞ level sets).
+     - ✅ **LD-b** `setIntegral_div_le_level` (Karlsson Prop 3.5, β-version of L-C): for invariant
+       `B`, real `β`, `∀ᵐ x∈B ∃k, a(k+1)x<(k+1)β` ⟹ `limsup (∫_B a(n+1))/(n+1) ≤ β·μ(B)`. Plus
+       EReal helpers `erealAddCoeIso`, `ereal_limsup_add_coe`.
+     - ⏳ **LD-c** subsequence squeeze `f_M=f̄`, `g_M=f` (non-positivity+subadditivity, ratios
+       `(n+1)M/(nM+k)→1`) — the hardest analytic piece, unwritten.
+     - ⏳ **LD-d** additive `T^[M]`-Birkhoff assembly (M3 on level `g M`), **LD-e** final
+       contradiction (LD-b on `E`, β=−Mα; Fekete lower bound; `μ(E)≤ε/α→0`; union over `α=1/k`).
 4. ✅ **Combine:** `⊥ < limsup ≤ liminf ≤ limsup ≤ B < ⊤` ⇒ finite common value ⇒ `Tendsto`
    to `G := toReal`, integrable — done inside `ae_tendsto_cdiv`.
 
