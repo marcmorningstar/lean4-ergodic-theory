@@ -108,11 +108,31 @@ Subbundle → Limit`):
   `instMeasurableAdd₂Matrix`, `measurable_matrix_pow`, `measurable_aeval_matrix`, and the crux
   `measurable_cfc_eqOn_polynomial`. The eliminable BLOCKED `measurable_starProjection_apply` was
   REMOVED (abstract route abandoned). Terminal `MeasurableSubspace Vᵢ` is gated on `Λ` (Limit module).
-- ⏳ `Subbundle.lean`, `Limit.lean`. **Build-order change:** the Limit module (building `Λ` and the
-  concrete `Vᵢ`) now precedes terminal M7 measurability; v1's frame-selection sub-arc is deleted.
-  The remaining critical path is the **Oseledets limit theorem (L5.x)** — the analytic heart —
-  which delivers both the growth rates AND `Λ`; measurability is then a ~250-line corollary.
-  M7 scout: `docs/research/scratch/m7-measurable-scout.md`; corrected plan: `m7-measurable-strategy-v2.md`.
+- ⏳ **`ExteriorNorm.lean`** then **`OseledetsLimit.lean`** (Route II — see
+  `docs/plan/blueprints/limit-endgame.md`, make-or-break spike compiled in `scratch_limit_spike.lean`).
+  **ENDGAME ROUTE DECIDED: Route II (the SVD/Gram limit `Λ x = lim ((A⁽ⁿ⁾)ᵀA⁽ⁿ⁾)^{1/2n}`).** Since the
+  measurability pivot already forces `Λ` into existence, `Λ` supplies EVERY target conjunct as genuine
+  limits (exponents = log eigenvalues, flag = eigenspace sums, exact growth = SVD read-off,
+  measurability = the committed CFC crux). The limsup §5–6 tempering/block-triangular machinery is
+  **demoted to the Route-I fallback** (`lyapunov-to-target.md` §5–6), used only if eigenspace
+  convergence (§3.3) stalls. The committed L4.1–4.4 limsup flag is RETAINED to name exponents and as
+  the a.e. bridge target (`Vᵢ = lambdaSublevel` a.e.).
+  - **`ExteriorNorm.lean`** (NEW, pure multilinear algebra, no dynamics, upstreamable): inner product
+    on `⋀^k (EuclideanSpace ℝ (Fin d))` (Hodge/Gram on decomposables) + operator norm with
+    `‖⋀^k f‖ = ∏_{i<k} σᵢ(f)` and submultiplicativity. Mathlib has NONE of this (no exterior-power
+    norm, no compound matrix / Cauchy–Binet; `LinearMap.singularValues` exists but no multiplicativity).
+    ~3–5 sessions; SPIKE the σ-product identity first.
+  - **`OseledetsLimit.lean`**: (§3.1) scalar exponents via `tendsto_kingman_ergodic` on
+    `log‖⋀^k(cocycle)‖` (REUSES Kingman) → `lamSing`/`Γ`; (§3.3, THE crux, highest risk, no Mathlib
+    Davis–Kahan) eigenspace/projection convergence `Qₙ^{1/2n} → Λ`; (§3.4) bridge `Vᵢ = lambdaSublevel`;
+    measurability (spike-compiled: `measurable_gram`, `measurable_of_pointwise_limit`, CFC crux);
+    assemble target. ~4–8 sessions.
+  - Build order NOW: `… → Measurable` (done) → `ExteriorNorm` → `OseledetsLimit` → `MultiplicativeErgodic`.
+  - Mathlib HAS (verified): real Hermitian CFC, `posSemidef_conjTranspose_mul_self`, sorted Hermitian
+    eigenvalues/eigenvectorBasis, CFC `rpow`/`sqrt`, `exteriorPower.map`/`map_comp`,
+    `LinearMap.singularValues` (basic API only). CAVEAT: `Filter.Tendsto.cfc` routes through the
+    non-synthesizing `IsometricContinuousFunctionalCalculus ℝ (Matrix..ℝ)` — use the polynomial bypass.
+  M7 scout: `docs/research/scratch/m7-measurable-scout.md`; measurability plan: `m7-measurable-strategy-v2.md`.
 
 ## What is done
 
