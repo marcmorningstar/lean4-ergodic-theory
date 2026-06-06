@@ -82,7 +82,17 @@ Subbundle → Limit`):
   sandwich → a.e. finite in `[lamBot, lamTop]`), `lambdaBar_add_le` (non-Archimedean), and the
   bundle `isUltrametricGrowth_lambdaBar` (a.e., `d=0` degenerate case handled; boundedness
   discharged via `growthSeq_bounded`). Sorry-free, axioms clean. Imported from `Oseledets.lean`.
-- ⏳ `Filtration.lean`, `Measurable.lean`, `Subbundle.lean`, `Limit.lean`.
+- ✅ **`Lyapunov/Filtration.lean`** (L4.4, the limsup flag) — `spectrum`/`specCard`/`specList`
+  (descending via `orderEmbOfFin ∘ Fin.rev`), `Vflag` (total, junk-off-null-set via `dite` on
+  `IsUltrametricGrowth`), `Vflag_zero` (=⊤ via spectrum max), `Vflag_last` (=⊥), `Vflag_strictAnti`
+  (strict, witnessed), `lambdaBar_eq_on_stratum` (exactness), and the a.e. equivariance pair
+  `spectrum_equivariant_ae` + `Vflag_equivariant` (stated on `lambdaSublevel` at a FIXED threshold
+  `t`, deliberately sidestepping `Fin k`/`Fin(k+1)` index transport — the consumer rewrites with
+  `spectrum_equivariant_ae` first). Structural theorems carry a per-point `hx : IsUltrametricGrowth
+  (lambdaBar A T x)`; equivariance carries the full FK hypothesis set. Needed one public bridge
+  lemma `lambdaBar_equivariant_ae` added to `GrowthFunction.lean` (a.e. ∀v equivariance, boundedness
+  pulled back along `T` measure-preserving). Sorry-free, axioms clean. Imported from `Oseledets.lean`.
+- ⏳ `Measurable.lean` (HARD, M7), `Subbundle.lean`, `Limit.lean`. M7 scout: `docs/research/scratch/m7-measurable-scout.md`.
 
 ## What is done
 

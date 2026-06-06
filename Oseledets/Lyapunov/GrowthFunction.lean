@@ -595,4 +595,45 @@ theorem isUltrametricGrowth_lambdaBar
       obtain ⟨_, hbvw'⟩ := growthSeq_bounded hA x hx1 hx2 hvw
       exact lambdaBar_add_le hA x hv hw hvw hbv hbv' hbw hbw' hbvw'
 
+/-! ### L4.2 `A`-equivariance, a.e. form -/
+
+/-- **L4.2 `A`-equivariance (a.e.).** For a.e. `x`, the growth function satisfies the
+clean equivariance `lambdaBar A T x v = lambdaBar A T (T x) (A x · v)` for *every* nonzero
+`v`, with the boundedness hypotheses of `lambdaBar_equivariant` discharged from the
+Furstenberg–Kesten sandwich. The boundedness is needed at the *image* point `T x`; it holds
+a.e. in `x` by pulling back (via `T` measure-preserving) the a.e. boundedness at a generic
+point delivered by `growthSeq_bounded`. -/
+theorem lambdaBar_equivariant_ae
+    [IsProbabilityMeasure μ] (hT : Ergodic T μ)
+    {A : X → Matrix (Fin d) (Fin d) ℝ} (hA : ∀ x, (A x).det ≠ 0) (hAmeas : Measurable A)
+    (hint : IntegrableLogNorm A μ) (hint' : IntegrableLogNorm (fun x => (A x)⁻¹) μ) :
+    ∀ᵐ x ∂μ, ∀ v : EuclideanSpace ℝ (Fin d), v ≠ 0 →
+      lambdaBar A T x v = lambdaBar A T (T x) (Matrix.toEuclideanCLM (𝕜 := ℝ) (A x) v) := by
+  rcases Nat.eq_zero_or_pos d with hd | hd
+  · -- `d = 0`: every `v = 0`, so the statement is vacuous.
+    subst hd
+    exact Filter.Eventually.of_forall fun x v hv => absurd (Subsingleton.elim v 0) hv
+  · haveI : NeZero d := ⟨hd.ne'⟩
+    obtain ⟨lamTop, htop⟩ := furstenbergKesten_top hT hA hAmeas hint hint'
+    obtain ⟨lamk', hbot⟩ := furstenbergKesten_bot hT hA hAmeas hint hint'
+    -- The a.e. "boundedness at a generic point" property `P y`.
+    set P : X → Prop := fun y => ∀ w : EuclideanSpace ℝ (Fin d), w ≠ 0 →
+      IsBoundedUnder (· ≤ ·) atTop (growthSeq A T y w) ∧
+        IsBoundedUnder (· ≥ ·) atTop (growthSeq A T y w) with hP
+    have hPae : ∀ᵐ y ∂μ, P y := by
+      filter_upwards [htop, hbot] with y hy1 hy2
+      intro w hw
+      exact growthSeq_bounded hA y hy1 hy2 hw
+    -- Pull back along `T` (measure-preserving) to get `P (T x)` a.e. in `x`.
+    have hPTx : ∀ᵐ x ∂μ, P (T x) :=
+      hT.toMeasurePreserving.quasiMeasurePreserving.ae hPae
+    filter_upwards [hPTx] with x hPx
+    intro v hv
+    -- The image `A x · v` is nonzero (cocycle at `n = 1` is `A x`); use `det ≠ 0`.
+    have hAxv : Matrix.toEuclideanCLM (𝕜 := ℝ) (A x) v ≠ 0 := by
+      have := cocycleVec_ne_zero (A := A) (T := T) hA 1 x hv
+      rwa [cocycle_one] at this
+    obtain ⟨hbddA, hbddB⟩ := hPx (Matrix.toEuclideanCLM (𝕜 := ℝ) (A x) v) hAxv
+    exact lambdaBar_equivariant A T x (hA x) v hv hbddA hbddB
+
 end Oseledets
