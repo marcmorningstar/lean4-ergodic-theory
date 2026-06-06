@@ -206,20 +206,45 @@ private lemma inner_apply_eigenvectorBasis_eq (f : E →ₗ[ℝ] F) {n : ℕ}
   simp only [RCLike.conj_to_real]
   split_ifs with h <;> simp
 
+/-- The norm of the image of a right singular vector is the corresponding singular value:
+`‖f uᵢ‖ = σᵢ(f)`. Immediate from the SVD orthogonality core. -/
+private lemma norm_apply_eigenvectorBasis (f : E →ₗ[ℝ] F) {n : ℕ}
+    (hn : Module.finrank ℝ E = n) (i : Fin n) :
+    ‖f ((f.isSymmetric_adjoint_comp_self.eigenvectorBasis hn) i)‖ = f.singularValues i := by
+  have h := inner_apply_eigenvectorBasis_eq f hn i i
+  simp only [if_true] at h
+  have hsq : ‖f ((f.isSymmetric_adjoint_comp_self.eigenvectorBasis hn) i)‖ ^ 2
+      = f.singularValues i ^ 2 := by
+    rw [real_inner_self_eq_norm_sq] at h; linarith
+  nlinarith [norm_nonneg (f ((f.isSymmetric_adjoint_comp_self.eigenvectorBasis hn) i)),
+    f.singularValues_nonneg i, hsq]
+
 /-- **The bridge.** Through the Hodge trivializations of source and target, the exterior operator
 norm equals the product of the top-`k` singular values:
 `exteriorOpNorm k (hodgeTrivialization k) (hodgeTrivialization k) f = ∏_{i<k} σᵢ(f)`. -/
 theorem exteriorOpNorm_hodge_eq_prod_singularValues (k : ℕ) (f : E →ₗ[ℝ] F) :
     exteriorOpNorm k (hodgeTrivialization k) (hodgeTrivialization k) f
       = ∏ i ∈ Finset.range k, f.singularValues i := by
-  sorry -- TODO(ExteriorNorm §3, SVD diagonalization):
-        -- exteriorOpNorm k (hodgeTrivialization k) (hodgeTrivialization k) f = ∏_{i<k} σᵢ(f).
-        -- Proof outline: take orthonormal SVD bases u of E, w of F with `f uⱼ = σⱼ • wⱼ` (built
-        -- from `eigenvectorBasis` of `adjoint f ∘ₗ f`); then `⋀^k f` sends the wedge basis vector
-        -- `u_S ↦ (∏_{j∈S} σⱼ) • w_S`, i.e. it is DIAGONAL on the orthonormal wedge bases. Since the
-        -- Hodge trivializations carry these wedge bases isometrically to the Euclidean standard
-        -- basis, `conjExteriorMap` becomes a diagonal Euclidean map whose operator norm is the max
-        -- diagonal entry `max_{|S|=k} ∏_{j∈S} σⱼ = ∏_{j<k} σⱼ` (σ antitone).
+  sorry -- BLOCKED(ExteriorNorm §3): missing kernel = "⋀^k respects the Hodge inner product",
+        -- i.e. for two orthonormal bases b, b' of E the change-of-coordinates map
+        --   (b'-wedge trivialization) ∘ (b-wedge trivialization)⁻¹ : EuclideanSpace → EuclideanSpace
+        -- is a `LinearIsometryEquiv` (its matrix is the compound `⋀^k Q` of the orthogonal change
+        -- of basis `Q`, which is again orthogonal). This requires either a Hodge inner product on
+        -- `⋀^k E` defined as data (Route β) or the compound-orthogonality matrix identity
+        -- `(⋀^k Q)ᵀ = ⋀^k (Qᵀ)` (Route α) — neither is in Mathlib and both are several hundred
+        -- lines of new linear algebra.
+        --
+        -- Given that kernel as `wedgeTriv_isometry`, the assembly is:
+        --   * `u := eigenvectorBasis (adjoint f ∘ₗ f)` is an o.n. basis of E with
+        --     `‖f uᵢ‖ = σᵢ` and `⟪f uᵢ, f uⱼ⟫ = δᵢⱼ σᵢ²`  (PROVED: `inner_apply_eigenvectorBasis_eq`,
+        --     `norm_apply_eigenvectorBasis` below);
+        --   * normalise the nonzero `f uᵢ` to an o.n. family `w` of F, so `f uⱼ = σⱼ • wⱼ`;
+        --   * by `exteriorPower.map_apply_ιMulti_family`, `⋀^k f` sends the wedge basis vector
+        --     `u_S ↦ (∏_{j∈S} σⱼ) • w_S`, i.e. it is DIAGONAL on the orthonormal wedge bases;
+        --   * `wedgeTriv_isometry` lets us measure `exteriorOpNorm` through the `u`/`w` wedge
+        --     trivializations instead of the standard `hodgeTrivialization`, turning
+        --     `conjExteriorMap` into a diagonal Euclidean map whose operator norm is the max
+        --     diagonal entry `max_{|S|=k} ∏_{j∈S} σⱼ = ∏_{j<k} σⱼ` (σ antitone).
 
 end Bridge
 
