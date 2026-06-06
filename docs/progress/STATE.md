@@ -76,7 +76,13 @@ Subbundle → Limit`):
   (scaling + non-Archimedean), `add_eq_max_of_ne`, `sum_ne_zero_and_g_eq_sup'` (engine),
   `linearIndependent_of_injOn`, `finite_range` (spectrum ≤ `finrank`), `sublevel` (submodule)
   + `sublevel_mono`. Sorry-free, axioms clean. Imported from `Oseledets.lean`.
-- ⏳ `GrowthFunction.lean`, `Filtration.lean`, `Measurable.lean`, `Subbundle.lean`, `Limit.lean`.
+- ✅ **`Lyapunov/GrowthFunction.lean`** (L4.1–4.2) — `lambdaBar A T x v = limsup (n⁻¹·log‖A⁽ⁿ⁾(x)v‖)`,
+  with `lambdaBar_smul` (scaling, unconditional), `lambdaBar_equivariant` (`A`-equivariance, with
+  two a.e.-discharged `IsBoundedUnder` hyps from the `(n+1)⁻¹` reindex), `lambdaBar_mem_Icc` (FK
+  sandwich → a.e. finite in `[lamBot, lamTop]`), `lambdaBar_add_le` (non-Archimedean), and the
+  bundle `isUltrametricGrowth_lambdaBar` (a.e., `d=0` degenerate case handled; boundedness
+  discharged via `growthSeq_bounded`). Sorry-free, axioms clean. Imported from `Oseledets.lean`.
+- ⏳ `Filtration.lean`, `Measurable.lean`, `Subbundle.lean`, `Limit.lean`.
 
 ## What is done
 
