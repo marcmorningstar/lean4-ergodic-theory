@@ -64,10 +64,19 @@ applying `tendsto_kingman_ergodic` to `log‖A⁽ⁿ⁾‖` / `log‖(A⁽ⁿ⁾
 signature was strengthened (R4) with `hA : det ≠ 0` and `hint' : IntegrableLogNorm A⁻¹` to keep
 the ℝ-valued limit (needed for Kingman's `hbdd`); `_bot` unchanged. Independent checker: **PASS**.
 
-**Next: the Lyapunov layers → the target `oseledets_filtration` (M10).** See
-`docs/plan/blueprints/lyapunov-to-target.md` (+ `target-and-milestones.md` for M6–M10). This is
-the remaining arc: the full Oseledets filtration/exponents from the cocycle, the only open
-`sorry` left.
+**Now in progress: the Lyapunov layers → the target `oseledets_filtration` (M6–M10).** See
+`docs/plan/blueprints/lyapunov-to-target.md` (6-module arc, build order in §8) +
+`target-and-milestones.md`. The only open `sorry` left. Two flagged risks: the M7
+measurable-selection gap (Mathlib coverage partial; §4.3 fixed-threshold mitigation) and the
+L5.3 tempered block-triangular estimate (§7).
+
+Module progress (build order `Ultrametric → GrowthFunction → Filtration → Measurable →
+Subbundle → Limit`):
+- ✅ **`Lyapunov/Ultrametric.lean`** (L4.3, pure linear algebra) — `IsUltrametricGrowth`
+  (scaling + non-Archimedean), `add_eq_max_of_ne`, `sum_ne_zero_and_g_eq_sup'` (engine),
+  `linearIndependent_of_injOn`, `finite_range` (spectrum ≤ `finrank`), `sublevel` (submodule)
+  + `sublevel_mono`. Sorry-free, axioms clean. Imported from `Oseledets.lean`.
+- ⏳ `GrowthFunction.lean`, `Filtration.lean`, `Measurable.lean`, `Subbundle.lean`, `Limit.lean`.
 
 ## What is done
 

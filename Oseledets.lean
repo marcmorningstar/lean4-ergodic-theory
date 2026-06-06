@@ -5,6 +5,7 @@ import Oseledets.Ergodic.MaximalErgodic
 import Oseledets.Ergodic.Birkhoff
 import Oseledets.Ergodic.Kingman
 import Oseledets.Lyapunov.MeasurableSubspace
+import Oseledets.Lyapunov.Ultrametric
 import Oseledets.MultiplicativeErgodic
 
 /-!
