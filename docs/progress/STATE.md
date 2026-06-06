@@ -18,91 +18,48 @@ filtration form** (milestone **M10** / layer **L6.1**), stated in Lean as
 
 ## Current phase
 
-**M4 = Kingman's subadditive ergodic theorem — REDUCED to the single combinatorial core.**
-`tendsto_kingman`, `tendsto_kingman_ergodic`, AND the analytic core `ae_tendsto_cdiv` are now
-all **proved `sorry`-free**, modulo ONE isolated private lemma `ae_ereal_limsup_le_liminf` in
-`Oseledets/Ergodic/Kingman.lean`:
+**M4 = Kingman's subadditive ergodic theorem — ✅ COMPLETE, fully `sorry`-free.**
+`tendsto_kingman` and `tendsto_kingman_ergodic` are proved with `#print axioms` =
+`[propext, Classical.choice, Quot.sound]` (**no `sorryAx`**). `Oseledets/Ergodic/Kingman.lean`
+(~2740 lines) has zero `sorry`. Independent checker: **PASS** (no circularity, vacuity, or
+cheating; public signatures unchanged; only `Kingman.lean` modified). The whole proof follows
+the scraped **Karlsson "leaders" proof** (`docs/research/sources/kingman-karlsson-maximal-proof.md`),
+not a reinvention.
 
-> `ae_ereal_limsup_le_liminf` — *for `μ`-a.e. `x`, `liminf (ecdiv g · x) = limsup (ecdiv g · x)`
-> in `EReal`* (the load-bearing direction is `limsup ≤ liminf`; the reverse is unconditional).
+The structure (top-level): the a.e. convergence is a pointwise squeeze mirroring the proven M3
+Birkhoff proof, reduced to the analytic core `ae_tendsto_cdiv` (a.e. convergence of
+`cdiv g n x = g(n+1)x/(n+1)` to an integrable limit), itself reduced to the EReal stopping-time
+lemma `ae_ereal_limsup_le_liminf` (`liminf (ecdiv g ·x) = limsup (ecdiv g ·x)` a.e.). Two
+analytic engines feed it: a `ℝ≥0∞` Fatou step (integrability + `limsup > ⊥`, using only
+boundedness above — no circularity) and the Karlsson route, proved in full:
 
-This isolates the entire content of Kingman not reducible to generic measure theory or to the
-Fatou integrability step: **the stopping-time / Riesz-leaders block partition** — the single
-irreducible combinatorial nugget. The Fatou finiteness + integrability (step 2) and the
-pointwise-squeeze combine (step 4) are now done and route-agnostic; `ae_tendsto_cdiv` consumes
-the isolated lemma plus those proven pieces. **Open `sorry`s remain 4** (the Kingman gap moved
-from `ae_tendsto_cdiv` down into `ae_ereal_limsup_le_liminf`; no net change in count). Build
-green; `#print axioms tendsto_kingman` / `…_ergodic` = `[propext, sorryAx, Classical.choice,
-Quot.sound]`. Independent checker: **PASS** (verified no circularity — the integrability lemma
-`int_limsup_div_integrable_aux` proves `Integrable (limsup cdiv)` via a pure `ℝ≥0∞` Fatou
-argument using only boundedness *above*, never routing through `ae_tendsto_cdiv`).
+- **L-A** `sum_leaders_nonpos` — Riesz's leader lemma (Karlsson Lemma 3.2), pure finite strong
+  induction (the combinatorial nucleus); `leaderSet`/`mem_leaderSet_shift`.
+- **L-B** `sum_leaders_cocycle_nonpos` — pointwise leader inequality for the cocycle.
+- **L-C** `limsup_setIntegral_div_nonpos` — Derriennic's maximal inequality (Lemma 3.4); built
+  on `bcoc`/`LambdaSet`/`ASet`/`psiCoc`, `mem_leaderSet_iff_mem_LambdaSet`, the telescoped
+  integral inequality, and a dominated-convergence Cesàro tail.
+- **Prop 3.5** `setIntegral_div_le_level` — the β-level form of L-C.
+- **Reduction** to the non-positive companion `vcoc g n := g n − birkhoffSum T (g 1) n`
+  (`vcoc_*`, gap-transfer `ecdiv_eq_ecdiv_vcoc_add` via M3), and the `T^[M]`-subsequence cocycle
+  `vM g M n := g(nM) − ∑_{i<n} g M(T^[iM])` (`vM_subadditive`/`vM_nonpos`/`vM_integrable`).
+- **EReal envelope `T`-invariance** `ereal_ae_eq_comp_of_le_comp` →
+  `liminf_ecdiv_comp_ae`/`limsup_ecdiv_comp_ae` (the ℝ version fails: non-positive `liminf` may
+  be `⊥`).
+- **LD-c squeeze** `limsup_ecdiv_eq_block`/`liminf_ecdiv_eq_block` — full envelope = `M`-block
+  subsequence envelope, from `block_sandwich` + the EReal ratio squeezes.
+- **LD-d/LD-e** `block_decomp`/`usub_vM`/`limsup_block_eq`/`liminf_block_eq` +
+  `measure_gap_set_eq_zero` — the additive `T^[M]`-Birkhoff assembly and the `E_α` contradiction
+  (Karlsson §3.3) closing the core.
 
-Everything else in `Kingman.lean` is `sorry`-free and derives from the core by soft
-arguments: a.e. boundedness (`ae_bddBelow_cdiv`, convergent ⇒ bounded), `limsup ≤ liminf`
-(`ae_limsup_le_liminf_div`), envelope integrability (`int_limsup_div_integrable`),
-`T`-invariance (`limsup_div_comp_ae` via `ae_eq_comp_of_le_comp`), and the pointwise-squeeze
-assembly (`tendsto_of_le_liminf_of_limsup_le`). The route mirrors the proven M3 Birkhoff
-proof. Also: 6 lemmas in `Ergodic/Birkhoff.lean` were de-privatized for reuse
+Also: 6 lemmas in `Ergodic/Birkhoff.lean` were de-privatized for reuse
 (`condExp_invariants_comp_self`, `ae_forall_orbit_eq`, `ae_bddAbove/ae_bddBelow_birkhoffAverage`,
 `limsup_eq_of_sub_tendsto_zero`, `measure_setOf_lt_limsup_eq_zero`).
 
-**Next: prove `ae_ereal_limsup_le_liminf` (THE last Kingman gap).** Steps 1, 2, 4 below are
-DONE (sorry-free, verified). Only step 3 remains.
-1. ✅ **Envelope (EReal):** `limsup (↑cdiv) ≤ ↑B < ⊤` a.e. (`ae_ereal_limsup_le_condExp`).
-2. ✅ **Fatou (`ℝ≥0∞`):** `limsup (↑cdiv) > ⊥` a.e. (`ae_bot_lt_ereal_limsup`) **and**
-   integrability of `limsup cdiv` (`int_limsup_div_integrable_aux`, pure `ℝ≥0∞` Fatou, no
-   circularity, uses only boundedness above). Helpers: `fdefect`, `integral_fdefect`,
-   `ae_liminf_ofReal_fdefect_lt_top`, `ae_liminf_fdefect_lt_top`.
-3. ⏳ **Stopping time (EReal):** `limsup (↑cdiv) ≤ liminf (↑cdiv)` a.e. — THE hard core, the
-   lone Kingman `sorry` (`ae_ereal_limsup_le_liminf`). **ROUTE: Derriennic / Riesz "leaders"**
-   (`docs/research/scratch/m4-step3-derriennic-route.md`), NOT Avila–Bochi truncation.
-   - ✅ **L-A** (`sum_leaders_nonpos`) — Riesz's leader lemma (Karlsson Lemma 3.2), pure finite
-     strong induction, no measure theory. The genuinely novel combinatorial nucleus. PROVEN.
-     Plus `leaderSet` def + `mem_leaderSet_shift` reindexing engine.
-   - ✅ **L-B** (`sum_leaders_cocycle_nonpos`) — pointwise leader inequality for the cocycle
-     (instantiate L-A at `S j = g n x − g(n−j)(T^[j]x)`). PROVEN.
-   - ✅ **L-C** (`limsup_setIntegral_div_nonpos`) — Derriennic's maximal inequality (Karlsson
-     Lemma 3.4): for measurable `T`-invariant `B` with `∀ᵐ x∈B, ∃k, g(k+1)x<0`, the EReal
-     `limsup (∫_B g(n+1))/(n+1) ≤ 0`. PROVEN. Built on new infra: `bcoc` (increment `bᵢ`),
-     `LambdaSet`/`ASet` (Karlsson's Λ/A), `psiCoc` (localized indicator increment),
-     `mem_leaderSet_iff_mem_LambdaSet` (leader ⟺ `T^[k]x∈Λ_{n−k}`), `sum_bcoc_telescope`,
-     `sum_setIntegral_psiCoc_nonpos` (★ telescoped integral ineq), `sum_setIntegral_bcoc_eq`,
-     `setIntegral_comp_iterate_of_invariants`, `ASet_mono`/`nullMeasurableSet_ASet`. Imports
-     added: `MeasureTheory.Integral.DominatedConvergence`, `Analysis.Asymptotics.SpecificAsymptotics`.
-   - ✅ **L-D first half** — the target `ae_ereal_limsup_le_liminf` is now CLOSED, reduced to the
-     non-positive case `ae_ereal_limsup_le_liminf_nonpos`. Reduction infra (all proven): the
-     companion `vcoc g n := g n − birkhoffSum T (g 1) n` with `vcoc_subadditive`/`vcoc_nonpos`/
-     `vcoc_integrable`/`vcoc_bddBelow`/`ecdiv_eq_ecdiv_vcoc_add` (gap-transfer via M3 finite limit),
-     and the `T^[M]`-subsequence cocycle `vM g M n := g(nM) − ∑_{i<n} g M (T^[iM])` with
-     `vM_subadditive` (subadditive for `T^[M]`), `vM_nonpos` (n≥1), `vM_integrable`,
-     `vM_measurePreserving`.
-   - ⏳ **L-D second half** — the lone remaining `sorry`, isolated in `ae_ereal_limsup_le_liminf_nonpos`
-     (Kingman.lean ~1573). The `E_{α}` contradiction (Karlsson §3.3). Now PARTIALLY built:
-     - ✅ **LD-a** `liminf_div_comp_ae` (+ `liminf_cdiv_le_comp`, `liminf_eq_of_sub_tendsto_zero`) —
-       a.e. `T`-invariance of the ℝ-valued liminf envelope (mirrors `limsup_div_comp_ae`); now also
-       wired into `tendsto_kingman`. NOTE: insufficient for `E_α` directly (for the non-positive
-       cocycle `liminf cdiv` can be `⊥`, `BddBelow` fails) → still need an **EReal** invariance
-       analogue of `ae_eq_comp_of_le_comp` (rational/±∞ level sets).
-     - ✅ **LD-b** `setIntegral_div_le_level` (Karlsson Prop 3.5, β-version of L-C): for invariant
-       `B`, real `β`, `∀ᵐ x∈B ∃k, a(k+1)x<(k+1)β` ⟹ `limsup (∫_B a(n+1))/(n+1) ≤ β·μ(B)`. Plus
-       EReal helpers `erealAddCoeIso`, `ereal_limsup_add_coe`.
-     - ✅ **EReal envelope invariance** (`liminf_ecdiv_comp_ae`/`limsup_ecdiv_comp_ae` via
-       `ereal_ae_eq_comp_of_le_comp`, the EReal L5 with rational/±∞ levels) — the blocker the ℝ
-       LD-a couldn't cover (non-positive cocycle's `liminf` may be `⊥`). PROVEN. Plus the squeeze
-       toolkit: `block_sandwich` (`g((k+1)M)x ≤ g m x ≤ g(kM)x` for `kM≤m≤(k+1)M`),
-       `ereal_liminf_le_ratio`/`ereal_limsup_le_ratio` (ratio squeeze for `z≤0`, `c→1`),
-       `ereal_{liminf,limsup}_eq_of_sub_tendsto_zero`, `aemeasurable_ereal_{liminf,limsup}`.
-     - ⏳ **LD-c** subsequence squeeze `f_M=f̄`, `g_M=f` — assemble `block_sandwich` + the ratio
-       squeeze via the `k=⌊m/M⌋` reindexing (Direction A = `Tendsto.limsup_comp_le_limsup` along
-       `k↦kM`; Direction B = divide sandwich by `m`, `kM/m→1`). The one fiddly analytic step left.
-     - ⏳ **LD-d** additive `T^[M]`-Birkhoff assembly (M3 on level `g M`), **LD-e** final
-       contradiction (LD-b on `E_α`, β=−Mα; Fekete lower bound; `μ(E_α)≤ε/α→0`; union over `α=1/k`).
-4. ✅ **Combine:** `⊥ < limsup ≤ liminf ≤ limsup ≤ B < ⊤` ⇒ finite common value ⇒ `Tendsto`
-   to `G := toReal`, integrable — done inside `ae_tendsto_cdiv`.
-
-Then M5 (Furstenberg–Kesten, `Cocycle/FurstenbergKesten.lean`, blueprint
-`m5-furstenberg-kesten.md`), the Lyapunov layers (`lyapunov-to-target.md`), and assembly
-into the target `oseledets_filtration`.
+**Next: M5 Furstenberg–Kesten** (`Cocycle/FurstenbergKesten.lean`, blueprint
+`docs/plan/blueprints/m5-furstenberg-kesten.md`) — apply `tendsto_kingman_ergodic` to the
+sub-additive cocycle `log‖A⁽ⁿ⁾‖`. Then the Lyapunov layers (`lyapunov-to-target.md`) and
+assembly into the target `oseledets_filtration` (M10).
 
 ## What is done
 
@@ -124,10 +81,11 @@ into the target `oseledets_filtration`.
 
 | Decl | File | Milestone |
 |---|---|---|
-| `ae_ereal_limsup_le_liminf` | Ergodic/Kingman | M4 (the lone core — stopping-time/Riesz-leaders; the only Kingman gap) |
 | `furstenbergKesten_top` | Cocycle/FurstenbergKesten | M5 |
 | `furstenbergKesten_bot` | Cocycle/FurstenbergKesten | M5 |
 | `oseledets_filtration` | MultiplicativeErgodic | M10 (TARGET) |
+
+(Down from 4 → **3** open `sorry`s: M4 Kingman is fully closed.)
 
 Not yet in the skeleton (deferred to their phases): the Lyapunov layers L4.x/L5.x and the
 measurability of exponents/filtration (M7). Added when their phase begins.
@@ -135,9 +93,10 @@ measurability of exponents/filtration (M7). Added when their phase begins.
 ## What is next (in order)
 
 1. ✅ P0–P3, M2, M1, M3 (committed).
-2. ✅ M4 research/design → v2 blueprint; M4 foundation (`18f9069`); M4 reduction (this commit).
-3. ⏳ **Prove `ae_tendsto_cdiv`** (the Kingman core) → closes M4 fully (4 → 3). EReal route above.
-4. ⏳ M5 Furstenberg–Kesten (`m5-furstenberg-kesten.md`); then Lyapunov layers
+2. ✅ M4 research/design → v2 blueprint; M4 foundation (`18f9069`); M4 reduction.
+3. ✅ **M4 Kingman fully closed** (Karlsson leaders route, L-A→L-E): `ae_tendsto_cdiv` and
+   `ae_ereal_limsup_le_liminf` proved; 4 → 3 open `sorry`s; axioms clean; checker PASS.
+4. ⏳ **M5 Furstenberg–Kesten** (`m5-furstenberg-kesten.md`) — NEXT; then Lyapunov layers
    (`lyapunov-to-target.md`); then assemble `oseledets_filtration`.
 
 ## Conventions (pinned — see decision-record.md / api-notes.md)
