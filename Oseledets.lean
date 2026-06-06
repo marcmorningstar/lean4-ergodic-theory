@@ -1,4 +1,5 @@
 import Oseledets.Cocycle.Basic
+import Oseledets.Cocycle.Norm
 import Oseledets.Cocycle.FurstenbergKesten
 import Oseledets.Ergodic.MaximalErgodic
 import Oseledets.Ergodic.Birkhoff
@@ -18,6 +19,7 @@ under `docs/` (research dossier, target & milestone ladder, phased plan, progres
 ## Layout
 
 * `Oseledets.Cocycle.Basic` — the iterated linear cocycle and its basic API.
+* `Oseledets.Cocycle.Norm` — measurability of the L2 operator norm and matrix inverse.
 * `Oseledets.Cocycle.FurstenbergKesten` — extremal Lyapunov exponents (`M5`).
 * `Oseledets.Ergodic.MaximalErgodic` — maximal ergodic inequality (`M1`).
 * `Oseledets.Ergodic.Birkhoff` — pointwise Birkhoff ergodic theorem (`M2`, `M3`).

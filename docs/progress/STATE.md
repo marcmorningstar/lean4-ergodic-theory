@@ -56,10 +56,18 @@ Also: 6 lemmas in `Ergodic/Birkhoff.lean` were de-privatized for reuse
 (`condExp_invariants_comp_self`, `ae_forall_orbit_eq`, `ae_bddAbove/ae_bddBelow_birkhoffAverage`,
 `limsup_eq_of_sub_tendsto_zero`, `measure_setOf_lt_limsup_eq_zero`).
 
-**Next: M5 Furstenberg–Kesten** (`Cocycle/FurstenbergKesten.lean`, blueprint
-`docs/plan/blueprints/m5-furstenberg-kesten.md`) — apply `tendsto_kingman_ergodic` to the
-sub-additive cocycle `log‖A⁽ⁿ⁾‖`. Then the Lyapunov layers (`lyapunov-to-target.md`) and
-assembly into the target `oseledets_filtration` (M10).
+**M5 = Furstenberg–Kesten — ✅ COMPLETE, fully `sorry`-free.** `furstenbergKesten_top` and
+`furstenbergKesten_bot` are proved (`#print axioms` = `[propext, Classical.choice, Quot.sound]`),
+applying `tendsto_kingman_ergodic` to `log‖A⁽ⁿ⁾‖` / `log‖(A⁽ⁿ⁾)⁻¹‖`. New file
+`Oseledets/Cocycle/Norm.lean` (the L2-opNorm/inverse measurability bridge — the topology is
+`rfl`-equal to the Pi product topology, no instance diamond; checker-verified). `_top`'s
+signature was strengthened (R4) with `hA : det ≠ 0` and `hint' : IntegrableLogNorm A⁻¹` to keep
+the ℝ-valued limit (needed for Kingman's `hbdd`); `_bot` unchanged. Independent checker: **PASS**.
+
+**Next: the Lyapunov layers → the target `oseledets_filtration` (M10).** See
+`docs/plan/blueprints/lyapunov-to-target.md` (+ `target-and-milestones.md` for M6–M10). This is
+the remaining arc: the full Oseledets filtration/exponents from the cocycle, the only open
+`sorry` left.
 
 ## What is done
 
@@ -81,11 +89,10 @@ assembly into the target `oseledets_filtration` (M10).
 
 | Decl | File | Milestone |
 |---|---|---|
-| `furstenbergKesten_top` | Cocycle/FurstenbergKesten | M5 |
-| `furstenbergKesten_bot` | Cocycle/FurstenbergKesten | M5 |
 | `oseledets_filtration` | MultiplicativeErgodic | M10 (TARGET) |
 
-(Down from 4 → **3** open `sorry`s: M4 Kingman is fully closed.)
+(Down to **1** open `sorry`: M4 Kingman and M5 Furstenberg–Kesten are both fully closed.
+The lone remaining gap is the final target `oseledets_filtration`.)
 
 Not yet in the skeleton (deferred to their phases): the Lyapunov layers L4.x/L5.x and the
 measurability of exponents/filtration (M7). Added when their phase begins.
