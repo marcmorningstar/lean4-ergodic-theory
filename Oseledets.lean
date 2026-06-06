@@ -4,6 +4,7 @@ import Oseledets.Cocycle.FurstenbergKesten
 import Oseledets.Ergodic.MaximalErgodic
 import Oseledets.Ergodic.Birkhoff
 import Oseledets.Ergodic.Kingman
+import Oseledets.Lyapunov.ExteriorNorm
 import Oseledets.Lyapunov.MeasurableSubspace
 import Oseledets.Lyapunov.Measurable
 import Oseledets.Lyapunov.Ultrametric
