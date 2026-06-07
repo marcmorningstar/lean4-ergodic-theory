@@ -967,6 +967,24 @@ theorem compoundMatrix_mul (k : ℕ) (B M : Matrix (Fin d) (Fin d) ℝ) :
   simp [LinearMap.comp_apply]
 
 open scoped Classical in
+open Set.powersetCard in
+/-- **Compound of a transpose.** The `k`-th compound matrix of `Mᵀ` is the transpose of the `k`-th
+compound of `M`: `C_k(Mᵀ) = C_k(M)ᵀ`. Entrywise this is `det(Mᵀ.minor) = det(M.minorᵀ)`
+(`Matrix.det_transpose`), since the row/column enumerators at index `t`, `s` coincide. -/
+theorem compoundMatrix_transpose (k : ℕ) (M : Matrix (Fin d) (Fin d) ℝ) :
+    compoundMatrix k Mᵀ = (compoundMatrix k M)ᵀ := by
+  ext t s
+  rw [compoundMatrix, Matrix.transpose_apply, compoundMatrix, Matrix.of_apply, Matrix.of_apply,
+    ← Matrix.det_transpose, Matrix.transpose_submatrix, Matrix.transpose_transpose]
+
+open scoped Classical in
+/-- The `k`-th compound of the Gram matrix `Mᵀ M` is `(C_k M)ᵀ (C_k M)`, i.e. the Gram matrix of the
+compound. Combines `compoundMatrix_mul` with `compoundMatrix_transpose`. -/
+theorem compoundMatrix_gram (k : ℕ) (M : Matrix (Fin d) (Fin d) ℝ) :
+    compoundMatrix k (Mᵀ * M) = (compoundMatrix k M)ᵀ * compoundMatrix k M := by
+  rw [compoundMatrix_mul, compoundMatrix_transpose]
+
+open scoped Classical in
 /-- **L7c.3b.0 (linear-map form).** `toEuclideanLin` of the `k`-th compound of a product is the
 composition of the compounds. The form consumed by the rank-1 exterior Rayleigh-deficit chain
 (L7c.3b), where the right-hand factor is post-composed with the inverse compound. -/
@@ -1783,6 +1801,122 @@ theorem plucker_eigenpair_ceiling {n : ℕ} (f : E →ₗ[ℝ] E)
     rw [hμ₁]
     have hprefix : 0 ≤ ∏ i ∈ Finset.range (k-1), lam i := Finset.prod_nonneg (fun _ _ => hpos _)
     exact mul_nonneg hprefix (hpos k)
+
+/-! ### The reconciliation bridge: transporting the Plücker eigenpair into standard coordinates
+
+`plucker_eigenpair_ceiling` produces the top eigenpair and second-eigenvalue ceiling of the
+conjugated compound `conjExteriorMap k (onbTriv u) (onbTriv u) f` in the **eigenbasis** wedge
+trivialization (`u` = an orthonormal eigenbasis of the symmetric `f`). The Rayleigh-deficit input
+`rayleigh_deficit_le` lives in the **standard** trivialization, where the conjugated compound is
+`toEuclideanLin (compoundMatrix k ·)` (the compound matrix). These are the *same* abstract operator
+`⋀^k f` viewed through two isometric o.n.-basis wedge trivializations, hence unitarily equivalent by
+the orthogonal change-of-coordinates `onbChange`. Since an isometry preserves the inner product, the
+Rayleigh quotient is trivialization-independent; this lets `sin_sq_le_rayleigh_deficit_div_gap` be
+applied in eigenbasis coordinates with the deficit supplied from standard coordinates. -/
+
+section Reconciliation
+
+variable {E : Type*}
+  [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+
+open scoped Classical in
+/-- **Conjugation of `conjExteriorMap` under change of o.n.-wedge trivialization.** For the *same*
+endomorphism `f`, the conjugated compounds in two o.n.-basis wedge trivializations `onbTriv b`,
+`onbTriv b'` are related by the L2 isometry `W = onbChange b b' k`:
+`conjExteriorMap (onbTriv b') f = W ∘ conjExteriorMap (onbTriv b) f ∘ W⁻¹`. -/
+private lemma conjExteriorMap_onbChange_conj {ιE ιE' : Type*}
+    [Fintype ιE] [LinearOrder ιE] [Fintype ιE'] [LinearOrder ιE']
+    (b : OrthonormalBasis ιE ℝ E) (b' : OrthonormalBasis ιE' ℝ E) (k : ℕ) (f : E →ₗ[ℝ] E)
+    (p : EuclideanSpace ℝ (Fin (Module.finrank ℝ (⋀[ℝ]^k E)))) :
+    conjExteriorMap k (onbTriv b' k) (onbTriv b' k) f p
+      = onbChange b b' k (conjExteriorMap k (onbTriv b k) (onbTriv b k) f
+          ((onbChange b b' k).symm p)) := by
+  show conjExteriorMap k (onbTriv b' k) (onbTriv b' k) f p
+      = onbTriv b' k ((onbTriv b k).symm (conjExteriorMap k (onbTriv b k) (onbTriv b k) f
+          (onbTriv b k ((onbTriv b' k).symm p))))
+  simp only [conjExteriorMap, LinearMap.comp_apply, LinearEquiv.coe_coe,
+    LinearEquiv.symm_apply_apply]
+
+open scoped Classical in
+/-- **Rayleigh-quotient transport.** Because `W = onbChange b b' k` is an L2 isometry and
+`conjExteriorMap (onbTriv b') f = W ∘ conjExteriorMap (onbTriv b) f ∘ W⁻¹`, the Rayleigh quotient
+of the standard-trivialization compound at `y` equals that of the eigenbasis-trivialization compound
+at `W y`. (Here `b` is the standard, `b'` the eigenbasis.) -/
+private lemma rayleigh_onbChange_eq {ιE ιE' : Type*}
+    [Fintype ιE] [LinearOrder ιE] [Fintype ιE'] [LinearOrder ιE']
+    (b : OrthonormalBasis ιE ℝ E) (b' : OrthonormalBasis ιE' ℝ E) (k : ℕ) (f : E →ₗ[ℝ] E)
+    (y : EuclideanSpace ℝ (Fin (Module.finrank ℝ (⋀[ℝ]^k E)))) :
+    (inner ℝ (conjExteriorMap k (onbTriv b k) (onbTriv b k) f y) y : ℝ)
+      = (inner ℝ (conjExteriorMap k (onbTriv b' k) (onbTriv b' k) f (onbChange b b' k y))
+          (onbChange b b' k y) : ℝ) := by
+  rw [conjExteriorMap_onbChange_conj b b' k f (onbChange b b' k y),
+    LinearIsometryEquiv.symm_apply_apply,
+    (onbChange b b' k).inner_map_map]
+
+open scoped Classical in
+/-- **Transport of a top-eigenpair + second-eigenvalue ceiling across the change of o.n.-wedge
+trivialization.** Given the top eigenpair (`hev`) and the `μ₁`-ceiling on the orthogonal complement
+(`hceil`) of the conjugated compound in the `b'`-trivialization (`b'` = the eigenbasis), the same
+data transports — via the orthogonal `W = onbChange b b' k` — to the `b`-trivialization (`b` = the
+standard basis): the eigenvector is `v₀ = W⁻¹ (basisFun i₀)`, the eigenvalue/gap are unchanged, and
+the Rayleigh ceiling holds verbatim on `v₀ᗮ`. This is the abstract (matrix-free) reconciliation core
+that feeds `sin_sq_le_rayleigh_deficit_div_gap` once `conjExteriorMap (onbTriv b) f` is identified
+with the standard compound. -/
+lemma eigenpair_ceiling_transport {ιE ιE' : Type*}
+    [Fintype ιE] [LinearOrder ιE] [Fintype ιE'] [LinearOrder ιE']
+    (b : OrthonormalBasis ιE ℝ E) (b' : OrthonormalBasis ιE' ℝ E) (k : ℕ) (f : E →ₗ[ℝ] E)
+    (i₀ : Fin (Module.finrank ℝ (⋀[ℝ]^k E))) (μ₀ μ₁ : ℝ)
+    (hev : conjExteriorMap k (onbTriv b' k) (onbTriv b' k) f
+        (EuclideanSpace.basisFun _ ℝ i₀) = μ₀ • EuclideanSpace.basisFun _ ℝ i₀)
+    (hceil : ∀ w : EuclideanSpace ℝ (Fin (Module.finrank ℝ (⋀[ℝ]^k E))),
+        (inner ℝ w (EuclideanSpace.basisFun _ ℝ i₀) : ℝ) = 0 →
+        (inner ℝ (conjExteriorMap k (onbTriv b' k) (onbTriv b' k) f w) w : ℝ) ≤ μ₁ * ‖w‖ ^ 2) :
+    ‖(onbChange b b' k).symm (EuclideanSpace.basisFun _ ℝ i₀)‖ = 1
+    ∧ conjExteriorMap k (onbTriv b k) (onbTriv b k) f
+        ((onbChange b b' k).symm (EuclideanSpace.basisFun _ ℝ i₀))
+        = μ₀ • (onbChange b b' k).symm (EuclideanSpace.basisFun _ ℝ i₀)
+    ∧ ∀ w : EuclideanSpace ℝ (Fin (Module.finrank ℝ (⋀[ℝ]^k E))),
+        (inner ℝ w ((onbChange b b' k).symm (EuclideanSpace.basisFun _ ℝ i₀)) : ℝ) = 0 →
+        (inner ℝ (conjExteriorMap k (onbTriv b k) (onbTriv b k) f w) w : ℝ) ≤ μ₁ * ‖w‖ ^ 2 := by
+  set W := onbChange b b' k with hW
+  set e₀ := EuclideanSpace.basisFun (Fin (Module.finrank ℝ (⋀[ℝ]^k E))) ℝ i₀ with he₀
+  -- conjugation `C_b p = W⁻¹ (C_{b'} (W p))`.
+  have hconj : ∀ p, conjExteriorMap k (onbTriv b k) (onbTriv b k) f p
+      = W.symm (conjExteriorMap k (onbTriv b' k) (onbTriv b' k) f (W p)) := by
+    intro p
+    rw [hW]
+    have hb := conjExteriorMap_onbChange_conj b b' k f (onbChange b b' k p)
+    rw [LinearIsometryEquiv.symm_apply_apply] at hb
+    rw [hb, LinearIsometryEquiv.symm_apply_apply]
+  have hWv₀ : W (W.symm e₀) = e₀ := LinearIsometryEquiv.apply_symm_apply W e₀
+  refine ⟨?_, ?_, ?_⟩
+  · rw [LinearIsometryEquiv.norm_map, he₀, EuclideanSpace.basisFun_apply,
+      EuclideanSpace.norm_single, norm_one]
+  · rw [hconj (W.symm e₀), hWv₀, hev, map_smul]
+  · intro w hw
+    rw [hconj w]
+    have hWperp : (inner ℝ (W w) e₀ : ℝ) = 0 := by
+      rw [← hWv₀, W.inner_map_map]; exact hw
+    have hR : (inner ℝ (W.symm (conjExteriorMap k (onbTriv b' k) (onbTriv b' k) f (W w))) w : ℝ)
+        = (inner ℝ (conjExteriorMap k (onbTriv b' k) (onbTriv b' k) f (W w)) (W w) : ℝ) := by
+      rw [← W.inner_map_map (W.symm _) w, LinearIsometryEquiv.apply_symm_apply]
+    rw [hR]
+    have hc := hceil (W w) hWperp
+    rwa [W.norm_map] at hc
+
+end Reconciliation
+
+/-! ### The Plücker eigenpair in standard (compound-matrix) coordinates — DEFERRED
+
+The matrix-level packaging `plucker_eigenpair_ceiling_standard` (transporting
+`plucker_eigenpair_ceiling` through `onbChange`/`rayleigh_onbChange_eq` into the standard
+`toEuclideanLin (compoundMatrix k (Mᵀ M))` coordinates) is deferred: its elaboration times out
+even at `maxHeartbeats 1600000` (the `⋀^k` finrank index types + the compound bridge are too
+heavy in one declaration). The reusable *abstract* core is already banked above
+(`conjExteriorMap_onbChange_conj`, `rayleigh_onbChange_eq`); the matrix wrapper should be rebuilt
+by splitting the abstract eigenpair/ceiling transport (light, over a general `E`) from the
+matrix identification `conjExteriorMap (onbTriv basisFun) (toEuclideanLin (Mᵀ M))
+= toEuclideanLin (compoundMatrix k (Mᵀ M))`, so neither half exceeds the heartbeat budget. -/
 
 end Plucker
 
