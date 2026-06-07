@@ -171,6 +171,11 @@ Subbundle → Limit`):
     problem to THIS rank-1 lemma, so no abstract block sin-Θ theorem is needed. Remaining crux nodes:
     L7c.3b (exterior Rayleigh-deficit via `compoundMatrix`, needs single-index `σⱼ(⋀^kB·X) ≤ ‖⋀^kB‖σⱼ(X)`),
     L7c.3c (Plücker subspace↔eigenline bridge assembling `norm_bandProjector_succ_sub_le`).
+  - **L7c.2 (tempered one-step factor) DONE, `sorry`-free.** `tendsto_logNorm_orbit_div_atTop_zero` and
+    `..._inv_...`: `(1/n)·log‖A(Tⁿx)‖ → 0` and `(1/n)·log‖A(Tⁿx)⁻¹‖ → 0` a.e. De-privatized
+    `Ergodic/Birkhoff.lean`'s `ae_tendsto_orbit_div_atTop_zero` (Birkhoff orbital tail `n⁻¹·g(Tⁿx)→0`
+    for integrable `g`) and instantiated at the integrable signed log-norms (`integrable_logNorm_cocycle`
+    at `n=1`, `cocycle A T 1 = A`). Axiom-clean. Feeds L7c.4 summability.
   - **`OseledetsLimit.lean` REMAINING (L7c.3+, task #22, the crux):** (§3.3, highest risk, NEW infra
     M-2′, no Mathlib Davis–Kahan) the gapped self-adjoint **projection-Cauchy** estimate (per-distinct-λ,
     NOT per-index) ⟹ `oseledetsLimit Λ` exists (L7d, closure compiled); then (§3.4) bridge

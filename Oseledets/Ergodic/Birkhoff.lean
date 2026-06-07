@@ -183,8 +183,9 @@ private theorem tsum_measure_threshold_ne_top {δ : ℝ} (hδ : 0 < δ) {g : X �
 /-- For integrable `g` and measure-preserving `T`, the orbital tail `n⁻¹ · g (T^[n] x)`
 tends to `0` almost everywhere. Proved by Borel–Cantelli: for each threshold `δ = 1/(k+1)`
 the series `∑ₙ μ {x | (n+1)δ ≤ |g (T^[n] x)|}` is finite (measure-preservation transfers
-`tsum_measure_threshold_ne_top`), so a.e. only finitely many `n` cross the threshold. -/
-private theorem ae_tendsto_orbit_div_atTop_zero
+`tsum_measure_threshold_ne_top`), so a.e. only finitely many `n` cross the threshold. Public:
+the tempered-cocycle layer (`OseledetsLimit`) reuses it for the one-step log-norm factor. -/
+theorem ae_tendsto_orbit_div_atTop_zero
     (hT : MeasurePreserving T μ μ) {g : X → ℝ} (hg : Integrable g μ) :
     ∀ᵐ x ∂μ, Tendsto (fun n : ℕ => (n : ℝ)⁻¹ * g (T^[n] x)) atTop (𝓝 0) := by
   -- For each `k`, a.e. `x` eventually has `|g (T^[n] x)| < (n+1)/(k+1)`.

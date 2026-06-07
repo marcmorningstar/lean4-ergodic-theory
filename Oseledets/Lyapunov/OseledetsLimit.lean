@@ -813,6 +813,37 @@ theorem sin_sq_le_rayleigh_deficit_div_gap {E : Type*} [NormedAddCommGroup E]
   rw [hray, hp2] at hRay
   nlinarith [hRay, hb]
 
+/-! ## L7c.2: the tempered one-step factor
+
+The relative-gap projector-increment bound (L7c.3) carries a one-step distortion factor
+`‖A(Tⁿx)‖·‖A(Tⁿx)⁻¹‖`. For the increments to be summable a.e. (L7c.4) this factor must be
+*tempered*: its normalized logarithm vanishes a.e. This is the orbital-tail consequence of
+Birkhoff's theorem (`ae_tendsto_orbit_div_atTop_zero`: `n⁻¹·g(Tⁿx) → 0` a.e. for integrable `g`)
+applied to the integrable signed log-norms `log‖A·‖` and `log‖A·⁻¹‖` (`integrable_logNorm_cocycle`
+at `n = 1`, where `cocycle A T 1 = A`). -/
+
+/-- **L7c.2 — the tempered one-step factor.** The normalized log-norm of the one-step generator
+along the orbit vanishes a.e.: `(1/n)·log‖A(Tⁿx)‖ → 0`. -/
+theorem tendsto_logNorm_orbit_div_atTop_zero {A : X → Matrix (Fin d) (Fin d) ℝ}
+    (hT : MeasurePreserving T μ μ) [IsFiniteMeasure μ] (hA : ∀ x, (A x).det ≠ 0)
+    (hAmeas : Measurable A) (hTmeas : Measurable T)
+    (hint : IntegrableLogNorm A μ) (hint' : IntegrableLogNorm (fun x => (A x)⁻¹) μ) :
+    ∀ᵐ x ∂μ, Tendsto (fun n : ℕ => (n : ℝ)⁻¹ * Real.log ‖A (T^[n] x)‖) atTop (𝓝 0) := by
+  filter_upwards [ae_tendsto_orbit_div_atTop_zero hT
+    (integrable_logNorm_cocycle hT hA hAmeas hTmeas hint hint' 1)] with x hx
+  simpa using hx
+
+/-- **L7c.2 — the tempered one-step factor (inverse).** The normalized log-norm of the inverse of
+the one-step generator along the orbit vanishes a.e.: `(1/n)·log‖A(Tⁿx)⁻¹‖ → 0`. -/
+theorem tendsto_logNorm_inv_orbit_div_atTop_zero {A : X → Matrix (Fin d) (Fin d) ℝ}
+    (hT : MeasurePreserving T μ μ) [IsFiniteMeasure μ] (hA : ∀ x, (A x).det ≠ 0)
+    (hAmeas : Measurable A) (hTmeas : Measurable T)
+    (hint : IntegrableLogNorm A μ) (hint' : IntegrableLogNorm (fun x => (A x)⁻¹) μ) :
+    ∀ᵐ x ∂μ, Tendsto (fun n : ℕ => (n : ℝ)⁻¹ * Real.log ‖(A (T^[n] x))⁻¹‖) atTop (𝓝 0) := by
+  filter_upwards [ae_tendsto_orbit_div_atTop_zero hT
+    (integrable_logNorm_inv_cocycle hT hA hAmeas hTmeas hint hint' 1)] with x hx
+  simpa using hx
+
 end Oseledets
 
 end
