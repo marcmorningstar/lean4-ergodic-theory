@@ -156,7 +156,14 @@ Subbundle → Limit`):
     `cfc f A` = `f ∘ eigenvalues`, `MonotoneOn (Ici 0)` form), `gram_eigenvalues₀_eq_sq_singularValues`,
     `eigenvalues₀_qpow_eq` (`= σᵢ^{1/n}`), and **L7b** `eigenvalues_qpow_tendsto` (eigenvalues of `qpow`
     → `e^{λᵢ}` a.e., from `tendsto_log_singularValue`). All axiom-clean.
-  - **`OseledetsLimit.lean` REMAINING (L7c+, task #19, the crux):** (§3.3, highest risk, NEW infra
+  - **L7c projector scaffolding (L7c.0 + L7c.5) DONE, `sorry`-free** (route: `oseledets-l7c-route.md`).
+    `bandProjector A T χ n x := cfc χ (qpow A T n x)` + `bandProjector_isSelfAdjoint` (`cfc_predicate`)
+    + `bandProjector_mul_self` (idempotent on the gap, via `cfc_mul`+`cfc_congr` — orthogonal projector);
+    and the Cauchy packaging `cauchySeq_of_summable_norm_sub` (general matrix sequence with summable
+    increments is Cauchy) ⟹ `cauchySeq_cfc_of_summable` ⟹ `exists_tendsto_cfc_of_summable`. All on plain
+    `Matrix _ _ ℝ` with the BARE Hermitian CFC (no isometric instance). Axiom-clean. The mathematical
+    weight remaining is entirely in supplying the *summability* of the projector increments (L7c.3/L7c.4).
+  - **`OseledetsLimit.lean` REMAINING (L7c.3+, task #22, the crux):** (§3.3, highest risk, NEW infra
     M-2′, no Mathlib Davis–Kahan) the gapped self-adjoint **projection-Cauchy** estimate (per-distinct-λ,
     NOT per-index) ⟹ `oseledetsLimit Λ` exists (L7d, closure compiled); then (§3.4) bridge
     `Vᵢ = lambdaSublevel` a.e. (L11), forward limit on each stratum (L12), measurability hookup via the

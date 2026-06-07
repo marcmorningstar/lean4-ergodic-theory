@@ -691,6 +691,73 @@ def L7_statement (μ : Measure X) (T : X → X) (A : X → Matrix (Fin d) (Fin d
   ∃ Λ : X → Matrix (Fin d) (Fin d) ℝ,
     ∀ᵐ x ∂μ, Tendsto (fun n : ℕ => qpow A T n x) atTop (𝓝 (Λ x))
 
+/-! ## L7c.0: the band spectral projector and its basic algebra
+
+The spectral projectors of the Oseledets matrix limit are obtained as limits of *band spectral
+projectors* of the candidate matrices `qpow A T n x = (Qₙ)^{1/(2n)}`: cut the spectrum at a
+continuous threshold function `χ` via the continuous functional calculus. For a `χ` that equals the
+`0/1` indicator of a spectral gap on the (finite) spectrum, `cfc χ (qpow)` is the orthogonal
+projector onto the top eigenvalue-block. This subsection records the projector and its self-adjoint
+/ idempotent algebra; the gap hypothesis discharging idempotence is supplied downstream (L7c.4). -/
+
+/-- **L7c.0.** The band spectral projector of `qpow A T n x` cut at a continuous threshold function
+`χ`: `bandProjector A T χ n x = cfc χ (qpow A T n x)`. For a `χ` that equals the `0/1` indicator of
+a spectral gap on the (finite) spectrum it is the orthogonal projector onto the top
+eigenvalue-block; the projector identity is provided conditionally below. -/
+def bandProjector (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (χ : ℝ → ℝ) (n : ℕ) (x : X) :
+    Matrix (Fin d) (Fin d) ℝ :=
+  cfc χ (qpow A T n x)
+
+/-- **L7c.0.** The band spectral projector is self-adjoint (a CFC of a real-valued function is
+always self-adjoint). -/
+theorem bandProjector_isSelfAdjoint (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (χ : ℝ → ℝ)
+    (n : ℕ) (x : X) : IsSelfAdjoint (bandProjector A T χ n x) :=
+  cfc_predicate _ _
+
+/-- **L7c.0.** If the cutoff `χ` is idempotent on the spectrum of `qpow` (i.e. `χ = χ²` there — true
+for a `0/1` indicator separated from the spectrum by a gap), the band projector is idempotent: a
+genuine orthogonal projector. Conditional; the gap hypothesis that supplies `hidem` is discharged in
+L7c.4. -/
+theorem bandProjector_mul_self (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) {χ : ℝ → ℝ} (n : ℕ)
+    (x : X) (hχ : ContinuousOn χ (spectrum ℝ (qpow A T n x)))
+    (hidem : (spectrum ℝ (qpow A T n x)).EqOn (fun t => χ t * χ t) χ) :
+    bandProjector A T χ n x * bandProjector A T χ n x = bandProjector A T χ n x := by
+  rw [bandProjector, ← cfc_mul χ χ _, cfc_congr hidem]
+
+/-! ## L7c.5: Cauchy packaging — summable increments give a convergent (band-projector) sequence
+
+The hard mathematical content of L7c (the gapped-projection-Cauchy estimate, L7c.3/L7c.4) produces
+the *summability* of the consecutive-norm increments of the band projectors. Once that is in hand,
+convergence is pure soft analysis: matrices form a finite-dimensional, hence complete, normed space,
+so a sequence with summable increments is Cauchy and converges. We package this abstractly (no
+dynamics) so it is upstreamable and reusable for any matrix sequence — and keep a `cfc χ (H n)`
+specialization that plugs directly into `bandProjector`. -/
+
+/-- A matrix sequence whose consecutive-difference norms `‖f (n+1) - f n‖` are summable is Cauchy
+(matrices over `ℝ` are a finite-dimensional, hence complete, normed space). General soft-analysis
+fact, independent of the continuous functional calculus. -/
+theorem cauchySeq_of_summable_norm_sub {d : ℕ} {f : ℕ → Matrix (Fin d) (Fin d) ℝ}
+    (hsum : Summable (fun n => ‖f (n + 1) - f n‖)) : CauchySeq f := by
+  refine cauchySeq_of_summable_dist ?_
+  refine hsum.congr (fun n => ?_)
+  rw [dist_eq_norm, norm_sub_rev]
+
+/-- **L7c.5 (packaging).** A sequence of band-projector-shaped matrices `cfc χ (H n)` whose
+consecutive-norm increments are summable is Cauchy. The mathematical content lives in supplying the
+summability (L7c.3/L7c.4); this is the soft-analysis packaging. -/
+theorem cauchySeq_cfc_of_summable {d : ℕ} (H : ℕ → Matrix (Fin d) (Fin d) ℝ) (χ : ℝ → ℝ)
+    (hsum : Summable (fun n => ‖cfc χ (H (n + 1)) - cfc χ (H n)‖)) :
+    CauchySeq (fun n => cfc χ (H n)) :=
+  cauchySeq_of_summable_norm_sub hsum
+
+/-- **L7c.5 (packaging).** A band-projector-shaped sequence `cfc χ (H n)` with summable
+consecutive-norm increments converges (matrices are a complete space). The limit is the candidate
+Oseledets spectral projector. -/
+theorem exists_tendsto_cfc_of_summable {d : ℕ} (H : ℕ → Matrix (Fin d) (Fin d) ℝ) (χ : ℝ → ℝ)
+    (hsum : Summable (fun n => ‖cfc χ (H (n + 1)) - cfc χ (H n)‖)) :
+    ∃ L, Tendsto (fun n => cfc χ (H n)) atTop (𝓝 L) :=
+  cauchySeq_tendsto_of_complete (cauchySeq_cfc_of_summable H χ hsum)
+
 end Oseledets
 
 end
