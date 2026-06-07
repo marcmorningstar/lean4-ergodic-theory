@@ -134,12 +134,27 @@ Subbundle → Limit`):
     `prod_singularValues_comp_le` (`∏σ(g∘f) ≤ ∏σ(g)·∏σ(f)`). QA gate PASS: `lake build` green (2897
     jobs); zero `sorry`; both bridge theorems depend only on `[propext, Classical.choice, Quot.sound]`
     (no `sorryAx`/`native_decide`); statements verified non-vacuous. Repo now holds 1 sorry (the target).
-  - **`OseledetsLimit.lean`**: (§3.1) scalar exponents via `tendsto_kingman_ergodic` on
-    `log‖⋀^k(cocycle)‖` (REUSES Kingman) → `lamSing`/`Γ`; (§3.3, THE crux, highest risk, no Mathlib
-    Davis–Kahan) eigenspace/projection convergence `Qₙ^{1/2n} → Λ`; (§3.4) bridge `Vᵢ = lambdaSublevel`;
-    measurability (spike-compiled: `measurable_gram`, `measurable_of_pointwise_limit`, CFC crux);
-    assemble target. ~4–8 sessions.
-  - Build order NOW: `… → Measurable` (done) → `ExteriorNorm` → `OseledetsLimit` → `MultiplicativeErgodic`.
+  - 🔄 **`OseledetsLimit.lean`** (NEW) — **scalar layer L1–L6 + M-1 DONE, fully `sorry`-free** (route:
+    `oseledets-limit-route.md`). Banked sorry-free & axiom-clean: **M-1** `sigma_le_opNorm`
+    (`σᵢ(toEuclideanLin M) ≤ ‖M‖`) + companions; **L1** `Sprod`/`gram`/`Sprod_submul`/
+    `isSubadditiveCocycle_logSprod` (correct Kingman index convention); **L3** the integrability
+    sandwich `integrable_logSprod`/`bddBelow_logSprod` + `Sprod_pos` (`k ≤ d`, via `det ≠ 0`);
+    **L4** `tendsto_GammaK` and the clean end-to-end `tendsto_GammaK_of_integrableLogNorm` (genuine
+    ergodic `Γ_k` limit via `tendsto_kingman_ergodic` + the ExteriorNorm submultiplicativity);
+    **L5** `tendsto_log_singularValue` (`λᵢ = Γ_{i+1}−Γ_i`, antitone); **L6** `sq_singularValues_eq_gram_eigenvalue`.
+    The L3 measurability obligation `measurable_Sprod` was closed PROPERLY (no measurable-selection
+    cop-out) by building the **compound-matrix bridge in `ExteriorNorm.lean`**: `compoundMatrix k M`
+    (entries = `k×k` minors), `conjExteriorMap_eq_toEuclideanLin_compound`, and the public
+    `prod_singularValues_eq_l2_opNorm_compound` (`∏_{i<k} σᵢ(toEuclideanLin M) = ‖C_k(M)‖`) — so
+    `Sprod` is measurable via measurable minors + continuous L2 op-norm. QA gate PASS: `lake build`
+    green (2898 jobs); only the target `sorry` remains; all scalar-layer + compound-bridge decls
+    depend only on `[propext, Classical.choice, Quot.sound]`.
+  - **`OseledetsLimit.lean` REMAINING (L7+, task #19, the crux):** (§3.3, highest risk, no Mathlib
+    Davis–Kahan) eigenspace/projection convergence `Qₙ^{1/2n} → Λ` via a from-scratch gapped
+    self-adjoint Cauchy-projection argument; (§3.4) bridge `Vᵢ = lambdaSublevel` a.e.; the forward
+    limit on each stratum; measurability hookup (CFC polynomial bypass); assemble target. ~4–8 sessions.
+  - Build order NOW: `… → Measurable` (done) → `ExteriorNorm` (done) → `OseledetsLimit` (scalar done;
+    crux next) → `MultiplicativeErgodic`.
   - Mathlib HAS (verified): real Hermitian CFC, `posSemidef_conjTranspose_mul_self`, sorted Hermitian
     eigenvalues/eigenvectorBasis, CFC `rpow`/`sqrt`, `exteriorPower.map`/`map_comp`,
     `LinearMap.singularValues` (basic API only). CAVEAT: `Filter.Tendsto.cfc` routes through the

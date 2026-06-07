@@ -10,6 +10,7 @@ import Oseledets.Lyapunov.Measurable
 import Oseledets.Lyapunov.Ultrametric
 import Oseledets.Lyapunov.GrowthFunction
 import Oseledets.Lyapunov.Filtration
+import Oseledets.Lyapunov.OseledetsLimit
 import Oseledets.MultiplicativeErgodic
 
 /-!

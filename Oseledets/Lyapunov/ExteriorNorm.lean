@@ -8,6 +8,7 @@ import Mathlib.Analysis.InnerProductSpace.PiL2
 import Mathlib.Analysis.InnerProductSpace.LinearMap
 import Mathlib.LinearAlgebra.ExteriorPower.Basis
 import Mathlib.Analysis.Normed.Module.FiniteDimension
+import Mathlib.Analysis.CStarAlgebra.Matrix
 
 /-!
 # Operator norm of the exterior power and the product of singular values
@@ -41,6 +42,7 @@ trivialization (`exteriorTrivialization`) exists because `⋀^k E` is a finite f
 -/
 
 open Module InnerProductSpace
+open scoped Matrix.Norms.L2Operator
 
 noncomputable section
 
@@ -359,12 +361,15 @@ end OnbTriv
 
 section OnbChange
 
-variable {ιE ιF : Type*} [Fintype ιE] [LinearOrder ιE] [Fintype ιF] [LinearOrder ιF]
+variable {ιE ιE' ιF ιF' : Type*}
+  [Fintype ιE] [LinearOrder ιE] [Fintype ιE'] [LinearOrder ιE']
+  [Fintype ιF] [LinearOrder ιF] [Fintype ιF'] [LinearOrder ιF']
 
 open scoped Classical in
 /-- **Kernel (i)+(ii) assembled:** change-of-coordinates between two o.n.-basis wedge
-trivializations of the *same* space is an L2 isometry (the compound `⋀^k Q`). -/
-private def onbChange (b b' : OrthonormalBasis ιE ℝ E) (k : ℕ) :
+trivializations of the *same* space is an L2 isometry (the compound `⋀^k Q`). The two bases may be
+indexed differently; only the space `E` (hence `finrank (⋀^k E)`) matters. -/
+private def onbChange (b : OrthonormalBasis ιE ℝ E) (b' : OrthonormalBasis ιE' ℝ E) (k : ℕ) :
     EuclideanSpace ℝ (Fin (Module.finrank ℝ (⋀[ℝ]^k E)))
       ≃ₗᵢ[ℝ] EuclideanSpace ℝ (Fin (Module.finrank ℝ (⋀[ℝ]^k E))) :=
   LinearEquiv.isometryOfInner
@@ -374,16 +379,17 @@ private def onbChange (b b' : OrthonormalBasis ιE ℝ E) (k : ℕ) :
         LinearEquiv.apply_symm_apply])
 
 open scoped Classical in
-private lemma onbChange_apply (b b' : OrthonormalBasis ιE ℝ E) (k : ℕ)
+private lemma onbChange_apply (b : OrthonormalBasis ιE ℝ E) (b' : OrthonormalBasis ιE' ℝ E) (k : ℕ)
     (p : EuclideanSpace ℝ (Fin (Module.finrank ℝ (⋀[ℝ]^k E)))) :
     onbChange b b' k p = onbTriv b' k ((onbTriv b k).symm p) := rfl
 
 open scoped Classical in
 /-- **Operator-norm invariance under change of orthonormal-wedge trivialization.** Replacing the
-source/target o.n.-basis trivializations conjugates `conjExteriorMap` by the L2 isometries
-`onbChange`, leaving the operator norm unchanged. -/
-private lemma exteriorOpNorm_onbTriv_eq (bE bE' : OrthonormalBasis ιE ℝ E)
-    (bF bF' : OrthonormalBasis ιF ℝ F) (k : ℕ) (f : E →ₗ[ℝ] F) :
+source/target o.n.-basis trivializations (possibly indexed differently) conjugates
+`conjExteriorMap` by the L2 isometries `onbChange`, leaving the operator norm unchanged. -/
+private lemma exteriorOpNorm_onbTriv_eq (bE : OrthonormalBasis ιE ℝ E)
+    (bE' : OrthonormalBasis ιE' ℝ E)
+    (bF : OrthonormalBasis ιF ℝ F) (bF' : OrthonormalBasis ιF' ℝ F) (k : ℕ) (f : E →ₗ[ℝ] F) :
     exteriorOpNorm k (onbTriv bE k) (onbTriv bF k) f
       = exteriorOpNorm k (onbTriv bE' k) (onbTriv bF' k) f := by
   set g := conjExteriorMap k (onbTriv bE k) (onbTriv bF k) f with hg
@@ -708,6 +714,160 @@ theorem exteriorOpNorm_hodge_eq_prod_singularValues (k : ℕ) (f : E →ₗ[ℝ]
     symm
     apply Finset.prod_eq_zero (Finset.mem_range.mpr (Nat.lt_of_not_le hkn))
     exact f.singularValues_of_finrank_le hnE.symm.le
+
+/-! ### The compound matrix and the operator-norm/compound bridge
+
+For a square matrix `M`, the conjugated exterior map `⋀^k (toEuclideanLin M)` through the
+orthonormal-wedge trivialization of the *standard* basis `EuclideanSpace.basisFun` is itself
+`toEuclideanLin` of an explicit **compound matrix** `compoundMatrix k M`, whose entries are the
+`k × k` minors of `M`. This converts the (analytically delicate) exterior operator norm into the
+L2 operator norm of a concrete matrix of determinants — the form needed for measurability. -/
+
+section Compound
+
+variable {d : ℕ}
+
+open scoped Classical in
+/-- `onbTriv` sends the `i`-th wedge basis vector (under `(wIndexEquiv b k).symm`) to the `i`-th
+standard Euclidean basis vector. -/
+private lemma onbTriv_wedge_eq_basisFun {ι : Type*} [Fintype ι] [LinearOrder ι]
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+    (b : OrthonormalBasis ι ℝ E) (k : ℕ)
+    (i : Fin (Module.finrank ℝ (⋀[ℝ]^k E))) :
+    onbTriv b k ((b.toBasis.exteriorPower k) ((wIndexEquiv b k).symm i))
+      = EuclideanSpace.basisFun (Fin (Module.finrank ℝ (⋀[ℝ]^k E))) ℝ i := by
+  ext1 j
+  rw [onbTriv_apply, EuclideanSpace.basisFun_apply, PiLp.ofLp_single,
+    Basis.repr_reindex_apply, Basis.repr_self, Pi.single_apply, Finsupp.single_apply]
+  simp only [eq_comm]
+  by_cases hij : i = j <;> simp [hij]
+
+open scoped Classical in
+/-- The `t`-th coordinate of `conjExteriorMap k (onbTriv b)(onbTriv b) f` applied to the
+`s`-th standard basis vector equals the Hodge form of the corresponding wedge basis vectors. -/
+private lemma conjExteriorMap_basisFun_coord {ι : Type*} [Fintype ι] [LinearOrder ι]
+    {E F : Type*}
+    [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+    [NormedAddCommGroup F] [InnerProductSpace ℝ F] [FiniteDimensional ℝ F]
+    (bE : OrthonormalBasis ι ℝ E) {κ : Type*} [Fintype κ] [LinearOrder κ]
+    (bF : OrthonormalBasis κ ℝ F) (k : ℕ) (f : E →ₗ[ℝ] F)
+    (s : Fin (Module.finrank ℝ (⋀[ℝ]^k E))) (t : Fin (Module.finrank ℝ (⋀[ℝ]^k F))) :
+    conjExteriorMap k (onbTriv bE k) (onbTriv bF k) f
+        (EuclideanSpace.basisFun (Fin (Module.finrank ℝ (⋀[ℝ]^k E))) ℝ s) t
+      = hodgeForm k ((bF.toBasis.exteriorPower k) ((wIndexEquiv bF k).symm t))
+          (exteriorPower.map k f ((bE.toBasis.exteriorPower k) ((wIndexEquiv bE k).symm s))) := by
+  -- Reduce the standard basis vector to the wedge basis through `onbTriv`.
+  have hsource : (EuclideanSpace.basisFun (Fin (Module.finrank ℝ (⋀[ℝ]^k E))) ℝ s)
+      = onbTriv bE k ((bE.toBasis.exteriorPower k) ((wIndexEquiv bE k).symm s)) :=
+    (onbTriv_wedge_eq_basisFun bE k s).symm
+  rw [hsource, conjExteriorMap]
+  simp only [LinearMap.comp_apply, LinearEquiv.coe_coe, LinearEquiv.symm_apply_apply]
+  -- The `t`-coordinate is an inner product with the `t`-th standard basis vector.
+  have hcoord : ∀ Y : ⋀[ℝ]^k F, (onbTriv bF k Y) t
+      = (inner ℝ (EuclideanSpace.basisFun (Fin (Module.finrank ℝ (⋀[ℝ]^k F))) ℝ t)
+          (onbTriv bF k Y) : ℝ) := by
+    intro Y
+    rw [EuclideanSpace.basisFun_apply, EuclideanSpace.inner_single_left]
+    simp
+  rw [hcoord, ← onbTriv_wedge_eq_basisFun bF k t, inner_onbTriv]
+
+open Set.powersetCard in
+/-- The **compound matrix** `C_k(M)`: its `(t, s)` entry is the `k × k` minor of `M` obtained by
+selecting the rows enumerated by the `t`-th `k`-subset and the columns enumerated by the `s`-th
+`k`-subset (under the standard orthonormal-wedge index equivalence). -/
+noncomputable def compoundMatrix (k : ℕ) (M : Matrix (Fin d) (Fin d) ℝ) :
+    Matrix (Fin (Module.finrank ℝ (⋀[ℝ]^k (EuclideanSpace ℝ (Fin d)))))
+      (Fin (Module.finrank ℝ (⋀[ℝ]^k (EuclideanSpace ℝ (Fin d))))) ℝ :=
+  Matrix.of fun t s =>
+    (M.submatrix
+      (fun i : Fin k =>
+        (ofFinEmbEquiv.symm ((wIndexEquiv (EuclideanSpace.basisFun (Fin d) ℝ) k).symm t)) i)
+      (fun j : Fin k =>
+        (ofFinEmbEquiv.symm ((wIndexEquiv (EuclideanSpace.basisFun (Fin d) ℝ) k).symm s)) j)).det
+
+/-- The coordinate of `toEuclideanLin M` on a standard basis vector recovers a matrix entry:
+`(toEuclideanLin M (eq)) p = M p q`. -/
+private lemma toEuclideanLin_single_apply {m : ℕ} (M : Matrix (Fin m) (Fin m) ℝ) (p q : Fin m) :
+    (Matrix.toEuclideanLin M (EuclideanSpace.single q (1 : ℝ))) p = M p q := by
+  have hofLp : (Matrix.toEuclideanLin M (EuclideanSpace.single q (1 : ℝ))) p
+      = (M.mulVec (WithLp.ofLp (EuclideanSpace.single q (1 : ℝ)))) p := rfl
+  rw [hofLp,
+    show WithLp.ofLp (EuclideanSpace.single q (1 : ℝ)) = Pi.single q (1 : ℝ) from rfl,
+    Matrix.mulVec_single_one]
+  simp [Matrix.col_apply]
+
+/-- The Gram entry of the standard basis under `toEuclideanLin M` recovers the matrix entry:
+`⟪eₚ, (toEuclideanLin M) e_q⟫ = M p q`. -/
+private lemma inner_basisFun_toEuclideanLin (M : Matrix (Fin d) (Fin d) ℝ) (p q : Fin d) :
+    (inner ℝ ((EuclideanSpace.basisFun (Fin d) ℝ) p)
+      (Matrix.toEuclideanLin M ((EuclideanSpace.basisFun (Fin d) ℝ) q)) : ℝ) = M p q := by
+  rw [EuclideanSpace.basisFun_apply, EuclideanSpace.basisFun_apply,
+    EuclideanSpace.inner_single_left, map_one, one_mul, toEuclideanLin_single_apply]
+
+open scoped Classical in
+open Set.powersetCard in
+/-- **The compound bridge.** Through the orthonormal-wedge trivializations of the standard basis,
+`⋀^k (toEuclideanLin M)` is `toEuclideanLin` of the compound matrix `C_k(M)`. -/
+theorem conjExteriorMap_eq_toEuclideanLin_compound (k : ℕ) (M : Matrix (Fin d) (Fin d) ℝ) :
+    conjExteriorMap k (onbTriv (EuclideanSpace.basisFun (Fin d) ℝ) k)
+        (onbTriv (EuclideanSpace.basisFun (Fin d) ℝ) k) (Matrix.toEuclideanLin M)
+      = Matrix.toEuclideanLin (compoundMatrix k M) := by
+  -- It suffices to agree on each standard basis vector, coordinatewise.
+  refine Basis.ext (EuclideanSpace.basisFun _ ℝ).toBasis (fun s => ?_)
+  rw [OrthonormalBasis.coe_toBasis]
+  ext t
+  -- LHS coordinate is the Hodge form of the wedge basis vectors.
+  rw [conjExteriorMap_basisFun_coord (EuclideanSpace.basisFun (Fin d) ℝ)
+    (EuclideanSpace.basisFun (Fin d) ℝ) k (Matrix.toEuclideanLin M)]
+  -- RHS coordinate is the compound entry `compoundMatrix k M t s`.
+  have hRHS : (Matrix.toEuclideanLin (compoundMatrix k M)
+      (EuclideanSpace.basisFun (Fin (Module.finrank ℝ (⋀[ℝ]^k (EuclideanSpace ℝ (Fin d))))) ℝ s)) t
+      = compoundMatrix k M t s := by
+    rw [EuclideanSpace.basisFun_apply, toEuclideanLin_single_apply]
+  rw [hRHS, compoundMatrix]
+  simp only [Matrix.of_apply]
+  -- Expand the Hodge form to a determinant of inner products, then identify with the minor.
+  rw [exteriorPower.basis_apply, exteriorPower.basis_apply,
+    exteriorPower.map_apply_ιMulti_family, exteriorPower.ιMulti_family,
+    exteriorPower.ιMulti_family, hodgeForm_ιMulti]
+  -- The Gram entry is `M (row) (col)`; det is invariant under transpose.
+  rw [← Matrix.det_transpose]
+  congr 1
+  ext i j
+  rw [Matrix.transpose_apply, Matrix.of_apply, Matrix.submatrix_apply]
+  -- Both sides reduce to `M (rowEnum i) (colEnum j)` via `inner_basisFun_toEuclideanLin`.
+  simp only [Function.comp_apply, OrthonormalBasis.coe_toBasis]
+  exact inner_basisFun_toEuclideanLin M _ _
+
+set_option maxHeartbeats 800000 in
+/-- **The product of singular values is the L2 operator norm of the compound matrix.** Combining
+the singular-value bridge with the compound identity: `∏_{i<k} σᵢ(toEuclideanLin M) = ‖C_k(M)‖`. -/
+theorem prod_singularValues_eq_l2_opNorm_compound (k : ℕ) (M : Matrix (Fin d) (Fin d) ℝ) :
+    ∏ i ∈ Finset.range k, (Matrix.toEuclideanLin M).singularValues i
+      = ‖compoundMatrix k M‖ := by
+  classical
+  -- The Hodge trivialization on `EuclideanSpace ℝ (Fin d)` is the standard-basis wedge
+  -- trivialization, so the singular-value bridge is the standard-basis exterior operator norm.
+  have hStd : hodgeTrivialization (E := EuclideanSpace ℝ (Fin d)) k
+      = onbTriv (stdOrthonormalBasis ℝ (EuclideanSpace ℝ (Fin d))) k := by
+    unfold hodgeTrivialization onbTriv wedgeBasis wedgeIndexEquiv wIndexEquiv
+    rfl
+  -- Pass from the Hodge trivialization to the standard-basis (`basisFun`) trivialization.
+  rw [← exteriorOpNorm_hodge_eq_prod_singularValues k (Matrix.toEuclideanLin M)]
+  rw [show exteriorOpNorm k (hodgeTrivialization (E := EuclideanSpace ℝ (Fin d)) k)
+        (hodgeTrivialization (E := EuclideanSpace ℝ (Fin d)) k) (Matrix.toEuclideanLin M)
+      = exteriorOpNorm k (onbTriv (EuclideanSpace.basisFun (Fin d) ℝ) k)
+          (onbTriv (EuclideanSpace.basisFun (Fin d) ℝ) k) (Matrix.toEuclideanLin M) by
+    rw [hStd]
+    exact exteriorOpNorm_onbTriv_eq (stdOrthonormalBasis ℝ (EuclideanSpace ℝ (Fin d)))
+      (EuclideanSpace.basisFun (Fin d) ℝ) (stdOrthonormalBasis ℝ (EuclideanSpace ℝ (Fin d)))
+      (EuclideanSpace.basisFun (Fin d) ℝ) k (Matrix.toEuclideanLin M)]
+  -- Now identify the conjugated exterior map with `toEuclideanLin` of the compound matrix.
+  rw [exteriorOpNorm, conjExteriorMap_eq_toEuclideanLin_compound k M]
+  rw [Matrix.l2_opNorm_def]
+  rfl
+
+end Compound
 
 end Bridge
 
