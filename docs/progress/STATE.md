@@ -163,6 +163,14 @@ Subbundle → Limit`):
     increments is Cauchy) ⟹ `cauchySeq_cfc_of_summable` ⟹ `exists_tendsto_cfc_of_summable`. All on plain
     `Matrix _ _ ℝ` with the BARE Hermitian CFC (no isometric instance). Axiom-clean. The mathematical
     weight remaining is entirely in supplying the *summability* of the projector increments (L7c.3/L7c.4).
+  - **L7c.3a (the crux's analytic core) DONE, `sorry`-free.** `sin_sq_le_rayleigh_deficit_div_gap`:
+    the elementary rank-1 Rayleigh-gap sin-Θ bound (`‖v' − ⟪v',v₀⟫v₀‖² ≤ ε/(μ₀−μ₁)` for a near-maximal
+    unit `v'`), the Parseval + one-`nlinarith`-kernel replacement for the absent Mathlib Davis–Kahan
+    sin-Θ. Abstract (any real inner product space), upstreamable, axiom-clean. Route verified in
+    `oseledets-l7c-route.md` §G: the committed exterior-power machinery collapses the block-projector
+    problem to THIS rank-1 lemma, so no abstract block sin-Θ theorem is needed. Remaining crux nodes:
+    L7c.3b (exterior Rayleigh-deficit via `compoundMatrix`, needs single-index `σⱼ(⋀^kB·X) ≤ ‖⋀^kB‖σⱼ(X)`),
+    L7c.3c (Plücker subspace↔eigenline bridge assembling `norm_bandProjector_succ_sub_le`).
   - **`OseledetsLimit.lean` REMAINING (L7c.3+, task #22, the crux):** (§3.3, highest risk, NEW infra
     M-2′, no Mathlib Davis–Kahan) the gapped self-adjoint **projection-Cauchy** estimate (per-distinct-λ,
     NOT per-index) ⟹ `oseledetsLimit Λ` exists (L7d, closure compiled); then (§3.4) bridge

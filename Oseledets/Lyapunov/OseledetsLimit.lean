@@ -45,7 +45,7 @@ cocycle and fed to Kingman's ergodic theorem (`tendsto_kingman_ergodic`).
 -/
 
 open Module InnerProductSpace MeasureTheory Filter Topology
-open scoped Matrix.Norms.L2Operator Matrix MatrixOrder
+open scoped Matrix.Norms.L2Operator Matrix MatrixOrder RealInnerProductSpace
 
 noncomputable section
 
@@ -757,6 +757,61 @@ theorem exists_tendsto_cfc_of_summable {d : ℕ} (H : ℕ → Matrix (Fin d) (Fi
     (hsum : Summable (fun n => ‖cfc χ (H (n + 1)) - cfc χ (H n)‖)) :
     ∃ L, Tendsto (fun n => cfc χ (H n)) atTop (𝓝 L) :=
   cauchySeq_tendsto_of_complete (cauchySeq_cfc_of_summable H χ hsum)
+
+/-! ## L7c.3a: the rank-1 Rayleigh-gap sin-Θ core
+
+The irreducible analytic kernel of the gapped band-projector Cauchy estimate (L7c.3). It is an
+elementary (Parseval + one scalar inequality) replacement for an abstract Davis–Kahan sin-Θ
+theorem, which Mathlib lacks entirely. Stated abstractly for a symmetric operator on any real inner
+product space (upstreamable, no dynamics): if a unit vector `v'` nearly maximizes the Rayleigh
+quotient of `C`, it is close to the top eigenvector `v₀`, with the squared sine of the angle
+controlled by the Rayleigh deficit divided by the spectral gap. The cocycle consumer (L7c.3) takes
+`C = ⋀^k Qₙ` and `v'` the top eigenvector of `⋀^k Qₙ₊₁`, where the deficit is the one-step
+distortion. -/
+
+/-- **L7c.3a — the rank-1 Rayleigh-gap sin-Θ bound.** For a symmetric operator `C` with a top unit
+eigenvector `v₀` of eigenvalue `μ₀`, whose `v₀`-orthogonal complement has Rayleigh quotient bounded
+above by a strictly smaller `μ₁`, any unit vector `v'` whose Rayleigh quotient is within `ε` of `μ₀`
+makes a small angle with `v₀`: the squared sine `‖v' - ⟪v', v₀⟫ v₀‖²` is at most `ε / (μ₀ - μ₁)`. -/
+theorem sin_sq_le_rayleigh_deficit_div_gap {E : Type*} [NormedAddCommGroup E]
+    [InnerProductSpace ℝ E] {C : E →ₗ[ℝ] E} (hC : C.IsSymmetric)
+    {μ₀ μ₁ : ℝ} {v₀ : E} (hv₀ : ‖v₀‖ = 1) (hev : C v₀ = μ₀ • v₀) (hgap : μ₁ < μ₀)
+    (hμ₁ : ∀ w : E, ⟪w, v₀⟫_ℝ = 0 → ⟪C w, w⟫_ℝ ≤ μ₁ * ‖w‖ ^ 2)
+    {v' : E} (hv' : ‖v'‖ = 1) {ε : ℝ} (hRay : μ₀ - ε ≤ ⟪C v', v'⟫_ℝ) :
+    ‖v' - (⟪v', v₀⟫_ℝ) • v₀‖ ^ 2 ≤ ε / (μ₀ - μ₁) := by
+  set p : ℝ := ⟪v', v₀⟫_ℝ with hp
+  set w : E := v' - p • v₀ with hw
+  have hv₀v₀ : ⟪v₀, v₀⟫_ℝ = 1 := by rw [real_inner_self_eq_norm_sq, hv₀]; norm_num
+  have hwv₀ : ⟪w, v₀⟫_ℝ = 0 := by
+    rw [hw, inner_sub_left, real_inner_smul_left, hv₀v₀, hp]; ring
+  have hv₀w : ⟪v₀, w⟫_ℝ = 0 := by rw [real_inner_comm]; exact hwv₀
+  have hdecomp : v' = p • v₀ + w := by rw [hw]; abel
+  -- Pythagoras: `1 = p² + ‖w‖²`.
+  have hpv : ‖p • v₀‖ ^ 2 = p ^ 2 := by
+    rw [norm_smul, hv₀, mul_one, Real.norm_eq_abs, sq_abs]
+  have hpyth : (1 : ℝ) = p ^ 2 + ‖w‖ ^ 2 := by
+    have h2 : ‖v'‖ ^ 2 = ‖p • v₀‖ ^ 2 + 2 * ⟪p • v₀, w⟫_ℝ + ‖w‖ ^ 2 := by
+      rw [hdecomp]; exact norm_add_sq_real _ _
+    rw [hv', hpv, real_inner_smul_left, hv₀w] at h2
+    nlinarith [h2]
+  -- Rayleigh decomposition: `⟪C v', v'⟫ = μ₀ p² + ⟪C w, w⟫`.
+  have hCwv₀ : ⟪C w, v₀⟫_ℝ = 0 := by
+    simp [hC w v₀, hev, real_inner_smul_right, hwv₀]
+  have hray : ⟪C v', v'⟫_ℝ = μ₀ * p ^ 2 + ⟪C w, w⟫_ℝ := by
+    have hCv' : C v' = (p * μ₀) • v₀ + C w := by
+      rw [hdecomp, map_add, map_smul, hev, smul_smul]
+    rw [hCv', hdecomp]
+    simp only [inner_add_left, inner_add_right, real_inner_smul_left, real_inner_smul_right,
+      hv₀v₀, hv₀w, hCwv₀, mul_zero, add_zero, mul_one]
+    ring
+  have hb : ⟪C w, w⟫_ℝ ≤ μ₁ * ‖w‖ ^ 2 := hμ₁ w hwv₀
+  -- the algebraic kernel: `c + s = 1`, `μ₀ - ε ≤ μ₀ c + b`, `b ≤ μ₁ s` force `s ≤ ε/(μ₀-μ₁)`.
+  set s : ℝ := ‖w‖ ^ 2 with hs
+  have hgap' : 0 < μ₀ - μ₁ := by linarith
+  rw [le_div_iff₀ hgap']
+  have hp2 : p ^ 2 = 1 - s := by rw [hs] at hpyth ⊢; linarith
+  rw [hray, hp2] at hRay
+  nlinarith [hRay, hb]
 
 end Oseledets
 
