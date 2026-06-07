@@ -2125,17 +2125,89 @@ lemma eigenpair_ceiling_transport {ιE ιE' : Type*}
 
 end Reconciliation
 
-/-! ### The Plücker eigenpair in standard (compound-matrix) coordinates — DEFERRED
+/-! ### The Plücker eigenpair in standard (compound-matrix) coordinates
 
-The matrix-level packaging `plucker_eigenpair_ceiling_standard` (transporting
-`plucker_eigenpair_ceiling` through `onbChange`/`rayleigh_onbChange_eq` into the standard
-`toEuclideanLin (compoundMatrix k (Mᵀ M))` coordinates) is deferred: its elaboration times out
-even at `maxHeartbeats 1600000` (the `⋀^k` finrank index types + the compound bridge are too
-heavy in one declaration). The reusable *abstract* core is already banked above
-(`conjExteriorMap_onbChange_conj`, `rayleigh_onbChange_eq`); the matrix wrapper should be rebuilt
-by splitting the abstract eigenpair/ceiling transport (light, over a general `E`) from the
-matrix identification `conjExteriorMap (onbTriv basisFun) (toEuclideanLin (Mᵀ M))
-= toEuclideanLin (compoundMatrix k (Mᵀ M))`, so neither half exceeds the heartbeat budget. -/
+The matrix-level packaging `plucker_eigenpair_ceiling_standard` transports
+`plucker_eigenpair_ceiling` through the orthogonal change-of-trivialization `onbChange`
+(via `eigenpair_ceiling_transport`) into the **standard** wedge trivialization
+`onbTriv (EuclideanSpace.basisFun (Fin d) ℝ)`, where the compound bridge
+`conjExteriorMap_eq_toEuclideanLin_compound` identifies the conjugated compound of
+`toEuclideanLin Q` with `toEuclideanLin (compoundMatrix k Q)` — exactly the operator consumed by the
+NODE 1 lemmas `norm_offdiag_residual_compound_le` / `perturbed_compound_gram_ceiling`.
+
+The single declaration combining plucker ∘ transport ∘ matrix-identification timed out even at
+`maxHeartbeats 1600000`. The fix is to *split* the heavy matrix-identification step into an isolated
+scoped lemma (`conjExteriorMap_basisFun_toEuclideanLin_eq_compound` below — a thin alias of the
+committed compound bridge, kept separate so its `⋀^k` finrank elaboration cost is contained) and to
+keep the transport/assembly in its own scoped declaration. -/
+
+section StandardCoords
+
+variable {d : ℕ}
+
+set_option maxHeartbeats 800000 in
+/-- **(A) — the isolated matrix-identification step.** Through the standard orthonormal-wedge
+trivialization (`onbTriv (EuclideanSpace.basisFun (Fin d) ℝ)`), the conjugated compound of
+`toEuclideanLin M` is `toEuclideanLin (compoundMatrix k M)`. This is a thin re-export of the
+committed `conjExteriorMap_eq_toEuclideanLin_compound`, isolated in its own scoped declaration so
+that the (heavy) `⋀^k` finrank-indexed elaboration is paid here exactly once, keeping the
+assembled `plucker_eigenpair_ceiling_standard` under budget. -/
+theorem conjExteriorMap_basisFun_toEuclideanLin_eq_compound
+    (k : ℕ) (M : Matrix (Fin d) (Fin d) ℝ) :
+    conjExteriorMap k (onbTriv (EuclideanSpace.basisFun (Fin d) ℝ) k)
+        (onbTriv (EuclideanSpace.basisFun (Fin d) ℝ) k) (Matrix.toEuclideanLin M)
+      = Matrix.toEuclideanLin (compoundMatrix k M) :=
+  conjExteriorMap_eq_toEuclideanLin_compound k M
+
+set_option maxHeartbeats 1200000 in
+/-- **(B) — `plucker_eigenpair_ceiling_standard`.** The Plücker eigenpair + second-eigenvalue
+ceiling in *standard* compound-matrix coordinates. For a symmetric PSD `f = toEuclideanLin Q` with
+orthonormal eigenbasis `u` and antitone nonnegative eigenvalues `lam`, at a genuine gap
+`lam k < lam (k-1)`, the operator `toEuclideanLin (compoundMatrix k Q)` (`= ⋀^k Q` in the standard
+trivialization) has:
+
+* **top eigenpair:** a unit vector `v₀` with `toEuclideanLin (compoundMatrix k Q) v₀ = μ₀ • v₀`,
+  `μ₀ = ∏_{i<k} lam i`;
+* **the gap:** `μ₁ < μ₀` with `μ₁ = (∏_{i<k-1} lam i)·lam k`;
+* **second-eigenvalue ceiling:** `∀ w ⊥ v₀, ⟪(toEuclideanLin (compoundMatrix k Q)) w, w⟫ ≤ μ₁‖w‖²`.
+
+Assembled from `plucker_eigenpair_ceiling` (eigenbasis-wedge coords) → `eigenpair_ceiling_transport`
+(`onbChange` to standard `basisFun` coords) → `conjExteriorMap_basisFun_toEuclideanLin_eq_compound`
+(matrix identification, isolated in (A)). This is the top spectral data of `Cₙ = ⋀^k Qₙ` that the
+NODE 1 lemmas `norm_offdiag_residual_compound_le` / `perturbed_compound_gram_ceiling` consume. -/
+theorem plucker_eigenpair_ceiling_standard {n : ℕ} (Q : Matrix (Fin d) (Fin d) ℝ)
+    (u : OrthonormalBasis (Fin n) ℝ (EuclideanSpace ℝ (Fin d)))
+    (lam : ℕ → ℝ) (hanti : Antitone lam) (hpos : ∀ i, 0 ≤ lam i)
+    (hf : ∀ i, Matrix.toEuclideanLin Q (u i) = lam (i : ℕ) • u i)
+    {k : ℕ} (hk1 : 1 ≤ k) (hkn : k ≤ n) (hgap : lam k < lam (k - 1)) :
+    ∃ v₀ : EuclideanSpace ℝ (Fin (Module.finrank ℝ (⋀[ℝ]^k (EuclideanSpace ℝ (Fin d))))),
+      ‖v₀‖ = 1
+      ∧ Matrix.toEuclideanLin (compoundMatrix k Q) v₀
+          = (∏ i ∈ Finset.range k, lam i) • v₀
+      ∧ ((∏ i ∈ Finset.range (k-1), lam i) * lam k) < (∏ i ∈ Finset.range k, lam i)
+      ∧ ∀ w : EuclideanSpace ℝ (Fin (Module.finrank ℝ (⋀[ℝ]^k (EuclideanSpace ℝ (Fin d))))),
+          (inner ℝ w v₀ : ℝ) = 0 →
+          (inner ℝ (Matrix.toEuclideanLin (compoundMatrix k Q) w) w : ℝ)
+            ≤ ((∏ i ∈ Finset.range (k-1), lam i) * lam k) * ‖w‖ ^ 2 := by
+  classical
+  -- eigenbasis-coords Plücker data (PB1 + PB2).
+  obtain ⟨i₀, _hsym, hev, hgapμ, hceil⟩ :=
+    plucker_eigenpair_ceiling (Matrix.toEuclideanLin Q) u lam hanti hpos hf hk1 hkn hgap
+  -- transport to standard (`basisFun`) wedge coordinates via the orthogonal `onbChange`.
+  obtain ⟨hv₀norm, hv₀ev, hv₀ceil⟩ :=
+    eigenpair_ceiling_transport (EuclideanSpace.basisFun (Fin d) ℝ) u k
+      (Matrix.toEuclideanLin Q) i₀ _ _ hev hceil
+  -- the transported eigenvector, named once.
+  refine ⟨(onbChange (EuclideanSpace.basisFun (Fin d) ℝ) u k).symm
+      (EuclideanSpace.basisFun _ ℝ i₀), hv₀norm, ?_, hgapμ, ?_⟩
+  · -- identify the standard-coords conjugated compound with the compound matrix (step (A)).
+    rw [← conjExteriorMap_basisFun_toEuclideanLin_eq_compound k Q]
+    exact hv₀ev
+  · intro w hw
+    rw [← conjExteriorMap_basisFun_toEuclideanLin_eq_compound k Q]
+    exact hv₀ceil w hw
+
+end StandardCoords
 
 end Plucker
 

@@ -799,6 +799,98 @@ theorem bandProjector_rank (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) 
   refine Fintype.card_congr (Equiv.subtypeEquivRight (fun i => ?_))
   simp only [Function.comp_apply, RCLike.ofReal_real_eq_id, id_eq, ne_eq]
 
+/-! ## L7c.1 (frame form): the band projector is `U_top · U_topᵀ`
+
+The Frobenius back-transport `ExteriorNorm.norm_proj_sub_le_wedge` consumes the band projector in the
+shape `P = U Uᵀ` with `Uᵀ U = 1` (orthonormal columns). The `0/1` indicator cutoff selects exactly
+the eigenvectors of `qpow` with eigenvalue `> c`; through the explicit Hermitian-CFC triple product
+`cfc χ M = U · diag(χ ∘ eig) · Uᴴ` (`cfc_eq_eigenvectorUnitary_conj`), the band projector equals
+`U_top · U_topᵀ`, where `U_top` is the column-submatrix of the eigenvector unitary selecting the
+columns above the cut. The selected columns are orthonormal (`U_topᵀ U_top = 1`). -/
+
+/-- **Diag-selection.** For a real matrix `U` and the `0/1` indicator of `(c, ∞)` precomposed with a
+scalar `e : Fin d → ℝ`, conjugating the indicator diagonal by `U` selects the columns of `U` whose
+`e`-value exceeds `c`: `U · diag(𝟙_{(c,∞)} ∘ e) · Uᵀ = U_S · U_Sᵀ`, where `U_S` is the
+column-submatrix of `U` on `S = {i | c < e i}`. -/
+theorem diag_indicator_conj_eq_submatrix (U : Matrix (Fin d) (Fin d) ℝ) (c : ℝ)
+    (e : Fin d → ℝ) :
+    U * Matrix.diagonal (fun i => Set.indicator (Set.Ioi c) (1 : ℝ → ℝ) (e i)) * Uᵀ
+      = (U.submatrix id (Subtype.val : {i // c < e i} → Fin d))
+          * (U.submatrix id (Subtype.val : {i // c < e i} → Fin d))ᵀ := by
+  classical
+  ext a b
+  rw [Matrix.mul_assoc, Matrix.mul_apply]
+  simp only [Matrix.diagonal_mul, Matrix.transpose_apply]
+  rw [Matrix.mul_apply]
+  simp only [Matrix.transpose_apply, Matrix.submatrix_apply, id_eq]
+  rw [← Finset.sum_subtype (s := Finset.univ.filter (fun i => c < e i))
+      (p := fun i => c < e i) (fun i => by simp) (fun i => U a i * U b i)]
+  rw [Finset.sum_filter]
+  refine Finset.sum_congr rfl (fun i _ => ?_)
+  by_cases hi : c < e i
+  · rw [Set.indicator_of_mem (Set.mem_Ioi.mpr hi), Pi.one_apply, if_pos hi, one_mul]
+  · rw [Set.indicator_of_notMem (by simpa using hi), if_neg hi, zero_mul, mul_zero]
+
+/-- **Orthonormal columns of the selected submatrix.** If `U` has orthonormal columns
+(`Uᵀ U = 1`, e.g. an eigenvector unitary), then any column-subselection of `U` still has orthonormal
+columns: `U_Sᵀ U_S = 1`. (`U_S = U.submatrix id Subtype.val` over a subtype of column indices.) -/
+theorem submatrix_transpose_mul_self_eq_one (U : Matrix (Fin d) (Fin d) ℝ) (c : ℝ)
+    (e : Fin d → ℝ) (hU : Uᵀ * U = 1) :
+    (U.submatrix id (Subtype.val : {i // c < e i} → Fin d))ᵀ
+        * (U.submatrix id (Subtype.val : {i // c < e i} → Fin d)) = 1 := by
+  classical
+  ext s t
+  rw [Matrix.mul_apply]
+  simp only [Matrix.transpose_apply, Matrix.submatrix_apply, id_eq]
+  have hsum : ∑ a, U a (s : Fin d) * U a (t : Fin d) = (Uᵀ * U) (s : Fin d) (t : Fin d) := by
+    rw [Matrix.mul_apply]; simp [Matrix.transpose_apply]
+  rw [hsum, hU, Matrix.one_apply, Matrix.one_apply]
+  by_cases hst : s = t
+  · simp [hst]
+  · rw [if_neg hst, if_neg (fun h => hst (Subtype.ext h))]
+
+/-- **CFC indicator = `U_top · U_topᵀ`.** For a Hermitian real matrix `M` with eigenvector unitary
+`U` and eigenvalues `eig`, the band projector cut by the `0/1` indicator of `(c, ∞)` is
+`U_top · U_topᵀ`, where `U_top` is the column-submatrix of `U` selecting the eigenvectors with
+eigenvalue `> c`. Combines `cfc_eq_eigenvectorUnitary_conj` (the triple product
+`U · diag(χ ∘ eig) · Uᴴ`) with `diag_indicator_conj_eq_submatrix`. -/
+theorem cfc_indicator_eq_submatrix_mul (M : Matrix (Fin d) (Fin d) ℝ)
+    (hM : M.IsHermitian) (c : ℝ) :
+    cfc (Set.indicator (Set.Ioi c) (1 : ℝ → ℝ)) M
+      = (hM.eigenvectorUnitary : Matrix (Fin d) (Fin d) ℝ).submatrix id
+            (Subtype.val : {i // c < hM.eigenvalues i} → Fin d)
+          * ((hM.eigenvectorUnitary : Matrix (Fin d) (Fin d) ℝ).submatrix id
+            (Subtype.val : {i // c < hM.eigenvalues i} → Fin d))ᵀ := by
+  classical
+  rw [cfc_eq_eigenvectorUnitary_conj hM (Set.indicator (Set.Ioi c) 1)]
+  have hdiag : (Matrix.diagonal
+        (RCLike.ofReal ∘ Set.indicator (Set.Ioi c) (1 : ℝ → ℝ) ∘ hM.eigenvalues)
+      : Matrix (Fin d) (Fin d) ℝ)
+      = Matrix.diagonal (fun i => Set.indicator (Set.Ioi c) (1 : ℝ → ℝ) (hM.eigenvalues i)) := by
+    congr 1
+  rw [hdiag, Matrix.star_eq_conjTranspose,
+    (hM.eigenvectorUnitary : Matrix (Fin d) (Fin d) ℝ).conjTranspose_eq_transpose_of_trivial,
+    diag_indicator_conj_eq_submatrix]
+
+/-- **L7c.1 (frame form) — the band-projector frame extraction.** The band projector of `qpow` cut
+by the `0/1` indicator of `(c, ∞)` is `U_top · U_topᵀ`, with `U_top` the column-submatrix of the
+eigenvector unitary of `qpow A T n x` selecting the eigenvectors with eigenvalue `> c`, and the
+selected columns are orthonormal (`U_topᵀ U_top = 1`). This is the `P = U Uᵀ` input consumed by the
+Frobenius back-transport `ExteriorNorm.norm_proj_sub_le_wedge`. -/
+theorem bandProjector_indicator_eq_frame (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X)
+    {c : ℝ} (n : ℕ) (x : X) :
+    let hM := (qpow_isSelfAdjoint A T n x).isHermitian
+    let Utop := (hM.eigenvectorUnitary : Matrix (Fin d) (Fin d) ℝ).submatrix id
+      (Subtype.val : {i // c < hM.eigenvalues i} → Fin d)
+    bandProjector A T (Set.indicator (Set.Ioi c) 1) n x = Utop * Utopᵀ
+      ∧ Utopᵀ * Utop = 1 := by
+  intro hM Utop
+  refine ⟨?_, ?_⟩
+  · exact cfc_indicator_eq_submatrix_mul (qpow A T n x) hM c
+  · exact submatrix_transpose_mul_self_eq_one
+      (hM.eigenvectorUnitary : Matrix (Fin d) (Fin d) ℝ) c hM.eigenvalues
+      (Unitary.coe_star_mul_self hM.eigenvectorUnitary)
+
 /-! ## L7c.5: Cauchy packaging — summable increments give a convergent (band-projector) sequence
 
 The hard mathematical content of L7c (the gapped-projection-Cauchy estimate, L7c.3/L7c.4) produces
