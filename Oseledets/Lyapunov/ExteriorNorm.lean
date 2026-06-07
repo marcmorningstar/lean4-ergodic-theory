@@ -563,6 +563,54 @@ private lemma prod_le_prod_top {n k : ℕ} (σ : Fin n → ℝ) (hσ : Antitone 
     rw [Fin.le_iff_val_le_val, htop]
     exact le_orderEmb (Finset.orderEmbOfFin S.val S.prop) i
 
+/-- **The top element of a non-top `k`-subset is `≥ k`.** If the ordered enumeration `e` of a
+`k`-subset `S` of `Fin n` does not enumerate the top prefix `{0,…,k-1}`, then its largest element
+`e ⟨k-1⟩` has value `≥ k`. (Otherwise all of `S` lies in `{0,…,k-1}`, forcing `S` = top prefix.) -/
+private lemma top_elem_ge {n k : ℕ} (hk1 : 1 ≤ k) (hkn : k ≤ n) (e : Fin k ↪o Fin n)
+    (htop : ((Finset.univ.image (fun j : Fin k => (e j))) : Finset (Fin n))
+      ≠ Finset.univ.image (fun i : Fin k => (⟨i, lt_of_lt_of_le i.2 hkn⟩ : Fin n))) :
+    k ≤ (e ⟨k-1, by omega⟩ : ℕ) := by
+  by_contra hlt
+  rw [not_le] at hlt
+  apply htop
+  apply Finset.eq_of_subset_of_card_le
+  · intro x hx
+    simp only [Finset.mem_image, Finset.mem_univ, true_and] at hx ⊢
+    obtain ⟨j, rfl⟩ := hx
+    have hjlt := j.2
+    have hle : (e j : ℕ) ≤ (e ⟨k-1, by omega⟩ : ℕ) := by
+      have hj : j ≤ (⟨k-1, by omega⟩ : Fin k) := by rw [Fin.le_def]; simp only; omega
+      exact_mod_cast (e.monotone hj)
+    have hjk : (e j : ℕ) < k := lt_of_le_of_lt hle hlt
+    exact ⟨⟨(e j : ℕ), hjk⟩, Fin.ext rfl⟩
+  · rw [Finset.card_image_of_injective _ (fun a b h => e.injective h),
+        Finset.card_image_of_injective _ (fun a b h => Fin.ext (by simpa using congrArg Fin.val h))]
+
+/-- **The second-largest `k`-subset product bound.** For antitone nonnegative `lam`, the product of
+`lam` over the ordered enumeration `e` of a `k`-subset whose top element is `≥ k` (i.e. a non-top
+subset) is at most the second-largest product `(∏_{i<k-1} lam i)·lam k`. The top factor drops from
+`lam (k-1)` to `lam k`; the remaining `k-1` factors are bounded by the prefix `{0,…,k-2}`. -/
+private lemma prod_le_second_aux {n : ℕ} (m : ℕ) (lam : ℕ → ℝ)
+    (hanti : Antitone lam) (hpos : ∀ i, 0 ≤ lam i) (e : Fin (m+1) ↪o Fin n)
+    (htopge : m + 1 ≤ (e ⟨m, by omega⟩ : ℕ)) :
+    ∏ j : Fin (m+1), lam (e j : ℕ) ≤ (∏ i ∈ Finset.range m, lam i) * lam (m+1) := by
+  rw [Fin.prod_univ_castSucc]
+  have hlast : lam (e (Fin.last m) : ℕ) ≤ lam (m+1) := by
+    apply hanti
+    rw [show (Fin.last m : Fin (m+1)) = ⟨m, by omega⟩ from rfl]; exact htopge
+  have hcast : ∏ j : Fin m, lam (e j.castSucc : ℕ) ≤ ∏ i ∈ Finset.range m, lam i := by
+    rw [Finset.prod_range fun i => lam i]
+    apply Finset.prod_le_prod (fun i _ => hpos _)
+    intro i _
+    apply hanti
+    have := le_orderEmb e i.castSucc
+    simpa using this
+  calc (∏ j : Fin m, lam (e j.castSucc : ℕ)) * lam (e (Fin.last m) : ℕ)
+      ≤ (∏ i ∈ Finset.range m, lam i) * lam (e (Fin.last m) : ℕ) :=
+        mul_le_mul_of_nonneg_right hcast (hpos _)
+    _ ≤ (∏ i ∈ Finset.range m, lam i) * lam (m+1) :=
+        mul_le_mul_of_nonneg_left hlast (Finset.prod_nonneg (fun _ _ => hpos _))
+
 /-- **The bridge.** Through the Hodge trivializations of source and target, the exterior operator
 norm equals the product of the top-`k` singular values:
 `exteriorOpNorm k (hodgeTrivialization k) (hodgeTrivialization k) f = ∏_{i<k} σᵢ(f)`. -/
@@ -719,6 +767,54 @@ theorem exteriorOpNorm_hodge_eq_prod_singularValues (k : ℕ) (f : E →ₗ[ℝ]
     symm
     apply Finset.prod_eq_zero (Finset.mem_range.mpr (Nat.lt_of_not_le hkn))
     exact f.singularValues_of_finrank_le hnE.symm.le
+
+/-! ### The Plücker bridge: eigen-diagonalization of the compound
+
+For a symmetric map `f` with orthonormal eigenbasis `u` and eigenvalues `lam`, the compound
+`⋀^k f` is diagonal in the wedge basis of `u`: it scales the wedge `u_S` by `∏_{a ∈ S} lam a`.
+This is the abstract spectral core feeding the Plücker-bridge eigenpair (PB1) and the
+second-eigenvalue ceiling (PB2). -/
+
+/-- **Product reindexing.** A product of `lam` over the ordered enumeration of a `k`-subset `S`
+equals the product of `lam` over `S`. -/
+private lemma prod_ofFinEmbEquiv_symm {ι : Type*} [LinearOrder ι] {k : ℕ} (lam : ι → ℝ)
+    (S : Set.powersetCard ι k) :
+    ∏ i, lam ((Set.powersetCard.ofFinEmbEquiv.symm S) i) = ∏ a ∈ (S : Finset ι), lam a := by
+  have himg : (S : Finset ι) = Finset.univ.image (Set.powersetCard.ofFinEmbEquiv.symm S) := by
+    rw [Set.powersetCard.ofFinEmbEquiv_symm_apply, Finset.image_orderEmbOfFin_univ]
+  rw [himg, Finset.prod_image
+    (fun i _ j _ h => (Set.powersetCard.ofFinEmbEquiv.symm S).injective h)]
+
+/-- **`ιMulti_family` scalar pull-out.** A family rescaled entrywise by `lam` factors a product of
+scalars out of the wedge: `ιMulti_family (fun j ↦ lam j • g j) S = (∏_{a ∈ S} lam a) • ιMulti_family g S`.
+Multilinearity of the alternating map `ιMulti` (`AlternatingMap.map_smul_univ`). -/
+private lemma ιMulti_family_smul {ι : Type*} [LinearOrder ι] {k : ℕ} (lam : ι → ℝ) (g : ι → E)
+    (S : Set.powersetCard ι k) :
+    exteriorPower.ιMulti_family ℝ k (fun j => lam j • g j) S
+      = (∏ a ∈ (S : Finset ι), lam a) • exteriorPower.ιMulti_family ℝ k g S := by
+  classical
+  rw [exteriorPower.ιMulti_family, exteriorPower.ιMulti_family]
+  have hcomp : (fun j => lam j • g j) ∘ (Set.powersetCard.ofFinEmbEquiv.symm S)
+      = fun i => lam ((Set.powersetCard.ofFinEmbEquiv.symm S) i) •
+          (g ∘ (Set.powersetCard.ofFinEmbEquiv.symm S)) i := by
+    funext i; simp
+  rw [hcomp, AlternatingMap.map_smul_univ, prod_ofFinEmbEquiv_symm]
+
+open scoped Classical in
+/-- **Eigen-diagonalization of the compound (abstract).** For a linear map `f` with an orthonormal
+eigenbasis `u` (`f (u i) = lam i • u i`), the compound `⋀^k f` scales each wedge basis vector
+`u_S` by the subset product `∏_{a ∈ S} lam a`. -/
+private lemma map_exteriorPower_wedgeBasis_eq {ι : Type*} [Fintype ι] [LinearOrder ι]
+    (f : E →ₗ[ℝ] E) (u : OrthonormalBasis ι ℝ E) (lam : ι → ℝ)
+    (hf : ∀ i, f (u i) = lam i • u i) (k : ℕ) (S : Set.powersetCard ι k) :
+    exteriorPower.map k f (u.toBasis.exteriorPower k S)
+      = (∏ a ∈ (S : Finset ι), lam a) • (u.toBasis.exteriorPower k S) := by
+  classical
+  rw [exteriorPower.basis_apply, exteriorPower.map_apply_ιMulti_family]
+  have hfun : (⇑f ∘ ⇑u.toBasis) = fun j => lam j • (⇑u.toBasis j) := by
+    funext j; simp only [Function.comp_apply, u.coe_toBasis]; exact hf j
+  rw [hfun]
+  exact ιMulti_family_smul lam (⇑u.toBasis) S
 
 /-! ### The compound matrix and the operator-norm/compound bridge
 
@@ -1402,6 +1498,293 @@ theorem rayleigh_deficit_le (k : ℕ) {B : Matrix (Fin d) (Fin d) ℝ} (hB : B.d
   exact rayleigh_deficit_kernel (norm_nonneg _) (norm_nonneg _) (norm_nonneg _) hstep1 hstep2
 
 end Rayleigh
+
+/-! ## The Plücker bridge (PB1/PB2/PB3)
+
+For a symmetric PD map `f` with orthonormal eigenbasis `u` and eigenvalues `lam`, the compound
+`⋀^k f`, conjugated through the eigenbasis wedge trivialization `onbTriv u`, is a **diagonal**
+Euclidean operator: it scales `basisFun i` by the subset product `∏_{a ∈ Sᵢ} lam a`. The top set
+`{0,…,k-1}` (maximal by `prod_le_prod_top` for antitone weights) gives the top eigenvector
+`v₀ = basisFun i₀` with eigenvalue `μ₀` (PB1), and every other weight is `≤ μ₁` (PB2). PB3 is the
+det-Gram identity for the Plücker (wedge) inner product. -/
+
+section Plucker
+
+variable {E : Type*}
+  [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+
+open scoped Classical in
+/-- **The conjugated compound is diagonal in the eigenbasis.** For a symmetric `f` with orthonormal
+eigenbasis `u` and eigenvalues `lam`, conjugating `⋀^k f` through the eigenbasis wedge
+trivialization `onbTriv u` yields a diagonal Euclidean operator: `basisFun i ↦ (∏_{a ∈ Sᵢ} lam a) •
+basisFun i`, where `Sᵢ = (wIndexEquiv u k).symm i`. -/
+private lemma conjExteriorMap_onbTriv_diag {ι : Type*} [Fintype ι] [LinearOrder ι]
+    (f : E →ₗ[ℝ] E) (u : OrthonormalBasis ι ℝ E) (lam : ι → ℝ)
+    (hf : ∀ i, f (u i) = lam i • u i) (k : ℕ)
+    (i : Fin (Module.finrank ℝ (⋀[ℝ]^k E))) :
+    conjExteriorMap k (onbTriv u k) (onbTriv u k) f (EuclideanSpace.basisFun _ ℝ i)
+      = (∏ a ∈ ((wIndexEquiv u k).symm i : Set.powersetCard ι k).val, lam a)
+          • EuclideanSpace.basisFun _ ℝ i := by
+  classical
+  -- `conjExteriorMap ... (basisFun i) = onbTriv u (⋀^k f (wedge u_{Sᵢ}))`.
+  rw [conjExteriorMap]
+  simp only [LinearMap.comp_apply, LinearEquiv.coe_coe]
+  rw [show (onbTriv u k).symm (EuclideanSpace.basisFun (Fin (Module.finrank ℝ (⋀[ℝ]^k E))) ℝ i)
+      = (u.toBasis.exteriorPower k) ((wIndexEquiv u k).symm i) by
+    rw [LinearEquiv.symm_apply_eq]; exact (onbTriv_wedge_eq_basisFun u k i).symm]
+  rw [map_exteriorPower_wedgeBasis_eq f u lam hf k, map_smul, onbTriv_wedge_eq_basisFun]
+
+open scoped Classical in
+/-- **PB3 — the Plücker (wedge) inner product is the cross-Gram determinant.** For two families
+`v, w : Fin k → E`, the L2 inner product of their Hodge-trivialized wedges equals the determinant
+of the cross-Gram matrix `⟪v j, w i⟫`. With orthonormal frames this is the wedge-sine identity
+`⟪w_E, w_E'⟫ = det(UᵀV)` feeding the Frobenius back-transport `norm_proj_sub_le_wedge`. -/
+theorem inner_hodgeTrivialization_ιMulti (k : ℕ) (v w : Fin k → E) :
+    (inner ℝ (hodgeTrivialization k (exteriorPower.ιMulti ℝ k v))
+        (hodgeTrivialization k (exteriorPower.ιMulti ℝ k w)) : ℝ)
+      = (Matrix.of fun i j => (inner ℝ (v j) (w i) : ℝ)).det := by
+  classical
+  -- the Hodge trivialization is the standard o.n.-basis wedge trivialization.
+  have hStd : hodgeTrivialization (E := E) k = onbTriv (stdOrthonormalBasis ℝ E) k := by
+    unfold hodgeTrivialization onbTriv wedgeBasis wedgeIndexEquiv wIndexEquiv
+    rfl
+  rw [hStd, inner_onbTriv, hodgeForm_ιMulti]
+
+/-! ### Abstract diagonal Euclidean operators: eigenpair and second-eigenvalue ceiling -/
+
+/-- A Euclidean operator diagonal in the standard basis (with real weights) is symmetric. -/
+private lemma diag_isSymmetric {N : ℕ}
+    (g : EuclideanSpace ℝ (Fin N) →ₗ[ℝ] EuclideanSpace ℝ (Fin N)) (c : Fin N → ℝ)
+    (hg : ∀ i, g (EuclideanSpace.basisFun (Fin N) ℝ i) = c i • EuclideanSpace.basisFun (Fin N) ℝ i) :
+    g.IsSymmetric := by
+  -- check symmetry on the standard basis, then extend bilinearly.
+  have hbasis : ∀ i j, (inner ℝ (g (EuclideanSpace.basisFun (Fin N) ℝ i))
+      (EuclideanSpace.basisFun (Fin N) ℝ j) : ℝ)
+      = inner ℝ (EuclideanSpace.basisFun (Fin N) ℝ i) (g (EuclideanSpace.basisFun (Fin N) ℝ j)) := by
+    intro i j
+    rw [hg i, hg j, inner_smul_left, inner_smul_right,
+      (EuclideanSpace.basisFun (Fin N) ℝ).inner_eq_ite i j]
+    simp only [RCLike.conj_to_real]
+    by_cases h : i = j <;> simp [h]
+  intro x y
+  have hx := (EuclideanSpace.basisFun (Fin N) ℝ).sum_repr x
+  have hy := (EuclideanSpace.basisFun (Fin N) ℝ).sum_repr y
+  rw [← hx, ← hy]
+  simp only [map_sum, map_smul, sum_inner, inner_sum, inner_smul_left, inner_smul_right,
+    RCLike.conj_to_real, EuclideanSpace.basisFun_repr]
+  apply Finset.sum_congr rfl; intro i _
+  congr 1
+  apply Finset.sum_congr rfl; intro j _
+  rw [hbasis j i]
+
+/-- **PB1 (abstract).** A Euclidean operator `g` diagonal in the standard basis with weights `c`
+(`g (basisFun i) = c i • basisFun i`) has `basisFun i₀` as an eigenvector with eigenvalue `c i₀`. -/
+private lemma diag_apply_basisFun_eigenpair {N : ℕ}
+    (g : EuclideanSpace ℝ (Fin N) →ₗ[ℝ] EuclideanSpace ℝ (Fin N)) (c : Fin N → ℝ)
+    (hg : ∀ i, g (EuclideanSpace.basisFun (Fin N) ℝ i) = c i • EuclideanSpace.basisFun (Fin N) ℝ i)
+    (i₀ : Fin N) :
+    g (EuclideanSpace.basisFun (Fin N) ℝ i₀) = c i₀ • EuclideanSpace.basisFun (Fin N) ℝ i₀ :=
+  hg i₀
+
+/-- **PB2 (abstract).** For a diagonal Euclidean operator `g` with weights `c`, the Rayleigh
+quotient on a vector `w` orthogonal to `basisFun i₀` is bounded by `μ₁ ‖w‖²`, provided every weight
+off the top index `i₀` is `≤ μ₁` (and `0 ≤ μ₁`). -/
+private lemma diag_rayleigh_ceiling {N : ℕ}
+    (g : EuclideanSpace ℝ (Fin N) →ₗ[ℝ] EuclideanSpace ℝ (Fin N)) (c : Fin N → ℝ)
+    (hg : ∀ i, g (EuclideanSpace.basisFun (Fin N) ℝ i) = c i • EuclideanSpace.basisFun (Fin N) ℝ i)
+    {μ₁ : ℝ} (i₀ : Fin N) (hcap : ∀ i, i ≠ i₀ → c i ≤ μ₁) (_hμpos : 0 ≤ μ₁)
+    (w : EuclideanSpace ℝ (Fin N)) (hw : (inner ℝ w (EuclideanSpace.basisFun (Fin N) ℝ i₀) : ℝ) = 0) :
+    (inner ℝ (g w) w : ℝ) ≤ μ₁ * ‖w‖ ^ 2 := by
+  -- expand `w` in the standard basis; the Rayleigh quotient is the weighted sum `∑ cᵢ (wᵢ)²`.
+  have hwi₀ : w i₀ = 0 := by
+    have := hw
+    rw [EuclideanSpace.basisFun_apply, EuclideanSpace.inner_single_right] at this
+    simpa using this
+  have hexp : w = ∑ i, (w i) • EuclideanSpace.basisFun (Fin N) ℝ i := by
+    conv_lhs => rw [← (EuclideanSpace.basisFun (Fin N) ℝ).sum_repr w]
+    simp only [EuclideanSpace.basisFun_repr]
+  have hgw : g w = ∑ i, (w i) • (c i • EuclideanSpace.basisFun (Fin N) ℝ i) := by
+    conv_lhs => rw [hexp]
+    rw [map_sum]
+    apply Finset.sum_congr rfl
+    intro i _
+    rw [map_smul, hg i]
+  -- `⟪g w, w⟫ = ∑ cᵢ (wᵢ)²`.
+  have hray : (inner ℝ (g w) w : ℝ) = ∑ i, c i * (w i) ^ 2 := by
+    rw [hgw, sum_inner]
+    apply Finset.sum_congr rfl
+    intro i _
+    rw [inner_smul_left, inner_smul_left, EuclideanSpace.basisFun_apply,
+      EuclideanSpace.inner_single_left, map_one, one_mul]
+    simp only [RCLike.conj_to_real]
+    ring
+  -- `‖w‖² = ∑ (wᵢ)²`.
+  have hnorm : ‖w‖ ^ 2 = ∑ i, (w i) ^ 2 := by
+    rw [← real_inner_self_eq_norm_sq, PiLp.inner_apply]
+    apply Finset.sum_congr rfl
+    intro i _
+    simp only [RCLike.inner_apply, conj_trivial]; ring
+  rw [hray, hnorm, Finset.mul_sum]
+  apply Finset.sum_le_sum
+  intro i _
+  by_cases hi : i = i₀
+  · subst hi; rw [hwi₀]; simp
+  · rw [mul_comm (c i), mul_comm μ₁]
+    exact mul_le_mul_of_nonneg_left (hcap i hi) (sq_nonneg _)
+
+/-! ### The Plücker eigenpair and second-eigenvalue ceiling (PB1 + PB2 assembled) -/
+
+open scoped Classical in
+/-- **PB1 + PB2 — the Plücker bridge for a symmetric map.** Let `f` be symmetric with orthonormal
+eigenbasis `u : OrthonormalBasis (Fin n)` and antitone nonnegative eigenvalues
+`lam : ℕ → ℝ` (`f (u i) = lam i • u i`). At a genuine gap `lam k < lam (k-1)` (with `1 ≤ k ≤ n`),
+the conjugated compound `C = ⋀^k f` (through the eigenbasis wedge trivialization `onbTriv u`) is a
+**symmetric operator** with:
+
+* **top eigenpair (PB1):** `C v₀ = μ₀ • v₀`, where `v₀ = basisFun i₀` is the Plücker image of the
+  top-`k` eigenframe and `μ₀ = ∏_{i<k} lam i`;
+* **second-eigenvalue ceiling (PB2):** `∀ w ⊥ v₀, ⟪C w, w⟫ ≤ μ₁ ‖w‖²` with
+  `μ₁ = (∏_{i<k-1} lam i)·lam k`;
+* **the gap:** `μ₁ < μ₀`.
+
+This lands in exactly the shape consumed by `sin_sq_le_rayleigh_deficit_div_gap` (`hC`, `hv₀`,
+`hev`, `hgap`, `hμ₁`). -/
+theorem plucker_eigenpair_ceiling {n : ℕ} (f : E →ₗ[ℝ] E)
+    (u : OrthonormalBasis (Fin n) ℝ E) (lam : ℕ → ℝ) (hanti : Antitone lam)
+    (hpos : ∀ i, 0 ≤ lam i) (hf : ∀ i, f (u i) = lam (i : ℕ) • u i)
+    {k : ℕ} (hk1 : 1 ≤ k) (hkn : k ≤ n) (hgap : lam k < lam (k - 1)) :
+    ∃ i₀ : Fin (Module.finrank ℝ (⋀[ℝ]^k E)),
+      (conjExteriorMap k (onbTriv u k) (onbTriv u k) f).IsSymmetric
+      ∧ conjExteriorMap k (onbTriv u k) (onbTriv u k) f
+          (EuclideanSpace.basisFun _ ℝ i₀)
+        = (∏ i ∈ Finset.range k, lam i) • EuclideanSpace.basisFun _ ℝ i₀
+      ∧ ((∏ i ∈ Finset.range (k-1), lam i) * lam k) < (∏ i ∈ Finset.range k, lam i)
+      ∧ ∀ w : EuclideanSpace ℝ (Fin (Module.finrank ℝ (⋀[ℝ]^k E))),
+          (inner ℝ w (EuclideanSpace.basisFun _ ℝ i₀) : ℝ) = 0 →
+          (inner ℝ ((conjExteriorMap k (onbTriv u k) (onbTriv u k) f) w) w : ℝ)
+            ≤ ((∏ i ∈ Finset.range (k-1), lam i) * lam k) * ‖w‖ ^ 2 := by
+  classical
+  set N := Module.finrank ℝ (⋀[ℝ]^k E) with hN
+  set C := conjExteriorMap k (onbTriv u k) (onbTriv u k) f with hC
+  -- the diagonal weight `c i = ∏_{a ∈ Sᵢ} lam a`.
+  set c : Fin N → ℝ := fun i =>
+    ∏ a ∈ ((wIndexEquiv u k).symm i : Set.powersetCard (Fin n) k).val, lam (a : ℕ) with hcdef
+  -- the diagonalization: `C (basisFun i) = c i • basisFun i`.
+  have hCdiag : ∀ i, C (EuclideanSpace.basisFun (Fin N) ℝ i)
+      = c i • EuclideanSpace.basisFun (Fin N) ℝ i := by
+    intro i
+    rw [hC, conjExteriorMap_onbTriv_diag f u (fun j => lam (j : ℕ)) hf k]
+  -- the top prefix embedding/set and its index `i₀`.
+  set topEmb : Fin k ↪o Fin n :=
+    { toFun := fun i => ⟨i, lt_of_lt_of_le i.2 hkn⟩
+      inj' := fun i j h => Fin.ext (by simpa using congrArg Fin.val h)
+      map_rel_iff' := Iff.rfl } with htopEmb
+  set topSet : Set.powersetCard (Fin n) k := Set.powersetCard.ofFinEmbEquiv topEmb with htopSet
+  set i₀ : Fin N := wIndexEquiv u k topSet with hi₀def
+  have hS₀ : (wIndexEquiv u k).symm i₀ = topSet := by rw [hi₀def, Equiv.symm_apply_apply]
+  have htopval : ∀ i : Fin k, (topEmb i : Fin n).val = (i : ℕ) := fun _ => rfl
+  -- `∏_{a ∈ topSet} g a = ∏_{j} g (topEmb j)` for any `g`.
+  have htopprod : ∀ g : Fin n → ℝ, ∏ a ∈ topSet.val, g a = ∏ j, g (topEmb j) := by
+    intro g
+    have hval : topSet.val = Finset.univ.image (topEmb) := by
+      ext x
+      rw [Finset.mem_image,
+        show x ∈ topSet.val ↔ x ∈ topSet from Iff.rfl, htopSet,
+        Set.powersetCard.mem_ofFinEmbEquiv_iff_mem_range, Set.mem_range]
+      constructor
+      · rintro ⟨j, hj⟩; exact ⟨j, Finset.mem_univ _, hj⟩
+      · rintro ⟨j, _, hj⟩; exact ⟨j, hj⟩
+    rw [hval, Finset.prod_image (fun x _ y _ h => topEmb.injective h)]
+  -- the top weight `c i₀ = ∏_{i<k} lam i = μ₀`.
+  set μ₀ : ℝ := ∏ i ∈ Finset.range k, lam i with hμ₀
+  set μ₁ : ℝ := (∏ i ∈ Finset.range (k-1), lam i) * lam k with hμ₁
+  have hci₀ : c i₀ = μ₀ := by
+    rw [hcdef]; simp only
+    rw [hS₀, htopprod (fun a => lam (a : ℕ)), hμ₀, Finset.prod_range fun i => lam i]
+    exact Finset.prod_congr rfl (fun j _ => by simp only [htopval])
+  -- maximality: `c i ≤ μ₀` for all i.
+  have hmax : ∀ i, c i ≤ μ₀ := by
+    intro i
+    rw [hcdef]; simp only
+    rw [hμ₀, Finset.prod_range fun j => lam j]
+    have hconv : ∏ a ∈ ((wIndexEquiv u k).symm i : Set.powersetCard (Fin n) k).val, lam (a : ℕ)
+        = ∏ a ∈ ((wIndexEquiv u k).symm i : Set.powersetCard (Fin n) k).val,
+            (fun b : Fin n => lam (b : ℕ)) a := rfl
+    rw [hconv]
+    refine le_trans (prod_le_prod_top (fun b : Fin n => lam (b : ℕ)) ?_ ?_
+      ((wIndexEquiv u k).symm i) topEmb htopval) ?_
+    · exact fun a b hab => hanti (by exact_mod_cast (Fin.le_def.mp hab))
+    · exact fun a => hpos _
+    · exact le_of_eq (Finset.prod_congr rfl (fun j _ => by simp only [htopval]))
+  -- second-largest: `c i ≤ μ₁` for `i ≠ i₀`.
+  have hsecond : ∀ i, i ≠ i₀ → c i ≤ μ₁ := by
+    intro i hi
+    rw [hcdef]; simp only
+    -- the enumeration of `Sᵢ` and the non-top fact.
+    set S := ((wIndexEquiv u k).symm i : Set.powersetCard (Fin n) k) with hS
+    set e := Set.powersetCard.ofFinEmbEquiv.symm S with he
+    have hSne : S ≠ topSet := by
+      intro h
+      apply hi
+      rw [hi₀def, ← h, hS, Equiv.apply_symm_apply]
+    -- `∏_{a∈S} lam a = ∏_j lam (e j)`.
+    have hprodeq : ∏ a ∈ (S : Finset (Fin n)), lam (a : ℕ) = ∏ j, lam (e j : ℕ) := by
+      rw [he]; exact (prod_ofFinEmbEquiv_symm (fun a : Fin n => lam (a : ℕ)) S).symm
+    rw [hprodeq]
+    -- non-top: the images differ.
+    have himgS : (S : Finset (Fin n)) = Finset.univ.image (fun j : Fin k => e j) := by
+      have himg : (S : Finset (Fin n)) = Finset.univ.image (Set.powersetCard.ofFinEmbEquiv.symm S) := by
+        rw [Set.powersetCard.ofFinEmbEquiv_symm_apply, Finset.image_orderEmbOfFin_univ]
+      rw [himg, he]
+    have htopImg : topSet.val = Finset.univ.image topEmb := by
+      have hval : topSet.val = Finset.univ.image (topEmb) := by
+        ext x
+        rw [Finset.mem_image,
+          show x ∈ topSet.val ↔ x ∈ topSet from Iff.rfl, htopSet,
+          Set.powersetCard.mem_ofFinEmbEquiv_iff_mem_range, Set.mem_range]
+        constructor
+        · rintro ⟨j, hj⟩; exact ⟨j, Finset.mem_univ _, hj⟩
+        · rintro ⟨j, _, hj⟩; exact ⟨j, hj⟩
+      exact hval
+    have hImgNe : (Finset.univ.image (fun j : Fin k => e j) : Finset (Fin n))
+        ≠ Finset.univ.image (fun i : Fin k => (⟨i, lt_of_lt_of_le i.2 hkn⟩ : Fin n)) := by
+      intro h
+      apply hSne
+      apply Subtype.ext
+      rw [show (S : Finset (Fin n)) = S.val from rfl, show topSet.val = topSet.val from rfl,
+        himgS, htopImg, h]
+      rfl
+    -- top element of `S` is `≥ k`.
+    have htopge : k ≤ (e ⟨k-1, by omega⟩ : ℕ) := top_elem_ge hk1 hkn e hImgNe
+    -- specialize the product bound with `m = k-1`, i.e. `k = m+1`.
+    obtain ⟨m, rfl⟩ : ∃ m, k = m + 1 := ⟨k-1, by omega⟩
+    rw [hμ₁, Nat.add_sub_cancel]
+    have hbound := prod_le_second_aux (n := n) m lam hanti hpos e (by simpa using htopge)
+    exact hbound
+  -- assemble.
+  refine ⟨i₀, diag_isSymmetric C c hCdiag, ?_, ?_, ?_⟩
+  · rw [hCdiag i₀, hci₀]
+  · have hpre_pos : 0 < ∏ i ∈ Finset.range (k-1), lam i := by
+      apply Finset.prod_pos
+      intro j hj
+      rw [Finset.mem_range] at hj
+      -- `lam j ≥ lam (k-1) > lam k ≥ 0`, since `j ≤ k-1` and `lam` antitone.
+      have hjle : lam (k-1) ≤ lam j := hanti (by omega)
+      exact lt_of_lt_of_le (lt_of_le_of_lt (hpos k) hgap) hjle
+    show μ₁ < μ₀
+    calc μ₁ = (∏ i ∈ Finset.range (k-1), lam i) * lam k := rfl
+      _ < (∏ i ∈ Finset.range (k-1), lam i) * lam (k-1) := mul_lt_mul_of_pos_left hgap hpre_pos
+      _ = μ₀ := by
+          rw [hμ₀]
+          obtain ⟨p, rfl⟩ := Nat.exists_eq_add_of_le hk1
+          rw [Nat.add_comm 1 p, Nat.add_sub_cancel, Finset.prod_range_succ]
+  · intro w hw
+    refine diag_rayleigh_ceiling C c hCdiag i₀ hsecond ?_ w hw
+    rw [hμ₁]
+    have hprefix : 0 ≤ ∏ i ∈ Finset.range (k-1), lam i := Finset.prod_nonneg (fun _ _ => hpos _)
+    exact mul_nonneg hprefix (hpos k)
+
+end Plucker
 
 end ExteriorNorm
 
