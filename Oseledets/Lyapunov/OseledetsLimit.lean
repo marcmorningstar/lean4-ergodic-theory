@@ -1011,6 +1011,108 @@ theorem tendsto_logNorm_inv_orbit_div_atTop_zero {A : X → Matrix (Fin d) (Fin 
     (integrable_logNorm_inv_cocycle hT hA hAmeas hTmeas hint hint' 1)] with x hx
   simpa using hx
 
+/-- **Compound operator-norm upper bound** `‖compound k B‖ ≤ ‖B‖^k`. From the singular-value
+product `∏_{i<k} σᵢ = ‖compound k B‖` (`prod_singularValues_eq_l2_opNorm_compound`) and the per-index
+ceiling `σᵢ ≤ ‖B‖` (`sigma_le_opNorm`). -/
+theorem norm_compound_le (k : ℕ) (B : Matrix (Fin d) (Fin d) ℝ) :
+    ‖ExteriorNorm.compoundMatrix k B‖ ≤ ‖B‖ ^ k := by
+  rw [← ExteriorNorm.prod_singularValues_eq_l2_opNorm_compound k B]
+  calc ∏ i ∈ Finset.range k, (Matrix.toEuclideanLin B).singularValues i
+      ≤ ∏ _i ∈ Finset.range k, ‖B‖ := by
+        apply Finset.prod_le_prod
+        · intro i _; exact (Matrix.toEuclideanLin B).singularValues_nonneg i
+        · intro i _; exact sigma_le_opNorm B i
+    _ = ‖B‖ ^ k := by rw [Finset.prod_const, Finset.card_range]
+
+/-- **Compound operator-norm lower bound** `(‖B⁻¹‖⁻¹)^k ≤ ‖compound k B‖`, for invertible `B` and
+`k ≤ d`. From the singular-value product and the per-index floor `‖B⁻¹‖⁻¹ ≤ σᵢ`
+(`inv_opNorm_inv_le_sigma`). -/
+theorem norm_inv_pow_le_norm_compound (k : ℕ) {B : Matrix (Fin d) (Fin d) ℝ}
+    (hB : B.det ≠ 0) (hk : k ≤ d) :
+    (‖B⁻¹‖⁻¹) ^ k ≤ ‖ExteriorNorm.compoundMatrix k B‖ := by
+  rw [← ExteriorNorm.prod_singularValues_eq_l2_opNorm_compound k B]
+  calc (‖B⁻¹‖⁻¹) ^ k
+      = ∏ _i ∈ Finset.range k, ‖B⁻¹‖⁻¹ := by rw [Finset.prod_const, Finset.card_range]
+    _ ≤ ∏ i ∈ Finset.range k, (Matrix.toEuclideanLin B).singularValues i := by
+        apply Finset.prod_le_prod
+        · intro i _; positivity
+        · intro i hi
+          exact inv_opNorm_inv_le_sigma hB (lt_of_lt_of_le (Finset.mem_range.mp hi) hk)
+
+/-- **Compound operator norm is positive** for invertible `B`, `k ≤ d`, `0 < d`. -/
+theorem norm_compound_pos (k : ℕ) {B : Matrix (Fin d) (Fin d) ℝ}
+    (hB : B.det ≠ 0) (hk : k ≤ d) (hd : 0 < d) :
+    0 < ‖ExteriorNorm.compoundMatrix k B‖ := by
+  have hBinvdet : (B⁻¹).det ≠ 0 := by
+    rw [Matrix.det_nonsing_inv, Ring.inverse_eq_inv']
+    exact inv_ne_zero hB
+  have hBinv : (0:ℝ) < ‖B⁻¹‖ := by
+    rw [norm_pos_iff]
+    intro h
+    rw [h, Matrix.det_zero (Fin.pos_iff_nonempty.mp hd)] at hBinvdet
+    exact hBinvdet rfl
+  have hBinvne : (0:ℝ) < ‖B⁻¹‖⁻¹ := by positivity
+  calc (0:ℝ) < (‖B⁻¹‖⁻¹) ^ k := by positivity
+    _ ≤ ‖ExteriorNorm.compoundMatrix k B‖ := norm_inv_pow_le_norm_compound k hB hk
+
+/-- **L7c.4 — the tempered compound factor.** The normalized log compound operator norm along the
+orbit vanishes a.e.: `(1/n)·log‖compound k (A(Tⁿx))‖ → 0`. Squeezed between
+`-k·(1/n)log‖A(Tⁿx)⁻¹‖ → 0` and `k·(1/n)log‖A(Tⁿx)‖ → 0` via the compound-norm sandwich
+(`norm_compound_le`, `norm_inv_pow_le_norm_compound`) and the committed tempered one-step factors
+(`tendsto_logNorm_orbit_div_atTop_zero` and its inverse). This makes `κ(⋀ᵏB) = ‖compound k B‖·
+‖compound k B⁻¹‖` subexponential, so it contributes `0` to the root-test log-limit. -/
+theorem tendsto_logNorm_compound_orbit_div_atTop_zero {A : X → Matrix (Fin d) (Fin d) ℝ}
+    (hT : MeasurePreserving T μ μ) [IsFiniteMeasure μ] (hA : ∀ x, (A x).det ≠ 0)
+    (hAmeas : Measurable A) (hTmeas : Measurable T)
+    (hint : IntegrableLogNorm A μ) (hint' : IntegrableLogNorm (fun x => (A x)⁻¹) μ)
+    (k : ℕ) (hk : k ≤ d) (hd : 0 < d) :
+    ∀ᵐ x ∂μ, Tendsto
+      (fun n : ℕ => (n : ℝ)⁻¹ * Real.log ‖ExteriorNorm.compoundMatrix k (A (T^[n] x))‖)
+      atTop (𝓝 0) := by
+  filter_upwards [tendsto_logNorm_orbit_div_atTop_zero hT hA hAmeas hTmeas hint hint',
+    tendsto_logNorm_inv_orbit_div_atTop_zero hT hA hAmeas hTmeas hint hint'] with x hup hlow
+  have hupper : Tendsto
+      (fun n : ℕ => (k : ℝ) * ((n : ℝ)⁻¹ * Real.log ‖A (T^[n] x)‖)) atTop (𝓝 0) := by
+    have := hup.const_mul (k : ℝ); simpa using this
+  have hlower : Tendsto
+      (fun n : ℕ => -((k : ℝ) * ((n : ℝ)⁻¹ * Real.log ‖(A (T^[n] x))⁻¹‖))) atTop (𝓝 0) := by
+    have := (hlow.const_mul (k : ℝ)).neg; simpa using this
+  apply tendsto_of_tendsto_of_tendsto_of_le_of_le' hlower hupper
+  · filter_upwards [eventually_ge_atTop 1] with n hn
+    set B := A (T^[n] x) with hBdef
+    have hBdet : B.det ≠ 0 := hA _
+    have hninv : (0:ℝ) ≤ (n:ℝ)⁻¹ := by positivity
+    have hCpos : 0 < ‖ExteriorNorm.compoundMatrix k B‖ := norm_compound_pos k hBdet hk hd
+    have hBinvdet : (B⁻¹).det ≠ 0 := by
+      rw [Matrix.det_nonsing_inv, Ring.inverse_eq_inv']; exact inv_ne_zero hBdet
+    have hBinvpos : (0:ℝ) < ‖B⁻¹‖ := by
+      rw [norm_pos_iff]; intro h
+      rw [h, Matrix.det_zero (Fin.pos_iff_nonempty.mp hd)] at hBinvdet; exact hBinvdet rfl
+    have hlogle : -((k:ℝ) * Real.log ‖B⁻¹‖) ≤ Real.log ‖ExteriorNorm.compoundMatrix k B‖ := by
+      have h1 : (‖B⁻¹‖⁻¹) ^ k ≤ ‖ExteriorNorm.compoundMatrix k B‖ :=
+        norm_inv_pow_le_norm_compound k hBdet hk
+      have h2 : Real.log ((‖B⁻¹‖⁻¹) ^ k) ≤ Real.log ‖ExteriorNorm.compoundMatrix k B‖ :=
+        Real.log_le_log (by positivity) h1
+      rwa [Real.log_pow, Real.log_inv, mul_neg] at h2
+    calc -((k:ℝ) * ((n:ℝ)⁻¹ * Real.log ‖B⁻¹‖))
+        = (n:ℝ)⁻¹ * (-((k:ℝ) * Real.log ‖B⁻¹‖)) := by ring
+      _ ≤ (n:ℝ)⁻¹ * Real.log ‖ExteriorNorm.compoundMatrix k B‖ :=
+          mul_le_mul_of_nonneg_left hlogle hninv
+  · filter_upwards [eventually_ge_atTop 1] with n hn
+    set B := A (T^[n] x) with hBdef
+    have hBdet : B.det ≠ 0 := hA _
+    have hninv : (0:ℝ) ≤ (n:ℝ)⁻¹ := by positivity
+    have hCpos : 0 < ‖ExteriorNorm.compoundMatrix k B‖ := norm_compound_pos k hBdet hk hd
+    have hlogle : Real.log ‖ExteriorNorm.compoundMatrix k B‖ ≤ (k:ℝ) * Real.log ‖B‖ := by
+      have h1 : ‖ExteriorNorm.compoundMatrix k B‖ ≤ ‖B‖ ^ k := norm_compound_le k B
+      have h2 : Real.log ‖ExteriorNorm.compoundMatrix k B‖ ≤ Real.log (‖B‖ ^ k) :=
+        Real.log_le_log hCpos h1
+      rwa [Real.log_pow] at h2
+    calc (n:ℝ)⁻¹ * Real.log ‖ExteriorNorm.compoundMatrix k B‖
+        ≤ (n:ℝ)⁻¹ * ((k:ℝ) * Real.log ‖B‖) :=
+          mul_le_mul_of_nonneg_left hlogle hninv
+      _ = (k:ℝ) * ((n:ℝ)⁻¹ * Real.log ‖B‖) := by ring
+
 /-! ## L7c.3a (corrected core): refined Davis–Kahan off-diagonal sin-Θ
 
 The Rayleigh-DEFICIT bound `sin_sq_le_rayleigh_deficit_div_gap` is *true* but the WRONG tool for the
@@ -1357,6 +1459,58 @@ theorem norm_bandProjector_succ_sub_le {c : ℝ} (A : X → Matrix (Fin d) (Fin 
       ≤ Real.sqrt (2 * k) * (‖C v₀ - (⟪C v₀, v₀⟫_ℝ) • v₀‖ / (μ₀ - ν)) := hassembly
     _ ≤ Real.sqrt (2 * k) * ((cB * cBi) ^ 2 * r / (1 - (cB * cBi) ^ 2 * r ^ 2)) := by
         apply mul_le_mul_of_nonneg_left hnumgap (Real.sqrt_nonneg _)
+
+/-! ## L7c.4: a.e. summability of the band-projector increments (the root-test conclusion)
+
+The per-step band-projector bound `‖Pₙ₊₁ − Pₙ‖ ≤ bₙ` with `bₙ = √(2k)·κ(⋀ᵏB)²·rₙ/(1 − κ²rₙ²)`
+(`norm_bandProjector_succ_sub_le`) is summable along the orbit by the root test: `(1/n)log bₙ →
+λₖ − λₖ₋₁ < 0`. The committed scalar layer supplies the log-limit (`(1/n)log rₙ → λₖ − λₖ₋₁` via
+`tendsto_log_singularValue` at indices `k`, `k−1`; the `κ²` factor subexponential via
+`tendsto_logNorm_compound_orbit_div_atTop_zero`; the `1/(1−κ²rₙ²)` factor `→ 1` since `κ²rₙ² → 0`).
+We package the comparison + root test abstractly, then state the cocycle conclusion taking the
+per-step bound and the negative log-limit of its RHS as hypotheses (the genuine outputs of the
+per-step bound `norm_bandProjector_succ_sub_le` and the scalar layer). -/
+
+/-- **L7c.4 (packaging) — comparison + root test.** If the increment norms `‖incr n‖` are eventually
+dominated by a nonnegative sequence `b` whose normalized log tends to a negative limit, then the
+increment norms are summable. Pure soft analysis (`summable_of_logLimit_neg` +
+`Summable.of_norm_bounded_eventually_nat`). -/
+theorem summable_norm_of_logLimit_neg_of_le {E : Type*} [NormedAddCommGroup E]
+    (incr : ℕ → E) (b : ℕ → ℝ)
+    (hb : ∀ n, 0 ≤ b n) (hpos : ∀ᶠ n in atTop, 0 < b n)
+    {L : ℝ} (hL : L < 0)
+    (hlog : Tendsto (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (b n)) atTop (𝓝 L))
+    (hstep : ∀ᶠ n in atTop, ‖incr n‖ ≤ b n) :
+    Summable (fun n => ‖incr n‖) := by
+  have hsumb : Summable b := summable_of_logLimit_neg b hb hpos hL hlog
+  apply Summable.of_norm_bounded_eventually_nat hsumb
+  filter_upwards [hstep] with n hn
+  rw [Real.norm_eq_abs, abs_of_nonneg (norm_nonneg _)]
+  exact hn
+
+/-- **L7c.4 — a.e. summability of the band-projector increments.** For `μ`-a.e. `x`, the
+consecutive band-projector increments `‖Pₙ₊₁ − Pₙ‖` are summable. The per-step dominating sequence
+`b x n` (the RHS of `norm_bandProjector_succ_sub_le`, eventually `√(2k)·κ²rₙ/(1−κ²rₙ²)`), its
+nonnegativity / eventual positivity, the negative root-test log-limit `L x` (`= λₖ − λₖ₋₁`), and the
+eventual per-step bound are taken as hypotheses — the genuine outputs of the per-step bound and the
+committed scalar layer (`tendsto_log_singularValue`, `tendsto_logNorm_compound_orbit_div_atTop_zero`).
+The conclusion is the L7c.4 summability that feeds the Cauchy packaging `cauchySeq_cfc_of_summable`
+(L7c.5). -/
+theorem summable_norm_bandProjector_succ_sub {c : ℝ} (A : X → Matrix (Fin d) (Fin d) ℝ)
+    (b : X → ℕ → ℝ)
+    (hb : ∀ᵐ x ∂μ, ∀ n, 0 ≤ b x n)
+    (hpos : ∀ᵐ x ∂μ, ∀ᶠ n in atTop, 0 < b x n)
+    (L : X → ℝ) (hL : ∀ᵐ x ∂μ, L x < 0)
+    (hlog : ∀ᵐ x ∂μ,
+      Tendsto (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (b x n)) atTop (𝓝 (L x)))
+    (hstep : ∀ᵐ x ∂μ, ∀ᶠ n in atTop,
+      ‖bandProjector A T (Set.indicator (Set.Ioi c) 1) (n + 1) x
+          - bandProjector A T (Set.indicator (Set.Ioi c) 1) n x‖ ≤ b x n) :
+    ∀ᵐ x ∂μ, Summable (fun n =>
+      ‖bandProjector A T (Set.indicator (Set.Ioi c) 1) (n + 1) x
+          - bandProjector A T (Set.indicator (Set.Ioi c) 1) n x‖) := by
+  filter_upwards [hb, hpos, hL, hlog, hstep] with x hbx hposx hLx hlogx hstepx
+  exact summable_norm_of_logLimit_neg_of_le _ (b x) hbx hposx hLx hlogx hstepx
 
 end Oseledets
 

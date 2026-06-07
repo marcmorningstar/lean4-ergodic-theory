@@ -1412,6 +1412,24 @@ theorem compoundMatrix_eq_inv_mul (k : ℕ) {B : Matrix (Fin d) (Fin d) ℝ} (hB
   rw [← compoundMatrix_mul, ← Matrix.mul_assoc, Matrix.nonsing_inv_mul _ (Ne.isUnit hB),
     Matrix.one_mul]
 
+/-- **L7c.4 deliverable (1) — the rank-1 lower bound `μ̃₀ ≥ cM²/cBi²`.** For invertible `B`, the
+squared compound operator norm of the perturbed cocycle step `B · M` (= the top eigenvalue `μ̃₀` of
+`Cₙ₊₁ = adjoint Gₙ₊₁ ∘ₗ Gₙ₊₁`) is bounded below by `cM²/cBi²`, where `cM = ‖compound k M‖` and
+`cBi = ‖compound k B⁻¹‖`. Route: `compound k M = compound k B⁻¹ · compound k (B·M)` gives
+`cM ≤ cBi·‖compound(B·M)‖`, hence `‖compound(B·M)‖ ≥ cM/cBi`; squaring yields the bound. -/
+theorem norm_sq_compound_mul_ge (k : ℕ) {B : Matrix (Fin d) (Fin d) ℝ} (hB : B.det ≠ 0)
+    (M : Matrix (Fin d) (Fin d) ℝ) (hcBipos : 0 < ‖compoundMatrix k B⁻¹‖) :
+    ‖compoundMatrix k M‖ ^ 2 / ‖compoundMatrix k B⁻¹‖ ^ 2
+      ≤ ‖compoundMatrix k (B * M)‖ ^ 2 := by
+  -- `cM ≤ cBi · ‖compound(B·M)‖` from the compound factorisation + submultiplicativity.
+  have hstep : ‖compoundMatrix k M‖
+      ≤ ‖compoundMatrix k B⁻¹‖ * ‖compoundMatrix k (B * M)‖ := by
+    conv_lhs => rw [compoundMatrix_eq_inv_mul k hB M]
+    exact Matrix.l2_opNorm_mul _ _
+  rw [div_le_iff₀ (by positivity)]
+  have hcMnn : 0 ≤ ‖compoundMatrix k M‖ := norm_nonneg _
+  nlinarith [hstep, hcMnn, norm_nonneg (compoundMatrix k (B * M)), hcBipos]
+
 set_option maxHeartbeats 800000 in
 /-- **Lemma 1 — the rank-1 per-vector step.** The squared norm of the compound of a product,
 applied to `w`, is dominated by `‖compound B‖²` times the squared norm of the `M`-compound at `w`:
