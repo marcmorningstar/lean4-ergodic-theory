@@ -18,6 +18,34 @@ filtration form** (milestone **M10** / layer **L6.1**), stated in Lean as
 
 ## Current phase
 
+**M6–M10 Lyapunov layers → the target (the only open `sorry`).** M4 Kingman + M5
+Furstenberg–Kesten are fully closed (details below). The active front is the **L7c crux**
+in `Oseledets/Lyapunov/{ExteriorNorm,OseledetsLimit}.lean` — a.e. convergence of
+`qpow A T n x = (Qₙ)^{1/(2n)}` (the Oseledets limit `Λ`). **Route: `oseledets-l7c-route.md`
+§J is the SOURCE OF TRUTH** (the earlier §G/§H/§I deficit route was found CIRCULAR and is
+superseded — see §J.0). The corrected route uses the refined Davis–Kahan **off-diagonal**
+sin-Θ. Banked sorry-free: the band projector + algebra (L7c.0/0.5/1), the tempered factor
+(L7c.2), the corrected sin-Θ core `offdiag_sin_le_residual_div_gap` + root-test engine
+`summable_of_logLimit_neg` (L7c.3a/4), the off-diagonal residual estimate + ceiling
+(`norm_offdiag_residual_compound_le`, `perturbed_compound_gram_ceiling`), the Plücker
+eigenpair bridge (`plucker_eigenpair_ceiling_standard`) + Frobenius back-transport
+(`norm_proj_sub_le_wedge`) + det-Gram glue (`inner_hodgeTrivialization_ιMulti`), the
+coordinate bridge + frame extraction (`bandProjector_indicator_eq_frame`), the rank-1 lower
+bound (`norm_sq_compound_mul_ge`), the abstract per-step bound
+`norm_bandProjector_succ_sub_le`, and the a.e.-summability packaging
+`summable_norm_bandProjector_succ_sub`. **NEXT (resumption):** close the `hdet` frame↔Plücker
+det bridge by applying `plucker_eigenpair_ceiling_standard` with `u = gram.eigenvectorBasis`
+(so `v₀` IS the wedge of the frame columns ⟹ `det(UᵀV)=⟪v₀,vt⟫` via
+`inner_hodgeTrivialization_ιMulti`) + the subtype→`Fin k` reindex; instantiate
+`norm_bandProjector_succ_sub_le`; wire into `summable_norm_bandProjector_succ_sub` ⟹ band
+projectors converge a.e.; then **L7d** (`qpow_n = Σⱼ e^{λⱼ}(P⁽ʲ⁾−P⁽ʲ⁺¹⁾)` spectral assembly
+⟹ `L7_statement`), then **L8–L13** (Λ measurability via the committed CFC polynomial bypass;
+Λ eigen-data; `Vᵢ = lambdaSublevel` a.e.; forward limit on strata; assemble
+`oseledets_filtration`). **Practical risk:** fully-instantiated `⋀^k`-finrank statements hit
+the elaborator heartbeat ceiling — use the abstract-operator + scoped-lemma pattern.
+
+---
+
 **M4 = Kingman's subadditive ergodic theorem — ✅ COMPLETE, fully `sorry`-free.**
 `tendsto_kingman` and `tendsto_kingman_ergodic` are proved with `#print axioms` =
 `[propext, Classical.choice, Quot.sound]` (**no `sorryAx`**). `Oseledets/Ergodic/Kingman.lean`
