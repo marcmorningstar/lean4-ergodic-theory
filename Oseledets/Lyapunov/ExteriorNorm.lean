@@ -9,6 +9,11 @@ import Mathlib.Analysis.InnerProductSpace.LinearMap
 import Mathlib.LinearAlgebra.ExteriorPower.Basis
 import Mathlib.Analysis.Normed.Module.FiniteDimension
 import Mathlib.Analysis.CStarAlgebra.Matrix
+import Mathlib.LinearAlgebra.Trace
+import Mathlib.LinearAlgebra.Matrix.Trace
+import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
+import Mathlib.Analysis.Matrix.PosDef
+import Mathlib.Analysis.Matrix.Spectrum
 
 /-!
 # Operator norm of the exterior power and the product of singular values
@@ -42,7 +47,7 @@ trivialization (`exteriorTrivialization`) exists because `⋀^k E` is a finite f
 -/
 
 open Module InnerProductSpace
-open scoped Matrix.Norms.L2Operator
+open scoped Matrix.Norms.L2Operator Matrix
 
 noncomputable section
 
@@ -900,6 +905,279 @@ theorem singularValues_zero_sq_le_sum (M : Matrix (Fin d) (Fin d) ℝ) :
       (f := fun i : Fin d => (Matrix.toEuclideanLin M).singularValues i ^ 2)
       (fun i _ => sq_nonneg _) (Finset.mem_univ (⟨0, hd⟩ : Fin d))
     simpa using hmem
+
+/-- **L7c.3c.0.** The top singular value of `toEuclideanLin M` is at most the Frobenius norm
+`√(∑ σᵢ²)`. Immediate from `singularValues_zero_sq_le_sum` and `Real.sqrt`. -/
+theorem opNorm_le_frobenius (M : Matrix (Fin d) (Fin d) ℝ) :
+    (Matrix.toEuclideanLin M).singularValues 0
+      ≤ Real.sqrt (∑ i : Fin d, (Matrix.toEuclideanLin M).singularValues i ^ 2) := by
+  rw [show (Matrix.toEuclideanLin M).singularValues 0
+      = Real.sqrt ((Matrix.toEuclideanLin M).singularValues 0 ^ 2) from
+    (Real.sqrt_sq ((Matrix.toEuclideanLin M).singularValues_nonneg 0)).symm]
+  exact Real.sqrt_le_sqrt (singularValues_zero_sq_le_sum M)
+
+/-- **L7c.3c.0 — the L2 operator-norm Frobenius bridge.** The squared L2 operator norm `‖M‖²` of a
+matrix is at most the sum of the squared singular values of `toEuclideanLin M` (the squared
+Frobenius norm). The L2 matrix norm `‖M‖` is by definition the operator norm of `toEuclideanLin M`
+on `EuclideanSpace`; expanding any vector in the singular-value eigenbasis `u` of
+`adjoint f ∘ₗ f` (with `f = toEuclideanLin M`), the images `f uⱼ` are pairwise orthogonal with
+`‖f uⱼ‖ = σⱼ`, so `‖f v‖² = ∑ⱼ ⟪uⱼ, v⟫² σⱼ² ≤ (∑ σᵢ²) ‖v‖²`. -/
+theorem l2_opNorm_sq_le_sum_singularValues (M : Matrix (Fin d) (Fin d) ℝ) :
+    ‖M‖ ^ 2 ≤ ∑ i : Fin d, (Matrix.toEuclideanLin M).singularValues i ^ 2 := by
+  set f := Matrix.toEuclideanLin M with hf
+  set S := ∑ i : Fin d, f.singularValues i ^ 2 with hS
+  have hSnn : 0 ≤ S := Finset.sum_nonneg (fun i _ => sq_nonneg _)
+  have hfin : Module.finrank ℝ (EuclideanSpace ℝ (Fin d)) = d := finrank_euclideanSpace_fin
+  set hT := f.isSymmetric_adjoint_comp_self with hhT
+  set u := hT.eigenvectorBasis hfin with hu
+  -- pointwise bound `‖f v‖² ≤ S ‖v‖²`
+  have hpt : ∀ v : EuclideanSpace ℝ (Fin d), ‖f v‖ ^ 2 ≤ S * ‖v‖ ^ 2 := by
+    intro v
+    have hexp : f v = ∑ j, (inner ℝ (u j) v : ℝ) • f (u j) := by
+      conv_lhs => rw [← u.sum_repr' v]
+      rw [map_sum]; simp_rw [map_smul]
+    have horth : ∀ i j, i ≠ j → (inner ℝ (f (u i)) (f (u j)) : ℝ) = 0 := by
+      intro i j hij
+      have h1 : (inner ℝ (f (u i)) (f (u j)) : ℝ)
+          = inner ℝ ((LinearMap.adjoint f ∘ₗ f) (u j)) (u i) := by
+        rw [LinearMap.comp_apply, LinearMap.adjoint_inner_left, real_inner_comm]
+      rw [h1, show (LinearMap.adjoint f ∘ₗ f) (u j) = (hT.eigenvalues hfin j : ℝ) • u j from
+            hT.apply_eigenvectorBasis hfin j, inner_smul_left, u.inner_eq_ite j i]
+      simp [Ne.symm hij]
+    have hnormfu : ∀ j, ‖f (u j)‖ ^ 2 = f.singularValues j ^ 2 := by
+      intro j
+      have key : (inner ℝ (f (u j)) (f (u j)) : ℝ) = f.singularValues j ^ 2 := by
+        have h1 : (inner ℝ (f (u j)) (f (u j)) : ℝ)
+            = inner ℝ ((LinearMap.adjoint f ∘ₗ f) (u j)) (u j) := by
+          rw [LinearMap.comp_apply, LinearMap.adjoint_inner_left]
+        rw [h1, show (LinearMap.adjoint f ∘ₗ f) (u j) = (hT.eigenvalues hfin j : ℝ) • u j from
+              hT.apply_eigenvectorBasis hfin j, inner_smul_left, u.inner_eq_ite j j,
+            f.sq_singularValues_fin hfin j]
+        simp
+      rw [← real_inner_self_eq_norm_sq]; exact key
+    have hsq : ‖f v‖ ^ 2 = ∑ j, (inner ℝ (u j) v : ℝ) ^ 2 * ‖f (u j)‖ ^ 2 := by
+      rw [← real_inner_self_eq_norm_sq, hexp, inner_sum]
+      simp_rw [sum_inner, inner_smul_left, inner_smul_right]
+      rw [Finset.sum_comm]
+      apply Finset.sum_congr rfl
+      intro j _
+      rw [Finset.sum_eq_single j]
+      · rw [real_inner_self_eq_norm_sq]
+        simp only [starRingEnd_apply, star_trivial]; ring
+      · intro i _ hij
+        rw [horth j i (Ne.symm hij)]; ring
+      · intro h; exact absurd (Finset.mem_univ j) h
+    rw [hsq]
+    have hpars : ∑ j, (inner ℝ (u j) v : ℝ) ^ 2 = ‖v‖ ^ 2 := by
+      have := u.sum_sq_norm_inner_right v
+      simp only [Real.norm_eq_abs, sq_abs] at this
+      exact this
+    calc ∑ j, (inner ℝ (u j) v : ℝ) ^ 2 * ‖f (u j)‖ ^ 2
+        = ∑ j, (inner ℝ (u j) v : ℝ) ^ 2 * f.singularValues j ^ 2 := by
+          apply Finset.sum_congr rfl; intro j _; rw [hnormfu]
+      _ ≤ ∑ j, (inner ℝ (u j) v : ℝ) ^ 2 * S := by
+          apply Finset.sum_le_sum; intro j _
+          apply mul_le_mul_of_nonneg_left _ (sq_nonneg _)
+          rw [hS]
+          exact Finset.single_le_sum
+            (f := fun i : Fin d => f.singularValues i ^ 2)
+            (fun i _ => sq_nonneg _) (Finset.mem_univ j)
+      _ = S * ‖v‖ ^ 2 := by rw [← Finset.sum_mul, hpars]; ring
+  -- bound the operator norm by `√S`
+  have hnorm_le : ‖M‖ ≤ Real.sqrt S := by
+    rw [Matrix.l2_opNorm_def]
+    apply ContinuousLinearMap.opNorm_le_bound _ (Real.sqrt_nonneg S)
+    intro v
+    show ‖_‖ ≤ Real.sqrt S * ‖v‖
+    rw [LinearEquiv.trans_apply, LinearMap.coe_toContinuousLinearMap', ← hf]
+    have h2 := hpt v
+    have hrhs : 0 ≤ Real.sqrt S * ‖v‖ := mul_nonneg (Real.sqrt_nonneg S) (norm_nonneg v)
+    nlinarith [norm_nonneg (f v), Real.sq_sqrt hSnn, h2, hrhs]
+  nlinarith [hnorm_le, norm_nonneg M, Real.sq_sqrt hSnn, Real.sqrt_nonneg S]
+
+/-- The sum of the squared singular values of `toEuclideanLin N` equals the trace of the Gram
+matrix `tr(Nᵀ N)` (the squared Frobenius norm). Both sides are the trace of the self-adjoint
+operator `adjoint f ∘ₗ f = toEuclideanLin (Nᵀ N)`: in the singular-value eigenbasis its diagonal
+entries are the eigenvalues `σᵢ²`, while as a matrix its trace is `tr(Nᵀ N)`. -/
+theorem sum_sq_singularValues_eq_trace (N : Matrix (Fin d) (Fin d) ℝ) :
+    ∑ i : Fin d, (Matrix.toEuclideanLin N).singularValues i ^ 2 = (Nᵀ * N).trace := by
+  set f := Matrix.toEuclideanLin N with hf
+  have hfin : Module.finrank ℝ (EuclideanSpace ℝ (Fin d)) = d := finrank_euclideanSpace_fin
+  set hT := f.isSymmetric_adjoint_comp_self with hhT
+  set u := hT.eigenvectorBasis hfin with hu
+  -- `∑ σᵢ² = trace (adjoint f ∘ₗ f)`, computed in the eigenbasis `u`.
+  have h1 : ∑ i : Fin d, f.singularValues i ^ 2
+      = LinearMap.trace ℝ _ (LinearMap.adjoint f ∘ₗ f) := by
+    rw [LinearMap.trace_eq_matrix_trace ℝ u.toBasis (LinearMap.adjoint f ∘ₗ f), Matrix.trace]
+    apply Finset.sum_congr rfl
+    intro i _
+    rw [Matrix.diag_apply, LinearMap.toMatrix_apply, OrthonormalBasis.coe_toBasis,
+      show (LinearMap.adjoint f ∘ₗ f) (u i) = (hT.eigenvalues hfin i : ℝ) • u i from
+        hT.apply_eigenvectorBasis hfin i, map_smul, Finsupp.smul_apply, smul_eq_mul,
+      OrthonormalBasis.coe_toBasis_repr_apply, u.repr_self, f.sq_singularValues_fin hfin i]
+    simp
+  -- `adjoint f ∘ₗ f = toEuclideanLin (Nᵀ N)`.
+  have h2 : LinearMap.adjoint f ∘ₗ f = Matrix.toEuclideanLin (Nᵀ * N) := by
+    rw [toEuclideanLin_mul, ← Matrix.toEuclideanLin_conjTranspose_eq_adjoint,
+      Matrix.conjTranspose_eq_transpose_of_trivial]
+  -- `trace (toEuclideanLin G) = tr G`.
+  rw [h1, h2, Matrix.toEuclideanLin_eq_toLin_orthonormal, Matrix.trace_toLin_eq]
+
+/-- `toEuclideanLin` of a (rectangular) matrix product is the composition of the linear maps. -/
+private lemma toEuclideanLin_mul_rect {a b c : ℕ} (B : Matrix (Fin a) (Fin b) ℝ)
+    (M : Matrix (Fin b) (Fin c) ℝ) :
+    Matrix.toEuclideanLin (B * M)
+      = (Matrix.toEuclideanLin B) ∘ₗ (Matrix.toEuclideanLin M) := by
+  ext v i
+  simp only [Matrix.toEuclideanLin_apply, LinearMap.comp_apply, Matrix.mulVec_mulVec]
+
+/-- A matrix `U` with orthonormal columns (`Uᵀ U = 1`) is an isometry, so its L2 operator norm is
+at most `1`. -/
+theorem norm_le_one_of_cols_orthonormal {k : ℕ} (U : Matrix (Fin d) (Fin k) ℝ)
+    (hU : Uᵀ * U = 1) : ‖U‖ ≤ 1 := by
+  rw [Matrix.l2_opNorm_def]
+  apply ContinuousLinearMap.opNorm_le_bound _ zero_le_one
+  intro x
+  rw [one_mul]
+  show ‖Matrix.toEuclideanLin U x‖ ≤ ‖x‖
+  have hsq : ‖Matrix.toEuclideanLin U x‖ ^ 2 = ‖x‖ ^ 2 := by
+    rw [← real_inner_self_eq_norm_sq, ← real_inner_self_eq_norm_sq]
+    have hadj : (inner ℝ (Matrix.toEuclideanLin U x) (Matrix.toEuclideanLin U x) : ℝ)
+        = inner ℝ
+            ((LinearMap.adjoint (Matrix.toEuclideanLin U) ∘ₗ Matrix.toEuclideanLin U) x) x := by
+      rw [LinearMap.comp_apply, LinearMap.adjoint_inner_left]
+    rw [hadj]
+    congr 1
+    rw [← Matrix.toEuclideanLin_conjTranspose_eq_adjoint, ← toEuclideanLin_mul_rect,
+      Matrix.conjTranspose_eq_transpose_of_trivial, hU]
+    simp
+  nlinarith [norm_nonneg (Matrix.toEuclideanLin U x), norm_nonneg x, hsq]
+
+/-- The eigenvalues of the Gram matrix `Wᵀ W` are bounded by the squared L2 operator norm `‖W‖²`.
+Each eigenvalue `μᵢ` of the Hermitian matrix `G = Wᵀ W`, with unit eigenvector `bᵢ`, equals
+`‖toEuclideanLin W (bᵢ)‖² ≤ ‖W‖²`. -/
+theorem gram_eigenvalues_le_opNorm_sq {k : ℕ} (W : Matrix (Fin k) (Fin k) ℝ)
+    (hGherm : (Wᵀ * W).IsHermitian) (i : Fin k) : hGherm.eigenvalues i ≤ ‖W‖ ^ 2 := by
+  set G := Wᵀ * W with hG
+  set b := hGherm.eigenvectorBasis with hb
+  set W' := Matrix.toEuclideanLin W with hW'
+  have hGlin : Matrix.toEuclideanLin G = LinearMap.adjoint W' ∘ₗ W' := by
+    rw [hG, toEuclideanLin_mul, ← Matrix.toEuclideanLin_conjTranspose_eq_adjoint,
+      Matrix.conjTranspose_eq_transpose_of_trivial]
+  have hmuleq : hGherm.eigenvalues i = ‖W' (b i)‖ ^ 2 := by
+    have hmv : G *ᵥ ⇑(b i) = hGherm.eigenvalues i • ⇑(b i) := hGherm.mulVec_eigenvectorBasis i
+    have hinner : (inner ℝ (Matrix.toEuclideanLin G (b i)) (b i) : ℝ)
+        = hGherm.eigenvalues i := by
+      have hsmul : Matrix.toEuclideanLin G (b i) = hGherm.eigenvalues i • (b i) := by
+        rw [Matrix.toEuclideanLin_apply, hmv]; rfl
+      rw [hsmul, inner_smul_left, real_inner_self_eq_norm_sq, b.orthonormal.1 i]
+      simp
+    rw [← hinner, hGlin, LinearMap.comp_apply, LinearMap.adjoint_inner_left,
+      real_inner_self_eq_norm_sq]
+  rw [hmuleq]
+  have hbnd : ‖W' (b i)‖ ≤ ‖W‖ * ‖b i‖ := by
+    have hle := (LinearMap.toContinuousLinearMap W').le_opNorm (b i)
+    rwa [LinearMap.coe_toContinuousLinearMap',
+      show ‖LinearMap.toContinuousLinearMap W'‖ = ‖W‖ from rfl] at hle
+  rw [b.orthonormal.1 i, mul_one] at hbnd
+  nlinarith [norm_nonneg (W' (b i)), norm_nonneg W, hbnd]
+
+/-- **L7c.3c.1 — the Frobenius back-transport.** For matrices `U, V` with orthonormal columns
+(`Uᵀ U = 1`, `Vᵀ V = 1`), the squared L2 operator norm of the difference of the orthogonal
+projectors `U Uᵀ` and `V Vᵀ` is bounded by `2 k (1 - det(Uᵀ V)²)`. Chain: self-adjoint idempotents
+of trace `k`; `‖P − P'‖²_op ≤ ∑σᵢ² = tr((P−P')²) = 2k − 2 tr(P P')`; `tr(P P') = ‖Uᵀ V‖_F² = tr(G)`
+for the Gram `G = (Uᵀ V)ᵀ (Uᵀ V)`; then the elementary AM-GM `k ∏ tᵢ ≤ ∑ tᵢ` over the eigenvalues
+`tᵢ ∈ [0, 1]` of `G`, with `∏ tᵢ = det G = det(Uᵀ V)²`. -/
+theorem norm_proj_sub_le_wedge {k : ℕ} (U V : Matrix (Fin d) (Fin k) ℝ)
+    (hU : Uᵀ * U = 1) (hV : Vᵀ * V = 1) :
+    ‖U * Uᵀ - V * Vᵀ‖ ^ 2 ≤ 2 * k * (1 - (Uᵀ * V).det ^ 2) := by
+  set P := U * Uᵀ with hP
+  set P' := V * Vᵀ with hP'
+  -- self-adjoint idempotents of trace `k`
+  have hPidem : P * P = P := by
+    rw [hP, show U * Uᵀ * (U * Uᵀ) = U * (Uᵀ * U) * Uᵀ by simp only [Matrix.mul_assoc], hU,
+      Matrix.mul_one]
+  have hP'idem : P' * P' = P' := by
+    rw [hP', show V * Vᵀ * (V * Vᵀ) = V * (Vᵀ * V) * Vᵀ by simp only [Matrix.mul_assoc], hV,
+      Matrix.mul_one]
+  have hPsymm : Pᵀ = P := by rw [hP, Matrix.transpose_mul, Matrix.transpose_transpose]
+  have hP'symm : P'ᵀ = P' := by rw [hP', Matrix.transpose_mul, Matrix.transpose_transpose]
+  have hPtrace : P.trace = (k : ℝ) := by
+    rw [hP, Matrix.trace_mul_comm, hU, Matrix.trace_one, Fintype.card_fin]
+  have hP'trace : P'.trace = (k : ℝ) := by
+    rw [hP', Matrix.trace_mul_comm, hV, Matrix.trace_one, Fintype.card_fin]
+  -- `‖P − P'‖²_op ≤ ∑σᵢ(P−P')² = tr((P−P')ᵀ(P−P')) = tr((P−P')²)`
+  have hsymm : (P - P')ᵀ = P - P' := by rw [Matrix.transpose_sub, hPsymm, hP'symm]
+  have hnorm : ‖P - P'‖ ^ 2 ≤ ((P - P')ᵀ * (P - P')).trace :=
+    le_trans (l2_opNorm_sq_le_sum_singularValues _) (le_of_eq (sum_sq_singularValues_eq_trace _))
+  rw [hsymm] at hnorm
+  -- `tr((P−P')²) = 2k − 2 tr(P P')`
+  have htrid : ((P - P') * (P - P')).trace = 2 * (k : ℝ) - 2 * (P * P').trace := by
+    have hexp : (P - P') * (P - P') = P * P - P * P' - P' * P + P' * P' := by
+      rw [sub_mul, mul_sub, mul_sub]; abel
+    rw [hexp, hPidem, hP'idem, Matrix.trace_add, Matrix.trace_sub, Matrix.trace_sub,
+      hPtrace, hP'trace, Matrix.trace_mul_comm P' P]
+    ring
+  rw [htrid] at hnorm
+  -- `tr(P P') = tr((Uᵀ V)ᵀ (Uᵀ V))`
+  have htrPP' : (P * P').trace = ((Uᵀ * V)ᵀ * (Uᵀ * V)).trace := by
+    have step1 : (P * P').trace = ((Uᵀ * V) * (Uᵀ * V)ᵀ).trace := by
+      rw [hP, hP', show U * Uᵀ * (V * Vᵀ) = U * (Uᵀ * V * Vᵀ) by simp only [Matrix.mul_assoc],
+        Matrix.trace_mul_comm U (Uᵀ * V * Vᵀ)]
+      congr 1
+      simp only [Matrix.transpose_mul, Matrix.transpose_transpose, Matrix.mul_assoc]
+    rw [step1, Matrix.trace_mul_comm]
+  -- the Gram `G = (Uᵀ V)ᵀ (Uᵀ V)`: PosSemidef Hermitian, eigenvalues in `[0, 1]`
+  set W := Uᵀ * V with hW
+  have hWconj : Wᴴ = Wᵀ := Matrix.conjTranspose_eq_transpose_of_trivial _
+  have hPSD : (Wᵀ * W).PosSemidef := by
+    have hps := Matrix.posSemidef_conjTranspose_mul_self W
+    rwa [hWconj] at hps
+  set G := Wᵀ * W with hG
+  set hGherm := hPSD.isHermitian with hGhermdef
+  set t : Fin k → ℝ := hGherm.eigenvalues with ht
+  have htnn : ∀ i, 0 ≤ t i := fun i => hPSD.eigenvalues_nonneg i
+  have hWnorm : ‖W‖ ≤ 1 := by
+    have hUtnorm : ‖(Uᵀ : Matrix (Fin k) (Fin d) ℝ)‖ ≤ 1 := by
+      rw [show (Uᵀ : Matrix (Fin k) (Fin d) ℝ) = Uᴴ from
+        (Matrix.conjTranspose_eq_transpose_of_trivial U).symm, Matrix.l2_opNorm_conjTranspose]
+      exact norm_le_one_of_cols_orthonormal U hU
+    calc ‖W‖ = ‖Uᵀ * V‖ := by rw [hW]
+      _ ≤ ‖Uᵀ‖ * ‖V‖ := Matrix.l2_opNorm_mul _ _
+      _ ≤ 1 * 1 :=
+          mul_le_mul hUtnorm (norm_le_one_of_cols_orthonormal V hV) (norm_nonneg _) zero_le_one
+      _ = 1 := one_mul 1
+  have ht1 : ∀ i, t i ≤ 1 := by
+    intro i
+    calc t i ≤ ‖W‖ ^ 2 := gram_eigenvalues_le_opNorm_sq W hGherm i
+      _ ≤ 1 ^ 2 := by gcongr
+      _ = 1 := one_pow 2
+  have htrG : G.trace = ∑ i, t i := by
+    rw [ht, hGhermdef, hGherm.trace_eq_sum_eigenvalues]; simp
+  have hdetG : G.det = ∏ i, t i := by
+    rw [ht, hGhermdef, hGherm.det_eq_prod_eigenvalues]; simp
+  have hdetGW : G.det = W.det ^ 2 := by rw [hG, Matrix.det_mul, Matrix.det_transpose]; ring
+  -- AM-GM: `k ∏ tᵢ ≤ ∑ tᵢ` (each `tᵢ ∈ [0, 1]`)
+  have hAMGM : (k : ℝ) * ∏ i, t i ≤ ∑ i, t i := by
+    have hprod_le : ∀ j : Fin k, ∏ i, t i ≤ t j := by
+      intro j
+      calc ∏ i, t i = t j * ∏ i ∈ Finset.univ.erase j, t i :=
+            (Finset.mul_prod_erase Finset.univ t (Finset.mem_univ j)).symm
+        _ ≤ t j * 1 := by
+            apply mul_le_mul_of_nonneg_left _ (htnn j)
+            exact Finset.prod_le_one (fun i _ => htnn i) (fun i _ => ht1 i)
+        _ = t j := mul_one _
+    calc (k : ℝ) * ∏ i, t i
+        = ∑ _j : Fin k, ∏ i, t i := by
+          rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
+      _ ≤ ∑ j, t j := Finset.sum_le_sum (fun j _ => hprod_le j)
+  -- assemble
+  have hPP'trace : (P * P').trace = ∑ i, t i := htrPP'.trans htrG
+  rw [hPP'trace] at hnorm
+  have hprodeq : ∏ i, t i = (Uᵀ * V).det ^ 2 := by rw [← hdetG, hdetGW, hW]
+  have hfinal : 2 * (k : ℝ) - 2 * ∑ i, t i ≤ 2 * (k : ℝ) * (1 - (Uᵀ * V).det ^ 2) := by
+    rw [← hprodeq]; nlinarith [hAMGM]
+  exact le_trans hnorm hfinal
 
 set_option maxHeartbeats 800000 in
 /-- **The product of singular values is the L2 operator norm of the compound matrix.** Combining
