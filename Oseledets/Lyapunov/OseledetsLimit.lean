@@ -3520,6 +3520,149 @@ theorem oseledetsLimit_eigenvalues₀_eq [IsProbabilityMeasure μ] (hT : Ergodic
     Weyl.tendsto_eigenvalues₀ (fun n => (qpow_isSelfAdjoint A T n x).isHermitian) hH hx i
   exact tendsto_nhds_unique hcont (hexp i)
 
+/-! ## L12: the two-sided growth limit `(1/n)·log‖A⁽ⁿ⁾(x) v‖`
+
+For a single nonzero vector `v`, the normalized log-growth of the cocycle image `A⁽ⁿ⁾(x) v`
+**converges** (not merely `limsup`/`liminf`) to the largest Lyapunov exponent active on `v`. The
+quadratic-form foundation `‖A⁽ⁿ⁾ v‖² = ⟪gram_n v, v⟫` ties the growth to the Gram spectrum
+(`= qpow_n^{2n}`). We bank here:
+
+* the foundational identity `norm_sq_cocycle_apply_eq_inner_gram`;
+* the per-vector operator-norm sandwich
+  `‖A⁽ⁿ⁾⁻¹‖⁻¹ ‖v‖ ≤ ‖A⁽ⁿ⁾ v‖ ≤ ‖A⁽ⁿ⁾‖ ‖v‖`;
+* the **genuine two-sided limit** in the equal-exponents (conformal/isotropic) regime
+  (`tendsto_log_cocycle_apply_of_eq_exponents`, and its a.e. ergodic packaging
+  `ae_tendsto_log_cocycle_apply_of_eq_exponents`): when the top Furstenberg–Kesten exponent
+  `ℓ_top = lim (1/n)log‖A⁽ⁿ⁾‖` and the bottom exponent `ℓ_bot = lim (1/n)log‖(A⁽ⁿ⁾)⁻¹‖` satisfy
+  `ℓ_bot = -ℓ_top` (all Lyapunov exponents coincide), then **every** nonzero `v` grows at the
+  common rate `ℓ_top`.
+
+The fully general per-vector limit (with the top *active* Oseledets exponent depending on `v`'s
+Λ-eigencomponents) needs the band-projector convergence `tendsto_bandProjector_of_gap` to control
+the eigencomponent of `v` at the dominant exponent; that assembly is flagged in the module summary
+and left for a follow-up. -/
+
+/-- **L12 (foundation).** The squared norm of the cocycle image is the Gram quadratic form:
+`‖A⁽ⁿ⁾(x) v‖² = ⟪gram_n v, v⟫`. (`‖f v‖² = ⟪f v, f v⟫ = ⟪(adjoint f ∘ f) v, v⟫`, and
+`adjoint(toEuclideanLin M) ∘ toEuclideanLin M = toEuclideanLin (Mᵀ M) = toEuclideanLin (gram)`.) -/
+theorem norm_sq_cocycle_apply_eq_inner_gram (A : X → Matrix (Fin d) (Fin d) ℝ)
+    (n : ℕ) (x : X) (v : EuclideanSpace ℝ (Fin d)) :
+    ‖Matrix.toEuclideanLin (cocycle A T n x) v‖ ^ 2
+      = ⟪Matrix.toEuclideanLin (gram A T n x) v, v⟫ := by
+  set M := cocycle A T n x with hM
+  rw [← real_inner_self_eq_norm_sq]
+  have hadj : ⟪Matrix.toEuclideanLin M v, Matrix.toEuclideanLin M v⟫_ℝ
+      = ⟪((Matrix.toEuclideanLin M).adjoint ∘ₗ (Matrix.toEuclideanLin M)) v, v⟫_ℝ := by
+    rw [LinearMap.comp_apply, LinearMap.adjoint_inner_left]
+  rw [hadj, adjoint_comp_self_eq_gram]
+  rw [gram]
+
+/-- **L12 (upper bound).** `‖A⁽ⁿ⁾(x) v‖ ≤ ‖A⁽ⁿ⁾(x)‖ ‖v‖` — the per-vector L² operator-norm bound. -/
+theorem norm_cocycle_apply_le (A : X → Matrix (Fin d) (Fin d) ℝ)
+    (n : ℕ) (x : X) (v : EuclideanSpace ℝ (Fin d)) :
+    ‖Matrix.toEuclideanLin (cocycle A T n x) v‖ ≤ ‖cocycle A T n x‖ * ‖v‖ :=
+  ExteriorNorm.norm_toEuclideanLin_apply_le (cocycle A T n x) v
+
+/-- **L12 (lower bound).** `‖v‖ ≤ ‖A⁽ⁿ⁾(x)⁻¹‖ · ‖A⁽ⁿ⁾(x) v‖` for an invertible cocycle, i.e.
+`‖A⁽ⁿ⁾⁻¹‖⁻¹ ‖v‖ ≤ ‖A⁽ⁿ⁾ v‖`. (`v = A⁽ⁿ⁾⁻¹ (A⁽ⁿ⁾ v)`, then the op-norm bound.) -/
+theorem norm_le_norm_inv_mul_norm_cocycle_apply {A : X → Matrix (Fin d) (Fin d) ℝ}
+    (hA : ∀ x, (A x).det ≠ 0) (n : ℕ) (x : X) (v : EuclideanSpace ℝ (Fin d)) :
+    ‖v‖ ≤ ‖(cocycle A T n x)⁻¹‖ * ‖Matrix.toEuclideanLin (cocycle A T n x) v‖ := by
+  have hdet : (cocycle A T n x).det ≠ 0 := det_cocycle_ne_zero hA n x
+  have hinv : (cocycle A T n x)⁻¹ * cocycle A T n x = 1 :=
+    Matrix.nonsing_inv_mul _ (Ne.isUnit hdet)
+  have hround : Matrix.toEuclideanLin ((cocycle A T n x)⁻¹)
+      (Matrix.toEuclideanLin (cocycle A T n x) v) = v := by
+    rw [← LinearMap.comp_apply]
+    have hcomp : Matrix.toEuclideanLin ((cocycle A T n x)⁻¹)
+          ∘ₗ Matrix.toEuclideanLin (cocycle A T n x)
+        = Matrix.toEuclideanLin ((cocycle A T n x)⁻¹ * cocycle A T n x) := by
+      ext w i
+      simp only [LinearMap.comp_apply, Matrix.toEuclideanLin_apply, Matrix.mulVec_mulVec]
+    rw [hcomp, hinv]
+    ext i; simp
+  calc ‖v‖ = ‖Matrix.toEuclideanLin ((cocycle A T n x)⁻¹)
+              (Matrix.toEuclideanLin (cocycle A T n x) v)‖ := by rw [hround]
+    _ ≤ ‖(cocycle A T n x)⁻¹‖ * ‖Matrix.toEuclideanLin (cocycle A T n x) v‖ :=
+        ExteriorNorm.norm_toEuclideanLin_apply_le _ _
+
+/-- **L12 (nonvanishing).** `A⁽ⁿ⁾(x) v ≠ 0` for `v ≠ 0` (invertibility ⟹ injectivity). -/
+theorem cocycle_apply_ne_zero {A : X → Matrix (Fin d) (Fin d) ℝ}
+    (hA : ∀ x, (A x).det ≠ 0) (n : ℕ) (x : X) {v : EuclideanSpace ℝ (Fin d)} (hv : v ≠ 0) :
+    Matrix.toEuclideanLin (cocycle A T n x) v ≠ 0 := by
+  intro h
+  exact hv (injective_toEuclideanLin (det_cocycle_ne_zero hA n x) (by rw [h, map_zero]))
+
+/-- **L12 (equal-exponents two-sided limit).** If the top and (negated) bottom Furstenberg–Kesten
+exponents coincide at `x` — i.e. `(1/n)log‖A⁽ⁿ⁾‖ → ℓ` and `(1/n)log‖(A⁽ⁿ⁾)⁻¹‖ → -ℓ` — then for
+**every** nonzero `v` the normalized log-growth of `A⁽ⁿ⁾ v` converges to `ℓ`. This is the genuine
+two-sided growth limit (not merely `limsup`) in the isotropic/conformal regime where all Lyapunov
+exponents agree: the operator-norm sandwich `‖A⁽ⁿ⁾⁻¹‖⁻¹ ‖v‖ ≤ ‖A⁽ⁿ⁾ v‖ ≤ ‖A⁽ⁿ⁾‖ ‖v‖` squeezes the
+normalized log between two sequences both tending to `ℓ` (the `(1/n)log‖v‖` correction vanishes). -/
+theorem tendsto_log_cocycle_apply_of_eq_exponents {A : X → Matrix (Fin d) (Fin d) ℝ}
+    (hA : ∀ x, (A x).det ≠ 0) {x : X} {ℓ : ℝ}
+    (htop : Tendsto (fun n : ℕ => (n : ℝ)⁻¹ * Real.log ‖cocycle A T n x‖) atTop (𝓝 ℓ))
+    (hbot : Tendsto (fun n : ℕ => (n : ℝ)⁻¹ * Real.log ‖(cocycle A T n x)⁻¹‖) atTop (𝓝 (-ℓ)))
+    {v : EuclideanSpace ℝ (Fin d)} (hv : v ≠ 0) :
+    Tendsto (fun n : ℕ => (n : ℝ)⁻¹ *
+        Real.log ‖Matrix.toEuclideanLin (cocycle A T n x) v‖) atTop (𝓝 ℓ) := by
+  have hvpos : 0 < ‖v‖ := norm_pos_iff.mpr hv
+  have hcorr : Tendsto (fun n : ℕ => (n : ℝ)⁻¹ * Real.log ‖v‖) atTop (𝓝 0) := by
+    have := (tendsto_natCast_atTop_atTop (R := ℝ)).inv_tendsto_atTop.mul_const (Real.log ‖v‖)
+    simpa using this
+  have hcocpos : ∀ n, 0 < ‖cocycle A T n x‖ := fun n => norm_cocycle_pos hA n x
+  have hinvpos : ∀ n, 0 < ‖(cocycle A T n x)⁻¹‖ := fun n => norm_inv_cocycle_pos hA n x
+  have happly_pos : ∀ n, 0 < ‖Matrix.toEuclideanLin (cocycle A T n x) v‖ := fun n =>
+    norm_pos_iff.mpr (cocycle_apply_ne_zero (T := T) hA n x hv)
+  have hupperlim : Tendsto
+      (fun n : ℕ => (n : ℝ)⁻¹ * Real.log ‖cocycle A T n x‖ + (n : ℝ)⁻¹ * Real.log ‖v‖)
+      atTop (𝓝 ℓ) := by simpa using htop.add hcorr
+  have hlowerlim : Tendsto
+      (fun n : ℕ => (n : ℝ)⁻¹ * Real.log ‖v‖ - (n : ℝ)⁻¹ * Real.log ‖(cocycle A T n x)⁻¹‖)
+      atTop (𝓝 ℓ) := by simpa using hcorr.sub hbot
+  refine tendsto_of_tendsto_of_tendsto_of_le_of_le' hlowerlim hupperlim ?_ ?_
+  · filter_upwards [eventually_ge_atTop 1] with n _
+    have hninv : (0:ℝ) ≤ (n:ℝ)⁻¹ := by positivity
+    have hle := norm_le_norm_inv_mul_norm_cocycle_apply (T := T) hA n x v
+    have hlog : Real.log ‖v‖
+        ≤ Real.log ‖(cocycle A T n x)⁻¹‖
+            + Real.log ‖Matrix.toEuclideanLin (cocycle A T n x) v‖ := by
+      rw [← Real.log_mul (ne_of_gt (hinvpos n)) (ne_of_gt (happly_pos n))]
+      exact Real.log_le_log hvpos hle
+    nlinarith [mul_le_mul_of_nonneg_left hlog hninv]
+  · filter_upwards [eventually_ge_atTop 1] with n _
+    have hninv : (0:ℝ) ≤ (n:ℝ)⁻¹ := by positivity
+    have hle := norm_cocycle_apply_le (T := T) A n x v
+    have hlog : Real.log ‖Matrix.toEuclideanLin (cocycle A T n x) v‖
+        ≤ Real.log ‖cocycle A T n x‖ + Real.log ‖v‖ := by
+      rw [← Real.log_mul (ne_of_gt (hcocpos n)) (ne_of_gt hvpos)]
+      exact Real.log_le_log (happly_pos n) hle
+    nlinarith [mul_le_mul_of_nonneg_left hlog hninv]
+
+/-- **L12 (a.e. equal-exponents two-sided limit).** For an ergodic, integrable, invertible cocycle
+whose top Furstenberg–Kesten exponent `ℓ_top` and bottom exponent `ℓ_bot` satisfy `ℓ_bot = -ℓ_top`
+(all Lyapunov exponents equal — the conformal/isotropic regime), there is a single exponent `ℓ` such
+that for `μ`-a.e. `x` and **every** nonzero `v`, `(1/n)log‖A⁽ⁿ⁾(x) v‖ → ℓ`. The two FK exponents are
+produced internally by `furstenbergKesten_top`/`_bot`; the hypothesis `heq` ties them together. -/
+theorem ae_tendsto_log_cocycle_apply_of_eq_exponents [IsProbabilityMeasure μ] (hT : Ergodic T μ)
+    {A : X → Matrix (Fin d) (Fin d) ℝ} (hA : ∀ x, (A x).det ≠ 0) (hAmeas : Measurable A)
+    (hint : IntegrableLogNorm A μ) (hint' : IntegrableLogNorm (fun x => (A x)⁻¹) μ)
+    (heq : ∀ (ℓtop ℓbot : ℝ),
+      (∀ᵐ x ∂μ, Tendsto (fun n : ℕ => (n : ℝ)⁻¹ * Real.log ‖cocycle A T n x‖) atTop (𝓝 ℓtop)) →
+      (∀ᵐ x ∂μ, Tendsto (fun n : ℕ => (n : ℝ)⁻¹ * Real.log ‖(cocycle A T n x)⁻¹‖) atTop (𝓝 ℓbot)) →
+      ℓbot = -ℓtop) :
+    ∃ ℓ : ℝ, ∀ᵐ x ∂μ, ∀ v : EuclideanSpace ℝ (Fin d), v ≠ 0 →
+      Tendsto (fun n : ℕ => (n : ℝ)⁻¹ *
+          Real.log ‖Matrix.toEuclideanLin (cocycle A T n x) v‖) atTop (𝓝 ℓ) := by
+  obtain ⟨ℓtop, htopval⟩ := furstenbergKesten_top hT hA hAmeas hint hint'
+  obtain ⟨ℓbot, hbotval⟩ := furstenbergKesten_bot hT hA hAmeas hint hint'
+  have hℓ : ℓbot = -ℓtop := heq ℓtop ℓbot htopval hbotval
+  refine ⟨ℓtop, ?_⟩
+  filter_upwards [htopval, hbotval] with x htop hbot
+  intro v hv
+  refine tendsto_log_cocycle_apply_of_eq_exponents hA htop ?_ hv
+  rwa [← hℓ]
+
 end Oseledets
 
 end
