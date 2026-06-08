@@ -321,7 +321,7 @@ private def wIndexEquiv (b : OrthonormalBasis ι ℝ E) (k : ℕ) :
 
 open scoped Classical in
 /-- The wedge trivialization attached to an arbitrary orthonormal basis `b` of `E`. -/
-private def onbTriv (b : OrthonormalBasis ι ℝ E) (k : ℕ) :
+def onbTriv (b : OrthonormalBasis ι ℝ E) (k : ℕ) :
     (⋀[ℝ]^k E) ≃ₗ[ℝ] EuclideanSpace ℝ (Fin (Module.finrank ℝ (⋀[ℝ]^k E))) :=
   ((b.toBasis.exteriorPower k).reindex (wIndexEquiv b k)).equivFun
     ≪≫ₗ (EuclideanSpace.equiv _ ℝ).symm.toLinearEquiv
@@ -2079,6 +2079,148 @@ theorem plucker_eigenpair_ceiling {n : ℕ} (f : E →ₗ[ℝ] E)
     have hprefix : 0 ≤ ∏ i ∈ Finset.range (k-1), lam i := Finset.prod_nonneg (fun _ _ => hpos _)
     exact mul_nonneg hprefix (hpos k)
 
+open scoped Classical in
+/-- **Witness-exposing Plücker bridge (eigenbasis coords).** Same as `plucker_eigenpair_ceiling`,
+but with the top eigenvector index `i₀` produced *explicitly* as `wIndexEquiv u k topSet` (where
+`topSet` is the top-`k` prefix subset), and with the extra identity pinning the standard basis
+vector `basisFun i₀` to the explicit Hodge-trivialized wedge `onbTriv u k (e_{u₀} ∧ ⋯ ∧ e_{u_{k-1}})`
+of the top-`k` eigenframe. This is the variant `plucker_eigenpair_ceiling_standard'` transports to
+standard coordinates to expose the band-projector frame wedge. -/
+theorem plucker_eigenpair_ceiling' {n : ℕ} (f : E →ₗ[ℝ] E)
+    (u : OrthonormalBasis (Fin n) ℝ E) (lam : ℕ → ℝ) (hanti : Antitone lam)
+    (hpos : ∀ i, 0 ≤ lam i) (hf : ∀ i, f (u i) = lam (i : ℕ) • u i)
+    {k : ℕ} (hk1 : 1 ≤ k) (hkn : k ≤ n) (hgap : lam k < lam (k - 1)) :
+    ∃ i₀ : Fin (Module.finrank ℝ (⋀[ℝ]^k E)),
+      EuclideanSpace.basisFun _ ℝ i₀
+          = onbTriv u k (exteriorPower.ιMulti ℝ k
+              (fun j : Fin k => u ⟨j, lt_of_lt_of_le j.2 hkn⟩))
+      ∧ conjExteriorMap k (onbTriv u k) (onbTriv u k) f
+          (EuclideanSpace.basisFun _ ℝ i₀)
+        = (∏ i ∈ Finset.range k, lam i) • EuclideanSpace.basisFun _ ℝ i₀
+      ∧ ((∏ i ∈ Finset.range (k-1), lam i) * lam k) < (∏ i ∈ Finset.range k, lam i)
+      ∧ ∀ w : EuclideanSpace ℝ (Fin (Module.finrank ℝ (⋀[ℝ]^k E))),
+          (inner ℝ w (EuclideanSpace.basisFun _ ℝ i₀) : ℝ) = 0 →
+          (inner ℝ ((conjExteriorMap k (onbTriv u k) (onbTriv u k) f) w) w : ℝ)
+            ≤ ((∏ i ∈ Finset.range (k-1), lam i) * lam k) * ‖w‖ ^ 2 := by
+  classical
+  set N := Module.finrank ℝ (⋀[ℝ]^k E) with hN
+  set C := conjExteriorMap k (onbTriv u k) (onbTriv u k) f with hC
+  set c : Fin N → ℝ := fun i =>
+    ∏ a ∈ ((wIndexEquiv u k).symm i : Set.powersetCard (Fin n) k).val, lam (a : ℕ) with hcdef
+  have hCdiag : ∀ i, C (EuclideanSpace.basisFun (Fin N) ℝ i)
+      = c i • EuclideanSpace.basisFun (Fin N) ℝ i := by
+    intro i
+    rw [hC, conjExteriorMap_onbTriv_diag f u (fun j => lam (j : ℕ)) hf k]
+  set topEmb : Fin k ↪o Fin n :=
+    { toFun := fun i => ⟨i, lt_of_lt_of_le i.2 hkn⟩
+      inj' := fun i j h => Fin.ext (by simpa using congrArg Fin.val h)
+      map_rel_iff' := Iff.rfl } with htopEmb
+  set topSet : Set.powersetCard (Fin n) k := Set.powersetCard.ofFinEmbEquiv topEmb with htopSet
+  set i₀ : Fin N := wIndexEquiv u k topSet with hi₀def
+  have hS₀ : (wIndexEquiv u k).symm i₀ = topSet := by rw [hi₀def, Equiv.symm_apply_apply]
+  have htopval : ∀ i : Fin k, (topEmb i : Fin n).val = (i : ℕ) := fun _ => rfl
+  have htopprod : ∀ g : Fin n → ℝ, ∏ a ∈ topSet.val, g a = ∏ j, g (topEmb j) := by
+    intro g
+    have hval : topSet.val = Finset.univ.image (topEmb) := by
+      ext x
+      rw [Finset.mem_image,
+        show x ∈ topSet.val ↔ x ∈ topSet from Iff.rfl, htopSet,
+        Set.powersetCard.mem_ofFinEmbEquiv_iff_mem_range, Set.mem_range]
+      constructor
+      · rintro ⟨j, hj⟩; exact ⟨j, Finset.mem_univ _, hj⟩
+      · rintro ⟨j, _, hj⟩; exact ⟨j, hj⟩
+    rw [hval, Finset.prod_image (fun x _ y _ h => topEmb.injective h)]
+  set μ₀ : ℝ := ∏ i ∈ Finset.range k, lam i with hμ₀
+  set μ₁ : ℝ := (∏ i ∈ Finset.range (k-1), lam i) * lam k with hμ₁
+  have hci₀ : c i₀ = μ₀ := by
+    rw [hcdef]; simp only
+    rw [hS₀, htopprod (fun a => lam (a : ℕ)), hμ₀, Finset.prod_range fun i => lam i]
+    exact Finset.prod_congr rfl (fun j _ => by simp only [htopval])
+  have hmax : ∀ i, c i ≤ μ₀ := by
+    intro i
+    rw [hcdef]; simp only
+    rw [hμ₀, Finset.prod_range fun j => lam j]
+    have hconv : ∏ a ∈ ((wIndexEquiv u k).symm i : Set.powersetCard (Fin n) k).val, lam (a : ℕ)
+        = ∏ a ∈ ((wIndexEquiv u k).symm i : Set.powersetCard (Fin n) k).val,
+            (fun b : Fin n => lam (b : ℕ)) a := rfl
+    rw [hconv]
+    refine le_trans (prod_le_prod_top (fun b : Fin n => lam (b : ℕ)) ?_ ?_
+      ((wIndexEquiv u k).symm i) topEmb htopval) ?_
+    · exact fun a b hab => hanti (by exact_mod_cast (Fin.le_def.mp hab))
+    · exact fun a => hpos _
+    · exact le_of_eq (Finset.prod_congr rfl (fun j _ => by simp only [htopval]))
+  have hsecond : ∀ i, i ≠ i₀ → c i ≤ μ₁ := by
+    intro i hi
+    rw [hcdef]; simp only
+    set S := ((wIndexEquiv u k).symm i : Set.powersetCard (Fin n) k) with hS
+    set e := Set.powersetCard.ofFinEmbEquiv.symm S with he
+    have hSne : S ≠ topSet := by
+      intro h
+      apply hi
+      rw [hi₀def, ← h, hS, Equiv.apply_symm_apply]
+    have hprodeq : ∏ a ∈ (S : Finset (Fin n)), lam (a : ℕ) = ∏ j, lam (e j : ℕ) := by
+      rw [he]; exact (prod_ofFinEmbEquiv_symm (fun a : Fin n => lam (a : ℕ)) S).symm
+    rw [hprodeq]
+    have himgS : (S : Finset (Fin n)) = Finset.univ.image (fun j : Fin k => e j) := by
+      have himg : (S : Finset (Fin n)) = Finset.univ.image (Set.powersetCard.ofFinEmbEquiv.symm S) := by
+        rw [Set.powersetCard.ofFinEmbEquiv_symm_apply, Finset.image_orderEmbOfFin_univ]
+      rw [himg, he]
+    have htopImg : topSet.val = Finset.univ.image topEmb := by
+      have hval : topSet.val = Finset.univ.image (topEmb) := by
+        ext x
+        rw [Finset.mem_image,
+          show x ∈ topSet.val ↔ x ∈ topSet from Iff.rfl, htopSet,
+          Set.powersetCard.mem_ofFinEmbEquiv_iff_mem_range, Set.mem_range]
+        constructor
+        · rintro ⟨j, hj⟩; exact ⟨j, Finset.mem_univ _, hj⟩
+        · rintro ⟨j, _, hj⟩; exact ⟨j, hj⟩
+      exact hval
+    have hImgNe : (Finset.univ.image (fun j : Fin k => e j) : Finset (Fin n))
+        ≠ Finset.univ.image (fun i : Fin k => (⟨i, lt_of_lt_of_le i.2 hkn⟩ : Fin n)) := by
+      intro h
+      apply hSne
+      apply Subtype.ext
+      rw [show (S : Finset (Fin n)) = S.val from rfl, show topSet.val = topSet.val from rfl,
+        himgS, htopImg, h]
+      rfl
+    have htopge : k ≤ (e ⟨k-1, by omega⟩ : ℕ) := top_elem_ge hk1 hkn e hImgNe
+    obtain ⟨m, rfl⟩ : ∃ m, k = m + 1 := ⟨k-1, by omega⟩
+    rw [hμ₁, Nat.add_sub_cancel]
+    have hbound := prod_le_second_aux (n := n) m lam hanti hpos e (by simpa using htopge)
+    exact hbound
+  refine ⟨i₀, ?_, ?_, ?_, ?_⟩
+  · -- `basisFun i₀ = onbTriv u k (wedge of top-k eigenframe)`.
+    have hwedge : (u.toBasis.exteriorPower k) topSet
+        = exteriorPower.ιMulti ℝ k (fun j : Fin k => u ⟨j, lt_of_lt_of_le j.2 hkn⟩) := by
+      rw [exteriorPower.basis_apply, exteriorPower.ιMulti_family]
+      have hsymm : Set.powersetCard.ofFinEmbEquiv.symm topSet = topEmb := by
+        rw [htopSet, Equiv.symm_apply_apply]
+      rw [show (⇑u.toBasis ∘ ⇑(Set.powersetCard.ofFinEmbEquiv.symm topSet))
+          = fun j : Fin k => u ⟨j, lt_of_lt_of_le j.2 hkn⟩ by
+        funext j
+        rw [Function.comp_apply, hsymm, OrthonormalBasis.coe_toBasis]
+        rfl]
+    rw [← onbTriv_wedge_eq_basisFun u k i₀, hS₀, hwedge]
+  · rw [hCdiag i₀, hci₀]
+  · have hpre_pos : 0 < ∏ i ∈ Finset.range (k-1), lam i := by
+      apply Finset.prod_pos
+      intro j hj
+      rw [Finset.mem_range] at hj
+      have hjle : lam (k-1) ≤ lam j := hanti (by omega)
+      exact lt_of_lt_of_le (lt_of_le_of_lt (hpos k) hgap) hjle
+    show μ₁ < μ₀
+    calc μ₁ = (∏ i ∈ Finset.range (k-1), lam i) * lam k := rfl
+      _ < (∏ i ∈ Finset.range (k-1), lam i) * lam (k-1) := mul_lt_mul_of_pos_left hgap hpre_pos
+      _ = μ₀ := by
+          rw [hμ₀]
+          obtain ⟨p, rfl⟩ := Nat.exists_eq_add_of_le hk1
+          rw [Nat.add_comm 1 p, Nat.add_sub_cancel, Finset.prod_range_succ]
+  · intro w hw
+    refine diag_rayleigh_ceiling C c hCdiag i₀ hsecond ?_ w hw
+    rw [hμ₁]
+    have hprefix : 0 ≤ ∏ i ∈ Finset.range (k-1), lam i := Finset.prod_nonneg (fun _ _ => hpos _)
+    exact mul_nonneg hprefix (hpos k)
+
 /-! ### The reconciliation bridge: transporting the Plücker eigenpair into standard coordinates
 
 `plucker_eigenpair_ceiling` produces the top eigenpair and second-eigenvalue ceiling of the
@@ -2264,6 +2406,89 @@ theorem plucker_eigenpair_ceiling_standard {n : ℕ} (Q : Matrix (Fin d) (Fin d)
   · intro w hw
     rw [← conjExteriorMap_basisFun_toEuclideanLin_eq_compound k Q]
     exact hv₀ceil w hw
+
+/-- The inverse of the change-of-trivialization isometry: `(onbChange b b').symm` sends `q` to
+`onbTriv b ((onbTriv b').symm q)`. -/
+private lemma onbChange_symm_apply {E : Type*}
+    [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+    {ιE ιE' : Type*} [Fintype ιE] [LinearOrder ιE] [Fintype ιE'] [LinearOrder ιE']
+    (b : OrthonormalBasis ιE ℝ E) (b' : OrthonormalBasis ιE' ℝ E) (k : ℕ)
+    (q : EuclideanSpace ℝ (Fin (Module.finrank ℝ (⋀[ℝ]^k E)))) :
+    (onbChange b b' k).symm q = onbTriv b k ((onbTriv b' k).symm q) := by
+  classical
+  apply (onbChange b b' k).injective
+  rw [LinearIsometryEquiv.apply_symm_apply, onbChange_apply,
+    LinearEquiv.symm_apply_apply, LinearEquiv.apply_symm_apply]
+
+set_option maxHeartbeats 1600000 in
+/-- **(B') — witness-exposing `plucker_eigenpair_ceiling_standard`.** Same spectral data as
+`plucker_eigenpair_ceiling_standard`, but with the top eigenvector produced *explicitly* as the
+standard-trivialization wedge `w₀ = onbTriv basisFun k (e_{u₀} ∧ ⋯ ∧ e_{u_{k-1}})` of the top-`k`
+eigenframe of `u` — exactly the Plücker top eigenvector that the band-projector frame wedge equals.
+This is the variant whose witness can be plugged into `det_transpose_mul_eq_inner_onbTriv` to
+discharge the `hdet` hypothesis of `Oseledets.norm_bandProjector_succ_sub_le`. -/
+theorem plucker_eigenpair_ceiling_standard' {n : ℕ} (Q : Matrix (Fin d) (Fin d) ℝ)
+    (u : OrthonormalBasis (Fin n) ℝ (EuclideanSpace ℝ (Fin d)))
+    (lam : ℕ → ℝ) (hanti : Antitone lam) (hpos : ∀ i, 0 ≤ lam i)
+    (hf : ∀ i, Matrix.toEuclideanLin Q (u i) = lam (i : ℕ) • u i)
+    {k : ℕ} (hk1 : 1 ≤ k) (hkn : k ≤ n) (hgap : lam k < lam (k - 1)) :
+    (‖onbTriv (EuclideanSpace.basisFun (Fin d) ℝ) k
+        (exteriorPower.ιMulti ℝ k (fun j : Fin k => u ⟨j, lt_of_lt_of_le j.2 hkn⟩))‖ = 1)
+    ∧ Matrix.toEuclideanLin (compoundMatrix k Q)
+        (onbTriv (EuclideanSpace.basisFun (Fin d) ℝ) k
+          (exteriorPower.ιMulti ℝ k (fun j : Fin k => u ⟨j, lt_of_lt_of_le j.2 hkn⟩)))
+        = (∏ i ∈ Finset.range k, lam i)
+          • onbTriv (EuclideanSpace.basisFun (Fin d) ℝ) k
+              (exteriorPower.ιMulti ℝ k (fun j : Fin k => u ⟨j, lt_of_lt_of_le j.2 hkn⟩))
+    ∧ ((∏ i ∈ Finset.range (k-1), lam i) * lam k) < (∏ i ∈ Finset.range k, lam i)
+    ∧ ∀ w : EuclideanSpace ℝ (Fin (Module.finrank ℝ (⋀[ℝ]^k (EuclideanSpace ℝ (Fin d))))),
+        (inner ℝ w (onbTriv (EuclideanSpace.basisFun (Fin d) ℝ) k
+            (exteriorPower.ιMulti ℝ k (fun j : Fin k => u ⟨j, lt_of_lt_of_le j.2 hkn⟩))) : ℝ) = 0 →
+        (inner ℝ (Matrix.toEuclideanLin (compoundMatrix k Q) w) w : ℝ)
+          ≤ ((∏ i ∈ Finset.range (k-1), lam i) * lam k) * ‖w‖ ^ 2 := by
+  classical
+  -- eigenbasis-coords data with the EXPLICIT top index and its wedge characterization.
+  obtain ⟨i₀, hbasis, hev, hgapμ, hceil⟩ :=
+    plucker_eigenpair_ceiling' (Matrix.toEuclideanLin Q) u lam hanti hpos hf hk1 hkn hgap
+  -- transport to standard (`basisFun`) wedge coordinates.
+  obtain ⟨hv₀norm, hv₀ev, hv₀ceil⟩ :=
+    eigenpair_ceiling_transport (EuclideanSpace.basisFun (Fin d) ℝ) u k
+      (Matrix.toEuclideanLin Q) i₀ _ _ hev hceil
+  -- the transported witness equals the explicit standard wedge `w₀`.
+  set w₀ := onbTriv (EuclideanSpace.basisFun (Fin d) ℝ) k
+      (exteriorPower.ιMulti ℝ k (fun j : Fin k => u ⟨j, lt_of_lt_of_le j.2 hkn⟩)) with hw₀
+  have hwit : (onbChange (EuclideanSpace.basisFun (Fin d) ℝ) u k).symm
+      (EuclideanSpace.basisFun _ ℝ i₀) = w₀ := by
+    rw [onbChange_symm_apply, hbasis, LinearEquiv.symm_apply_apply, hw₀]
+  rw [hwit] at hv₀norm hv₀ev hv₀ceil
+  refine ⟨hv₀norm, ?_, hgapμ, ?_⟩
+  · rw [← conjExteriorMap_basisFun_toEuclideanLin_eq_compound k Q]; exact hv₀ev
+  · intro w hw
+    rw [← conjExteriorMap_basisFun_toEuclideanLin_eq_compound k Q]
+    exact hv₀ceil w hw
+
+/-- **(C) — the Plücker frame ↔ wedge determinant bridge through the *standard* trivialization.**
+The `hdet` plumbing fact for `Oseledets.norm_bandProjector_succ_sub_le`, expressed through the same
+trivialization `onbTriv basisFun` in which `plucker_eigenpair_ceiling_standard'` produces its top
+eigenvectors: `det(UᵀV) = ⟪onbTriv basisFun (⋀ V-cols), onbTriv basisFun (⋀ U-cols)⟫`. Together with
+`plucker_eigenpair_ceiling_standard'` (whose `v₀`/`vt` ARE these column wedges), this discharges the
+`hdet` hypothesis with `v₀ = U-column wedge`, `vt = V-column wedge`. -/
+theorem det_transpose_mul_eq_inner_onbTriv {k : ℕ} (U V : Matrix (Fin d) (Fin k) ℝ) :
+    (Uᵀ * V).det
+      = (inner ℝ
+          (onbTriv (EuclideanSpace.basisFun (Fin d) ℝ) k
+            (exteriorPower.ιMulti ℝ k (fun j => colE V j)))
+          (onbTriv (EuclideanSpace.basisFun (Fin d) ℝ) k
+            (exteriorPower.ιMulti ℝ k (fun i => colE U i))) : ℝ) := by
+  classical
+  rw [inner_onbTriv, hodgeForm_ιMulti]
+  have hmat : Uᵀ * V
+      = Matrix.of (fun i j => (inner ℝ (colE V j) (colE U i) : ℝ)) := by
+    ext i j
+    rw [Matrix.of_apply, inner_colE, Matrix.mul_apply, Matrix.mul_apply]
+    exact Finset.sum_congr rfl
+      (fun a _ => by rw [Matrix.transpose_apply, Matrix.transpose_apply]; ring)
+  rw [hmat]
 
 end StandardCoords
 
