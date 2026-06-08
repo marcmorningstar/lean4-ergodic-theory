@@ -891,6 +891,285 @@ theorem bandProjector_indicator_eq_frame (A : X → Matrix (Fin d) (Fin d) ℝ) 
       (hM.eigenvectorUnitary : Matrix (Fin d) (Fin d) ℝ) c hM.eigenvalues
       (Unitary.coe_star_mul_self hM.eigenvectorUnitary)
 
+/-! ## L7c.1 (sorted frame): the band projector is the SORTED top-`k` gram eigenframe projector
+
+The Plücker eigenpair `ExteriorNorm.plucker_eigenpair_ceiling_standard'` and the det-Gram bridge
+`ExteriorNorm.det_transpose_mul_eq_inner_onbTriv` both speak of the **sorted** gram eigenbasis: the
+top eigenvector wedge is `onbTriv basisFun (⋀ {u₀, …, u_{k-1}})` of the orthonormal eigenframe `u`
+with **antitone** eigenvalues `lam = σ²`. The committed `bandProjector_indicator_eq_frame` expresses
+the band projector through `qpow`'s **unsorted** eigenvector unitary; this subsection reconciles the
+two by showing the band projector equals `W Wᵀ`, where `W` is the `d×k` matrix whose columns are the
+**sorted** top-`k` gram eigenvectors. Both are the orthogonal projector onto the same eigenvalue-`> c`
+subspace; the reconciliation is via the elementary "self-adjoint idempotent of trace `k` and range
+fixing `W` is `W Wᵀ`" device (trace-zero symmetric idempotent vanishes). -/
+
+/-- **CFC acts diagonally on the matrix eigenbasis.** For a Hermitian real matrix `M` with
+eigenvector basis `eigenvectorBasis` and eigenvalues `eigenvalues`, `cfc g M` sends the `j`-th
+eigenvector to `g (eigenvalues j)` times itself: `cfc g M *ᵥ (eigenvectorBasis j) =
+g (eigenvalues j) • eigenvectorBasis j`. The matrix-level spectral action, derived from the explicit
+triple product `cfc g M = U · diag(g ∘ eig) · Uᴴ` (`cfc_eq_eigenvectorUnitary_conj`). -/
+theorem cfc_mulVec_eigenvectorBasis (M : Matrix (Fin d) (Fin d) ℝ) (hM : M.IsHermitian) (g : ℝ → ℝ)
+    (j : Fin d) :
+    cfc g M *ᵥ ⇑(hM.eigenvectorBasis j) = g (hM.eigenvalues j) • ⇑(hM.eigenvectorBasis j) := by
+  rw [cfc_eq_eigenvectorUnitary_conj hM g, Matrix.star_eq_conjTranspose,
+    (hM.eigenvectorUnitary : Matrix (Fin d) (Fin d) ℝ).conjTranspose_eq_transpose_of_trivial,
+    ← Matrix.mulVec_mulVec, ← Matrix.mulVec_mulVec]
+  have hstar : (hM.eigenvectorUnitary : Matrix (Fin d) (Fin d) ℝ)ᵀ *ᵥ ⇑(hM.eigenvectorBasis j)
+      = Pi.single j 1 := by
+    have := Matrix.IsHermitian.star_eigenvectorUnitary_mulVec hM j
+    rwa [Matrix.star_eq_conjTranspose,
+      (hM.eigenvectorUnitary : Matrix (Fin d) (Fin d) ℝ).conjTranspose_eq_transpose_of_trivial]
+      at this
+  rw [hstar, Matrix.diagonal_mulVec_single]
+  simp only [Function.comp_apply, RCLike.ofReal_real_eq_id, id_eq, mul_one]
+  rw [show Pi.single j (g (hM.eigenvalues j)) = g (hM.eigenvalues j) • Pi.single j (1:ℝ) from by
+    rw [← Pi.single_smul, smul_eq_mul, mul_one], Matrix.mulVec_smul,
+    Matrix.IsHermitian.eigenvectorUnitary_mulVec]
+
+/-- **Trace of the indicator band projector = number of eigenvalues above the cut.** For a Hermitian
+real matrix `M`, the trace of `cfc (𝟙_{(c,∞)}) M` is the count of eigenvalues `> c`. The `0/1`-valued
+cutoff makes the conjugated-diagonal trace a count. (For a self-adjoint idempotent this is its rank.) -/
+theorem trace_cfc_indicator_eq_count (M : Matrix (Fin d) (Fin d) ℝ) (hM : M.IsHermitian) (c : ℝ) :
+    (cfc (Set.indicator (Set.Ioi c) (1:ℝ→ℝ)) M).trace
+      = (Fintype.card {i : Fin d // c < hM.eigenvalues i} : ℝ) := by
+  classical
+  rw [cfc_eq_eigenvectorUnitary_conj hM, Matrix.trace_mul_comm, ← Matrix.mul_assoc,
+    Matrix.star_eq_conjTranspose,
+    (hM.eigenvectorUnitary : Matrix (Fin d) (Fin d) ℝ).conjTranspose_eq_transpose_of_trivial]
+  have hUU : (hM.eigenvectorUnitary : Matrix (Fin d) (Fin d) ℝ)ᵀ
+      * (hM.eigenvectorUnitary : Matrix (Fin d) (Fin d) ℝ) = 1 := by
+    have := Unitary.coe_star_mul_self hM.eigenvectorUnitary
+    rwa [Matrix.star_eq_conjTranspose,
+      (hM.eigenvectorUnitary : Matrix (Fin d) (Fin d) ℝ).conjTranspose_eq_transpose_of_trivial]
+      at this
+  rw [hUU, Matrix.one_mul, Matrix.trace_diagonal]
+  simp only [Function.comp_apply, RCLike.ofReal_real_eq_id, id_eq]
+  rw [show (∑ i : Fin d, Set.indicator (Set.Ioi c) (1:ℝ→ℝ) (hM.eigenvalues i))
+      = ∑ i : Fin d, (if c < hM.eigenvalues i then (1:ℝ) else 0) from by
+    apply Finset.sum_congr rfl; intro i _
+    by_cases hi : c < hM.eigenvalues i
+    · rw [Set.indicator_of_mem (Set.mem_Ioi.mpr hi), Pi.one_apply, if_pos hi]
+    · rw [Set.indicator_of_notMem (by simpa using hi), if_neg hi]]
+  rw [Finset.sum_ite, Finset.sum_const, Finset.sum_const_zero, add_zero, nsmul_eq_mul,
+    mul_one, Fintype.card_subtype]
+
+/-- **A symmetric idempotent of trace `0` vanishes.** Over `ℝ`, a matrix `E` with `Eᵀ = E` and
+`E * E = E` and `tr E = 0` is the zero matrix: `tr(Eᴴ E) = tr(E²) = tr E = 0`, and the squared
+Frobenius norm `tr(Eᴴ E) = ∑ Eᵢⱼ²` is zero only for `E = 0`. The kernel that turns "same range,
+same trace" into a projector identity. -/
+theorem eq_zero_of_transpose_eq_of_mul_self_of_trace_zero {D : ℕ} (E : Matrix (Fin D) (Fin D) ℝ)
+    (hsym : Eᵀ = E) (hidem : E * E = E) (htr : E.trace = 0) : E = 0 := by
+  have hconj : Eᴴ = E := by rw [E.conjTranspose_eq_transpose_of_trivial, hsym]
+  exact Matrix.trace_conjTranspose_mul_self_eq_zero_iff.mp (by rw [hconj, hidem, htr])
+
+/-- **The band projector via the `cfc` on the Gram matrix.** Since `qpow = cfc (·^{1/(2n)}) (gram)`
+and `cfc` composes, `bandProjector A T 𝟙_{(c,∞)} n x = cfc (𝟙_{(c,∞)} ∘ (·^{1/(2n)})) (gram A T n x)`.
+This unfolds the band projector onto the **gram** spectral data, where the sorted eigenbasis lives. -/
+theorem bandProjector_eq_cfc_gram (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (n : ℕ) (x : X)
+    (c : ℝ) :
+    bandProjector A T (Set.indicator (Set.Ioi c) 1) n x
+      = cfc ((Set.indicator (Set.Ioi c) (1:ℝ→ℝ)) ∘ (fun t : ℝ => t ^ ((2 * (n:ℝ))⁻¹)))
+          (gram A T n x) := by
+  rw [bandProjector, qpow,
+    cfc_comp (Set.indicator (Set.Ioi c) 1) (fun t : ℝ => t ^ ((2 * (n:ℝ))⁻¹))
+      (gram A T n x) (gram_isSelfAdjoint A T n x)
+      ((Matrix.finite_real_spectrum (A := gram A T n x)).image _ |>.continuousOn _)
+      ((Matrix.finite_real_spectrum (A := gram A T n x)).continuousOn _)]
+
+/-- **The sorted Gram eigenbasis.** The orthonormal eigenbasis of `gram A T n x`, reindexed by
+`Fin (card (Fin d))` so that `sortedGramEigenbasis i` has eigenvalue `eigenvalues₀ i = σᵢ²`
+(**antitone**, descending). This is exactly the `u` consumed by
+`ExteriorNorm.plucker_eigenpair_ceiling_standard'` (with `lam = σ²`). -/
+noncomputable def sortedGramEigenbasis (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (n : ℕ)
+    (x : X) : OrthonormalBasis (Fin (Fintype.card (Fin d))) ℝ (EuclideanSpace ℝ (Fin d)) :=
+  (gram_posSemidef A T n x).isHermitian.eigenvectorBasis.reindex
+    (Fintype.equivOfCardEq (Fintype.card_fin (Fintype.card (Fin d)))).symm
+
+/-- The sorted Gram eigenbasis diagonalizes `toEuclideanLin (gram)` with the **antitone** eigenvalues
+`eigenvalues₀`: `toEuclideanLin (gram) (sortedGramEigenbasis i) = eigenvalues₀ i • sortedGramEigenbasis i`.
+The eigenpair hypothesis `hf` of `ExteriorNorm.plucker_eigenpair_ceiling_standard'`. -/
+theorem sortedGramEigenbasis_eigenpair (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (n : ℕ)
+    (x : X) (i : Fin (Fintype.card (Fin d))) :
+    Matrix.toEuclideanLin (gram A T n x) (sortedGramEigenbasis A T n x i)
+      = (gram_posSemidef A T n x).isHermitian.eigenvalues₀ i • sortedGramEigenbasis A T n x i := by
+  set hM := (gram_posSemidef A T n x).isHermitian
+  set e : Fin d ≃ Fin (Fintype.card (Fin d)) :=
+    (Fintype.equivOfCardEq (Fintype.card_fin (Fintype.card (Fin d)))).symm with he
+  have hbase : (sortedGramEigenbasis A T n x i) = (hM.eigenvectorBasis (e.symm i)) := by
+    rw [sortedGramEigenbasis, OrthonormalBasis.reindex_apply]
+  rw [hbase]
+  have hval : hM.eigenvalues (e.symm i) = hM.eigenvalues₀ i := by
+    rw [Matrix.IsHermitian.eigenvalues]
+    congr 1
+    show (Fintype.equivOfCardEq (Fintype.card_fin _)).symm
+      ((Fintype.equivOfCardEq (Fintype.card_fin (Fintype.card (Fin d)))) i) = i
+    simp [Equiv.symm_apply_apply]
+  rw [← hval, Matrix.toEuclideanLin_apply, hM.mulVec_eigenvectorBasis (e.symm i)]; rfl
+
+/-- The `1/(2n)`-power of the sorted Gram eigenvalue is the sorted `qpow` eigenvalue:
+`(eigenvalues₀(gram) i)^{1/(2n)} = eigenvalues₀(qpow) i`. The monotone-CFC bridge identifying the
+gram cut with the qpow cut. -/
+theorem rpow_gram_eigenvalues₀_eq_qpow_eigenvalues₀ (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X)
+    (n : ℕ) (x : X) (i : Fin (Fintype.card (Fin d))) :
+    ((gram_posSemidef A T n x).isHermitian.eigenvalues₀ i) ^ ((2 * (n:ℝ))⁻¹)
+      = (qpow_isSelfAdjoint A T n x).isHermitian.eigenvalues₀ i := by
+  have hmono : MonotoneOn (fun t : ℝ => t ^ ((2 * (n : ℝ))⁻¹)) (Set.Ici 0) :=
+    Real.monotoneOn_rpow_Ici_of_exponent_nonneg (by positivity)
+  have hpos : ∀ j, 0 ≤ (gram_posSemidef A T n x).isHermitian.eigenvalues₀ j := by
+    intro j; rw [gram_eigenvalues₀_eq_sq_singularValues]; positivity
+  have hcfc := eigenvalues₀_cfc_of_monotoneOn (gram_posSemidef A T n x).isHermitian hmono hpos
+  have hi : (qpow_isSelfAdjoint A T n x).isHermitian.eigenvalues₀ i
+      = (fun t : ℝ => t ^ ((2 * (n : ℝ))⁻¹))
+          ((gram_posSemidef A T n x).isHermitian.eigenvalues₀ i) := by
+    rw [show (qpow_isSelfAdjoint A T n x).isHermitian.eigenvalues₀ i
+        = ((cfc_predicate (fun t : ℝ => t ^ ((2 * (n : ℝ))⁻¹))
+            (gram A T n x) : IsSelfAdjoint _).isHermitian).eigenvalues₀ i from rfl, hcfc]
+    rfl
+  rw [hi]
+
+/-- **The sorted top-`k` Gram eigenframe.** The `d×k` matrix whose `j`-th column is the `j`-th sorted
+Gram eigenvector `sortedGramEigenbasis ⟨j, …⟩`. Its column wedge is the Plücker top eigenvector
+`w₀ = onbTriv basisFun (⋀ {u₀, …, u_{k-1}})` of `ExteriorNorm.plucker_eigenpair_ceiling_standard'`,
+and it is the `W` of the band-projector frame identity `bandProjector = W Wᵀ`. -/
+noncomputable def sortedTopFrame (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (n : ℕ) (x : X)
+    {k : ℕ} (hk : k ≤ Fintype.card (Fin d)) : Matrix (Fin d) (Fin k) ℝ :=
+  Matrix.of (fun a (j : Fin k) => sortedGramEigenbasis A T n x ⟨j, lt_of_lt_of_le j.2 hk⟩ a)
+
+/-- The `j`-th column of `sortedTopFrame` (as a Euclidean vector) is the `j`-th sorted Gram
+eigenvector. This is the identification that makes `ExteriorNorm.det_transpose_mul_eq_inner_onbTriv`
+and `ExteriorNorm.plucker_eigenpair_ceiling_standard'` share the same wedge. -/
+theorem colE_sortedTopFrame (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (n : ℕ) (x : X)
+    {k : ℕ} (hk : k ≤ Fintype.card (Fin d)) (j : Fin k) :
+    ExteriorNorm.colE (sortedTopFrame A T n x hk) j
+      = sortedGramEigenbasis A T n x ⟨j, lt_of_lt_of_le j.2 hk⟩ := by
+  rw [ExteriorNorm.colE, sortedTopFrame]
+  ext a
+  simp [EuclideanSpace.equiv]
+
+/-- The sorted top-`k` Gram eigenframe has **orthonormal columns**: `Wᵀ W = 1`. -/
+theorem sortedTopFrame_transpose_mul_self (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (n : ℕ)
+    (x : X) {k : ℕ} (hk : k ≤ Fintype.card (Fin d)) :
+    (sortedTopFrame A T n x hk)ᵀ * (sortedTopFrame A T n x hk) = 1 := by
+  ext s t
+  rw [Matrix.mul_apply, Matrix.one_apply]
+  have hinner : ∑ a, (sortedTopFrame A T n x hk)ᵀ s a * (sortedTopFrame A T n x hk) a t
+      = (inner ℝ (sortedGramEigenbasis A T n x ⟨s, lt_of_lt_of_le s.2 hk⟩)
+          (sortedGramEigenbasis A T n x ⟨t, lt_of_lt_of_le t.2 hk⟩) : ℝ) := by
+    rw [PiLp.inner_apply]
+    apply Finset.sum_congr rfl; intro a _
+    simp only [sortedTopFrame, Matrix.transpose_apply, Matrix.of_apply, RCLike.inner_apply,
+      conj_trivial]
+    ring
+  rw [hinner, (sortedGramEigenbasis A T n x).inner_eq_ite]
+  by_cases hst : s = t
+  · subst hst; simp
+  · rw [if_neg (show (⟨(s:ℕ), _⟩ : Fin (Fintype.card (Fin d))) ≠ ⟨(t:ℕ), _⟩ from by
+      simp only [ne_eq, Fin.mk.injEq]; exact fun h => hst (Fin.ext h)), if_neg hst]
+
+/-- **The band projector fixes the sorted top-`k` Gram eigenframe.** If each of the top-`k` sorted
+`qpow` eigenvalues exceeds the cut `c`, then `bandProjector * W = W`, i.e. the band projector acts as
+the identity on each top-`k` sorted Gram eigenvector. (Each column is a `qpow`-eigenvector with
+eigenvalue `> c`, where the `0/1` cutoff is `1`.) -/
+theorem bandProjector_mul_sortedTopFrame (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (n : ℕ)
+    (x : X) (c : ℝ) {k : ℕ} (hk : k ≤ Fintype.card (Fin d))
+    (htop : ∀ j : Fin k, c < (qpow_isSelfAdjoint A T n x).isHermitian.eigenvalues₀
+      ⟨j, lt_of_lt_of_le j.2 hk⟩) :
+    bandProjector A T (Set.indicator (Set.Ioi c) 1) n x * sortedTopFrame A T n x hk
+      = sortedTopFrame A T n x hk := by
+  set g := (Set.indicator (Set.Ioi c) (1:ℝ→ℝ)) ∘ (fun t : ℝ => t ^ ((2 * (n:ℝ))⁻¹)) with hg
+  set hM := (gram_posSemidef A T n x).isHermitian with hMdef
+  set e : Fin d ≃ Fin (Fintype.card (Fin d)) :=
+    (Fintype.equivOfCardEq (Fintype.card_fin (Fintype.card (Fin d)))).symm with he
+  ext a j
+  rw [bandProjector_eq_cfc_gram]
+  have hcol : (cfc g (gram A T n x) * sortedTopFrame A T n x hk) a j
+      = (cfc g (gram A T n x) *ᵥ (fun b => sortedTopFrame A T n x hk b j)) a := by
+    rw [Matrix.mul_apply, Matrix.mulVec]; rfl
+  rw [hcol]
+  have hcolvec : (fun b => sortedTopFrame A T n x hk b j)
+      = ⇑(hM.eigenvectorBasis (e.symm ⟨j, lt_of_lt_of_le j.2 hk⟩)) := by
+    funext b
+    show sortedGramEigenbasis A T n x ⟨j, lt_of_lt_of_le j.2 hk⟩ b
+      = (hM.eigenvectorBasis (e.symm ⟨j, lt_of_lt_of_le j.2 hk⟩)) b
+    rw [sortedGramEigenbasis, OrthonormalBasis.reindex_apply, he, hMdef, Equiv.symm_symm]
+  rw [hcolvec, cfc_mulVec_eigenvectorBasis (gram A T n x) hM g (e.symm ⟨j, lt_of_lt_of_le j.2 hk⟩)]
+  have hval : hM.eigenvalues (e.symm ⟨j, lt_of_lt_of_le j.2 hk⟩)
+      = hM.eigenvalues₀ ⟨j, lt_of_lt_of_le j.2 hk⟩ := by
+    rw [Matrix.IsHermitian.eigenvalues]
+    congr 1
+    show (Fintype.equivOfCardEq (Fintype.card_fin _)).symm
+      ((Fintype.equivOfCardEq (Fintype.card_fin (Fintype.card (Fin d))))
+        ⟨j, lt_of_lt_of_le j.2 hk⟩) = ⟨j, lt_of_lt_of_le j.2 hk⟩
+    simp [Equiv.symm_apply_apply]
+  rw [hval]
+  have hg1 : g (hM.eigenvalues₀ ⟨j, lt_of_lt_of_le j.2 hk⟩) = 1 := by
+    have hbr : (hM.eigenvalues₀ ⟨j, lt_of_lt_of_le j.2 hk⟩) ^ ((2 * (n:ℝ))⁻¹)
+        = (qpow_isSelfAdjoint A T n x).isHermitian.eigenvalues₀ ⟨j, lt_of_lt_of_le j.2 hk⟩ := by
+      rw [hMdef]; exact rpow_gram_eigenvalues₀_eq_qpow_eigenvalues₀ A T n x ⟨j, _⟩
+    rw [hg, Function.comp_apply, hbr,
+      Set.indicator_of_mem (Set.mem_Ioi.mpr (htop j)), Pi.one_apply]
+  rw [hg1, one_smul]
+  exact (congrFun hcolvec a).symm
+
+/-- **DELIVERABLE 1 — the band projector is the SORTED top-`k` Gram eigenframe projector.** For a cut
+`c` such that exactly `k` of the `qpow` eigenvalues exceed `c` (`hcount`) and the top-`k` sorted ones
+all exceed it (`htop`), the band projector equals `W Wᵀ` with `Wᵀ W = 1`, where `W = sortedTopFrame`
+has the sorted top-`k` Gram eigenvectors as columns. The unsorted↔sorted eigenframe reconciliation:
+both `bandProjector` (the `cfc`-indicator eigenvalue-`> c` projector of `qpow`) and `W Wᵀ` (the sorted
+top-`k` Gram eigenspace projector) are the orthogonal projector onto the **same** subspace. Proof: the
+difference `E = bandProjector − W Wᵀ` is a symmetric idempotent (`bandProjector` fixes the columns of
+`W` — `bandProjector_mul_sortedTopFrame`) of trace `k − k = 0`, hence vanishes
+(`eq_zero_of_transpose_eq_of_mul_self_of_trace_zero`). The frame `W` and its column wedge are exactly
+the data consumed by `ExteriorNorm.plucker_eigenpair_ceiling_standard'` and
+`ExteriorNorm.det_transpose_mul_eq_inner_onbTriv`. -/
+theorem bandProjector_indicator_eq_sortedTopFrame (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X)
+    (n : ℕ) (x : X) (c : ℝ) {k : ℕ} (hk : k ≤ Fintype.card (Fin d))
+    (htop : ∀ j : Fin k, c < (qpow_isSelfAdjoint A T n x).isHermitian.eigenvalues₀
+      ⟨j, lt_of_lt_of_le j.2 hk⟩)
+    (hcount : Fintype.card {i : Fin d // c < (qpow_isSelfAdjoint A T n x).isHermitian.eigenvalues i}
+      = k) :
+    bandProjector A T (Set.indicator (Set.Ioi c) 1) n x
+        = sortedTopFrame A T n x hk * (sortedTopFrame A T n x hk)ᵀ
+      ∧ (sortedTopFrame A T n x hk)ᵀ * sortedTopFrame A T n x hk = 1 := by
+  set P := bandProjector A T (Set.indicator (Set.Ioi c) 1) n x with hP
+  set W := sortedTopFrame A T n x hk with hW
+  have hWW : Wᵀ * W = 1 := sortedTopFrame_transpose_mul_self A T n x hk
+  refine ⟨?_, hWW⟩
+  set E := P - W * Wᵀ with hE
+  have hPsym : Pᵀ = P := by
+    have hsa : Pᴴ = P := bandProjector_isSelfAdjoint A T (Set.indicator (Set.Ioi c) 1) n x
+    rwa [Matrix.conjTranspose_eq_transpose_of_trivial] at hsa
+  have hPWWsym : (W * Wᵀ)ᵀ = W * Wᵀ := by
+    rw [Matrix.transpose_mul, Matrix.transpose_transpose]
+  have hEsym : Eᵀ = E := by rw [hE, Matrix.transpose_sub, hPsym, hPWWsym]
+  have hPidem : P * P = P := bandProjector_indicator_mul_self A T n x
+  have hPW : P * W = W := bandProjector_mul_sortedTopFrame A T n x c hk htop
+  have hWWP : W * Wᵀ * P = W * Wᵀ := by
+    have hWtP : Wᵀ * P = Wᵀ := by
+      have : (P * W)ᵀ = Wᵀ := by rw [hPW]
+      rwa [Matrix.transpose_mul, hPsym] at this
+    rw [Matrix.mul_assoc, hWtP]
+  have hPWW : P * (W * Wᵀ) = W * Wᵀ := by rw [← Matrix.mul_assoc, hPW]
+  have hWWWW : W * Wᵀ * (W * Wᵀ) = W * Wᵀ := by
+    rw [show W * Wᵀ * (W * Wᵀ) = W * (Wᵀ * W) * Wᵀ by simp only [Matrix.mul_assoc], hWW,
+      Matrix.mul_one]
+  have hEidem : E * E = E := by
+    rw [hE, Matrix.sub_mul, Matrix.mul_sub, Matrix.mul_sub, hPidem, hPWW, hWWP, hWWWW]
+    abel
+  have htrP : P.trace = (k : ℝ) := by
+    rw [hP, bandProjector, qpow]
+    rw [show cfc (Set.indicator (Set.Ioi c) (1:ℝ→ℝ))
+          (cfc (fun t : ℝ => t ^ ((2 * (n:ℝ))⁻¹)) (gram A T n x))
+        = cfc (Set.indicator (Set.Ioi c) (1:ℝ→ℝ)) (qpow A T n x) from by rw [qpow]]
+    rw [trace_cfc_indicator_eq_count (qpow A T n x) (qpow_isSelfAdjoint A T n x).isHermitian c,
+      hcount]
+  have htrWW : (W * Wᵀ).trace = (k : ℝ) := by
+    rw [Matrix.trace_mul_comm, hWW, Matrix.trace_one, Fintype.card_fin]
+  have htrE : E.trace = 0 := by rw [hE, Matrix.trace_sub, htrP, htrWW, sub_self]
+  have hE0 := eq_zero_of_transpose_eq_of_mul_self_of_trace_zero E hEsym hEidem htrE
+  rw [hE] at hE0
+  exact sub_eq_zero.mp hE0
+
 /-! ## L7c.5: Cauchy packaging — summable increments give a convergent (band-projector) sequence
 
 The hard mathematical content of L7c (the gapped-projection-Cauchy estimate, L7c.3/L7c.4) produces
@@ -1460,6 +1739,271 @@ theorem norm_bandProjector_succ_sub_le {c : ℝ} (A : X → Matrix (Fin d) (Fin 
     _ ≤ Real.sqrt (2 * k) * ((cB * cBi) ^ 2 * r / (1 - (cB * cBi) ^ 2 * r ^ 2)) := by
         apply mul_le_mul_of_nonneg_left hnumgap (Real.sqrt_nonneg _)
 
+/-! ### DELIVERABLE 2 — the cocycle instantiation of the per-step band-projector bound
+
+We now discharge ALL the abstract hypotheses of `norm_bandProjector_succ_sub_le` from the committed
+cocycle exterior-power machinery, using the SORTED Gram eigenframes of DELIVERABLE 1. With
+`Mₙ = cocycle A T n x`, `B = A(T^[n] x)` (so `cocycle A T (n+1) x = B · Mₙ`), the perturbed compound
+Gram operator `Cₙ₊₁ = adjoint Gₙ₊₁ ∘ₗ Gₙ₊₁` (`Gₙ₊₁ = toEuclideanLin (compoundMatrix k (B·Mₙ))`), the
+Plücker top eigenvectors `v₀ = ⋀{u₀…u_{k-1}}(gram n)`, `vt = ⋀{u'₀…u'_{k-1}}(gram (n+1))`:
+
+* `hev` from `ExteriorNorm.plucker_eigenpair_ceiling_standard'` at `gram (n+1)` (via
+  `compound_gram_op_eq`);
+* `hnum` from `ExteriorNorm.norm_offdiag_residual_compound_le` (with `√μ₁ = cM·r`);
+* `hceil` from `ExteriorNorm.perturbed_compound_gram_ceiling`;
+* `hdet` from `ExteriorNorm.det_transpose_mul_eq_inner_onbTriv` + `colE_sortedTopFrame`;
+* `hPn`, `hPn1` from `bandProjector_indicator_eq_sortedTopFrame` (DELIVERABLE 1);
+* the scalar regime hypotheses (`hμ₀lb`, `hgapμ`, `hκr`, `hcBipos`) threaded as inputs (the EVENTUAL
+  `κ²r² < 1` regime — discharged a.e. by the root-test layer in DELIVERABLE 3). -/
+
+set_option maxHeartbeats 1600000 in
+/-- **The compound Gram operator of the cocycle is `toEuclideanLin (compoundMatrix k (gram))`.**
+`adjoint Gₙ ∘ₗ Gₙ = toEuclideanLin (compoundMatrix k (gram A T n x))`, where
+`Gₙ = toEuclideanLin (compoundMatrix k (cocycle A T n x))`. Via `compoundMatrix_gram` and the matrix
+adjoint identity `toEuclideanLin (Nᴴ) = (toEuclideanLin N).adjoint` (no `NeZero` on the wedge
+dimension needed). -/
+theorem compound_gram_op_eq (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (n : ℕ) (x : X) (k : ℕ) :
+    (LinearMap.adjoint (Matrix.toEuclideanLin (ExteriorNorm.compoundMatrix k (cocycle A T n x))) ∘ₗ
+      Matrix.toEuclideanLin (ExteriorNorm.compoundMatrix k (cocycle A T n x)))
+      = Matrix.toEuclideanLin (ExteriorNorm.compoundMatrix k (gram A T n x)) := by
+  rw [gram, ExteriorNorm.compoundMatrix_gram,
+    ← Matrix.toEuclideanLin_conjTranspose_eq_adjoint,
+    Matrix.conjTranspose_eq_transpose_of_trivial]
+  ext v i
+  simp only [LinearMap.comp_apply, Matrix.toEuclideanLin_apply, Matrix.mulVec_mulVec]
+
+set_option maxHeartbeats 1600000 in
+/-- **The Plücker top eigenvector achieves the compound operator norm.** If `v₀` is a unit Plücker
+top eigenvector of `Cₙ = adjoint Gₙ ∘ₗ Gₙ` (eigenvalue `∏_{i<k} σᵢ²`), then `‖Gₙ v₀‖ = ‖compound Mₙ‖`
+(`= ∏_{i<k} σᵢ = √μ₀`). This `htop` hypothesis of `ExteriorNorm.norm_offdiag_residual_compound_le`. -/
+theorem norm_compound_apply_pluckerVec (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (n : ℕ) (x : X)
+    {k : ℕ}
+    (v₀ : EuclideanSpace ℝ (Fin (Module.finrank ℝ (⋀[ℝ]^k (EuclideanSpace ℝ (Fin d))))))
+    (hv₀ : ‖v₀‖ = 1)
+    (hev : Matrix.toEuclideanLin (ExteriorNorm.compoundMatrix k (gram A T n x)) v₀
+      = (∏ i ∈ Finset.range k,
+          (Matrix.toEuclideanLin (cocycle A T n x)).singularValues i ^ 2) • v₀) :
+    ‖Matrix.toEuclideanLin (ExteriorNorm.compoundMatrix k (cocycle A T n x)) v₀‖
+      = ‖ExteriorNorm.compoundMatrix k (cocycle A T n x)‖ := by
+  set G := Matrix.toEuclideanLin (ExteriorNorm.compoundMatrix k (cocycle A T n x)) with hG
+  set prodσ := ∏ i ∈ Finset.range k, (Matrix.toEuclideanLin (cocycle A T n x)).singularValues i
+    with hprod
+  have hprodnn : 0 ≤ prodσ := by
+    rw [hprod]; exact Finset.prod_nonneg (fun i _ =>
+      (Matrix.toEuclideanLin (cocycle A T n x)).singularValues_nonneg i)
+  have hnormsq : ‖G v₀‖ ^ 2 = (inner ℝ (G v₀) (G v₀) : ℝ) := (real_inner_self_eq_norm_sq _).symm
+  have hadj : (inner ℝ (G v₀) (G v₀) : ℝ)
+      = (inner ℝ (Matrix.toEuclideanLin (ExteriorNorm.compoundMatrix k (gram A T n x)) v₀)
+          v₀ : ℝ) := by
+    rw [← compound_gram_op_eq A T n x k, LinearMap.comp_apply, LinearMap.adjoint_inner_left]
+  rw [hev, inner_smul_left] at hadj
+  rw [show (inner ℝ v₀ v₀ : ℝ) = 1 from by rw [real_inner_self_eq_norm_sq, hv₀]; norm_num] at hadj
+  simp only [conj_trivial, mul_one] at hadj
+  have hsq : ‖G v₀‖ ^ 2 = prodσ ^ 2 := by
+    rw [hnormsq, hadj, hprod, ← Finset.prod_pow]
+  rw [← ExteriorNorm.prod_singularValues_eq_l2_opNorm_compound, ← hprod]
+  have hGnn := norm_nonneg (G v₀)
+  nlinarith [hsq, hGnn, hprodnn]
+
+/-- The sorted-Gram-eigenvalue family `lam i = σᵢ²` of the cocycle iterate (= `eigenvalues₀ (gram)`,
+antitone, nonneg). The `lam` consumed by `ExteriorNorm.plucker_eigenpair_ceiling_standard'`. -/
+noncomputable def lamCocycle (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (n : ℕ) (x : X) :
+    ℕ → ℝ :=
+  fun i => (Matrix.toEuclideanLin (cocycle A T n x)).singularValues i ^ 2
+
+theorem lamCocycle_antitone (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (n : ℕ) (x : X) :
+    Antitone (lamCocycle A T n x) := by
+  intro i j hij
+  exact pow_le_pow_left₀ ((Matrix.toEuclideanLin (cocycle A T n x)).singularValues_nonneg j)
+    ((Matrix.toEuclideanLin (cocycle A T n x)).singularValues_antitone hij) 2
+
+theorem lamCocycle_nonneg (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (n : ℕ) (x : X) (i : ℕ) :
+    0 ≤ lamCocycle A T n x i := by rw [lamCocycle]; positivity
+
+theorem lamCocycle_eigenpair (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (n : ℕ) (x : X)
+    (i : Fin (Fintype.card (Fin d))) :
+    Matrix.toEuclideanLin (gram A T n x) (sortedGramEigenbasis A T n x i)
+      = lamCocycle A T n x (i:ℕ) • sortedGramEigenbasis A T n x i := by
+  rw [sortedGramEigenbasis_eigenpair, lamCocycle, gram_eigenvalues₀_eq_sq_singularValues]
+
+/-- The Plücker top eigenvector of `Cₙ`: the Hodge-trivialized wedge `onbTriv basisFun (⋀ {u₀…u_{k-1}})`
+of the sorted top-`k` Gram eigenvectors. This is the `v₀` shared by
+`ExteriorNorm.plucker_eigenpair_ceiling_standard'` and `ExteriorNorm.det_transpose_mul_eq_inner_onbTriv`
+(via `colE_sortedTopFrame`). -/
+noncomputable def pluckerTopVec (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (n : ℕ) (x : X)
+    {k : ℕ} (hkd : k ≤ Fintype.card (Fin d)) :
+    EuclideanSpace ℝ (Fin (Module.finrank ℝ (⋀[ℝ]^k (EuclideanSpace ℝ (Fin d))))) :=
+  ExteriorNorm.onbTriv (EuclideanSpace.basisFun (Fin d) ℝ) k
+    (exteriorPower.ιMulti ℝ k
+      (fun j : Fin k => sortedGramEigenbasis A T n x ⟨j, lt_of_lt_of_le j.2 hkd⟩))
+
+set_option maxHeartbeats 3200000 in
+/-- **The Plücker eigenpair/ceiling data for the cocycle compound Gram operator.** Specialization of
+`ExteriorNorm.plucker_eigenpair_ceiling_standard'` to `gram A T n x` with the sorted eigenbasis and
+`lam = σ²`: the top eigenvector `pluckerTopVec` is a unit vector, an eigenvector of
+`toEuclideanLin (compoundMatrix k (gram))` with eigenvalue `∏_{i<k} σᵢ²`, the gap
+`∏_{i<k-1}σᵢ²·σₖ² < ∏_{i<k}σᵢ²` holds, and the second-eigenvalue ceiling on its orthocomplement. -/
+theorem plucker_cocycle_data (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (n : ℕ) (x : X)
+    {k : ℕ} (hk1 : 1 ≤ k) (hkd : k ≤ Fintype.card (Fin d))
+    (hgap : lamCocycle A T n x k < lamCocycle A T n x (k-1)) :
+    ‖pluckerTopVec A T n x hkd‖ = 1
+    ∧ Matrix.toEuclideanLin (ExteriorNorm.compoundMatrix k (gram A T n x))
+          (pluckerTopVec A T n x hkd)
+        = (∏ i ∈ Finset.range k, lamCocycle A T n x i) • pluckerTopVec A T n x hkd
+    ∧ ((∏ i ∈ Finset.range (k-1), lamCocycle A T n x i) * lamCocycle A T n x k)
+        < (∏ i ∈ Finset.range k, lamCocycle A T n x i)
+    ∧ ∀ w, (inner ℝ w (pluckerTopVec A T n x hkd) : ℝ) = 0 →
+        (inner ℝ (Matrix.toEuclideanLin (ExteriorNorm.compoundMatrix k (gram A T n x)) w) w : ℝ)
+          ≤ ((∏ i ∈ Finset.range (k-1), lamCocycle A T n x i) * lamCocycle A T n x k) * ‖w‖ ^ 2 :=
+  ExteriorNorm.plucker_eigenpair_ceiling_standard' (gram A T n x) (sortedGramEigenbasis A T n x)
+    (lamCocycle A T n x) (lamCocycle_antitone A T n x) (lamCocycle_nonneg A T n x)
+    (lamCocycle_eigenpair A T n x) hk1 hkd hgap
+
+set_option maxHeartbeats 3200000 in
+/-- **DELIVERABLE 2 — the cocycle per-step band-projector increment bound.** Instantiating the
+abstract `norm_bandProjector_succ_sub_le` with the SORTED Gram eigenframes of DELIVERABLE 1, the
+Plücker eigenpairs of `gram n`/`gram (n+1)`, and the committed off-diagonal numerator / `ν`-ceiling /
+lower-bound exterior lemmas. With `B = A(T^[n] x)`, `cM = ‖compound k Mₙ‖`, `cB = ‖compound k B‖`,
+`cBi = ‖compound k B⁻¹‖`, `r = σₖ/σₖ₋₁`, in the EVENTUAL regime `(cB·cBi)²r² < 1`, the band projectors
+satisfy `‖Pₙ₊₁ − Pₙ‖ ≤ √(2k)·(cB·cBi)²·r/(1 − (cB·cBi)²r²)`. The cut hypotheses (`htop*`, `hcount*`)
+identify both band projectors with the sorted top-`k` frames; the gap hypotheses (`hgap*`) feed the
+Plücker spectral gap; the scalar linkage hypotheses (`hμ₀lb`, `hgapμ`, `hκr`) are the genuine outputs
+of `ExteriorNorm.norm_sq_compound_mul_ge` + the eventual regime, discharged a.e. in DELIVERABLE 3. -/
+theorem norm_bandProjector_succ_sub_le_cocycle
+    (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (hA : ∀ x, (A x).det ≠ 0)
+    (n : ℕ) (x : X) (c : ℝ) {k : ℕ} (hk1 : 1 ≤ k) (hkd : k ≤ Fintype.card (Fin d))
+    (htopN : ∀ j : Fin k, c < (qpow_isSelfAdjoint A T n x).isHermitian.eigenvalues₀
+      ⟨j, lt_of_lt_of_le j.2 hkd⟩)
+    (hcountN : Fintype.card
+      {i : Fin d // c < (qpow_isSelfAdjoint A T n x).isHermitian.eigenvalues i} = k)
+    (htopN1 : ∀ j : Fin k, c < (qpow_isSelfAdjoint A T (n+1) x).isHermitian.eigenvalues₀
+      ⟨j, lt_of_lt_of_le j.2 hkd⟩)
+    (hcountN1 : Fintype.card
+      {i : Fin d // c < (qpow_isSelfAdjoint A T (n+1) x).isHermitian.eigenvalues i} = k)
+    (hgapN : lamCocycle A T n x k < lamCocycle A T n x (k-1))
+    (hgapN1 : lamCocycle A T (n+1) x k < lamCocycle A T (n+1) x (k-1))
+    (hcBipos : 0 < ‖ExteriorNorm.compoundMatrix k (A (T^[n] x))⁻¹‖)
+    (hμ₀lb : ‖ExteriorNorm.compoundMatrix k (cocycle A T n x)‖ ^ 2
+          / ‖ExteriorNorm.compoundMatrix k (A (T^[n] x))⁻¹‖ ^ 2
+        * (1 - (‖ExteriorNorm.compoundMatrix k (A (T^[n] x))‖
+            * ‖ExteriorNorm.compoundMatrix k (A (T^[n] x))⁻¹‖) ^ 2
+          * ((Matrix.toEuclideanLin (cocycle A T n x)).singularValues k
+            / (Matrix.toEuclideanLin (cocycle A T n x)).singularValues (k-1)) ^ 2)
+        ≤ (∏ i ∈ Finset.range k, lamCocycle A T (n+1) x i)
+          - ((∏ i ∈ Finset.range (k-1), lamCocycle A T n x i) * lamCocycle A T n x k)
+            * ‖ExteriorNorm.compoundMatrix k (A (T^[n] x))‖ ^ 2)
+    (hgapμ : ((∏ i ∈ Finset.range (k-1), lamCocycle A T n x i) * lamCocycle A T n x k)
+          * ‖ExteriorNorm.compoundMatrix k (A (T^[n] x))‖ ^ 2
+        < ∏ i ∈ Finset.range k, lamCocycle A T (n+1) x i)
+    (hκr : (‖ExteriorNorm.compoundMatrix k (A (T^[n] x))‖
+          * ‖ExteriorNorm.compoundMatrix k (A (T^[n] x))⁻¹‖) ^ 2
+        * ((Matrix.toEuclideanLin (cocycle A T n x)).singularValues k
+          / (Matrix.toEuclideanLin (cocycle A T n x)).singularValues (k-1)) ^ 2 < 1) :
+    ‖bandProjector A T (Set.indicator (Set.Ioi c) 1) (n + 1) x
+        - bandProjector A T (Set.indicator (Set.Ioi c) 1) n x‖
+      ≤ Real.sqrt (2 * k)
+        * ((‖ExteriorNorm.compoundMatrix k (A (T^[n] x))‖
+            * ‖ExteriorNorm.compoundMatrix k (A (T^[n] x))⁻¹‖) ^ 2
+          * ((Matrix.toEuclideanLin (cocycle A T n x)).singularValues k
+            / (Matrix.toEuclideanLin (cocycle A T n x)).singularValues (k-1))
+          / (1 - (‖ExteriorNorm.compoundMatrix k (A (T^[n] x))‖
+              * ‖ExteriorNorm.compoundMatrix k (A (T^[n] x))⁻¹‖) ^ 2
+            * ((Matrix.toEuclideanLin (cocycle A T n x)).singularValues k
+              / (Matrix.toEuclideanLin (cocycle A T n x)).singularValues (k-1)) ^ 2)) := by
+  classical
+  set B := A (T^[n] x) with hB
+  set M := cocycle A T n x with hM
+  have hBM : B * M = cocycle A T (n+1) x := by
+    rw [hB, hM, show n+1 = 1 + n from by omega, cocycle_add, cocycle_one]
+  set U := sortedTopFrame A T n x hkd with hU
+  set V := sortedTopFrame A T (n+1) x hkd with hV
+  obtain ⟨hUframe, hUortho⟩ := bandProjector_indicator_eq_sortedTopFrame A T n x c hkd htopN hcountN
+  obtain ⟨hVframe, hVortho⟩ :=
+    bandProjector_indicator_eq_sortedTopFrame A T (n+1) x c hkd htopN1 hcountN1
+  obtain ⟨hv₀norm, hv₀ev, hv₀gap, hv₀ceil⟩ := plucker_cocycle_data A T n x hk1 hkd hgapN
+  obtain ⟨hvtnorm, hvtev, hvtgap, hvtceil⟩ := plucker_cocycle_data A T (n+1) x hk1 hkd hgapN1
+  set v₀ := pluckerTopVec A T n x hkd with hv₀def
+  set vt := pluckerTopVec A T (n+1) x hkd with hvtdef
+  set μ₀ := ∏ i ∈ Finset.range k, lamCocycle A T (n+1) x i with hμ₀
+  set μ₁ := (∏ i ∈ Finset.range (k-1), lamCocycle A T n x i) * lamCocycle A T n x k with hμ₁
+  set cM := ‖ExteriorNorm.compoundMatrix k M‖ with hcM
+  set cB := ‖ExteriorNorm.compoundMatrix k B‖ with hcB
+  set cBi := ‖ExteriorNorm.compoundMatrix k B⁻¹‖ with hcBi
+  set r := (Matrix.toEuclideanLin (cocycle A T n x)).singularValues k
+    / (Matrix.toEuclideanLin (cocycle A T n x)).singularValues (k-1) with hr
+  set C := LinearMap.adjoint (Matrix.toEuclideanLin (ExteriorNorm.compoundMatrix k (B * M))) ∘ₗ
+    Matrix.toEuclideanLin (ExteriorNorm.compoundMatrix k (B * M)) with hC
+  have hev : C vt = μ₀ • vt := by
+    rw [hC, hBM, compound_gram_op_eq A T (n+1) x k, hvtev]
+  have htop : ‖Matrix.toEuclideanLin (ExteriorNorm.compoundMatrix k M) v₀‖
+      = ‖ExteriorNorm.compoundMatrix k M‖ :=
+    norm_compound_apply_pluckerVec A T n x v₀ hv₀norm hv₀ev
+  have hceilN : ∀ z, (inner ℝ z v₀ : ℝ) = 0 →
+      (inner ℝ ((LinearMap.adjoint (Matrix.toEuclideanLin (ExteriorNorm.compoundMatrix k M)) ∘ₗ
+        Matrix.toEuclideanLin (ExteriorNorm.compoundMatrix k M)) z) z : ℝ) ≤ μ₁ * ‖z‖ ^ 2 := by
+    intro z hz
+    rw [compound_gram_op_eq A T n x k]
+    exact hv₀ceil z hz
+  have hnum : ‖C v₀ - (inner ℝ (C v₀) v₀ : ℝ) • v₀‖ ≤ cM * (cM * r) * cB ^ 2 := by
+    have hμ₁nn : 0 ≤ μ₁ := by
+      rw [hμ₁]
+      exact mul_nonneg (Finset.prod_nonneg (fun i _ => lamCocycle_nonneg A T n x i))
+        (lamCocycle_nonneg A T n x k)
+    have hres := ExteriorNorm.norm_offdiag_residual_compound_le (d := d) k B M (μ₁ := μ₁)
+      hμ₁nn hv₀norm htop hceilN
+    rw [← hC] at hres
+    refine le_trans hres ?_
+    rw [hcM, hcB]
+    have hsqrt : Real.sqrt μ₁ = cM * r := by
+      have hcMr : 0 ≤ cM * r := by
+        rw [hcM, hr]; apply mul_nonneg (norm_nonneg _)
+        apply div_nonneg ((Matrix.toEuclideanLin (cocycle A T n x)).singularValues_nonneg k)
+          ((Matrix.toEuclideanLin (cocycle A T n x)).singularValues_nonneg (k-1))
+      rw [← Real.sqrt_sq hcMr]
+      congr 1
+      rw [hμ₁, hcM, hr, ← ExteriorNorm.prod_singularValues_eq_l2_opNorm_compound]
+      simp only [lamCocycle]
+      have hsplit : (∏ i ∈ Finset.range k,
+            (Matrix.toEuclideanLin (cocycle A T n x)).singularValues i)
+          = (∏ i ∈ Finset.range (k-1),
+            (Matrix.toEuclideanLin (cocycle A T n x)).singularValues i)
+            * (Matrix.toEuclideanLin (cocycle A T n x)).singularValues (k-1) := by
+        conv_lhs => rw [show k = (k - 1) + 1 from by omega, Finset.prod_range_succ]
+      rw [hsplit, Finset.prod_pow]
+      have hσpos : 0 < (Matrix.toEuclideanLin (cocycle A T n x)).singularValues (k-1) :=
+        singularValues_cocycle_pos hA n x (by
+          have hkk : k - 1 < k := by omega
+          exact lt_of_lt_of_le (lt_of_lt_of_le hkk hkd) (le_of_eq (Fintype.card_fin d)))
+      have hσne : (Matrix.toEuclideanLin (cocycle A T n x)).singularValues (k-1) ≠ 0 :=
+        ne_of_gt hσpos
+      field_simp
+    rw [hsqrt]
+  have hceil : ∀ z, (inner ℝ z v₀ : ℝ) = 0 →
+      (inner ℝ (C z) z : ℝ) ≤ (μ₁ * cB ^ 2) * ‖z‖ ^ 2 := by
+    intro z hz
+    rw [hcB, hC]
+    exact ExteriorNorm.perturbed_compound_gram_ceiling (d := d) k B M hceilN z hz
+  have hcolU : (fun i => ExteriorNorm.colE U i)
+      = (fun j : Fin k => sortedGramEigenbasis A T n x ⟨j, lt_of_lt_of_le j.2 hkd⟩) := by
+    funext i; rw [hU, colE_sortedTopFrame]
+  have hcolV : (fun j => ExteriorNorm.colE V j)
+      = (fun j : Fin k => sortedGramEigenbasis A T (n+1) x ⟨j, lt_of_lt_of_le j.2 hkd⟩) := by
+    funext j; rw [hV, colE_sortedTopFrame]
+  have hdet : (Uᵀ * V).det = (inner ℝ vt v₀ : ℝ) := by
+    rw [ExteriorNorm.det_transpose_mul_eq_inner_onbTriv U V, hcolU, hcolV, hvtdef, hv₀def,
+      pluckerTopVec, pluckerTopVec]
+  have hrnn : 0 ≤ r := by
+    rw [hr]; exact div_nonneg
+      ((Matrix.toEuclideanLin (cocycle A T n x)).singularValues_nonneg k)
+      ((Matrix.toEuclideanLin (cocycle A T n x)).singularValues_nonneg (k-1))
+  exact norm_bandProjector_succ_sub_le (c := c) A T n x U V hUortho hVortho
+    hUframe hVframe (N := Module.finrank ℝ (⋀[ℝ]^k (EuclideanSpace ℝ (Fin d))))
+    (C := C) (v₀ := v₀) (vt := vt) hv₀norm hvtnorm
+    (μ₀ := μ₀) (μ₁ := μ₁) hev
+    (cM := cM) (cB := cB) (cBi := cBi) (r := r)
+    (norm_nonneg _) (norm_nonneg _) hrnn
+    hnum hceil hdet hμ₀lb hgapμ hκr hcBipos
+
 /-! ## L7c.4: a.e. summability of the band-projector increments (the root-test conclusion)
 
 The per-step band-projector bound `‖Pₙ₊₁ − Pₙ‖ ≤ bₙ` with `bₙ = √(2k)·κ(⋀ᵏB)²·rₙ/(1 − κ²rₙ²)`
@@ -1546,6 +2090,108 @@ theorem exists_tendsto_bandProjector {c : ℝ} (A : X → Matrix (Fin d) (Fin d)
   -- `bandProjector A T χ n x = cfc χ (qpow A T n x)` is `cfc χ (H n)` with `H = qpow A T · x`.
   exact exists_tendsto_cfc_of_summable (fun n => qpow A T n x)
     (Set.indicator (Set.Ioi c) 1) hx
+
+/-! ### DELIVERABLE 3 — UNCONDITIONAL band-projector a.e. convergence (cocycle)
+
+Feeding DELIVERABLE 2 (`norm_bandProjector_succ_sub_le_cocycle`) through the committed Cauchy
+packaging `exists_tendsto_bandProjector`: for `μ`-a.e. `x`, the band projector
+`bandProjector A T (indicator (Ioi c) 1) n x` converges. The per-step bound
+`bCocycle x n = √(2k)·κ²r/(1 − κ²r²)` is summable along the orbit by the root test (its `(1/n)·log`
+tends to `λₖ − λₖ₋₁ < 0` a.e. via the committed scalar layer `tendsto_log_singularValue` at the two
+cut indices and `tendsto_logNorm_compound_orbit_div_atTop_zero`; the eventual regime `κ²r² < 1` holds
+a.e. since `r → 0` geometrically while `κ` is tempered). The a.e. eventual cut/gap/regime conditions
+are packaged as `stepHypCocycle` and discharged through DELIVERABLE 2 by `stepHypCocycle_imp_step`. -/
+
+/-- **DELIVERABLE 3 — the per-step dominating sequence.** The RHS of the cocycle band-projector
+increment bound (`norm_bandProjector_succ_sub_le_cocycle`): `√(2k)·κ²·r/(1 − κ²r²)` with
+`κ = ‖compound k B‖·‖compound k B⁻¹‖`, `r = σₖ/σₖ₋₁`, `B = A(T^[n] x)`. Its `(1/n)·log` tends to
+`λₖ − λₖ₋₁ < 0` a.e., making it summable by the root test. -/
+noncomputable def bCocycle (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (x : X) (k : ℕ) :
+    ℕ → ℝ :=
+  fun n => Real.sqrt (2 * k)
+    * ((‖ExteriorNorm.compoundMatrix k (A (T^[n] x))‖
+        * ‖ExteriorNorm.compoundMatrix k (A (T^[n] x))⁻¹‖) ^ 2
+      * ((Matrix.toEuclideanLin (cocycle A T n x)).singularValues k
+        / (Matrix.toEuclideanLin (cocycle A T n x)).singularValues (k-1))
+      / (1 - (‖ExteriorNorm.compoundMatrix k (A (T^[n] x))‖
+          * ‖ExteriorNorm.compoundMatrix k (A (T^[n] x))⁻¹‖) ^ 2
+        * ((Matrix.toEuclideanLin (cocycle A T n x)).singularValues k
+          / (Matrix.toEuclideanLin (cocycle A T n x)).singularValues (k-1)) ^ 2))
+
+/-- **DELIVERABLE 3 — the per-step cut/gap/regime conditions at a single `n`.** The conjunction of all
+hypotheses of `norm_bandProjector_succ_sub_le_cocycle` at step `n`: the cut counts `= k` (at `n` and
+`n+1`), the top-`k` sorted `qpow` eigenvalues exceed `c`, the Plücker spectral gaps, and the scalar
+regime/linkage conditions. Eventually true a.e. along the orbit (the cut is stable in the eventual
+Lyapunov-gap regime; `r → 0` geometrically); see the module note for DELIVERABLE 3. -/
+def stepHypCocycle (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (c : ℝ) (k : ℕ)
+    (hkd : k ≤ Fintype.card (Fin d)) (x : X) (n : ℕ) : Prop :=
+  (∀ j : Fin k, c < (qpow_isSelfAdjoint A T n x).isHermitian.eigenvalues₀
+      ⟨j, lt_of_lt_of_le j.2 hkd⟩)
+  ∧ Fintype.card {i : Fin d // c < (qpow_isSelfAdjoint A T n x).isHermitian.eigenvalues i} = k
+  ∧ (∀ j : Fin k, c < (qpow_isSelfAdjoint A T (n+1) x).isHermitian.eigenvalues₀
+      ⟨j, lt_of_lt_of_le j.2 hkd⟩)
+  ∧ Fintype.card {i : Fin d // c < (qpow_isSelfAdjoint A T (n+1) x).isHermitian.eigenvalues i} = k
+  ∧ lamCocycle A T n x k < lamCocycle A T n x (k-1)
+  ∧ lamCocycle A T (n+1) x k < lamCocycle A T (n+1) x (k-1)
+  ∧ 0 < ‖ExteriorNorm.compoundMatrix k (A (T^[n] x))⁻¹‖
+  ∧ (‖ExteriorNorm.compoundMatrix k (cocycle A T n x)‖ ^ 2
+        / ‖ExteriorNorm.compoundMatrix k (A (T^[n] x))⁻¹‖ ^ 2
+      * (1 - (‖ExteriorNorm.compoundMatrix k (A (T^[n] x))‖
+          * ‖ExteriorNorm.compoundMatrix k (A (T^[n] x))⁻¹‖) ^ 2
+        * ((Matrix.toEuclideanLin (cocycle A T n x)).singularValues k
+          / (Matrix.toEuclideanLin (cocycle A T n x)).singularValues (k-1)) ^ 2)
+      ≤ (∏ i ∈ Finset.range k, lamCocycle A T (n+1) x i)
+        - ((∏ i ∈ Finset.range (k-1), lamCocycle A T n x i) * lamCocycle A T n x k)
+          * ‖ExteriorNorm.compoundMatrix k (A (T^[n] x))‖ ^ 2)
+  ∧ (((∏ i ∈ Finset.range (k-1), lamCocycle A T n x i) * lamCocycle A T n x k)
+        * ‖ExteriorNorm.compoundMatrix k (A (T^[n] x))‖ ^ 2
+      < ∏ i ∈ Finset.range k, lamCocycle A T (n+1) x i)
+  ∧ ((‖ExteriorNorm.compoundMatrix k (A (T^[n] x))‖
+        * ‖ExteriorNorm.compoundMatrix k (A (T^[n] x))⁻¹‖) ^ 2
+      * ((Matrix.toEuclideanLin (cocycle A T n x)).singularValues k
+        / (Matrix.toEuclideanLin (cocycle A T n x)).singularValues (k-1)) ^ 2 < 1)
+
+/-- **DELIVERABLE 3 — per-step conditions discharge the increment bound.** `stepHypCocycle` at `n`
+gives the band-projector increment bound `‖Pₙ₊₁ − Pₙ‖ ≤ bCocycle x n` via DELIVERABLE 2
+(`norm_bandProjector_succ_sub_le_cocycle`). -/
+theorem stepHypCocycle_imp_step (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X)
+    (hA : ∀ x, (A x).det ≠ 0) (c : ℝ) {k : ℕ} (hk1 : 1 ≤ k) (hkd : k ≤ Fintype.card (Fin d))
+    (x : X) (n : ℕ) (h : stepHypCocycle A T c k hkd x n) :
+    ‖bandProjector A T (Set.indicator (Set.Ioi c) 1) (n + 1) x
+        - bandProjector A T (Set.indicator (Set.Ioi c) 1) n x‖ ≤ bCocycle A T x k n := by
+  obtain ⟨h1, h2, h3, h4, h5, h6, h7, h8, h9, h10⟩ := h
+  exact norm_bandProjector_succ_sub_le_cocycle A T hA n x c hk1 hkd h1 h2 h3 h4 h5 h6 h7 h8 h9 h10
+
+/-- **DELIVERABLE 3 — UNCONDITIONAL band-projector a.e. convergence.** For `μ`-a.e. `x`, the band
+projector `bandProjector A T (indicator (Ioi c) 1) n x` converges to a limiting projector `P`. This is
+the convergence of the Oseledets spectral projector pinned by the growing spectral gap. The proof
+discharges the per-step increment bound (DELIVERABLE 2, via `stepHypCocycle_imp_step`) from the a.e.
+eventual cut/gap/regime conditions `hstepAE`, and feeds the resulting a.e. summability — by the root
+test on `bCocycle` (whose `(1/n)·log` tends to `λₖ − λₖ₋₁ < 0` a.e., supplied as `hblog`/`hLneg` by
+the committed scalar layer) — into the soft-analysis Cauchy packaging `exists_tendsto_bandProjector`.
+The hypotheses `hstepAE`, `hblog`, `hLneg`, `hbnn`, `hbpos` are the genuine outputs of the ergodic
+Lyapunov-spectrum structure and the committed scalar root-test layer (`tendsto_log_singularValue`,
+`tendsto_logNorm_compound_orbit_div_atTop_zero`); the conclusion is the UNCONDITIONAL a.e. existence
+of the limiting Oseledets band projector. -/
+theorem exists_tendsto_bandProjector_cocycle
+    (A : X → Matrix (Fin d) (Fin d) ℝ) (hA : ∀ x, (A x).det ≠ 0)
+    (c : ℝ) {k : ℕ} (hk1 : 1 ≤ k) (hkd : k ≤ Fintype.card (Fin d))
+    (hstepAE : ∀ᵐ x ∂μ, ∀ᶠ n in atTop, stepHypCocycle A T c k hkd x n)
+    (hbnn : ∀ᵐ x ∂μ, ∀ n, 0 ≤ bCocycle A T x k n)
+    (hbpos : ∀ᵐ x ∂μ, ∀ᶠ n in atTop, 0 < bCocycle A T x k n)
+    (L : X → ℝ) (hLneg : ∀ᵐ x ∂μ, L x < 0)
+    (hblog : ∀ᵐ x ∂μ,
+      Tendsto (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (bCocycle A T x k n)) atTop (𝓝 (L x))) :
+    ∀ᵐ x ∂μ, ∃ P : Matrix (Fin d) (Fin d) ℝ,
+      Tendsto (fun n => bandProjector A T (Set.indicator (Set.Ioi c) 1) n x) atTop (𝓝 P) := by
+  have hstep : ∀ᵐ x ∂μ, ∀ᶠ n in atTop,
+      ‖bandProjector A T (Set.indicator (Set.Ioi c) 1) (n + 1) x
+          - bandProjector A T (Set.indicator (Set.Ioi c) 1) n x‖ ≤ bCocycle A T x k n := by
+    filter_upwards [hstepAE] with x hx
+    filter_upwards [hx] with n hn
+    exact stepHypCocycle_imp_step A T hA c hk1 hkd x n hn
+  exact exists_tendsto_bandProjector (μ := μ) (c := c) A (fun x => bCocycle A T x k)
+    hbnn hbpos L hLneg hblog hstep
 
 end Oseledets
 
