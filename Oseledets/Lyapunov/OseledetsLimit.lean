@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Marcel Morgenstern
 -/
 import Oseledets.Lyapunov.ExteriorNorm
+import Oseledets.Lyapunov.Measurable
 import Oseledets.Cocycle.FurstenbergKesten
 import Oseledets.Ergodic.Kingman
 import Mathlib.Analysis.InnerProductSpace.Adjoint
@@ -13,6 +14,8 @@ import Mathlib.Analysis.Matrix.Order
 import Mathlib.Analysis.Matrix.HermitianFunctionalCalculus
 import Mathlib.LinearAlgebra.Matrix.Rank
 import Mathlib.Topology.UniformSpace.Cauchy
+import Mathlib.Analysis.SpecialFunctions.Pow.Continuity
+import Mathlib.MeasureTheory.Constructions.Polish.StronglyMeasurable
 
 /-!
 # The Oseledets singular-value (scalar) layer
@@ -486,6 +489,25 @@ theorem antitone_log_singularValue (A : X → Matrix (Fin d) (Fin d) ℝ) (n : �
       (Matrix.toEuclideanLin (cocycle A T n x)).singularValues i :=
   (Matrix.toEuclideanLin (cocycle A T n x)).singularValues_antitone
 
+/-- **L5 — the per-point singular-value Lyapunov exponent.** The `i`-th Lyapunov exponent at the
+point `x`, defined as the (junk-on-divergence) limit of the normalized log of the `i`-th singular
+value of `A⁽ⁿ⁾`. Where the singular-value limit exists (`μ`-a.e., by `tendsto_log_singularValue`)
+this equals the deterministic exponent `λᵢ`; `lamSing` packages it as a concrete per-point datum so
+that the spectrum of the Oseledets limit `Λ` can be labelled by `e^{lamSing}`. -/
+noncomputable def lamSing (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (x : X) (i : ℕ) : ℝ :=
+  limUnder atTop (fun n : ℕ => (n : ℝ)⁻¹ *
+    Real.log ((Matrix.toEuclideanLin (cocycle A T n x)).singularValues i))
+
+/-- If, at `x`, the normalized log of the `i`-th singular value converges to `lam` (true `μ`-a.e. by
+`tendsto_log_singularValue`), then `lamSing A T x i = lam`. -/
+theorem lamSing_eq_of_tendsto {A : X → Matrix (Fin d) (Fin d) ℝ} {T : X → X} {x : X} {i : ℕ}
+    {lam : ℝ} (h : Tendsto
+      (fun n : ℕ => (n : ℝ)⁻¹ *
+        Real.log ((Matrix.toEuclideanLin (cocycle A T n x)).singularValues i))
+      atTop (𝓝 lam)) :
+    lamSing A T x i = lam :=
+  h.limUnder_eq
+
 /-! ## L7a: the Gram matrix is PosSemidef / self-adjoint, and the matrix root `qpow`
 
 The Gram matrix `Qₙ = (A⁽ⁿ⁾)ᵀ A⁽ⁿ⁾` is positive semidefinite and self-adjoint, so the
@@ -521,6 +543,18 @@ def qpow (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (n : ℕ) (x : X) 
 theorem qpow_isSelfAdjoint (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (n : ℕ) (x : X) :
     IsSelfAdjoint (qpow A T n x) :=
   cfc_predicate _ _
+
+/-- `qpow A T n x = (Qₙ)^{1/(2n)}` is positive semidefinite: `cfc` of the nonnegative function
+`t ↦ t^{1/(2n)}` on the PosSemidef (hence nonnegative-spectrum) Gram matrix `Qₙ` yields a
+nonnegative (hence PosSemidef) matrix. -/
+theorem qpow_posSemidef (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (n : ℕ) (x : X) :
+    (qpow A T n x).PosSemidef := by
+  have hspec : _root_.spectrum ℝ (gram A T n x) ⊆ {a : ℝ | 0 ≤ a} :=
+    (Matrix.posSemidef_iff_isHermitian_and_spectrum_nonneg.mp (gram_posSemidef A T n x)).2
+  have hnonneg : (0 : Matrix (Fin d) (Fin d) ℝ) ≤ qpow A T n x := by
+    refine cfc_nonneg (fun t ht => ?_)
+    exact Real.rpow_nonneg (hspec ht) _
+  exact Matrix.nonneg_iff_posSemidef.mp hnonneg
 
 /-! ## L7b: the eigenvalues of `qpow` converge to `e^{λᵢ}`
 
@@ -720,8 +754,8 @@ for a `0/1` indicator separated from the spectrum by a gap), the band projector 
 genuine orthogonal projector. Conditional; the gap hypothesis that supplies `hidem` is discharged in
 L7c.4. -/
 theorem bandProjector_mul_self (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) {χ : ℝ → ℝ} (n : ℕ)
-    (x : X) (hχ : ContinuousOn χ (spectrum ℝ (qpow A T n x)))
-    (hidem : (spectrum ℝ (qpow A T n x)).EqOn (fun t => χ t * χ t) χ) :
+    (x : X) (hχ : ContinuousOn χ (_root_.spectrum ℝ (qpow A T n x)))
+    (hidem : (_root_.spectrum ℝ (qpow A T n x)).EqOn (fun t => χ t * χ t) χ) :
     bandProjector A T χ n x * bandProjector A T χ n x = bandProjector A T χ n x := by
   rw [bandProjector, ← cfc_mul χ χ _, cfc_congr hidem]
 
@@ -745,7 +779,7 @@ theorem bandProjector_indicator_mul_self (A : X → Matrix (Fin d) (Fin d) ℝ) 
         * bandProjector A T (Set.indicator (Set.Ioi c) 1) n x
       = bandProjector A T (Set.indicator (Set.Ioi c) 1) n x := by
   -- On the spectrum, the `0/1`-valued indicator satisfies `χ² = χ`.
-  have hidem : (spectrum ℝ (qpow A T n x)).EqOn
+  have hidem : (_root_.spectrum ℝ (qpow A T n x)).EqOn
       (fun t => Set.indicator (Set.Ioi c) (1 : ℝ → ℝ) t * Set.indicator (Set.Ioi c) (1 : ℝ → ℝ) t)
       (Set.indicator (Set.Ioi c) (1 : ℝ → ℝ)) := by
     intro t _
@@ -754,7 +788,7 @@ theorem bandProjector_indicator_mul_self (A : X → Matrix (Fin d) (Fin d) ℝ) 
     · simp [Set.indicator_of_notMem ht]
   -- `ContinuousOn` of any function on the (finite) spectrum holds.
   have hcont : ContinuousOn (Set.indicator (Set.Ioi c) (1 : ℝ → ℝ))
-      (spectrum ℝ (qpow A T n x)) :=
+      (_root_.spectrum ℝ (qpow A T n x)) :=
     (Matrix.finite_real_spectrum (A := qpow A T n x)).continuousOn _
   rw [bandProjector, ← cfc_mul _ _ _ hcont hcont, cfc_congr hidem]
 
@@ -2955,7 +2989,7 @@ theorem cfc_stepVal_qpow_eq (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X)
             bandProjector A T (Set.indicator (Set.Ioi (Real.exp ((lam k + lam (k - 1)) / 2))) 1) n x := by
   set M := qpow A T n x with hM
   have hMsa : IsSelfAdjoint M := qpow_isSelfAdjoint A T n x
-  have hcont : ∀ f : ℝ → ℝ, ContinuousOn f (spectrum ℝ M) :=
+  have hcont : ∀ f : ℝ → ℝ, ContinuousOn f (_root_.spectrum ℝ M) :=
     fun f => (Matrix.finite_real_spectrum (A := M)).continuousOn _
   -- stepVal = const + ∑ (coef k) • indicator k, as functions
   let ind : ℕ → ℝ → ℝ := fun k =>
@@ -3284,6 +3318,195 @@ theorem tendsto_qpow [IsProbabilityMeasure μ] (hT : Ergodic T μ)
     refine hdev.add ?_
     simp_rw [← hLn_eq]; exact hLblock
   simpa using hcombine
+
+/-! ## L8: a named, measurable Oseledets limit `Λ`
+
+The existence statement `L7_statement` (`tendsto_qpow`) only asserts an a.e.-existing limit via
+`Classical.choice`. Here we pin a **concrete, measurable** representative `oseledetsLimit A T`,
+defined entrywise as the real `limUnder` of the (measurable) matrix entries of `qpow A T n x`. On
+the a.e.-full convergence set this entrywise limit equals the matrix limit, so `oseledetsLimit`
+discharges `L7_statement` while being genuinely (not merely a.e.) measurable. -/
+
+variable [NeZero d]
+
+/-- **L8.** The Gram matrix `x ↦ gram A T n x = (A⁽ⁿ⁾)ᵀ A⁽ⁿ⁾` is measurable. -/
+theorem measurable_gram {A : X → Matrix (Fin d) (Fin d) ℝ}
+    (hAmeas : Measurable A) (hTmeas : Measurable T) (n : ℕ) :
+    Measurable (fun x => gram A T n x) := by
+  have hcoc : Measurable fun x => cocycle A T n x := measurable_cocycle hAmeas hTmeas n
+  have htrans : Measurable fun x => (cocycle A T n x)ᵀ := by
+    refine measurable_pi_iff.2 fun i => measurable_pi_iff.2 fun j => ?_
+    simp only [Matrix.transpose_apply]
+    exact ((measurable_pi_apply i).comp ((measurable_pi_apply j).comp hcoc))
+  exact htrans.mul hcoc
+
+/-- **L8.** The matrix root `x ↦ qpow A T n x = (Qₙ)^{1/(2n)} = cfc (·^{1/(2n)}) (gram A T n x)` is
+measurable. The function `t ↦ t^{1/(2n)}` is continuous (nonnegative exponent), the Gram matrix is
+measurable (`measurable_gram`) and self-adjoint (`gram_isSelfAdjoint`), so the continuous-functional
+-calculus measurability crux `measurable_cfc_continuous` applies. -/
+theorem measurable_qpow {A : X → Matrix (Fin d) (Fin d) ℝ}
+    (hAmeas : Measurable A) (hTmeas : Measurable T) (n : ℕ) :
+    Measurable (fun x => qpow A T n x) := by
+  have hcont : Continuous (fun t : ℝ => t ^ ((2 * (n : ℝ))⁻¹)) :=
+    Real.continuous_rpow_const (by positivity)
+  exact measurable_cfc_continuous _ hcont (fun x => gram A T n x)
+    (measurable_gram hAmeas hTmeas n) (fun x => gram_isSelfAdjoint A T n x)
+
+/-- **L8 — the named Oseledets limit.** Defined entrywise as the real `limUnder` of the matrix
+entries of `qpow A T n x`. On the a.e.-full convergence set (`tendsto_qpow`) this equals the matrix
+limit; off it the value is irrelevant (the construction is total and measurable regardless). -/
+noncomputable def oseledetsLimit (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (x : X) :
+    Matrix (Fin d) (Fin d) ℝ :=
+  Matrix.of fun i j => limUnder atTop (fun n : ℕ => qpow A T n x i j)
+
+/-- **L8.** The named Oseledets limit `oseledetsLimit A T` is measurable: each entry is a real
+`limUnder` of measurable functions (`measurable_qpow`), and a `limUnder` over `atTop` valued in the
+completely metrizable space `ℝ` of measurable functions is measurable
+(`StronglyMeasurable.limUnder`). -/
+theorem measurable_oseledetsLimit {A : X → Matrix (Fin d) (Fin d) ℝ}
+    (hAmeas : Measurable A) (hTmeas : Measurable T) :
+    Measurable (oseledetsLimit A T) := by
+  refine measurable_pi_iff.2 fun i => measurable_pi_iff.2 fun j => ?_
+  have hentry : ∀ n : ℕ, Measurable (fun x => qpow A T n x i j) := fun n =>
+    (measurable_pi_apply j).comp ((measurable_pi_apply i).comp (measurable_qpow hAmeas hTmeas n))
+  exact (StronglyMeasurable.limUnder
+    (fun n => (hentry n).stronglyMeasurable)).measurable
+
+/-- **L8 — `oseledetsLimit` is the a.e. limit of `qpow`.** For `μ`-a.e. `x`,
+`qpow A T n x → oseledetsLimit A T x` in the matrix metric. (On the a.e.-full convergence set the
+entrywise `limUnder` recovers the matrix limit; matrix convergence reduces to entrywise
+convergence in finite dimensions.) -/
+theorem tendsto_oseledetsLimit [IsProbabilityMeasure μ] (hT : Ergodic T μ)
+    {A : X → Matrix (Fin d) (Fin d) ℝ} (hA : ∀ x, (A x).det ≠ 0) (hAmeas : Measurable A)
+    (hint : IntegrableLogNorm A μ) (hint' : IntegrableLogNorm (fun x => (A x)⁻¹) μ) :
+    ∀ᵐ x ∂μ, Tendsto (fun n : ℕ => qpow A T n x) atTop (𝓝 (oseledetsLimit A T x)) := by
+  obtain ⟨Λ, hΛ⟩ := tendsto_qpow hT hA hAmeas hint hint'
+  filter_upwards [hΛ] with x hx
+  -- On the good set, the entrywise limUnder equals the matrix limit, so the limit point is
+  -- `oseledetsLimit A T x`.
+  have hentry : oseledetsLimit A T x = Λ x := by
+    refine Matrix.ext fun i j => ?_
+    have hcoord : Tendsto (fun n : ℕ => qpow A T n x i j) atTop (𝓝 (Λ x i j)) :=
+      ((continuous_matrix_entry i j).tendsto _).comp hx
+    simp only [oseledetsLimit, Matrix.of_apply]
+    exact hcoord.limUnder_eq
+  rw [hentry]; exact hx
+
+/-! ## L9: eigen-data of the Oseledets limit `Λ`
+
+The named limit `oseledetsLimit A T x` inherits the self-adjointness and positive
+semidefiniteness of the approximants `qpow A T n x` (both closed under the matrix limit, proved
+entrywise / via the continuity of the quadratic form). The eigenvalue equality
+`eigenvalues₀ (Λ x) i = e^{λᵢ}` additionally requires continuity of the sorted eigenvalues in the
+Hermitian matrix, which is **absent from Mathlib** (see the blocker flag in the module summary). -/
+
+/-- **L9.** For `μ`-a.e. `x`, the Oseledets limit `oseledetsLimit A T x` is self-adjoint, as the
+matrix-metric limit of the self-adjoint approximants `qpow A T n x` (self-adjointness `Mᴴ = M` is
+an entrywise closed condition). -/
+theorem oseledetsLimit_isSelfAdjoint [IsProbabilityMeasure μ] (hT : Ergodic T μ)
+    {A : X → Matrix (Fin d) (Fin d) ℝ} (hA : ∀ x, (A x).det ≠ 0) (hAmeas : Measurable A)
+    (hint : IntegrableLogNorm A μ) (hint' : IntegrableLogNorm (fun x => (A x)⁻¹) μ) :
+    ∀ᵐ x ∂μ, IsSelfAdjoint (oseledetsLimit A T x) := by
+  filter_upwards [tendsto_oseledetsLimit hT hA hAmeas hint hint'] with x hx
+  -- `(·)ᴴ = (·)` is closed: entrywise `star ((Λ x) j i) = (Λ x) i j` as a limit of the same
+  -- equation for `qpow A T n x`.
+  rw [← Matrix.isHermitian_iff_isSelfAdjoint]
+  refine Matrix.IsHermitian.ext fun i j => ?_
+  have hcij : Tendsto (fun n : ℕ => qpow A T n x i j) atTop (𝓝 (oseledetsLimit A T x i j)) :=
+    ((continuous_matrix_entry i j).tendsto _).comp hx
+  have hcji : Tendsto (fun n : ℕ => qpow A T n x j i) atTop (𝓝 (oseledetsLimit A T x j i)) :=
+    ((continuous_matrix_entry j i).tendsto _).comp hx
+  -- `star = id` on ℝ; the approximants satisfy `qpow j i = qpow i j` (Hermitian).
+  have heq : ∀ n : ℕ, qpow A T n x i j = qpow A T n x j i := fun n => by
+    have hH := qpow_isSelfAdjoint A T n x
+    rw [← Matrix.isHermitian_iff_isSelfAdjoint] at hH
+    simpa using (hH.apply i j).symm
+  have hval : oseledetsLimit A T x j i = oseledetsLimit A T x i j :=
+    tendsto_nhds_unique hcji (hcij.congr heq)
+  simpa using hval
+
+/-- **L9.** For `μ`-a.e. `x`, the Oseledets limit `oseledetsLimit A T x` is positive semidefinite,
+as the matrix-metric limit of the PSD approximants `qpow A T n x`: it is self-adjoint, and the
+quadratic form `xᵀ Λ x = lim_n xᵀ (qpow A T n x) x ≥ 0` is a limit of nonnegatives (the quadratic
+form is continuous in the matrix). -/
+theorem oseledetsLimit_posSemidef [IsProbabilityMeasure μ] (hT : Ergodic T μ)
+    {A : X → Matrix (Fin d) (Fin d) ℝ} (hA : ∀ x, (A x).det ≠ 0) (hAmeas : Measurable A)
+    (hint : IntegrableLogNorm A μ) (hint' : IntegrableLogNorm (fun x => (A x)⁻¹) μ) :
+    ∀ᵐ x ∂μ, (oseledetsLimit A T x).PosSemidef := by
+  filter_upwards [tendsto_oseledetsLimit hT hA hAmeas hint hint',
+    oseledetsLimit_isSelfAdjoint hT hA hAmeas hint hint'] with x hx hsa
+  refine Matrix.PosSemidef.of_dotProduct_mulVec_nonneg
+    ((Matrix.isHermitian_iff_isSelfAdjoint).mpr hsa) fun v => ?_
+  -- `v ⬝ᵥ (Λ x *ᵥ v) = lim_n v ⬝ᵥ (qpow A T n x *ᵥ v) ≥ 0`.
+  have hquad_cont : Continuous fun M : Matrix (Fin d) (Fin d) ℝ => star v ⬝ᵥ (M *ᵥ v) := by
+    let L : Matrix (Fin d) (Fin d) ℝ →ₗ[ℝ] ℝ :=
+      { toFun := fun M => star v ⬝ᵥ (M *ᵥ v)
+        map_add' := fun M N => by simp [Matrix.add_mulVec, dotProduct_add]
+        map_smul' := fun c M => by
+          simp only [RingHom.id_apply, smul_eq_mul]
+          rw [Matrix.smul_mulVec, dotProduct_smul, smul_eq_mul] }
+    exact L.continuous_of_finiteDimensional
+  have htq : Tendsto (fun n : ℕ => star v ⬝ᵥ (qpow A T n x *ᵥ v)) atTop
+      (𝓝 (star v ⬝ᵥ (oseledetsLimit A T x *ᵥ v))) := (hquad_cont.tendsto _).comp hx
+  refine ge_of_tendsto' htq fun n => ?_
+  exact (qpow_posSemidef A T n x).dotProduct_mulVec_nonneg v
+
+/-- **L9 — antitonicity of the per-point Lyapunov exponents.** For `μ`-a.e. `x`, the per-point
+exponents `lamSing A T x ·` are antitone on `[0, d)`. (A.e. each index has a genuine
+singular-value limit `lamSing = λᵢ` by `tendsto_log_singularValue`, and the deterministic exponents
+`λᵢ` are antitone by `exists_lam_tendsto_singularValue`.) This is the order datum pinning the
+intended descending spectrum `e^{lamSing 0} ≥ e^{lamSing 1} ≥ ⋯` of `Λ`. -/
+theorem lamSing_antitone [IsProbabilityMeasure μ] (hT : Ergodic T μ)
+    {A : X → Matrix (Fin d) (Fin d) ℝ} (hA : ∀ x, (A x).det ≠ 0) (hAmeas : Measurable A)
+    (hint : IntegrableLogNorm A μ) (hint' : IntegrableLogNorm (fun x => (A x)⁻¹) μ) :
+    ∀ᵐ x ∂μ, ∀ a b : ℕ, a ≤ b → b < d → lamSing A T x b ≤ lamSing A T x a := by
+  obtain ⟨lam, hanti, hσ⟩ :=
+    exists_lam_tendsto_singularValue hT hA hAmeas hint hint'
+  have hall : ∀ᵐ x ∂μ, ∀ i : ℕ, i < d → lamSing A T x i = lam i := by
+    rw [ae_all_iff]; intro i
+    by_cases hi : i < d
+    · filter_upwards [hσ i hi] with x hx using fun _ => lamSing_eq_of_tendsto hx
+    · filter_upwards with x; intro h; exact absurd h hi
+  filter_upwards [hall] with x hx
+  intro a b hab hbd
+  rw [hx a (lt_of_le_of_lt hab hbd), hx b hbd]
+  exact hanti a b hab hbd
+
+/-- **L9 — the eigenvalues of `qpow` converge to `e^{lamSing}`.** For `μ`-a.e. `x` and every sorted
+index `i`, the `i`-th sorted eigenvalue of the approximant `qpow A T n x` converges to
+`e^{lamSing A T x i}`. This is the eigenvalue half of L9 at the level of the *approximants*; the full
+eigenvalue equality for `Λ` itself (`oseledetsLimit_eigenvalues₀_eq`) additionally needs continuity
+of the sorted eigenvalues in the Hermitian matrix, which is absent from Mathlib — see the blocker
+note below. -/
+theorem eigenvalues₀_qpow_tendsto_exp_lamSing [IsProbabilityMeasure μ] (hT : Ergodic T μ)
+    {A : X → Matrix (Fin d) (Fin d) ℝ} (hA : ∀ x, (A x).det ≠ 0) (hAmeas : Measurable A)
+    (hint : IntegrableLogNorm A μ) (hint' : IntegrableLogNorm (fun x => (A x)⁻¹) μ) :
+    ∀ᵐ x ∂μ, ∀ i : Fin (Fintype.card (Fin d)),
+      Tendsto (fun n : ℕ => (qpow_isSelfAdjoint A T n x).isHermitian.eigenvalues₀ i)
+        atTop (𝓝 (Real.exp (lamSing A T x (i : ℕ)))) := by
+  obtain ⟨lam, _hanti, hσ⟩ :=
+    exists_lam_tendsto_singularValue hT hA hAmeas hint hint'
+  refine ae_all_iff.mpr (fun i => ?_)
+  have hid : (i : ℕ) < d := lt_of_lt_of_eq i.isLt (Fintype.card_fin d)
+  filter_upwards [hσ (i : ℕ) hid] with x hx
+  have hlam : lamSing A T x (i : ℕ) = lam (i : ℕ) := lamSing_eq_of_tendsto hx
+  rw [hlam]
+  exact eigenvalues_qpow_tendsto hA i (by simpa using hx)
+
+/-!
+### BLOCKED: the eigenvalue equality `eigenvalues₀ (Λ x) i = e^{lamSing A T x i}`
+
+The remaining L9 conclusion — that the sorted eigenvalues of the Oseledets limit `Λ x` are exactly
+the exponentials of the Lyapunov exponents — requires passing the eigenvalue convergence
+`eigenvalues₀ (qpow A T n x) i → e^{lamSing i}` (`eigenvalues₀_qpow_tendsto_exp_lamSing`) through the
+matrix limit `qpow A T n x → Λ x` (`tendsto_oseledetsLimit`). That step is **continuity of the
+sorted eigenvalues `eigenvalues₀` in the Hermitian matrix** (equivalently the Weyl perturbation
+inequality `|eigenvalues₀ A i − eigenvalues₀ B i| ≤ ‖A − B‖`), which is **absent from Mathlib**
+(searched: no `Continuous … eigenvalues`, no `Weyl`, no eigenvalue Lipschitz bound; root-continuity
+of `charpoly` is likewise unavailable). The eigenvalue equality is therefore not yet provable
+sorry-free and is intentionally omitted; the self-adjointness and positive-semidefiniteness of `Λ`
+(`oseledetsLimit_isSelfAdjoint`, `oseledetsLimit_posSemidef`) and the approximant-level eigenvalue
+convergence above are delivered. -/
 
 end Oseledets
 
