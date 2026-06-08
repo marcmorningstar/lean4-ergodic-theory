@@ -2193,6 +2193,599 @@ theorem exists_tendsto_bandProjector_cocycle
   exact exists_tendsto_bandProjector (μ := μ) (c := c) A (fun x => bCocycle A T x k)
     hbnn hbpos L hLneg hblog hstep
 
+
+/-- A nonnegative, eventually-positive sequence whose normalized log tends to a negative
+limit converges to `0`. (Root test ⟹ summable ⟹ tail vanishes.) -/
+theorem tendsto_zero_of_logLimit_neg (a : ℕ → ℝ) (hnn : ∀ n, 0 ≤ a n)
+    (hpos : ∀ᶠ n in atTop, 0 < a n) {L : ℝ} (hL : L < 0)
+    (hlog : Tendsto (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (a n)) atTop (𝓝 L)) :
+    Tendsto a atTop (𝓝 0) :=
+  (summable_of_logLimit_neg a hnn hpos hL hlog).tendsto_atTop_zero
+
+/-- Per-point log-limit for `bCocycle`. -/
+theorem tendsto_log_bCocycle_point {A : X → Matrix (Fin d) (Fin d) ℝ}
+    (hA : ∀ x, (A x).det ≠ 0) {x : X} {k : ℕ} (hk1 : 1 ≤ k) (hkd : k < d)
+    {lamK lamK1 : ℝ}
+    (hσk : Tendsto (fun n : ℕ => (n : ℝ)⁻¹ *
+        Real.log ((Matrix.toEuclideanLin (cocycle A T n x)).singularValues k))
+      atTop (𝓝 lamK))
+    (hσk1 : Tendsto (fun n : ℕ => (n : ℝ)⁻¹ *
+        Real.log ((Matrix.toEuclideanLin (cocycle A T n x)).singularValues (k-1)))
+      atTop (𝓝 lamK1))
+    (hcomp : Tendsto
+      (fun n : ℕ => (n : ℝ)⁻¹ * Real.log ‖ExteriorNorm.compoundMatrix k (A (T^[n] x))‖)
+      atTop (𝓝 0))
+    (hcompinv : Tendsto
+      (fun n : ℕ => (n : ℝ)⁻¹ * Real.log ‖ExteriorNorm.compoundMatrix k (A (T^[n] x))⁻¹‖)
+      atTop (𝓝 0))
+    (hgap : lamK < lamK1) :
+    Tendsto (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (bCocycle A T x k n)) atTop (𝓝 (lamK - lamK1)) := by
+  have hd : 0 < d := lt_of_le_of_lt (Nat.zero_le _) hkd
+  -- abbreviations
+  set cB : ℕ → ℝ := fun n => ‖ExteriorNorm.compoundMatrix k (A (T^[n] x))‖ with hcBdef
+  set cBi : ℕ → ℝ := fun n => ‖ExteriorNorm.compoundMatrix k (A (T^[n] x))⁻¹‖ with hcBidef
+  set σk : ℕ → ℝ := fun n => (Matrix.toEuclideanLin (cocycle A T n x)).singularValues k with hσkdef
+  set σk1 : ℕ → ℝ := fun n => (Matrix.toEuclideanLin (cocycle A T n x)).singularValues (k-1)
+    with hσk1def
+  -- positivity facts for n ≥ 1
+  have hcBpos : ∀ n, 0 < cB n := fun n =>
+    norm_compound_pos k (hA _) (le_of_lt hkd) hd
+  have hcBipos : ∀ n, 0 < cBi n := by
+    intro n
+    have hdet : ((A (T^[n] x))⁻¹).det ≠ 0 := by
+      rw [Matrix.det_nonsing_inv, Ring.inverse_eq_inv']; exact inv_ne_zero (hA _)
+    exact norm_compound_pos k hdet (le_of_lt hkd) hd
+  have hσkpos : ∀ n, 0 < σk n := fun n =>
+    singularValues_cocycle_pos hA n x (lt_of_lt_of_le hkd (le_refl d))
+  have hσk1pos : ∀ n, 0 < σk1 n := fun n =>
+    singularValues_cocycle_pos hA n x (by omega)
+  -- the ratio
+  set r : ℕ → ℝ := fun n => σk n / σk1 n with hrdef
+  have hrpos : ∀ n, 0 < r n := fun n => div_pos (hσkpos n) (hσk1pos n)
+  -- κ² := (cB·cBi)²
+  set κ2 : ℕ → ℝ := fun n => (cB n * cBi n) ^ 2 with hκ2def
+  have hκ2pos : ∀ n, 0 < κ2 n := fun n => by
+    rw [hκ2def]; exact pow_pos (mul_pos (hcBpos n) (hcBipos n)) 2
+  -- (1/n) log r → lamK - lamK1
+  have hlogr : Tendsto (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (r n)) atTop (𝓝 (lamK - lamK1)) := by
+    have : (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (r n))
+        = fun n : ℕ => ((n : ℝ)⁻¹ * Real.log (σk n)) - ((n : ℝ)⁻¹ * Real.log (σk1 n)) := by
+      funext n
+      rw [hrdef, Real.log_div (ne_of_gt (hσkpos n)) (ne_of_gt (hσk1pos n))]; ring
+    rw [this]; exact hσk.sub hσk1
+  -- (1/n) log κ² → 0
+  have hlogκ2 : Tendsto (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (κ2 n)) atTop (𝓝 0) := by
+    have heq : (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (κ2 n))
+        = fun n : ℕ => (2 : ℝ) * (((n : ℝ)⁻¹ * Real.log (cB n)) + ((n : ℝ)⁻¹ * Real.log (cBi n))) := by
+      funext n
+      rw [hκ2def, Real.log_pow, Real.log_mul (ne_of_gt (hcBpos n)) (ne_of_gt (hcBipos n))]
+      push_cast; ring
+    rw [heq]
+    have := (hcomp.add hcompinv).const_mul (2 : ℝ)
+    simpa using this
+  -- (1/n) log (κ²·r) → lamK - lamK1
+  have hlogκ2r : Tendsto (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (κ2 n * r n)) atTop
+      (𝓝 (lamK - lamK1)) := by
+    have heq : (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (κ2 n * r n))
+        = fun n : ℕ => ((n : ℝ)⁻¹ * Real.log (κ2 n)) + ((n : ℝ)⁻¹ * Real.log (r n)) := by
+      funext n
+      rw [Real.log_mul (ne_of_gt (hκ2pos n)) (ne_of_gt (hrpos n))]; ring
+    rw [heq]
+    have := hlogκ2.add hlogr
+    simpa using this
+  -- κ²r² → 0  (since (1/n)log(κ²r²) → 2(lamK-lamK1) < 0)
+  have hlogκ2r2 : Tendsto (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (κ2 n * (r n) ^ 2)) atTop
+      (𝓝 (2 * (lamK - lamK1))) := by
+    have heq : (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (κ2 n * (r n) ^ 2))
+        = fun n : ℕ => ((n : ℝ)⁻¹ * Real.log (κ2 n))
+            + (2 : ℝ) * ((n : ℝ)⁻¹ * Real.log (r n)) := by
+      funext n
+      have hrlog : Real.log ((r n) ^ 2) = 2 * Real.log (r n) := by
+        rw [Real.log_pow]; push_cast; ring
+      rw [Real.log_mul (ne_of_gt (hκ2pos n)) (pow_ne_zero 2 (ne_of_gt (hrpos n))), hrlog]
+      ring
+    rw [heq]
+    have := hlogκ2.add (hlogr.const_mul (2 : ℝ))
+    simpa using this
+  have hκ2r2_tendsto : Tendsto (fun n : ℕ => κ2 n * (r n) ^ 2) atTop (𝓝 0) := by
+    apply tendsto_zero_of_logLimit_neg _
+      (fun n => le_of_lt (mul_pos (hκ2pos n) (pow_pos (hrpos n) 2)))
+      (Filter.Eventually.of_forall (fun n => mul_pos (hκ2pos n) (pow_pos (hrpos n) 2)))
+      (L := 2 * (lamK - lamK1)) (by linarith) hlogκ2r2
+  -- v n := 1 - κ²r² → 1
+  set v : ℕ → ℝ := fun n => 1 - κ2 n * (r n) ^ 2 with hvdef
+  have hv_tendsto : Tendsto v atTop (𝓝 1) := by
+    have : Tendsto (fun n : ℕ => (1 : ℝ) - κ2 n * (r n) ^ 2) atTop (𝓝 (1 - 0)) :=
+      tendsto_const_nhds.sub hκ2r2_tendsto
+    simpa using this
+  -- log v → 0
+  have hlogv0 : Tendsto (fun n : ℕ => Real.log (v n)) atTop (𝓝 0) := by
+    have : Tendsto (fun n : ℕ => Real.log (v n)) atTop (𝓝 (Real.log 1)) :=
+      (Real.continuousAt_log (by norm_num)).tendsto.comp hv_tendsto
+    simpa using this
+  -- (1/n) log v → 0
+  have hloginvv : Tendsto (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (v n)) atTop (𝓝 0) := by
+    have h1 : Tendsto (fun n : ℕ => (n : ℝ)⁻¹) atTop (𝓝 0) := tendsto_inv_atTop_zero.comp tendsto_natCast_atTop_atTop
+    have := h1.mul hlogv0
+    simpa using this
+  -- (1/n) log √(2k) → 0
+  have hsqrt : Tendsto (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (Real.sqrt (2 * k))) atTop (𝓝 0) := by
+    have h1 : Tendsto (fun n : ℕ => (n : ℝ)⁻¹) atTop (𝓝 0) := tendsto_inv_atTop_zero.comp tendsto_natCast_atTop_atTop
+    have := h1.mul_const (Real.log (Real.sqrt (2 * k)))
+    simpa [mul_comm] using this
+  have hsqrtpos : 0 < Real.sqrt (2 * k) := by
+    apply Real.sqrt_pos.mpr
+    have : (1:ℝ) ≤ (k:ℝ) := by exact_mod_cast hk1
+    linarith
+  -- assemble: log bCocycle = log√(2k) + log(κ²r) - log v
+  have hfinal : Tendsto
+      (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (Real.sqrt (2 * k))
+          + ((n : ℝ)⁻¹ * Real.log (κ2 n * r n) - (n : ℝ)⁻¹ * Real.log (v n))) atTop
+      (𝓝 (lamK - lamK1)) := by
+    have h := hsqrt.add (hlogκ2r.sub hloginvv)
+    have : (0:ℝ) + ((lamK - lamK1) - 0) = lamK - lamK1 := by ring
+    rwa [this] at h
+  -- need eventual v > 0 to split logs
+  have hvpos : ∀ᶠ n in atTop, 0 < v n := by
+    have := hv_tendsto.eventually (eventually_gt_nhds (show (0:ℝ) < 1 by norm_num))
+    exact this
+  refine hfinal.congr' ?_
+  filter_upwards [hvpos] with n hvn
+  -- bCocycle n = √(2k) · (κ²·r / v)
+  have hbeq : bCocycle A T x k n = Real.sqrt (2 * k) * (κ2 n * r n / v n) := by
+    rw [bCocycle]
+  have hquot : (0:ℝ) < κ2 n * r n / v n := div_pos (mul_pos (hκ2pos n) (hrpos n)) hvn
+  rw [hbeq, Real.log_mul (ne_of_gt hsqrtpos) (ne_of_gt hquot),
+      Real.log_div (ne_of_gt (mul_pos (hκ2pos n) (hrpos n))) (ne_of_gt hvn)]
+  ring
+
+/-- The count of unsorted eigenvalues `> c` equals the count of sorted eigenvalues `> c`. -/
+theorem card_eigenvalues_gt_eq_card_eigenvalues₀_gt
+    {M : Matrix (Fin d) (Fin d) ℝ} (hM : M.IsHermitian) (c : ℝ) :
+    Fintype.card {i : Fin d // c < hM.eigenvalues i}
+      = Fintype.card {j : Fin (Fintype.card (Fin d)) // c < hM.eigenvalues₀ j} := by
+  classical
+  apply Fintype.card_congr
+  refine
+    { toFun := fun i => ⟨(Fintype.equivOfCardEq (Fintype.card_fin _)).symm i.1, ?_⟩
+      invFun := fun j => ⟨(Fintype.equivOfCardEq (Fintype.card_fin _)) j.1, ?_⟩
+      left_inv := ?_
+      right_inv := ?_ }
+  · have := i.2; rwa [Matrix.IsHermitian.eigenvalues] at this
+  · have := j.2; rw [Matrix.IsHermitian.eigenvalues]; simpa using this
+  · intro i; ext; simp
+  · intro j; ext; simp
+
+/-- If an antitone `Fin N → ℝ` family has its value at index `⟨k-1⟩` above `c` and at index `⟨k⟩`
+below `c`, then exactly `k` of its values exceed `c`. -/
+theorem card_antitone_gt_eq {N : ℕ} (f : Fin N → ℝ) (hf : Antitone f) (c : ℝ)
+    {k : ℕ} (hk1 : 1 ≤ k) (hkN : k < N)
+    (htop : c < f ⟨k - 1, lt_of_le_of_lt (Nat.sub_le k 1) hkN⟩) (hbot : f ⟨k, hkN⟩ < c) :
+    Fintype.card {j : Fin N // c < f j} = k := by
+  classical
+  have hiff : ∀ j : Fin N, c < f j ↔ (j : ℕ) < k := by
+    intro j
+    constructor
+    · intro hj
+      by_contra hjk
+      have hjk' : k ≤ (j : ℕ) := not_lt.mp hjk
+      have : f j ≤ f ⟨k, hkN⟩ := hf (by simp [Fin.le_def]; omega)
+      linarith
+    · intro hj
+      have : f ⟨k - 1, by omega⟩ ≤ f j := hf (by simp [Fin.le_def]; omega)
+      linarith
+  have hequiv : {j : Fin N // c < f j} ≃ {j : Fin N // (j : ℕ) < k} :=
+    Equiv.subtypeEquivRight hiff
+  rw [Fintype.card_congr hequiv, Fintype.card_subtype]
+  -- count of `j : Fin N` with `(j:ℕ) < k` is `k`
+  have hcardeq : (Finset.univ.filter (fun j : Fin N => (j : ℕ) < k)).card
+      = (Finset.range k).card := by
+    apply Finset.card_bij (fun (j : Fin N) _ => (j : ℕ))
+    · intro j hj; simp only [Finset.mem_filter] at hj
+      exact Finset.mem_range.mpr hj.2
+    · intro a ha b hb hab
+      simp only [Finset.mem_filter, Finset.mem_univ, true_and] at ha hb
+      exact Fin.ext hab
+    · intro b hb
+      simp only [Finset.mem_range] at hb
+      exact ⟨⟨b, by omega⟩, by simp [hb], rfl⟩
+  rw [hcardeq, Finset.card_range]
+
+set_option maxHeartbeats 800000 in
+/-- The two scalar inequalities `hμ₀lb`/`hgapμ` of `stepHypCocycle`, from the compound lower bound
+`μ̃₀ ≥ cM²/cBi²` (`norm_sq_compound_mul_ge`) and the regime `κ²r² < 1`. -/
+theorem step_inequalities {A : X → Matrix (Fin d) (Fin d) ℝ}
+    (hA : ∀ x, (A x).det ≠ 0) (n : ℕ) (x : X) {k : ℕ} (hk1 : 1 ≤ k) (hkd : k < d)
+    (hcBipos : 0 < ‖ExteriorNorm.compoundMatrix k (A (T^[n] x))⁻¹‖)
+    (hκr : (‖ExteriorNorm.compoundMatrix k (A (T^[n] x))‖
+          * ‖ExteriorNorm.compoundMatrix k (A (T^[n] x))⁻¹‖) ^ 2
+        * ((Matrix.toEuclideanLin (cocycle A T n x)).singularValues k
+          / (Matrix.toEuclideanLin (cocycle A T n x)).singularValues (k-1)) ^ 2 < 1) :
+    (‖ExteriorNorm.compoundMatrix k (cocycle A T n x)‖ ^ 2
+          / ‖ExteriorNorm.compoundMatrix k (A (T^[n] x))⁻¹‖ ^ 2
+        * (1 - (‖ExteriorNorm.compoundMatrix k (A (T^[n] x))‖
+            * ‖ExteriorNorm.compoundMatrix k (A (T^[n] x))⁻¹‖) ^ 2
+          * ((Matrix.toEuclideanLin (cocycle A T n x)).singularValues k
+            / (Matrix.toEuclideanLin (cocycle A T n x)).singularValues (k-1)) ^ 2)
+        ≤ (∏ i ∈ Finset.range k, lamCocycle A T (n+1) x i)
+          - ((∏ i ∈ Finset.range (k-1), lamCocycle A T n x i) * lamCocycle A T n x k)
+            * ‖ExteriorNorm.compoundMatrix k (A (T^[n] x))‖ ^ 2)
+    ∧ (((∏ i ∈ Finset.range (k-1), lamCocycle A T n x i) * lamCocycle A T n x k)
+          * ‖ExteriorNorm.compoundMatrix k (A (T^[n] x))‖ ^ 2
+        < ∏ i ∈ Finset.range k, lamCocycle A T (n+1) x i) := by
+  classical
+  have hd : 0 < d := lt_of_le_of_lt (Nat.zero_le _) hkd
+  set B := A (T^[n] x) with hBdef
+  set M := cocycle A T n x with hMdef
+  set cM := ‖ExteriorNorm.compoundMatrix k M‖ with hcM
+  set cB := ‖ExteriorNorm.compoundMatrix k B‖ with hcB
+  set cBi := ‖ExteriorNorm.compoundMatrix k B⁻¹‖ with hcBi
+  set σk := (Matrix.toEuclideanLin (cocycle A T n x)).singularValues k with hσk
+  set σk1 := (Matrix.toEuclideanLin (cocycle A T n x)).singularValues (k-1) with hσk1
+  set r := σk / σk1 with hr
+  -- positivity
+  have hcMpos : 0 < cM := norm_compound_pos k (det_cocycle_ne_zero hA n x) (le_of_lt hkd) hd
+  have hcBpos : 0 < cB := norm_compound_pos k (hA _) (le_of_lt hkd) hd
+  have hσkpos : 0 < σk := singularValues_cocycle_pos hA n x (lt_of_lt_of_le hkd (le_refl d))
+  have hσk1pos : 0 < σk1 := singularValues_cocycle_pos hA n x (by omega)
+  have hrpos : 0 < r := div_pos hσkpos hσk1pos
+  -- μ₀ = ‖compound k (B*M)‖²  ≥ cM²/cBi²
+  have hBM : B * M = cocycle A T (n+1) x := by
+    rw [hBdef, hMdef, show n+1 = 1 + n from by omega, cocycle_add, cocycle_one]
+  have hμ₀eq : (∏ i ∈ Finset.range k, lamCocycle A T (n+1) x i)
+      = ‖ExteriorNorm.compoundMatrix k (B * M)‖ ^ 2 := by
+    rw [hBM]
+    simp only [lamCocycle]
+    rw [Finset.prod_pow, ExteriorNorm.prod_singularValues_eq_l2_opNorm_compound]
+  set μ₀ := ∏ i ∈ Finset.range k, lamCocycle A T (n+1) x i with hμ₀
+  have hμ₀lb_compound : cM ^ 2 / cBi ^ 2 ≤ μ₀ := by
+    rw [hμ₀eq]
+    exact ExteriorNorm.norm_sq_compound_mul_ge k (hA _) M hcBipos
+  -- μ₁ = cM²·r²
+  have hcMsq : cM ^ 2 = (∏ i ∈ Finset.range k,
+      (Matrix.toEuclideanLin (cocycle A T n x)).singularValues i) ^ 2 := by
+    rw [hcM, hMdef, ← ExteriorNorm.prod_singularValues_eq_l2_opNorm_compound]
+  have hμ₁eq : (∏ i ∈ Finset.range (k-1), lamCocycle A T n x i) * lamCocycle A T n x k
+      = cM ^ 2 * r ^ 2 := by
+    simp only [lamCocycle]
+    rw [hcMsq, hr, hσk, hσk1, Finset.prod_pow]
+    have hsplit : (∏ i ∈ Finset.range k,
+          (Matrix.toEuclideanLin (cocycle A T n x)).singularValues i)
+        = (∏ i ∈ Finset.range (k-1),
+            (Matrix.toEuclideanLin (cocycle A T n x)).singularValues i)
+          * (Matrix.toEuclideanLin (cocycle A T n x)).singularValues (k-1) := by
+      conv_lhs => rw [show k = (k-1) + 1 from by omega, Finset.prod_range_succ]
+    rw [hsplit]
+    have hσk1ne : (Matrix.toEuclideanLin (cocycle A T n x)).singularValues (k-1) ≠ 0 :=
+      ne_of_gt hσk1pos
+    field_simp
+  set μ₁ := (∏ i ∈ Finset.range (k-1), lamCocycle A T n x i) * lamCocycle A T n x k with hμ₁
+  -- κ²r² in terms of cB,cBi,r
+  have hκr' : cB ^ 2 * cBi ^ 2 * r ^ 2 < 1 := by
+    have : (cB * cBi) ^ 2 * r ^ 2 < 1 := hκr
+    nlinarith [this]
+  have hcBi2pos : (0:ℝ) < cBi ^ 2 := by positivity
+  have hcM2pos : (0:ℝ) < cM ^ 2 := by positivity
+  -- key: cM²r²cB² < cM²/cBi²
+  have hkey : cM ^ 2 * r ^ 2 * cB ^ 2 < cM ^ 2 / cBi ^ 2 := by
+    rw [lt_div_iff₀ hcBi2pos]
+    nlinarith [hκr', hcM2pos, mul_pos hcM2pos (mul_pos (pow_pos hrpos 2) (pow_pos hcBpos 2))]
+  refine ⟨?_, ?_⟩
+  · -- hμ₀lb
+    rw [hμ₁eq]
+    have hLHS : cM ^ 2 / cBi ^ 2 * (1 - (cB * cBi) ^ 2 * r ^ 2)
+        = cM ^ 2 / cBi ^ 2 - cM ^ 2 * r ^ 2 * cB ^ 2 := by
+      have hcBine : cBi ≠ 0 := ne_of_gt hcBipos
+      have : cM ^ 2 / cBi ^ 2 * ((cB * cBi) ^ 2 * r ^ 2) = cM ^ 2 * r ^ 2 * cB ^ 2 := by
+        field_simp
+      rw [mul_sub, mul_one, this]
+    rw [hLHS]
+    linarith [hμ₀lb_compound]
+  · -- hgapμ
+    rw [hμ₁eq]
+    calc cM ^ 2 * r ^ 2 * cB ^ 2 < cM ^ 2 / cBi ^ 2 := hkey
+      _ ≤ μ₀ := hμ₀lb_compound
+
+
+/-- `bCocycle` is positive once the regime `κ²r² < 1` holds. -/
+theorem bCocycle_pos_of_regime {A : X → Matrix (Fin d) (Fin d) ℝ}
+    (hA : ∀ x, (A x).det ≠ 0) (x : X) {k : ℕ} (hk1 : 1 ≤ k) (hkd : k < d) (n : ℕ)
+    (hκr : (‖ExteriorNorm.compoundMatrix k (A (T^[n] x))‖
+          * ‖ExteriorNorm.compoundMatrix k (A (T^[n] x))⁻¹‖) ^ 2
+        * ((Matrix.toEuclideanLin (cocycle A T n x)).singularValues k
+          / (Matrix.toEuclideanLin (cocycle A T n x)).singularValues (k-1)) ^ 2 < 1) :
+    0 < bCocycle A T x k n := by
+  have hd : 0 < d := lt_of_le_of_lt (Nat.zero_le _) hkd
+  rw [bCocycle]
+  have hcBpos : 0 < ‖ExteriorNorm.compoundMatrix k (A (T^[n] x))‖ :=
+    norm_compound_pos k (hA _) (le_of_lt hkd) hd
+  have hcBidet : ((A (T^[n] x))⁻¹).det ≠ 0 := by
+    rw [Matrix.det_nonsing_inv, Ring.inverse_eq_inv']; exact inv_ne_zero (hA _)
+  have hcBipos : 0 < ‖ExteriorNorm.compoundMatrix k (A (T^[n] x))⁻¹‖ :=
+    norm_compound_pos k hcBidet (le_of_lt hkd) hd
+  have hσkpos : 0 < (Matrix.toEuclideanLin (cocycle A T n x)).singularValues k :=
+    singularValues_cocycle_pos hA n x (lt_of_lt_of_le hkd (le_refl d))
+  have hσk1pos : 0 < (Matrix.toEuclideanLin (cocycle A T n x)).singularValues (k-1) :=
+    singularValues_cocycle_pos hA n x (by omega)
+  have hsqrtpos : 0 < Real.sqrt (2 * k) := by
+    apply Real.sqrt_pos.mpr
+    have : (1:ℝ) ≤ (k:ℝ) := by exact_mod_cast hk1
+    linarith
+  have hrpos : 0 < (Matrix.toEuclideanLin (cocycle A T n x)).singularValues k
+      / (Matrix.toEuclideanLin (cocycle A T n x)).singularValues (k-1) := div_pos hσkpos hσk1pos
+  have hnumpos : 0 < (‖ExteriorNorm.compoundMatrix k (A (T^[n] x))‖
+        * ‖ExteriorNorm.compoundMatrix k (A (T^[n] x))⁻¹‖) ^ 2
+      * ((Matrix.toEuclideanLin (cocycle A T n x)).singularValues k
+        / (Matrix.toEuclideanLin (cocycle A T n x)).singularValues (k-1)) :=
+    mul_pos (pow_pos (mul_pos hcBpos hcBipos) 2) hrpos
+  have hdenpos : 0 < 1 - (‖ExteriorNorm.compoundMatrix k (A (T^[n] x))‖
+          * ‖ExteriorNorm.compoundMatrix k (A (T^[n] x))⁻¹‖) ^ 2
+        * ((Matrix.toEuclideanLin (cocycle A T n x)).singularValues k
+          / (Matrix.toEuclideanLin (cocycle A T n x)).singularValues (k-1)) ^ 2 := by
+    linarith [hκr]
+  exact mul_pos hsqrtpos (div_pos hnumpos hdenpos)
+
+set_option maxHeartbeats 1600000 in
+/-- **DELIVERABLE — unconditional band-projector a.e. convergence at a distinct-exponent gap.**
+For an ergodic, integrable, invertible cocycle and a threshold `c` strictly between the
+exponentials of two consecutive distinct Lyapunov exponents at the cut index `k`
+(`e^{λₖ} < c < e^{λₖ₋₁}` with `λₖ < λₖ₋₁`), the band spectral projector converges `μ`-a.e. -/
+theorem tendsto_bandProjector_of_gap [IsProbabilityMeasure μ] (hT : Ergodic T μ)
+    {A : X → Matrix (Fin d) (Fin d) ℝ} (hA : ∀ x, (A x).det ≠ 0) (hAmeas : Measurable A)
+    (hint : IntegrableLogNorm A μ) (hint' : IntegrableLogNorm (fun x => (A x)⁻¹) μ)
+    (c : ℝ) {k : ℕ} (hk1 : 1 ≤ k) (hkd : k < d)
+    (lamK lamK1 : ℝ) (hgap : lamK < lamK1)
+    (hclo : Real.exp lamK < c) (hchi : c < Real.exp lamK1)
+    (hσkAE : ∀ᵐ x ∂μ, Tendsto (fun n : ℕ => (n : ℝ)⁻¹ *
+        Real.log ((Matrix.toEuclideanLin (cocycle A T n x)).singularValues k))
+      atTop (𝓝 lamK))
+    (hσk1AE : ∀ᵐ x ∂μ, Tendsto (fun n : ℕ => (n : ℝ)⁻¹ *
+        Real.log ((Matrix.toEuclideanLin (cocycle A T n x)).singularValues (k-1)))
+      atTop (𝓝 lamK1)) :
+    ∀ᵐ x ∂μ, ∃ P : Matrix (Fin d) (Fin d) ℝ,
+      Tendsto (fun n => bandProjector A T (Set.indicator (Set.Ioi c) 1) n x) atTop (𝓝 P) := by
+  classical
+  have hd : 0 < d := lt_of_le_of_lt (Nat.zero_le _) hkd
+  have hmp : MeasurePreserving T μ μ := hT.toMeasurePreserving
+  have hTmeas : Measurable T := hmp.measurable
+  have hkdc : k ≤ Fintype.card (Fin d) := le_of_lt (lt_of_lt_of_eq hkd (Fintype.card_fin d).symm)
+  -- compound tempered factors (forward and inverse)
+  have hcompAE := tendsto_logNorm_compound_orbit_div_atTop_zero hmp hA hAmeas hTmeas hint hint'
+    k (le_of_lt hkd) hd
+  -- inverse: apply the same lemma to the cocycle `A⁻¹`
+  have hAinvmeas : Measurable (fun x => (A x)⁻¹) := measurable_inv_matrix.comp hAmeas
+  have hAinvdet : ∀ x, ((A x)⁻¹).det ≠ 0 := by
+    intro x; rw [Matrix.det_nonsing_inv, Ring.inverse_eq_inv']; exact inv_ne_zero (hA x)
+  have hintinvinv : IntegrableLogNorm (fun x => ((A x)⁻¹)⁻¹) μ := by
+    apply hint.congr
+    filter_upwards with x
+    rw [Matrix.nonsing_inv_nonsing_inv _ (Ne.isUnit (hA x))]
+  have hcompinvAE := tendsto_logNorm_compound_orbit_div_atTop_zero hmp hAinvdet hAinvmeas hTmeas
+    hint' hintinvinv k (le_of_lt hkd) hd
+  -- index facts
+  have hkcard : k < Fintype.card (Fin d) := lt_of_lt_of_eq hkd (Fintype.card_fin d).symm
+  have hk1card : k - 1 < Fintype.card (Fin d) := by rw [Fintype.card_fin]; omega
+  -- dominating sequence
+  set b : X → ℕ → ℝ := fun x n => max 0 (bCocycle A T x k n) with hbdef
+  -- log-limit of bCocycle, a.e.
+  have hblogAE : ∀ᵐ x ∂μ,
+      Tendsto (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (bCocycle A T x k n)) atTop
+        (𝓝 (lamK - lamK1)) := by
+    filter_upwards [hσkAE, hσk1AE, hcompAE, hcompinvAE] with x hσkx hσk1x hcompx hcompinvx
+    exact tendsto_log_bCocycle_point hA hk1 hkd hσkx hσk1x hcompx hcompinvx hgap
+  -- the eventual cut/gap/regime data, a.e.
+  have hQAE : ∀ᵐ x ∂μ, ∀ᶠ n in atTop,
+      (c < (qpow_isSelfAdjoint A T n x).isHermitian.eigenvalues₀ ⟨k - 1, hk1card⟩
+        ∧ (qpow_isSelfAdjoint A T n x).isHermitian.eigenvalues₀ ⟨k, hkcard⟩ < c
+        ∧ (Matrix.toEuclideanLin (cocycle A T n x)).singularValues k
+            < (Matrix.toEuclideanLin (cocycle A T n x)).singularValues (k-1)
+        ∧ (‖ExteriorNorm.compoundMatrix k (A (T^[n] x))‖
+              * ‖ExteriorNorm.compoundMatrix k (A (T^[n] x))⁻¹‖) ^ 2
+            * ((Matrix.toEuclideanLin (cocycle A T n x)).singularValues k
+              / (Matrix.toEuclideanLin (cocycle A T n x)).singularValues (k-1)) ^ 2 < 1) := by
+    filter_upwards [hσkAE, hσk1AE, hcompAE, hcompinvAE] with x hσkx hσk1x hcompx hcompinvx
+    -- eigenvalue convergences
+    have hev_k1 : Tendsto
+        (fun n : ℕ => (qpow_isSelfAdjoint A T n x).isHermitian.eigenvalues₀ ⟨k - 1, hk1card⟩)
+        atTop (𝓝 (Real.exp lamK1)) :=
+      eigenvalues_qpow_tendsto hA ⟨k - 1, hk1card⟩ (by
+        have hcast : ((⟨k - 1, hk1card⟩ : Fin (Fintype.card (Fin d))) : ℕ) = k - 1 := rfl
+        simpa [hcast] using hσk1x)
+    have hev_k : Tendsto
+        (fun n : ℕ => (qpow_isSelfAdjoint A T n x).isHermitian.eigenvalues₀ ⟨k, hkcard⟩)
+        atTop (𝓝 (Real.exp lamK)) :=
+      eigenvalues_qpow_tendsto hA ⟨k, hkcard⟩ (by
+        have hcast : ((⟨k, hkcard⟩ : Fin (Fintype.card (Fin d))) : ℕ) = k := rfl
+        simpa [hcast] using hσkx)
+    -- r → 0
+    have hσkpos : ∀ n, 0 < (Matrix.toEuclideanLin (cocycle A T n x)).singularValues k := fun n =>
+      singularValues_cocycle_pos hA n x (lt_of_lt_of_le hkd (le_refl d))
+    have hσk1pos : ∀ n, 0 < (Matrix.toEuclideanLin (cocycle A T n x)).singularValues (k-1) :=
+      fun n => singularValues_cocycle_pos hA n x (by omega)
+    have hlogr : Tendsto (fun n : ℕ => (n : ℝ)⁻¹ *
+        Real.log ((Matrix.toEuclideanLin (cocycle A T n x)).singularValues k
+          / (Matrix.toEuclideanLin (cocycle A T n x)).singularValues (k-1)))
+        atTop (𝓝 (lamK - lamK1)) := by
+      have heq : (fun n : ℕ => (n : ℝ)⁻¹ *
+          Real.log ((Matrix.toEuclideanLin (cocycle A T n x)).singularValues k
+            / (Matrix.toEuclideanLin (cocycle A T n x)).singularValues (k-1)))
+          = fun n : ℕ => ((n : ℝ)⁻¹ *
+              Real.log ((Matrix.toEuclideanLin (cocycle A T n x)).singularValues k))
+            - ((n : ℝ)⁻¹ *
+              Real.log ((Matrix.toEuclideanLin (cocycle A T n x)).singularValues (k-1))) := by
+        funext n
+        rw [Real.log_div (ne_of_gt (hσkpos n)) (ne_of_gt (hσk1pos n))]; ring
+      rw [heq]; exact hσkx.sub hσk1x
+    have hr0 : Tendsto (fun n : ℕ => (Matrix.toEuclideanLin (cocycle A T n x)).singularValues k
+        / (Matrix.toEuclideanLin (cocycle A T n x)).singularValues (k-1)) atTop (𝓝 0) :=
+      tendsto_zero_of_logLimit_neg _ (fun n => le_of_lt (div_pos (hσkpos n) (hσk1pos n)))
+        (Filter.Eventually.of_forall (fun n => div_pos (hσkpos n) (hσk1pos n)))
+        (L := lamK - lamK1) (by linarith) hlogr
+    -- κ²r² → 0
+    set κ2r2 : ℕ → ℝ := fun n => (‖ExteriorNorm.compoundMatrix k (A (T^[n] x))‖
+          * ‖ExteriorNorm.compoundMatrix k (A (T^[n] x))⁻¹‖) ^ 2
+        * ((Matrix.toEuclideanLin (cocycle A T n x)).singularValues k
+          / (Matrix.toEuclideanLin (cocycle A T n x)).singularValues (k-1)) ^ 2 with hκ2r2def
+    have hcBpos : ∀ n, 0 < ‖ExteriorNorm.compoundMatrix k (A (T^[n] x))‖ := fun n =>
+      norm_compound_pos k (hA _) (le_of_lt hkd) hd
+    have hcBipos : ∀ n, 0 < ‖ExteriorNorm.compoundMatrix k (A (T^[n] x))⁻¹‖ := by
+      intro n
+      have hdet : ((A (T^[n] x))⁻¹).det ≠ 0 := by
+        rw [Matrix.det_nonsing_inv, Ring.inverse_eq_inv']; exact inv_ne_zero (hA _)
+      exact norm_compound_pos k hdet (le_of_lt hkd) hd
+    have hκ2r2pos : ∀ n, 0 < κ2r2 n := by
+      intro n; rw [hκ2r2def]
+      exact mul_pos (pow_pos (mul_pos (hcBpos n) (hcBipos n)) 2)
+        (pow_pos (div_pos (hσkpos n) (hσk1pos n)) 2)
+    have hlogκ2r2 : Tendsto (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (κ2r2 n)) atTop
+        (𝓝 (2 * 0 + 2 * (lamK - lamK1))) := by
+      have heq : (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (κ2r2 n))
+          = fun n : ℕ => (2 : ℝ) * ((n : ℝ)⁻¹ *
+                Real.log (‖ExteriorNorm.compoundMatrix k (A (T^[n] x))‖
+                  * ‖ExteriorNorm.compoundMatrix k (A (T^[n] x))⁻¹‖))
+              + (2 : ℝ) * ((n : ℝ)⁻¹ *
+                Real.log ((Matrix.toEuclideanLin (cocycle A T n x)).singularValues k
+                  / (Matrix.toEuclideanLin (cocycle A T n x)).singularValues (k-1))) := by
+        funext n
+        rw [hκ2r2def,
+          Real.log_mul (ne_of_gt (pow_pos (mul_pos (hcBpos n) (hcBipos n)) 2))
+            (pow_ne_zero 2 (ne_of_gt (div_pos (hσkpos n) (hσk1pos n)))),
+          Real.log_pow, Real.log_pow]
+        push_cast; ring
+      rw [heq]
+      have hcombo : Tendsto (fun n : ℕ => (n : ℝ)⁻¹ *
+            Real.log (‖ExteriorNorm.compoundMatrix k (A (T^[n] x))‖
+              * ‖ExteriorNorm.compoundMatrix k (A (T^[n] x))⁻¹‖)) atTop (𝓝 0) := by
+        have heqc : (fun n : ℕ => (n : ℝ)⁻¹ *
+              Real.log (‖ExteriorNorm.compoundMatrix k (A (T^[n] x))‖
+                * ‖ExteriorNorm.compoundMatrix k (A (T^[n] x))⁻¹‖))
+            = fun n : ℕ => ((n : ℝ)⁻¹ *
+                Real.log ‖ExteriorNorm.compoundMatrix k (A (T^[n] x))‖)
+              + ((n : ℝ)⁻¹ *
+                Real.log ‖ExteriorNorm.compoundMatrix k (A (T^[n] x))⁻¹‖) := by
+          funext n
+          rw [Real.log_mul (ne_of_gt (hcBpos n)) (ne_of_gt (hcBipos n))]; ring
+        rw [heqc]; simpa using hcompx.add hcompinvx
+      exact (hcombo.const_mul (2:ℝ)).add (hlogr.const_mul (2:ℝ))
+    have hκ2r20 : Tendsto κ2r2 atTop (𝓝 0) :=
+      tendsto_zero_of_logLimit_neg _ (fun n => le_of_lt (hκ2r2pos n))
+        (Filter.Eventually.of_forall hκ2r2pos) (L := 2 * 0 + 2 * (lamK - lamK1))
+        (by linarith) hlogκ2r2
+    -- now eventual facts
+    have e1 : ∀ᶠ n in atTop,
+        c < (qpow_isSelfAdjoint A T n x).isHermitian.eigenvalues₀ ⟨k - 1, hk1card⟩ :=
+      hev_k1.eventually (eventually_gt_nhds hchi)
+    have e2 : ∀ᶠ n in atTop,
+        (qpow_isSelfAdjoint A T n x).isHermitian.eigenvalues₀ ⟨k, hkcard⟩ < c :=
+      hev_k.eventually (eventually_lt_nhds hclo)
+    have e3 : ∀ᶠ n in atTop, (Matrix.toEuclideanLin (cocycle A T n x)).singularValues k
+        / (Matrix.toEuclideanLin (cocycle A T n x)).singularValues (k-1) < 1 :=
+      hr0.eventually (eventually_lt_nhds (show (0:ℝ) < 1 by norm_num))
+    have e4 : ∀ᶠ n in atTop, κ2r2 n < 1 :=
+      hκ2r20.eventually (eventually_lt_nhds (show (0:ℝ) < 1 by norm_num))
+    filter_upwards [e1, e2, e3, e4] with n h1 h2 h3 h4
+    refine ⟨h1, h2, ?_, h4⟩
+    -- σₖ < σₖ₋₁ from r < 1
+    have hσk1pos' := hσk1pos n
+    rw [div_lt_one hσk1pos'] at h3
+    exact h3
+  -- build the eventual stepHypCocycle from hQAE (using n and n+1)
+  have hstepAE : ∀ᵐ x ∂μ, ∀ᶠ n in atTop, stepHypCocycle A T c k hkdc x n := by
+    filter_upwards [hQAE] with x hQ
+    -- shift hQ to n+1
+    have hQshift : ∀ᶠ n in atTop,
+        (c < (qpow_isSelfAdjoint A T (n+1) x).isHermitian.eigenvalues₀ ⟨k - 1, hk1card⟩
+          ∧ (qpow_isSelfAdjoint A T (n+1) x).isHermitian.eigenvalues₀ ⟨k, hkcard⟩ < c
+          ∧ (Matrix.toEuclideanLin (cocycle A T (n+1) x)).singularValues k
+              < (Matrix.toEuclideanLin (cocycle A T (n+1) x)).singularValues (k-1)
+          ∧ (‖ExteriorNorm.compoundMatrix k (A (T^[n+1] x))‖
+                * ‖ExteriorNorm.compoundMatrix k (A (T^[n+1] x))⁻¹‖) ^ 2
+              * ((Matrix.toEuclideanLin (cocycle A T (n+1) x)).singularValues k
+                / (Matrix.toEuclideanLin (cocycle A T (n+1) x)).singularValues (k-1)) ^ 2 < 1) := by
+      have := hQ
+      rw [eventually_atTop] at this ⊢
+      obtain ⟨N, hN⟩ := this
+      exact ⟨N, fun n hn => hN (n+1) (by omega)⟩
+    filter_upwards [hQ, hQshift] with n hQn hQn1
+    obtain ⟨ha, hb', hc', hd'⟩ := hQn
+    obtain ⟨ha1, hb1, hc1, hd1⟩ := hQn1
+    -- antitone witnesses
+    have hanti_n := (qpow_isSelfAdjoint A T n x).isHermitian.eigenvalues₀_antitone
+    have hanti_n1 := (qpow_isSelfAdjoint A T (n+1) x).isHermitian.eigenvalues₀_antitone
+    refine ⟨?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_, hd'⟩
+    · -- top n
+      intro j
+      have : (qpow_isSelfAdjoint A T n x).isHermitian.eigenvalues₀ ⟨k - 1, hk1card⟩
+          ≤ (qpow_isSelfAdjoint A T n x).isHermitian.eigenvalues₀ ⟨j, lt_of_lt_of_le j.2 hkdc⟩ :=
+        hanti_n (by simp only [Fin.le_def]; omega)
+      linarith [ha]
+    · -- count n
+      rw [card_eigenvalues_gt_eq_card_eigenvalues₀_gt]
+      exact card_antitone_gt_eq (qpow_isSelfAdjoint A T n x).isHermitian.eigenvalues₀
+        hanti_n c hk1 hkcard ha hb'
+    · -- top n+1
+      intro j
+      have : (qpow_isSelfAdjoint A T (n+1) x).isHermitian.eigenvalues₀ ⟨k - 1, hk1card⟩
+          ≤ (qpow_isSelfAdjoint A T (n+1) x).isHermitian.eigenvalues₀ ⟨j, lt_of_lt_of_le j.2 hkdc⟩ :=
+        hanti_n1 (by simp only [Fin.le_def]; omega)
+      linarith [ha1]
+    · -- count n+1
+      rw [card_eigenvalues_gt_eq_card_eigenvalues₀_gt]
+      exact card_antitone_gt_eq (qpow_isSelfAdjoint A T (n+1) x).isHermitian.eigenvalues₀
+        hanti_n1 c hk1 hkcard ha1 hb1
+    · -- gap n
+      simp only [lamCocycle]
+      have hnn := (Matrix.toEuclideanLin (cocycle A T n x)).singularValues_nonneg k
+      nlinarith [hc', hnn]
+    · -- gap n+1
+      simp only [lamCocycle]
+      have hnn := (Matrix.toEuclideanLin (cocycle A T (n+1) x)).singularValues_nonneg k
+      nlinarith [hc1, hnn]
+    · -- cBipos n
+      have hdet : ((A (T^[n] x))⁻¹).det ≠ 0 := by
+        rw [Matrix.det_nonsing_inv, Ring.inverse_eq_inv']; exact inv_ne_zero (hA _)
+      exact norm_compound_pos k hdet (le_of_lt hkd) hd
+    · -- hμ₀lb
+      have hcBidet : ((A (T^[n] x))⁻¹).det ≠ 0 := by
+        rw [Matrix.det_nonsing_inv, Ring.inverse_eq_inv']; exact inv_ne_zero (hA _)
+      exact (step_inequalities hA n x hk1 hkd
+        (norm_compound_pos k hcBidet (le_of_lt hkd) hd) hd').1
+    · -- hgapμ
+      have hcBidet : ((A (T^[n] x))⁻¹).det ≠ 0 := by
+        rw [Matrix.det_nonsing_inv, Ring.inverse_eq_inv']; exact inv_ne_zero (hA _)
+      exact (step_inequalities hA n x hk1 hkd
+        (norm_compound_pos k hcBidet (le_of_lt hkd) hd) hd').2
+  -- now route through the abstract Cauchy packaging with `b = max 0 bCocycle`
+  have hb : ∀ᵐ x ∂μ, ∀ n, 0 ≤ b x n :=
+    Filter.Eventually.of_forall (fun x n => le_max_left _ _)
+  have hbpos : ∀ᵐ x ∂μ, ∀ᶠ n in atTop, 0 < b x n := by
+    filter_upwards [hstepAE] with x hx
+    filter_upwards [hx] with n hn
+    obtain ⟨_, _, _, _, _, _, _, _, _, hκr⟩ := hn
+    exact lt_max_of_lt_right (bCocycle_pos_of_regime hA x hk1 hkd n hκr)
+  have hlogb : ∀ᵐ x ∂μ,
+      Tendsto (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (b x n)) atTop (𝓝 (lamK - lamK1)) := by
+    filter_upwards [hblogAE, hstepAE] with x hlx hstepx
+    refine hlx.congr' ?_
+    filter_upwards [hstepx] with n hn
+    obtain ⟨_, _, _, _, _, _, _, _, _, hκr⟩ := hn
+    have hbpn : 0 < bCocycle A T x k n := bCocycle_pos_of_regime hA x hk1 hkd n hκr
+    have hbxn : b x n = bCocycle A T x k n := by
+      rw [hbdef]; exact max_eq_right (le_of_lt hbpn)
+    rw [hbxn]
+  have hLneg : ∀ᵐ x ∂μ, (fun _ : X => lamK - lamK1) x < 0 :=
+    Filter.Eventually.of_forall (fun _ => by dsimp only; linarith)
+  have hstep : ∀ᵐ x ∂μ, ∀ᶠ n in atTop,
+      ‖bandProjector A T (Set.indicator (Set.Ioi c) 1) (n + 1) x
+          - bandProjector A T (Set.indicator (Set.Ioi c) 1) n x‖ ≤ b x n := by
+    filter_upwards [hstepAE] with x hx
+    filter_upwards [hx] with n hn
+    have hle := stepHypCocycle_imp_step A T hA c hk1 hkdc x n hn
+    exact le_trans hle (le_max_right _ _)
+  exact exists_tendsto_bandProjector (μ := μ) (c := c) A b hb hbpos
+    (fun _ => lamK - lamK1) hLneg hlogb hstep
+
+
 end Oseledets
 
 end
