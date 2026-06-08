@@ -58,6 +58,34 @@ committed CFC polynomial bypass (`measurable_cfc_eqOn_polynomial` in `Measurable
 genuine two-sided limit `(1/n)log‖A⁽ⁿ⁾v‖ → λᵢ` on each stratum (limsup-flag gives only limsup;
 the SVD/`Λ` structure upgrades it to a limit); **L13** assemble. Spectrum/exponents made
 a.e.-constant by ergodicity (`specCard`/`specList` constant; `λᵢ = Γ`-limits).
+**PROGRESS UPDATE (commits through `abb1096`):** L7 COMPLETE (`tendsto_qpow`, Λ exists);
+**L8 DONE** (`oseledetsLimit` measurable, via `measurable_cfc_continuous` — Weierstrass-poly CFC
+measurability); **L9 DONE** (`oseledetsLimit_eigenvalues₀_eq`: eigenvalues₀ Λ = e^{λᵢ}, via the
+NEW `Weyl.abs_eigenvalues₀_sub_le`/`tendsto_eigenvalues₀` eigenvalue-continuity infra — missing
+from Mathlib, upstreamable); **L12 FOUNDATION DONE** (`norm_sq_cocycle_apply_eq_inner_gram`
+`‖A⁽ⁿ⁾v‖²=⟪gram_n v,v⟫`, op-norm sandwich, and `tendsto_log_cocycle_apply_of_eq_exponents` — the
+genuine two-sided limit in the EQUAL-exponent/conformal regime).
+**THE REMAINING SUB-CRUX = general L12 exact-growth + L11 (interdependent), then L10 + L13:**
+- **L12 general (per-vector):** `(1/n)log‖A⁽ⁿ⁾v‖ → λ(v)` = top active Oseledets exponent of v.
+  LOWER bound `liminf ≥ λ(v)` is clean (keep the dominant gram term: `⟪gram_n v,v⟫ ≥
+  μ_{i₀,n}|⟨v,u_{i₀,n}⟩|²`, `(1/2n)log μ_{i₀,n} → λ_{i₀}`, component → `⟨v,Λ-eigvec⟩≠0`, no rate).
+  **UPPER bound `limsup ≤ λ(v)` is the genuine sub-crux**: for v in bottom Λ-blocks, the top-block
+  leakage `‖P^{>cᵢ}(qpow_n)v‖ = ‖(P_n−P)v‖` must decay faster than the top singular value grows —
+  a naive single-projector bound FAILS when multiple exponent-blocks sit above λᵢ
+  (`‖ΔP_n‖ ~ e^{−n·gap}` need not beat `e^{n(λ_max−λᵢ)}`). Needs a BLOCK-BY-BLOCK rate argument
+  (each block's projector converges at its own gap rate; telescope). Recommend a focused SPIKE on
+  this before building. Interdependent with L11.
+- **L11 (`Vᵢ = lambdaSublevel` a.e.):** the hard direction `V_Λ ⊆ lambdaSublevel` is exactly the
+  L12 upper bound (`v ∈ bottom Λ-blocks ⟹ limsup ≤ λᵢ`); the easy direction is the L12 lower bound.
+  Once L12 general lands, L11 follows; then V inherits `Vflag`'s strict-anti/equivariance.
+- **L10 (measurable V):** `V i x := ` Λ-spectral-projector range (band projector at threshold cᵢ),
+  measurable via the committed CFC polynomial bypass / `measurable_cfc_continuous`.
+- **L13 (assemble `oseledets_filtration`):** spectrum a.e.-constant by ergodicity (`specCard`/
+  `specList`/`λᵢ=Γ`-limits constant); package V + lam + the flag/equivariance/exact-growth.
+RESUMPTION ENTRY POINTS (committed): `norm_sq_cocycle_apply_eq_inner_gram`,
+`tendsto_bandProjector_of_gap`, `oseledetsLimit_eigenvalues₀_eq`, `Weyl.tendsto_eigenvalues₀`,
+the `Filtration.lean` `Vflag`/`lambdaSublevel`/`lambdaBar_eq_on_stratum`/`Vflag_equivariant`.
+
 Legacy detail (L8–L13 also reads): Λ measurability via the committed CFC polynomial bypass;
 Λ eigen-data; `Vᵢ = lambdaSublevel` a.e.; forward limit on strata; assemble
 `oseledets_filtration`). **Practical risk:** fully-instantiated `⋀^k`-finrank statements hit
