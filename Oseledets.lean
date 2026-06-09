@@ -17,6 +17,7 @@ import Oseledets.Lyapunov.ForwardAngle
 import Oseledets.Lyapunov.ForwardTempering
 import Oseledets.Lyapunov.ForwardUpperBound
 import Oseledets.Lyapunov.ForwardDetSqueeze
+import Oseledets.Lyapunov.ForwardSqueezeData
 import Oseledets.Lyapunov.ForwardMeasurable
 import Oseledets.Lyapunov.ForwardV
 import Oseledets.Lyapunov.SpectralMeasurable
