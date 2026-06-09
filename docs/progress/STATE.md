@@ -7,8 +7,62 @@
 > `docs/plan/blueprints/m4-kingman-v2.md` + `docs/research/scratch/m4-L9-notes.md`.
 > Charter: `PROMPT.md`.
 
-_Last updated: 2026-06-05 (autonomous run; user away → self-approving checkpoints,
-recorded in `docs/plan/decision-record.md`)._
+_Last updated: 2026-06-09 (endgame phase: per-vector exact growth reduced to the
+verified S4 crux; foundations committed at `4812bd5`)._
+
+## ENDGAME STRUCTURE (2026-06-09) — the target reduced to ONE crux lemma
+
+The analytic core (L7–L9, Λ exists/measurable/eigenvalues `=e^{λᵢ}`, L12 foundation) is **done**
+and committed. The remaining target `oseledets_filtration` decomposes into: per-vector exact growth
+(lower + upper), measurable `V` (L10), `V_Λ = lambdaSublevel` a.e. (L11), assemble (L13). New work
+lives in **`Oseledets/Lyapunov/Forward.lean`** (wired into the root; green at `4812bd5`).
+
+**The single irreducible new mathematics is the per-vector growth UPPER bound, which reduces
+entirely to the crux lemma S4 (= (A′)):**
+
+> **S4 / (A′).** For `v` with NO Λ-component above `λᵢ` (i.e. `Pᶜ_∞ v = 0` for thresholds
+> `c > e^{λᵢ}`), and `cₘ` straddling block m−1/m with `1 ≤ m ≤ i`:
+> `limsup (1/n) log ‖Pᶜᵐₙ v‖ ≤ λᵢ − λₘ₋₁`.
+
+S4 is **VERIFIED TRUE** (mathematician, 400-digit numerics on real product cocycles). It is a
+*vector-aware* (sharp) Davis–Kahan leakage rate, strictly sharper than the operator-norm projector
+rate `λₘ−λₘ₋₁` (the gap `λₘ−λᵢ` is the gain from `v` being in a deep slow block). **Two traps
+confirmed (do NOT take them):** (i) the Abel-summation route with the operator-norm rate is BROKEN
+(too weak for ≥3 exponents above `v`); (ii) routing S4 through the band quadratic form
+`inner_cfc_ge_band` is CIRCULAR (it needs the very growth bound being proved) and gives the wrong
+rate. **Non-circular handle:** `‖Pᶜᵐₙ v‖ = ‖(Pᶜᵐₙ − Pᶜᵐ_∞) v‖` (since `Pᶜᵐ_∞ v = 0`), then
+telescope the off-diagonal sin-Θ (`offdiag_sin_le_residual_div_gap`,
+`norm_offdiag_residual_compound_le`, `perturbed_compound_gram_ceiling`) **carrying the fixed vector
+`v`** across the `i−m+1` intermediate gaps (each contributes one σ-ratio, compounding to
+`e^{n(λᵢ−λₘ₋₁)}`). Sub-lemma ladder S0–S5; S4 is the HIGH-difficulty node (est. several sessions).
+`inner_cfc_ge_band` is the LOWER-bound tool only. There is **no** simpler upper-bound route (the
+operator-norm and quadratic-form shortcuts both fail; S4 is equivalent in content to the bound).
+
+**Given S4, the upper bound is a simple per-block split** (NO Abel): `‖Aⁿv‖² = Σⱼ σⱼ²|⟨v,eⱼ⟩|²`,
+slow part `≤ sᵢ²‖v‖²` (→λᵢ), fast block `l` `≤ sₗ²·a_{l+1}²` → `λₗ + (λᵢ−λₗ) = λᵢ` via S4 at
+`m=l+1`; then log-of-finite-sum.
+
+**The LOWER bound is clean and robust** (no rate): `c^{2n}‖Pᶜₙv‖² ≤ ‖Aⁿv‖²`
+(`inner_cfc_ge_band` with `Q=qpow`, `f=(·)^{2n}`, `a=c^{2n}`, plus `gram = cfc((·)^{2n}) qpow`),
+then `Pᶜₙv → Pᶜ_∞v ≠ 0` gives `liminf ≥ log c` for every `c < e^{λᵢ}`, so `liminf ≥ λᵢ`.
+
+**Banked sorry-free in `Forward.lean` (`4812bd5`):** `inner_cfc_ge_band` (Gram band bound, the
+lower-bound foundation) and the deterministic distinct-exponent enumeration
+`distinctExp`/`numExp`/`expEnum` (+ `expEnum_strictAnti`/`exists_expEnum_eq`/… — the `k` exponents
+`λ₀>⋯>λ_{k-1}` for the target). **In progress:** lower-bound chain (`gram_eq_cfc_qpow`,
+`cocycle_apply_sq_ge_band`, `log_le_liminf_log_cocycle_apply`).
+
+**L10 (measurable V):** `V i x := range(toEuclideanLin(cfc gᵢ Λ̂ x))` with `gᵢ` a CONTINUOUS gap
+interpolant (0/1 on the a.e.-constant spectrum `{e^{λⱼ}}`) and `Λ̂` = `oseledetsLimit` sanitized to
+self-adjoint (junk→0/I off the good set) so `cfc gᵢ Λ̂` is a genuine projector EVERYWHERE; then
+`orthProjMatrix(V i x) = cfc gᵢ Λ̂ x`, measurable via `measurable_cfc_continuous`
+(global, no spectrum hypothesis). `MeasurableSubspace` then via `measurable_orthProjMatrix_iff`.
+
+**L13 (assemble):** exponents `= expEnum lamS` (deterministic via `exists_lam_tendsto_singularValue`);
+`V_Λ = lambdaSublevel` a.e. (L11: `⊆` via lower bound, `⊇` via S4 upper bound) so `V` inherits
+`Vflag` strict-anti/equivariance/`lambdaBar_eq_on_stratum`; per-vector limit = lower+upper; spectrum
+a.e.-constant by ergodicity. Handle `d=0` degenerate case separately.
+
 
 ## Target (one line)
 
