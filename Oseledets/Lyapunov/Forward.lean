@@ -611,4 +611,521 @@ theorem norm_sq_bandProjector_apply_eq_sum [NeZero d]
 
 end LowerBound
 
+/-! ## S4-CORE — the per-overlap limsup bound (handle + Cauchy–Schwarz, log level)
+
+The handle identity `⟪v, uⱼ(n)⟫ = ⟪v, (Pₙ − Pinf) uⱼ(n)⟫` for slow `v`/fast `uⱼ`, its
+Cauchy–Schwarz consequence `|⟪v,uⱼ⟫| ≤ ‖v‖ · ‖(Pₙ − Pinf) uⱼ‖`, the `k = 1` Gram residual via
+Pythagoras, and the assembled normalized-log/limsup bounds. Everything is parametrized over a
+tilt/overlap-rate hypothesis (the remaining analytic input). -/
+
+section S4Core
+open scoped InnerProductSpace
+
+variable {X : Type*} [MeasurableSpace X]
+
+/-- **Handle identity (bankable).** If `v` is slow (`toEuclideanLin Pinf v = 0`) and `uⱼ(n)` lies in
+the step-`n` fast band (`toEuclideanLin Pₙ uⱼ = uⱼ`), then `⟪v, uⱼ⟫ = ⟪v, (Pₙ − Pinf) uⱼ⟫`. Both
+`Pₙ` and `Pinf` are self-adjoint. -/
+theorem inner_eq_inner_bandProjector_sub_limit [NeZero d]
+    {Pn Pinf : Matrix (Fin d) (Fin d) ℝ}
+    (_hPnsa : Pnᵀ = Pn) (hPinfsa : Pinfᵀ = Pinf)
+    {v uj : EuclideanSpace ℝ (Fin d)}
+    (hslow : Matrix.toEuclideanLin Pinf v = 0)
+    (hfast : Matrix.toEuclideanLin Pn uj = uj) :
+    (inner ℝ v uj : ℝ)
+      = (inner ℝ v (Matrix.toEuclideanLin (Pn - Pinf) uj) : ℝ) := by
+  have hsymPinf : (Matrix.toEuclideanLin Pinf).IsSymmetric :=
+    Matrix.isSymmetric_toEuclideanLin_iff.mpr (by
+      rw [Matrix.IsHermitian, Matrix.conjTranspose_eq_transpose_of_trivial, hPinfsa])
+  -- `⟪v, Pinf uj⟫ = ⟪Pinf v, uj⟫ = ⟪0, uj⟫ = 0`.
+  have hPinfuj : (inner ℝ v (Matrix.toEuclideanLin Pinf uj) : ℝ) = 0 := by
+    rw [← hsymPinf v uj, hslow, inner_zero_left]
+  -- `Pn - Pinf` linear map splits.
+  have hsplit : Matrix.toEuclideanLin (Pn - Pinf) uj
+      = Matrix.toEuclideanLin Pn uj - Matrix.toEuclideanLin Pinf uj := by
+    rw [map_sub, LinearMap.sub_apply]
+  rw [hsplit, inner_sub_right, hPinfuj, sub_zero, hfast]
+
+/-- **Handle + Cauchy–Schwarz (per-step bound).** For slow `v` and a step-`n` fast eigenvector
+`uj` (`toEuclideanLin Pn uj = uj`), the overlap is controlled by the tilt of the band projector
+on `uj`: `|⟪v, uj⟫| ≤ ‖v‖ · ‖(Pn − Pinf) uj‖`. -/
+theorem abs_inner_le_norm_mul_bandProjector_tilt [NeZero d]
+    {Pn Pinf : Matrix (Fin d) (Fin d) ℝ}
+    (hPnsa : Pnᵀ = Pn) (hPinfsa : Pinfᵀ = Pinf)
+    {v uj : EuclideanSpace ℝ (Fin d)}
+    (hslow : Matrix.toEuclideanLin Pinf v = 0)
+    (hfast : Matrix.toEuclideanLin Pn uj = uj) :
+    |(inner ℝ v uj : ℝ)| ≤ ‖v‖ * ‖Matrix.toEuclideanLin (Pn - Pinf) uj‖ := by
+  rw [inner_eq_inner_bandProjector_sub_limit hPnsa hPinfsa hslow hfast]
+  exact abs_real_inner_le_norm v _
+
+/-- **S3-direct (Pythagoras).** The off-diagonal residual numerator squared:
+`‖C v₀ − ⟪C v₀, v₀⟫ v₀‖² = ‖C v₀‖² − ⟪C v₀, v₀⟫²` for a unit vector `v₀`. The elementary `k = 1`
+Gram off-diagonal residual; no exterior/compound machinery. -/
+theorem norm_sub_inner_smul_sq {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    (C : E →ₗ[ℝ] E) {v₀ : E} (hv₀ : ‖v₀‖ = 1) :
+    ‖C v₀ - (inner ℝ (C v₀) v₀ : ℝ) • v₀‖ ^ 2
+      = ‖C v₀‖ ^ 2 - (inner ℝ (C v₀) v₀ : ℝ) ^ 2 := by
+  have hv₀v₀ : (inner ℝ v₀ v₀ : ℝ) = 1 := by
+    rw [real_inner_self_eq_norm_sq, hv₀]; norm_num
+  set a : ℝ := (inner ℝ (C v₀) v₀ : ℝ) with ha
+  have hcomm : (inner ℝ v₀ (C v₀) : ℝ) = a := by rw [ha, real_inner_comm]
+  rw [← real_inner_self_eq_norm_sq, inner_sub_left, inner_sub_right, inner_sub_right]
+  simp only [real_inner_smul_left, real_inner_smul_right, hv₀v₀, hcomm]
+  rw [← real_inner_self_eq_norm_sq]
+  ring
+
+/-- **S3-direct (bound form).** The off-diagonal residual numerator is at most `‖C v₀‖`. -/
+theorem norm_sub_inner_smul_le {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    (C : E →ₗ[ℝ] E) {v₀ : E} (hv₀ : ‖v₀‖ = 1) :
+    ‖C v₀ - (inner ℝ (C v₀) v₀ : ℝ) • v₀‖ ≤ ‖C v₀‖ := by
+  have hsq := norm_sub_inner_smul_sq C hv₀
+  have hle : ‖C v₀ - (inner ℝ (C v₀) v₀ : ℝ) • v₀‖ ^ 2 ≤ ‖C v₀‖ ^ 2 := by
+    rw [hsq]; nlinarith [sq_nonneg (inner ℝ (C v₀) v₀ : ℝ)]
+  exact le_of_pow_le_pow_left₀ two_ne_zero (norm_nonneg _) hle
+
+/-- **S4-CORE (per-step log bound).** With the per-step handle bound `|⟪v,uⱼₙ⟫| ≤ ‖v‖ · tₙ`
+(`hbound`) and both sides positive, the normalized-log overlap exponent is dominated by the tilt
+exponent plus a vanishing `(1/n) log ‖v‖` shift. -/
+theorem normLog_overlap_le {a t : ℕ → ℝ} {nv : ℝ} {n : ℕ}
+    (hbound : a n ≤ nv * t n) (hapos : 0 < a n) (hnvpos : 0 < nv) (htpos : 0 < t n) :
+    (n : ℝ)⁻¹ * Real.log (a n)
+      ≤ (n : ℝ)⁻¹ * Real.log nv + (n : ℝ)⁻¹ * Real.log (t n) := by
+  rcases Nat.eq_zero_or_pos n with hn | hn
+  · subst hn; simp
+  have hninv : (0 : ℝ) ≤ (n : ℝ)⁻¹ := by positivity
+  have hlog : Real.log (a n) ≤ Real.log nv + Real.log (t n) := by
+    rw [← Real.log_mul (ne_of_gt hnvpos) (ne_of_gt htpos)]
+    exact Real.log_le_log hapos hbound
+  calc (n : ℝ)⁻¹ * Real.log (a n)
+      ≤ (n : ℝ)⁻¹ * (Real.log nv + Real.log (t n)) :=
+        mul_le_mul_of_nonneg_left hlog hninv
+    _ = (n : ℝ)⁻¹ * Real.log nv + (n : ℝ)⁻¹ * Real.log (t n) := by ring
+
+/-- **S4-CORE (limsup bound).** Combining `normLog_overlap_le` over `n` with the vanishing of
+`(1/n) log ‖v‖` and the supplied tilt-rate `limsup ((1/n) log tₙ) ≤ r`, the overlap exponent has
+`limsup ≤ r`. -/
+theorem limsup_normLog_overlap_le {a t : ℕ → ℝ} {nv r : ℝ}
+    (hbound : ∀ᶠ n in atTop, a n ≤ nv * t n)
+    (hapos : ∀ᶠ n in atTop, 0 < a n) (hnvpos : 0 < nv) (htpos : ∀ᶠ n in atTop, 0 < t n)
+    (hnvvanish : Tendsto (fun n : ℕ => (n : ℝ)⁻¹ * Real.log nv) atTop (𝓝 0))
+    (htilt : Filter.limsup (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (t n)) atTop ≤ r)
+    (hcob : Filter.atTop.IsCoboundedUnder (· ≤ ·)
+      (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (a n)))
+    (hcobt : Filter.atTop.IsCoboundedUnder (· ≤ ·)
+      (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (t n)))
+    (hbddt : Filter.atTop.IsBoundedUnder (· ≤ ·)
+      (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (t n))) :
+    Filter.limsup (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (a n)) atTop ≤ r := by
+  set u : ℕ → ℝ := fun n : ℕ => (n : ℝ)⁻¹ * Real.log nv with hu
+  set tt : ℕ → ℝ := fun n : ℕ => (n : ℝ)⁻¹ * Real.log (t n) with htt
+  have hubdd_le : Filter.atTop.IsBoundedUnder (· ≤ ·) u := hnvvanish.isBoundedUnder_le
+  have hubdd_ge : Filter.atTop.IsBoundedUnder (· ≥ ·) u := hnvvanish.isBoundedUnder_ge
+  have hulimsup : Filter.limsup u atTop = 0 := hnvvanish.limsup_eq
+  have hev : (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (a n)) ≤ᶠ[atTop] (u + tt) := by
+    filter_upwards [hbound, hapos, htpos] with n hb ha ht
+    exact normLog_overlap_le hb ha hnvpos ht
+  have hsumbdd : Filter.atTop.IsBoundedUnder (· ≤ ·) (u + tt) :=
+    isBoundedUnder_le_add hubdd_le hbddt
+  have h1 := Filter.limsup_le_limsup hev hcob hsumbdd
+  have h2 : Filter.limsup (u + tt) atTop ≤ Filter.limsup u atTop + Filter.limsup tt atTop :=
+    limsup_add_le hubdd_ge hubdd_le hcobt hbddt
+  rw [hulimsup, zero_add] at h2
+  exact (h1.trans h2).trans htilt
+
+/-- **S4-CORE (Oseledets specialization).** Ties the abstract limsup bound to the genuine band
+projectors. Given, eventually in `n`, self-adjointness of `Pₙ`/`Pinf`, the slow hypothesis
+`Pinf v = 0`, and fast-band membership `Pₙ uⱼ(n) = uⱼ(n)`, the handle + Cauchy–Schwarz supply the
+per-step bound, and with the tilt rate `htilt` the overlap exponent has `limsup ≤ r`. -/
+theorem limsup_normLog_inner_le [NeZero d]
+    {Pn : ℕ → Matrix (Fin d) (Fin d) ℝ} {Pinf : Matrix (Fin d) (Fin d) ℝ}
+    {v : EuclideanSpace ℝ (Fin d)} {uj : ℕ → EuclideanSpace ℝ (Fin d)} {r : ℝ}
+    (hvpos : 0 < ‖v‖)
+    (hPnsa : ∀ᶠ n in atTop, (Pn n)ᵀ = Pn n) (hPinfsa : Pinfᵀ = Pinf)
+    (hslow : Matrix.toEuclideanLin Pinf v = 0)
+    (hfast : ∀ᶠ n in atTop, Matrix.toEuclideanLin (Pn n) (uj n) = uj n)
+    (hapos : ∀ᶠ n in atTop, 0 < |(inner ℝ v (uj n) : ℝ)|)
+    (htpos : ∀ᶠ n in atTop, 0 < ‖Matrix.toEuclideanLin (Pn n - Pinf) (uj n)‖)
+    (hnvvanish : Tendsto (fun n : ℕ => (n : ℝ)⁻¹ * Real.log ‖v‖) atTop (𝓝 0))
+    (htilt : Filter.limsup
+      (fun n : ℕ => (n : ℝ)⁻¹ * Real.log ‖Matrix.toEuclideanLin (Pn n - Pinf) (uj n)‖) atTop ≤ r)
+    (hcob : Filter.atTop.IsCoboundedUnder (· ≤ ·)
+      (fun n : ℕ => (n : ℝ)⁻¹ * Real.log |(inner ℝ v (uj n) : ℝ)|))
+    (hcobt : Filter.atTop.IsCoboundedUnder (· ≤ ·)
+      (fun n : ℕ => (n : ℝ)⁻¹ * Real.log ‖Matrix.toEuclideanLin (Pn n - Pinf) (uj n)‖))
+    (hbddt : Filter.atTop.IsBoundedUnder (· ≤ ·)
+      (fun n : ℕ => (n : ℝ)⁻¹ * Real.log ‖Matrix.toEuclideanLin (Pn n - Pinf) (uj n)‖)) :
+    Filter.limsup
+      (fun n : ℕ => (n : ℝ)⁻¹ * Real.log |(inner ℝ v (uj n) : ℝ)|) atTop ≤ r := by
+  have hbound : ∀ᶠ n in atTop,
+      |(inner ℝ v (uj n) : ℝ)| ≤ ‖v‖ * ‖Matrix.toEuclideanLin (Pn n - Pinf) (uj n)‖ := by
+    filter_upwards [hPnsa, hfast] with n hsa hf
+    exact abs_inner_le_norm_mul_bandProjector_tilt hsa hPinfsa hslow hf
+  exact limsup_normLog_overlap_le hbound hapos hvpos htpos hnvvanish htilt hcob hcobt hbddt
+
+/-- **S5 (per-step log bound).** With `‖P v‖² = Σⱼ cⱼ`, `cⱼ ≥ 0`, and a common per-step ceiling
+`cⱼ ≤ B`, the band-projection leakage exponent is bounded by `(1/2n) log (k·B)`. -/
+theorem normLog_bandProj_le {k : ℕ} {P : ℝ} {c : Fin k → ℝ} {B : ℝ} {n : ℕ}
+    (hPpos : 0 < P) (hsum : P ^ 2 = ∑ j, c j) (hcB : ∀ j, c j ≤ B) :
+    (n : ℝ)⁻¹ * Real.log P ≤ (n : ℝ)⁻¹ * (2⁻¹ * Real.log ((k : ℝ) * B)) := by
+  rcases Nat.eq_zero_or_pos n with hn | hn
+  · subst hn; simp
+  have hninv : (0 : ℝ) ≤ (n : ℝ)⁻¹ := by positivity
+  have hPsq_le : P ^ 2 ≤ (k : ℝ) * B := by
+    rw [hsum]
+    calc ∑ j, c j ≤ ∑ _j : Fin k, B := Finset.sum_le_sum (fun j _ => hcB j)
+      _ = (k : ℝ) * B := by rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin]; ring
+  have hlogP : Real.log P ≤ 2⁻¹ * Real.log ((k : ℝ) * B) := by
+    have h2 : Real.log (P ^ 2) ≤ Real.log ((k : ℝ) * B) :=
+      Real.log_le_log (by positivity) hPsq_le
+    rw [Real.log_pow] at h2
+    push_cast at h2
+    linarith
+  exact mul_le_mul_of_nonneg_left hlogP hninv
+
+end S4Core
+
+/-! ## Per-vector growth UPPER bound (conditional on S4) and the per-vector LIMIT
+
+The per-vector upper bound `limsup (1/n) log‖A⁽ⁿ⁾v‖ ≤ λᵢ`, conditional on the per-index S4 leakage
+envelopes, and the assembled per-vector exact-growth limit. -/
+
+section Upper
+open scoped InnerProductSpace
+
+set_option linter.unusedSectionVars false
+
+variable {X : Type*} [MeasurableSpace X] (T : X → X)
+
+/-- **Helper (log of a finite sum).** Let `s` be a finite index type and `t : s → ℕ → ℝ` with
+`t m n ≥ 0`. If for every `m` and every `ε > 0`, eventually `t m n ≤ exp (n (L + ε))`, and the total
+sum is eventually positive, then `limsup_n (1/n) log (∑_m t m n) ≤ L`. -/
+theorem limsup_inv_mul_log_sum_le {s : Type*} [Fintype s] [Nonempty s]
+    (t : s → ℕ → ℝ) (L : ℝ) (_htnn : ∀ m n, 0 ≤ t m n)
+    (hbound : ∀ m, ∀ ε > 0, ∀ᶠ n : ℕ in atTop, t m n ≤ Real.exp ((n : ℝ) * (L + ε)))
+    (hpos : ∀ᶠ n : ℕ in atTop, 0 < ∑ m, t m n)
+    (hcobdd : IsCoboundedUnder (· ≤ ·) atTop
+      (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (∑ m, t m n))) :
+    limsup (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (∑ m, t m n)) atTop ≤ L := by
+  set u : ℕ → ℝ := fun n => (n : ℝ)⁻¹ * Real.log (∑ m, t m n) with hu
+  have hkey : ∀ ε > 0, ∀ᶠ n : ℕ in atTop, u n ≤ L + ε +
+      (n : ℝ)⁻¹ * Real.log (Fintype.card s) := by
+    intro ε hε
+    have hall : ∀ᶠ n : ℕ in atTop, ∀ m, t m n ≤ Real.exp ((n : ℝ) * (L + ε)) :=
+      eventually_all.mpr (fun m => hbound m ε hε)
+    filter_upwards [hall, hpos, eventually_ge_atTop 1] with n hn hsum_pos hn1
+    have hnpos : (0 : ℝ) < (n : ℝ) := by exact_mod_cast Nat.lt_of_lt_of_le Nat.zero_lt_one hn1
+    have hninv0 : (0 : ℝ) < (n : ℝ)⁻¹ := by positivity
+    have hsum_le : ∑ m, t m n ≤ (Fintype.card s : ℝ) * Real.exp ((n : ℝ) * (L + ε)) := by
+      calc ∑ m, t m n ≤ ∑ _m : s, Real.exp ((n : ℝ) * (L + ε)) :=
+            Finset.sum_le_sum (fun m _ => hn m)
+        _ = (Fintype.card s : ℝ) * Real.exp ((n : ℝ) * (L + ε)) := by
+            rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
+    have hcard_pos : (0 : ℝ) < (Fintype.card s : ℝ) := by
+      exact_mod_cast Fintype.card_pos
+    have hlog_le : Real.log (∑ m, t m n)
+        ≤ Real.log ((Fintype.card s : ℝ) * Real.exp ((n : ℝ) * (L + ε))) :=
+      Real.log_le_log hsum_pos hsum_le
+    rw [Real.log_mul (ne_of_gt hcard_pos) (Real.exp_ne_zero _), Real.log_exp] at hlog_le
+    rw [hu]
+    have hmul : (n : ℝ)⁻¹ * Real.log (∑ m, t m n)
+        ≤ (n : ℝ)⁻¹ * (Real.log (Fintype.card s) + (n : ℝ) * (L + ε)) :=
+      mul_le_mul_of_nonneg_left hlog_le (le_of_lt hninv0)
+    calc (n : ℝ)⁻¹ * Real.log (∑ m, t m n)
+        ≤ (n : ℝ)⁻¹ * (Real.log (Fintype.card s) + (n : ℝ) * (L + ε)) := hmul
+      _ = L + ε + (n : ℝ)⁻¹ * Real.log (Fintype.card s) := by
+          field_simp; ring
+  have hcorr : Tendsto (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (Fintype.card s)) atTop (𝓝 0) := by
+    have hinv : Tendsto (fun n : ℕ => (n : ℝ)⁻¹) atTop (𝓝 0) :=
+      tendsto_natCast_atTop_atTop.inv_tendsto_atTop
+    simpa using hinv.mul_const (Real.log (Fintype.card s))
+  have hbdd : IsBoundedUnder (· ≤ ·) atTop u := by
+    obtain ⟨N, hN⟩ := (Filter.eventually_atTop.mp ((hkey 1 one_pos).and
+      (hcorr.eventually (gt_mem_nhds (show (0:ℝ) < 1 by norm_num)))))
+    refine ⟨L + 1 + 1, ?_⟩
+    rw [Filter.eventually_map, Filter.eventually_atTop]
+    refine ⟨N, fun n hn => ?_⟩
+    obtain ⟨h1, h2⟩ := hN n hn
+    have : (n : ℝ)⁻¹ * Real.log (Fintype.card s) < 1 := by
+      simpa using h2
+    linarith
+  rw [limsup_le_iff' hcobdd hbdd]
+  intro y hy
+  set ε := (y - L) / 2 with hεdef
+  have hεpos : 0 < ε := by rw [hεdef]; linarith
+  filter_upwards [hkey ε hεpos,
+    hcorr.eventually (gt_mem_nhds (show (0:ℝ) < ε from hεpos))] with n h1 h2
+  have hcorr_lt : (n : ℝ)⁻¹ * Real.log (Fintype.card s) < ε := by simpa using h2
+  calc u n ≤ L + ε + (n : ℝ)⁻¹ * Real.log (Fintype.card s) := h1
+    _ ≤ L + ε + ε := by linarith
+    _ = y := by rw [hεdef]; ring
+
+/-- **Helper (limsup ⟹ exp envelope).** If `a n ≥ 0` and `limsup_n (1/n) log (a n) ≤ M`, then for
+every `ε > 0` eventually `a n ≤ exp (n (M + ε))`. -/
+theorem eventually_le_exp_of_limsup_le {a : ℕ → ℝ} (hann : ∀ n, 0 ≤ a n) {M : ℝ}
+    (hbdd : IsBoundedUnder (· ≤ ·) atTop (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (a n)))
+    (hlim : limsup (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (a n)) atTop ≤ M)
+    (ε : ℝ) (hε : 0 < ε) :
+    ∀ᶠ n : ℕ in atTop, a n ≤ Real.exp ((n : ℝ) * (M + ε)) := by
+  have hlt : limsup (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (a n)) atTop < M + ε := by linarith
+  have hev := eventually_lt_of_limsup_lt hlt hbdd
+  filter_upwards [hev, eventually_ge_atTop 1] with n hn hn1
+  have hnpos : (0 : ℝ) < (n : ℝ) := by exact_mod_cast Nat.lt_of_lt_of_le Nat.zero_lt_one hn1
+  rcases eq_or_lt_of_le (hann n) with h0 | hpos
+  · rw [← h0]; positivity
+  · have hloglt : Real.log (a n) < (n : ℝ) * (M + ε) := by
+      have hmul : (n : ℝ) * ((n : ℝ)⁻¹ * Real.log (a n)) < (n : ℝ) * (M + ε) :=
+        mul_lt_mul_of_pos_left hn hnpos
+      rwa [← mul_assoc, mul_inv_cancel₀ (ne_of_gt hnpos), one_mul] at hmul
+    have : a n < Real.exp ((n : ℝ) * (M + ε)) := by
+      rw [← Real.exp_log hpos]; exact Real.exp_lt_exp.mpr hloglt
+    exact le_of_lt this
+
+/-- **Spectral Parseval for the Gram quadratic form** against the sorted Gram eigenbasis:
+`⟪gram v, v⟫ = ∑ⱼ (eigenvalues₀ (gram) j) · ⟪v, uⱼ⟫²`. -/
+theorem inner_gram_apply_eq_sum_eigenvalues₀ [NeZero d]
+    (A : X → Matrix (Fin d) (Fin d) ℝ) (n : ℕ) (x : X) (v : EuclideanSpace ℝ (Fin d)) :
+    ⟪Matrix.toEuclideanLin (gram A T n x) v, v⟫_ℝ
+      = ∑ j : Fin (Fintype.card (Fin d)),
+          (gram_posSemidef A T n x).isHermitian.eigenvalues₀ j *
+            (inner ℝ v (sortedGramEigenbasis A T n x j) : ℝ) ^ 2 := by
+  set b := sortedGramEigenbasis A T n x with hb
+  set G := Matrix.toEuclideanLin (gram A T n x) with hG
+  have hGsym : G.IsSymmetric :=
+    Matrix.isSymmetric_toEuclideanLin_iff.mpr (gram_posSemidef A T n x).isHermitian
+  rw [← b.sum_inner_mul_inner (G v) v]
+  refine Finset.sum_congr rfl (fun j _ => ?_)
+  have hGbj : G (b j) = (gram_posSemidef A T n x).isHermitian.eigenvalues₀ j • b j :=
+    sortedGramEigenbasis_eigenpair A T n x j
+  have h1 : (inner ℝ (G v) (b j) : ℝ) = (gram_posSemidef A T n x).isHermitian.eigenvalues₀ j *
+      (inner ℝ v (b j) : ℝ) := by
+    rw [hGsym v (b j), hGbj, inner_smul_right]
+  have h2 : (inner ℝ (b j) v : ℝ) = (inner ℝ v (b j) : ℝ) := real_inner_comm _ _
+  rw [h1, h2]; ring
+
+/-- **Spectral Parseval (cocycle form).** The squared cocycle norm is the sum of squared singular
+values times squared overlaps with the sorted Gram eigenbasis:
+`‖A⁽ⁿ⁾ v‖² = ∑ⱼ σⱼ(n)² · ⟪v, uⱼ(n)⟫²`. -/
+theorem norm_sq_cocycle_apply_eq_sum_singularValues [NeZero d]
+    (A : X → Matrix (Fin d) (Fin d) ℝ) (n : ℕ) (x : X) (v : EuclideanSpace ℝ (Fin d)) :
+    ‖Matrix.toEuclideanLin (cocycle A T n x) v‖ ^ 2
+      = ∑ j : Fin (Fintype.card (Fin d)),
+          ((Matrix.toEuclideanLin (cocycle A T n x)).singularValues j) ^ 2 *
+            (inner ℝ v (sortedGramEigenbasis A T n x j) : ℝ) ^ 2 := by
+  rw [norm_sq_cocycle_apply_eq_inner_gram, inner_gram_apply_eq_sum_eigenvalues₀]
+  refine Finset.sum_congr rfl (fun j _ => ?_)
+  rw [gram_eigenvalues₀_eq_sq_singularValues]
+
+/-- The `j`-th spectral term `σⱼ(n)² · ⟪v,uⱼ(n)⟫²`. -/
+noncomputable def specTerm [NeZero d] (A : X → Matrix (Fin d) (Fin d) ℝ) (n : ℕ) (x : X)
+    (v : EuclideanSpace ℝ (Fin d)) (j : Fin (Fintype.card (Fin d))) : ℝ :=
+  ((Matrix.toEuclideanLin (cocycle A T n x)).singularValues j) ^ 2 *
+    (inner ℝ v (sortedGramEigenbasis A T n x j) : ℝ) ^ 2
+
+/-- `∑ⱼ specTermⱼ = ‖A⁽ⁿ⁾ v‖²`. -/
+theorem sum_specTerm_eq_norm_sq [NeZero d] (A : X → Matrix (Fin d) (Fin d) ℝ) (n : ℕ) (x : X)
+    (v : EuclideanSpace ℝ (Fin d)) :
+    ∑ j, specTerm T A n x v j = ‖Matrix.toEuclideanLin (cocycle A T n x) v‖ ^ 2 := by
+  rw [norm_sq_cocycle_apply_eq_sum_singularValues]; rfl
+
+theorem specTerm_nonneg [NeZero d] (A : X → Matrix (Fin d) (Fin d) ℝ) (n : ℕ) (x : X)
+    (v : EuclideanSpace ℝ (Fin d)) (j : Fin (Fintype.card (Fin d))) :
+    0 ≤ specTerm T A n x v j := by
+  rw [specTerm]; positivity
+
+/-- **Conditional upper bound.** Given, for each spectral index `j`, the per-index exp-envelope
+`tⱼ(n) ≤ exp(n(2λᵢ + ε))`, and eventual positivity of `‖A⁽ⁿ⁾ v‖`, the per-vector growth limsup is
+`≤ λᵢ`. -/
+theorem limsup_inv_mul_log_norm_cocycle_apply_le [NeZero d]
+    (A : X → Matrix (Fin d) (Fin d) ℝ) (x : X) (v : EuclideanSpace ℝ (Fin d)) (lami : ℝ)
+    (henv : ∀ j : Fin (Fintype.card (Fin d)), ∀ ε > 0,
+      ∀ᶠ n : ℕ in atTop, specTerm T A n x v j ≤ Real.exp ((n : ℝ) * (2 * lami + ε)))
+    (hpos : ∀ᶠ n : ℕ in atTop, 0 < ‖Matrix.toEuclideanLin (cocycle A T n x) v‖)
+    (hcobdd : IsCoboundedUnder (· ≤ ·) atTop
+      (fun n : ℕ => (n : ℝ)⁻¹ * Real.log ‖Matrix.toEuclideanLin (cocycle A T n x) v‖)) :
+    limsup (fun n : ℕ => (n : ℝ)⁻¹ *
+        Real.log ‖Matrix.toEuclideanLin (cocycle A T n x) v‖) atTop ≤ lami := by
+  set g : ℕ → ℝ := fun n => (n : ℝ)⁻¹ *
+    Real.log ‖Matrix.toEuclideanLin (cocycle A T n x) v‖ with hg
+  set N := Fintype.card (Fin (Fintype.card (Fin d))) with hN
+  have hcardpos : (0 : ℝ) < (N : ℝ) := by rw [hN]; exact_mod_cast Fintype.card_pos
+  have hsumpos : ∀ᶠ n : ℕ in atTop, 0 < ∑ j, specTerm T A n x v j := by
+    filter_upwards [hpos] with n hn
+    rw [sum_specTerm_eq_norm_sq]; positivity
+  have heq : ∀ᶠ n : ℕ in atTop, g n =
+      (1/2 : ℝ) * ((n : ℝ)⁻¹ * Real.log (∑ j, specTerm T A n x v j)) := by
+    filter_upwards [hpos] with n hn
+    have hsq : ∑ j, specTerm T A n x v j
+        = ‖Matrix.toEuclideanLin (cocycle A T n x) v‖ ^ 2 := sum_specTerm_eq_norm_sq T A n x v
+    have hlog : Real.log (∑ j, specTerm T A n x v j)
+        = 2 * Real.log ‖Matrix.toEuclideanLin (cocycle A T n x) v‖ := by
+      rw [hsq, Real.log_pow]; push_cast; ring
+    rw [hg, hlog]; ring
+  have hcorr : Tendsto (fun n : ℕ => (n : ℝ)⁻¹ * Real.log N) atTop (𝓝 0) := by
+    have hinv : Tendsto (fun n : ℕ => (n : ℝ)⁻¹) atTop (𝓝 0) :=
+      tendsto_natCast_atTop_atTop.inv_tendsto_atTop
+    simpa using hinv.mul_const (Real.log N)
+  have hgkey : ∀ ε > 0, ∀ᶠ n : ℕ in atTop,
+      g n ≤ lami + ε / 2 + (1/2 : ℝ) * ((n : ℝ)⁻¹ * Real.log N) := by
+    intro ε hε
+    have hall : ∀ᶠ n : ℕ in atTop, ∀ j,
+        specTerm T A n x v j ≤ Real.exp ((n : ℝ) * (2 * lami + ε)) :=
+      eventually_all.mpr (fun j => henv j ε hε)
+    filter_upwards [hall, hsumpos, heq, eventually_ge_atTop 1] with n hn hsum_pos hen hn1
+    have hnpos : (0 : ℝ) < (n : ℝ) := by exact_mod_cast Nat.lt_of_lt_of_le Nat.zero_lt_one hn1
+    have hninv : (0 : ℝ) < (n : ℝ)⁻¹ := by positivity
+    have hsum_le : ∑ j, specTerm T A n x v j ≤ (N : ℝ) * Real.exp ((n : ℝ) * (2 * lami + ε)) := by
+      calc ∑ j, specTerm T A n x v j ≤ ∑ _j : Fin (Fintype.card (Fin d)),
+              Real.exp ((n : ℝ) * (2 * lami + ε)) := Finset.sum_le_sum (fun j _ => hn j)
+        _ = (N : ℝ) * Real.exp ((n : ℝ) * (2 * lami + ε)) := by
+            rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul, hN]
+    have hlog_le := Real.log_le_log hsum_pos hsum_le
+    rw [Real.log_mul (ne_of_gt hcardpos) (Real.exp_ne_zero _), Real.log_exp] at hlog_le
+    have hmul := mul_le_mul_of_nonneg_left hlog_le (le_of_lt hninv)
+    rw [hen]
+    have hstep : (n : ℝ)⁻¹ * Real.log (∑ j, specTerm T A n x v j)
+        ≤ (n : ℝ)⁻¹ * Real.log N + (2 * lami + ε) := by
+      calc (n : ℝ)⁻¹ * Real.log (∑ j, specTerm T A n x v j)
+          ≤ (n : ℝ)⁻¹ * (Real.log N + (n : ℝ) * (2 * lami + ε)) := hmul
+        _ = (n : ℝ)⁻¹ * Real.log N + (2 * lami + ε) := by
+            rw [mul_add, ← mul_assoc, inv_mul_cancel₀ (ne_of_gt hnpos), one_mul]
+    nlinarith [hstep]
+  have hgbdd : IsBoundedUnder (· ≤ ·) atTop g := by
+    obtain ⟨M, hM⟩ := (Filter.eventually_atTop.mp ((hgkey 1 one_pos).and
+      (hcorr.eventually (gt_mem_nhds (show (0:ℝ) < 2 by norm_num)))))
+    refine ⟨lami + 1 / 2 + 1, ?_⟩
+    rw [Filter.eventually_map, Filter.eventually_atTop]
+    refine ⟨M, fun n hn => ?_⟩
+    obtain ⟨h1, h2⟩ := hM n hn
+    have h2' : (n : ℝ)⁻¹ * Real.log N < 2 := by simpa using h2
+    nlinarith [h1, h2']
+  rw [limsup_le_iff' hcobdd hgbdd]
+  intro y hy
+  set ε := y - lami with hεdef
+  have hεpos : 0 < ε := by rw [hεdef]; linarith
+  filter_upwards [hgkey ε hεpos,
+    hcorr.eventually (gt_mem_nhds (show (0:ℝ) < ε from hεpos))] with n h1 h2
+  have h2' : (n : ℝ)⁻¹ * Real.log N < ε := by simpa using h2
+  calc g n ≤ lami + ε / 2 + (1/2 : ℝ) * ((n : ℝ)⁻¹ * Real.log N) := h1
+    _ ≤ y := by rw [hεdef] at *; nlinarith [h2']
+
+/-- **Product envelope.** If `a n ≤ exp(n·p)` and `b n ≤ exp(n·q)` eventually (`a, b ≥ 0`), then
+`a n · b n ≤ exp(n·(p+q))` eventually. -/
+theorem eventually_mul_le_exp {a b : ℕ → ℝ} (_hann : ∀ n, 0 ≤ a n) (hbnn : ∀ n, 0 ≤ b n)
+    {p q : ℝ} (ha : ∀ᶠ n : ℕ in atTop, a n ≤ Real.exp ((n : ℝ) * p))
+    (hb : ∀ᶠ n : ℕ in atTop, b n ≤ Real.exp ((n : ℝ) * q)) :
+    ∀ᶠ n : ℕ in atTop, a n * b n ≤ Real.exp ((n : ℝ) * (p + q)) := by
+  filter_upwards [ha, hb] with n han hbn
+  calc a n * b n ≤ Real.exp ((n : ℝ) * p) * Real.exp ((n : ℝ) * q) :=
+        mul_le_mul han hbn (hbnn n) (Real.exp_nonneg _)
+    _ = Real.exp ((n : ℝ) * (p + q)) := by rw [← Real.exp_add]; ring_nf
+
+/-- **Singular-value square envelope.** If `(1/n) log σⱼ(n) → λⱼ` and each `σⱼ(n) > 0`, then for
+every `δ > 0`, eventually `σⱼ(n)² ≤ exp(n(2λⱼ + δ))`. -/
+theorem eventually_sq_singularValue_le_exp {A : X → Matrix (Fin d) (Fin d) ℝ} {x : X}
+    (j : Fin (Fintype.card (Fin d)))
+    (hσpos : ∀ n : ℕ, 1 ≤ n → 0 < (Matrix.toEuclideanLin (cocycle A T n x)).singularValues j)
+    {lamj : ℝ}
+    (hσ : Tendsto (fun n : ℕ => (n : ℝ)⁻¹ *
+        Real.log ((Matrix.toEuclideanLin (cocycle A T n x)).singularValues j)) atTop (𝓝 lamj))
+    (δ : ℝ) (hδ : 0 < δ) :
+    ∀ᶠ n : ℕ in atTop,
+      ((Matrix.toEuclideanLin (cocycle A T n x)).singularValues j) ^ 2
+        ≤ Real.exp ((n : ℝ) * (2 * lamj + δ)) := by
+  have hev := hσ.eventually (gt_mem_nhds (show lamj < lamj + δ/2 by linarith))
+  filter_upwards [hev, eventually_ge_atTop 1] with n hn hn1
+  have hnpos : (0 : ℝ) < (n : ℝ) := by exact_mod_cast Nat.lt_of_lt_of_le Nat.zero_lt_one hn1
+  set σ := (Matrix.toEuclideanLin (cocycle A T n x)).singularValues j with hσdef
+  have hσp : 0 < σ := hσpos n hn1
+  have hloglt : Real.log σ < (n : ℝ) * (lamj + δ/2) := by
+    have hmul : (n : ℝ) * ((n : ℝ)⁻¹ * Real.log σ) < (n : ℝ) * (lamj + δ/2) :=
+      mul_lt_mul_of_pos_left hn hnpos
+    rwa [← mul_assoc, mul_inv_cancel₀ (ne_of_gt hnpos), one_mul] at hmul
+  have hσsq : σ ^ 2 = Real.exp (2 * Real.log σ) := by
+    rw [mul_comm, Real.exp_mul, Real.exp_log hσp]
+    norm_num
+  rw [hσsq]
+  apply Real.exp_le_exp.mpr
+  nlinarith [hloglt]
+
+/-- **Per-index envelope (slow & fast unified).** If `(1/n) log σⱼ(n) → λⱼ`, each `σⱼ(n) > 0`, the
+overlap satisfies the leakage bound `limsup (1/n) log ⟪v,uⱼ(n)⟫² ≤ 2 rⱼ` (with the boundedness
+side-condition), and `λⱼ + rⱼ ≤ λᵢ`, then `specTermⱼ(n) ≤ exp(n(2λᵢ + ε))` for every `ε > 0`. -/
+theorem specTerm_envelope_of_rate [NeZero d] {A : X → Matrix (Fin d) (Fin d) ℝ} {x : X}
+    {v : EuclideanSpace ℝ (Fin d)} {lami lamj rj : ℝ} (j : Fin (Fintype.card (Fin d)))
+    (hσpos : ∀ n : ℕ, 1 ≤ n → 0 < (Matrix.toEuclideanLin (cocycle A T n x)).singularValues j)
+    (hσ : Tendsto (fun n : ℕ => (n : ℝ)⁻¹ *
+        Real.log ((Matrix.toEuclideanLin (cocycle A T n x)).singularValues j)) atTop (𝓝 lamj))
+    (hovbdd : IsBoundedUnder (· ≤ ·) atTop
+      (fun n : ℕ => (n : ℝ)⁻¹ *
+        Real.log ((inner ℝ v (sortedGramEigenbasis A T n x j) : ℝ) ^ 2)))
+    (hov : limsup (fun n : ℕ => (n : ℝ)⁻¹ *
+        Real.log ((inner ℝ v (sortedGramEigenbasis A T n x j) : ℝ) ^ 2)) atTop ≤ 2 * rj)
+    (hrate : lamj + rj ≤ lami) :
+    ∀ ε > 0, ∀ᶠ n : ℕ in atTop,
+      specTerm T A n x v j ≤ Real.exp ((n : ℝ) * (2 * lami + ε)) := by
+  intro ε hε
+  have hσenv := eventually_sq_singularValue_le_exp (T := T) j hσpos hσ (ε/2) (by linarith)
+  have hovenv := eventually_le_exp_of_limsup_le
+    (a := fun n : ℕ => (inner ℝ v (sortedGramEigenbasis A T n x j) : ℝ) ^ 2)
+    (fun n => by positivity) hovbdd hov (ε/2) (by linarith)
+  have hprod := eventually_mul_le_exp
+    (a := fun n : ℕ => ((Matrix.toEuclideanLin (cocycle A T n x)).singularValues j) ^ 2)
+    (b := fun n : ℕ => (inner ℝ v (sortedGramEigenbasis A T n x j) : ℝ) ^ 2)
+    (fun n => by positivity) (fun n => by positivity) hσenv hovenv
+  filter_upwards [hprod] with n hn
+  rw [specTerm]
+  refine hn.trans (Real.exp_le_exp.mpr ?_)
+  have : (n : ℝ) * (2 * lamj + ε / 2 + (2 * rj + ε / 2)) ≤ (n : ℝ) * (2 * lami + ε) := by
+    apply mul_le_mul_of_nonneg_left _ (by positivity)
+    nlinarith [hrate]
+  linarith [this]
+
+/-- **Per-vector exact growth limit (from limsup ≤ λᵢ and λᵢ ≤ liminf).** -/
+theorem tendsto_inv_mul_log_norm_cocycle_apply
+    (A : X → Matrix (Fin d) (Fin d) ℝ) (x : X) (v : EuclideanSpace ℝ (Fin d)) (lami : ℝ)
+    (hsup : limsup (fun n : ℕ => (n : ℝ)⁻¹ *
+        Real.log ‖Matrix.toEuclideanLin (cocycle A T n x) v‖) atTop ≤ lami)
+    (hinf : lami ≤ liminf (fun n : ℕ => (n : ℝ)⁻¹ *
+        Real.log ‖Matrix.toEuclideanLin (cocycle A T n x) v‖) atTop)
+    (hbddabove : IsBoundedUnder (· ≤ ·) atTop
+      (fun n : ℕ => (n : ℝ)⁻¹ * Real.log ‖Matrix.toEuclideanLin (cocycle A T n x) v‖))
+    (hbddbelow : IsBoundedUnder (· ≥ ·) atTop
+      (fun n : ℕ => (n : ℝ)⁻¹ * Real.log ‖Matrix.toEuclideanLin (cocycle A T n x) v‖)) :
+    Tendsto (fun n : ℕ => (n : ℝ)⁻¹ *
+        Real.log ‖Matrix.toEuclideanLin (cocycle A T n x) v‖) atTop (𝓝 lami) :=
+  tendsto_of_le_liminf_of_limsup_le hinf hsup hbddabove hbddbelow
+
+/-- **Per-vector exact growth limit (assembled, conditional on S4).** The lower bound is the
+committed `log_le_liminf_log_cocycle_apply` at threshold `c = e^{λᵢ}`; the upper bound is
+`limsup_inv_mul_log_norm_cocycle_apply_le`. Given band-projector convergence (`hP`, `hPv`), the
+per-index S4/regime envelopes (`henv`), positivity (`hpos`), the cobounded inputs, and the
+boundedness side-conditions, the per-vector growth converges to `λᵢ`. -/
+theorem tendsto_inv_mul_log_norm_cocycle_apply_of_S4 [NeZero d]
+    {A : X → Matrix (Fin d) (Fin d) ℝ} (hA : ∀ x, (A x).det ≠ 0) {x : X}
+    {v : EuclideanSpace ℝ (Fin d)} {lami : ℝ} {P : Matrix (Fin d) (Fin d) ℝ}
+    (hP : Tendsto (fun n => bandProjector A T (Set.indicator (Set.Ioi (Real.exp lami)) 1) n x)
+      atTop (𝓝 P))
+    (hPv : Matrix.toEuclideanLin P v ≠ 0)
+    (henv : ∀ j : Fin (Fintype.card (Fin d)), ∀ ε > 0,
+      ∀ᶠ n : ℕ in atTop, specTerm T A n x v j ≤ Real.exp ((n : ℝ) * (2 * lami + ε)))
+    (hpos : ∀ᶠ n : ℕ in atTop, 0 < ‖Matrix.toEuclideanLin (cocycle A T n x) v‖)
+    (hcobdd : IsCoboundedUnder (· ≤ ·) atTop
+      (fun n : ℕ => (n : ℝ)⁻¹ * Real.log ‖Matrix.toEuclideanLin (cocycle A T n x) v‖))
+    (hcobdd' : IsCoboundedUnder (· ≥ ·) atTop
+      (fun n : ℕ => (n : ℝ)⁻¹ * Real.log ‖Matrix.toEuclideanLin (cocycle A T n x) v‖))
+    (hbddabove : IsBoundedUnder (· ≤ ·) atTop
+      (fun n : ℕ => (n : ℝ)⁻¹ * Real.log ‖Matrix.toEuclideanLin (cocycle A T n x) v‖))
+    (hbddbelow : IsBoundedUnder (· ≥ ·) atTop
+      (fun n : ℕ => (n : ℝ)⁻¹ * Real.log ‖Matrix.toEuclideanLin (cocycle A T n x) v‖)) :
+    Tendsto (fun n : ℕ => (n : ℝ)⁻¹ *
+        Real.log ‖Matrix.toEuclideanLin (cocycle A T n x) v‖) atTop (𝓝 lami) := by
+  have hsup := limsup_inv_mul_log_norm_cocycle_apply_le T A x v lami henv hpos hcobdd
+  have hexp_pos : (0 : ℝ) < Real.exp lami := Real.exp_pos lami
+  have hlow := log_le_liminf_log_cocycle_apply A T hA hexp_pos hP hPv hcobdd'
+  rw [Real.log_exp] at hlow
+  exact tendsto_inv_mul_log_norm_cocycle_apply T A x v lami hsup hlow hbddabove hbddbelow
+
+end Upper
+
 end Oseledets
