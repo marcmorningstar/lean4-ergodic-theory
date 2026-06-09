@@ -34,7 +34,9 @@ rate. **Non-circular handle:** `‖Pᶜᵐₙ v‖ = ‖(Pᶜᵐₙ − Pᶜᵐ_
 telescope the off-diagonal sin-Θ (`offdiag_sin_le_residual_div_gap`,
 `norm_offdiag_residual_compound_le`, `perturbed_compound_gram_ceiling`) **carrying the fixed vector
 `v`** across the `i−m+1` intermediate gaps (each contributes one σ-ratio, compounding to
-`e^{n(λᵢ−λₘ₋₁)}`). Sub-lemma ladder S0–S5; S4 is the HIGH-difficulty node (est. several sessions).
+`e^{n(λᵢ−λₘ₋₁)}`). Sub-lemma ladder S0–S5; S4 is the HIGH-difficulty node (est. several sessions). **Full
+Lean-ready execution plan: `docs/plan/blueprints/s4-leakage-route.md` (Route B — per-overlap, `k=1`,
+avoids the `⋀^k` apparatus; the `σᵢ/σₘ₋₁` two-gap ratio gives the sharp rate).**
 `inner_cfc_ge_band` is the LOWER-bound tool only. There is **no** simpler upper-bound route (the
 operator-norm and quadratic-form shortcuts both fail; S4 is equivalent in content to the bound).
 
