@@ -42,6 +42,7 @@ import Oseledets.Lyapunov.AssemblyFromUpperIdent
 import Oseledets.Lyapunov.SpectralIdentification
 import Oseledets.Lyapunov.ForwardGradedOverlap
 import Oseledets.Lyapunov.BridgeWiring
+import Oseledets.Lyapunov.AssemblyChain
 
 /-!
 # Oseledets
