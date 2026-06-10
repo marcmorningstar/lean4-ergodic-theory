@@ -41,6 +41,7 @@ import Oseledets.Lyapunov.LimitEigenbasis
 import Oseledets.Lyapunov.AssemblyFromUpperIdent
 import Oseledets.Lyapunov.SpectralIdentification
 import Oseledets.Lyapunov.ForwardGradedOverlap
+import Oseledets.Lyapunov.BridgeWiring
 
 /-!
 # Oseledets
