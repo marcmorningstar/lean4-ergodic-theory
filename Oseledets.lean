@@ -46,6 +46,7 @@ import Oseledets.Lyapunov.AssemblyChain
 import Oseledets.Lyapunov.ChainRecursion
 import Oseledets.Lyapunov.ForwardGradedOverlapTopGap
 import Oseledets.Lyapunov.AssemblyTopGap
+import Oseledets.Lyapunov.TopGapEnvelope
 
 /-!
 # Oseledets

@@ -1,5 +1,8 @@
 import Oseledets.Cocycle.Basic
 import Oseledets.Lyapunov.MeasurableSubspace
+import Oseledets.Lyapunov.AssemblyTopGap
+import Oseledets.Lyapunov.AssemblyChain
+import Oseledets.Lyapunov.TopGapEnvelope
 
 /-!
 # The Oseledets multiplicative ergodic theorem (one-sided, filtration form)
@@ -62,6 +65,17 @@ theorem oseledets_filtration
               (fun n : ℕ => (n : ℝ)⁻¹ *
                 Real.log ‖Matrix.toEuclideanCLM (𝕜 := ℝ) (cocycle A T n x) v‖)
               atTop (𝓝 (lam i))) := by
-  sorry
+  rcases Nat.eq_zero_or_pos d with hd | hd
+  · -- dimension zero: the trivial flag `⊤ = ⊥` with no exponents.
+    subst hd
+    exact oseledets_filtration_dim_zero hT A hA hAmeas hint hint'
+  · -- positive dimension: compose the top-gap assembly with the proved envelope.
+    haveI : NeZero d := ⟨hd.ne'⟩
+    exact oseledets_filtration_of_topgap hT A hA hAmeas hint hint'
+      (fun lam0 hlam0 => topGapMassEnvelope_ae hT hA hAmeas hint hint' lam0 hlam0)
+
+/-! ## Axiom audit -/
+
+#print axioms oseledets_filtration
 
 end Oseledets
