@@ -39,6 +39,7 @@ import Oseledets.Lyapunov.RuelleReverse
 import Oseledets.Lyapunov.CapstoneWiring
 import Oseledets.Lyapunov.LimitEigenbasis
 import Oseledets.Lyapunov.AssemblyFromUpperIdent
+import Oseledets.Lyapunov.SpectralIdentification
 
 /-!
 # Oseledets
