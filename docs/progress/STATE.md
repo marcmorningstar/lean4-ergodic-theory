@@ -1,11 +1,12 @@
 # Oseledets MET formalization — living state
 
-> Single source of truth for resuming this project. Fresh agent: read this file top
-> to bottom, then `docs/research/understanding.md` (the math + the L0–L7 lemma
-> ladder), `docs/research/target-and-milestones.md` (target + milestones M0–M13),
-> `docs/plan/` (decision record + phased plan + api-notes), and for the active phase
-> `docs/plan/blueprints/m4-kingman-v2.md` + `docs/research/scratch/m4-L9-notes.md`.
-> Charter: `PROMPT.md`.
+> Single source of truth for this project. **Status: COMPLETE — there is no active
+> phase.** Fresh agent: read the COMPLETE section, the pinned Conventions, and the
+> Resumption notes just below; everything after the HISTORICAL RECORD marker is kept
+> for the record only. Background reading: `docs/research/understanding.md` (the math
+> + the L0–L7 lemma ladder), `docs/research/target-and-milestones.md` (target +
+> milestones M0–M13), `docs/plan/` (decision record + phased plan + api-notes).
+> Charter: `PROMPT.md`. QA record: `docs/progress/qa/complete-qa-2026-06-10.md`.
 
 _Last updated: 2026-06-10 (**THE THEOREM IS PROVED** — `oseledets_filtration` closed at
 commit `6cc38a7`; axioms exactly `[propext, Classical.choice, Quot.sound]`; full library
@@ -25,9 +26,35 @@ gap-interior `TopGapMassEnvelope`), `3f0cc97` (assembly pre-stage), `6cc38a7` (e
 sorry closed; import cycle resolved by dropping the statement-shape-only `MultiplicativeErgodic`
 imports from AssemblyTopGap/AssemblyChain/FiltrationAssembly).
 
-Historical state below (kept for the record).
+## Conventions (pinned — see decision-record.md / api-notes.md)
 
-## ENDGAME STRUCTURE (2026-06-09) — the target reduced to ONE crux lemma
+Cocycle newest-factor-left; scoped L2 operator norm `Matrix.Norms.L2Operator`; vectors
+`EuclideanSpace ℝ (Fin d)` acted on via `Matrix.toEuclideanCLM`; GL encoded as
+`det ≠ 0`; `log⁺ = Real.posLog`; Kingman stated in `ℝ` under the `BddBelow` proviso
+(`EReal` used only internally in the core proof); subspace measurability via
+`orthProjMatrix`/`MeasurableSubspace`.
+
+## Resumption notes (still live)
+
+- Branch `met-formalization`; baseline `2bead01`; research/plan `d3922ae`.
+- Build is incremental: `lake build`. **Never `lake exe cache get` in this
+  devcontainer** (DNS-blocked, stalls — re-verified 2026-06-10; the Mathlib cache is
+  already present). CLAUDE.md carries the same warning.
+- A single whole-library `lake build` shares the environment and is the efficient inner loop.
+- One commit per QA-passed phase, Mathlib-style message + `Co-Authored-By` line.
+- **Parallel worktree agents are infeasible here**: git worktrees don't carry the gitignored
+  `.lake` Mathlib build cache (and `cache get` is blocked), so a fresh worktree would rebuild
+  all of Mathlib. Hard proofs must be done by a single agent in the main repo.
+
+---
+
+# HISTORICAL RECORD — project complete; nothing below is current
+
+Everything below is the development log, kept verbatim for the record. Section
+headings retain their original present-tense wording ("Current phase", "What is
+next", open-`sorry` counts); none of it describes the present state.
+
+## ENDGAME STRUCTURE (2026-06-09, historical) — the target reduced to ONE crux lemma
 
 The analytic core (L7–L9, Λ exists/measurable/eigenvalues `=e^{λᵢ}`, L12 foundation) is **done**
 and committed. The remaining target `oseledets_filtration` decomposes into: per-vector exact growth
@@ -106,7 +133,7 @@ a.e.-constant by ergodicity. Handle `d=0` degenerate case separately.
 filtration form** (milestone **M10** / layer **L6.1**), stated in Lean as
 `Oseledets.oseledets_filtration` in `Oseledets/MultiplicativeErgodic.lean`.
 
-## Current phase
+## Current phase (historical, 2026-06-09)
 
 **M6–M10 Lyapunov layers → the target (the only open `sorry`).** M4 Kingman + M5
 Furstenberg–Kesten are fully closed (details below). The active front is the **L7c crux**
@@ -383,7 +410,7 @@ Subbundle → Limit`):
 - ✅ **M4 reduction** (this phase): the three entangled stubs collapsed into the single core
   `ae_tendsto_cdiv`, from which all soft facts derive; 5 → 4 open `sorry`s; QA PASS.
 
-## Open `sorry`s (4 — all intended planned gaps)
+## Open `sorry`s (historical — none remain; the table below is from mid-development)
 
 | Decl | File | Milestone |
 |---|---|---|
@@ -395,7 +422,7 @@ The lone remaining gap is the final target `oseledets_filtration`.)
 Not yet in the skeleton (deferred to their phases): the Lyapunov layers L4.x/L5.x and the
 measurability of exponents/filtration (M7). Added when their phase begins.
 
-## What is next (in order)
+## What is next (historical — the plan as of mid-development; all steps completed)
 
 1. ✅ P0–P3, M2, M1, M3 (committed).
 2. ✅ M4 research/design → v2 blueprint; M4 foundation (`18f9069`); M4 reduction.
@@ -404,21 +431,5 @@ measurability of exponents/filtration (M7). Added when their phase begins.
 4. ⏳ **M5 Furstenberg–Kesten** (`m5-furstenberg-kesten.md`) — NEXT; then Lyapunov layers
    (`lyapunov-to-target.md`); then assemble `oseledets_filtration`.
 
-## Conventions (pinned — see decision-record.md / api-notes.md)
-
-Cocycle newest-factor-left; scoped L2 operator norm `Matrix.Norms.L2Operator`; vectors
-`EuclideanSpace ℝ (Fin d)` acted on via `Matrix.toEuclideanCLM`; GL encoded as
-`det ≠ 0`; `log⁺ = Real.posLog`; Kingman stated in `ℝ` under the `BddBelow` proviso
-(`EReal` used only internally in the core proof); subspace measurability via
-`orthProjMatrix`/`MeasurableSubspace`.
-
-## Resumption notes
-
-- Branch `met-formalization`; baseline `2bead01`; research/plan `d3922ae`; M4 foundation
-  checkpoint `18f9069`.
-- Build is incremental: `lake build`. Never `lake exe cache get` (DNS-blocked, stalls).
-- A single whole-library `lake build` shares the environment and is the efficient inner loop.
-- One commit per QA-passed phase, Mathlib-style message + `Co-Authored-By` line.
-- **Parallel worktree agents are infeasible here**: git worktrees don't carry the gitignored
-  `.lake` Mathlib build cache (and `cache get` is blocked), so a fresh worktree would rebuild
-  all of Mathlib. Hard proofs must be done by a single agent in the main repo.
+(The pinned Conventions and the Resumption notes formerly here were moved above the
+HISTORICAL RECORD marker — they are live guidance, not history.)

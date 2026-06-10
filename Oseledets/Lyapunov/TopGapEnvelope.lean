@@ -835,7 +835,7 @@ theorem perStratum_step [NeZero d] {A : X → Matrix (Fin d) (Fin d) ℝ} (hA : 
     constructor
     · intro hnotin
       rw [hmem] at hnotin
-      push_neg at hnotin
+      push Not at hnotin
       -- lam0 j ≤ v − δ*; combined with gapsep ⟹ lam0 j < v − δ*.
       have hne : lam0 (j : ℕ) ≠ v - δstar := by
         rcases hgapsep (j : ℕ) hjd with h | h
@@ -846,7 +846,7 @@ theorem perStratum_step [NeZero d] {A : X → Matrix (Fin d) (Fin d) ℝ} (hA : 
     · rintro ⟨w, hwWf, hjBw⟩
       have hjw : lam0 (j : ℕ) = w := (hBw_mem w j).1 hjBw
       have hwlt : w < v - δstar := ((hWf_mem w).1 hwWf).2
-      rw [hmem]; push_neg; rw [hjw]; linarith
+      rw [hmem]; push Not; rw [hjw]; linarith
   -- Disjointness of the sub-bands (different stratum values).
   have hdisj : (Wf : Set ℝ).PairwiseDisjoint Bw := by
     intro w hw w' hw' hne
@@ -1065,7 +1065,7 @@ theorem perStratum_step [NeZero d] {A : X → Matrix (Fin d) (Fin d) ℝ} (hA : 
         rw [← Real.exp_add, Real.exp_le_exp]
         nlinarith [hsum_le_δ, hncast]
       · rw [if_neg hlt, hCfun_bottom w hlt, mul_one, mul_one]
-        push_neg at hlt
+        push Not at hlt
         apply mul_le_mul_of_nonneg_left _ (Real.exp_nonneg _)
         rw [Real.exp_le_exp]
         nlinarith [h2η_δstar_le_δ, hncast, hlt]

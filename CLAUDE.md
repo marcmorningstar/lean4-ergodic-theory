@@ -17,7 +17,7 @@ the final composition and the development history.
 | Path | Purpose |
 |---|---|
 | `Oseledets.lean` | Library root; imports every module of the formalization. |
-| `Oseledets/` | Library modules. Currently only `Basic.lean` (placeholder). |
+| `Oseledets/` | Library modules (~49): `Cocycle/`, `Ergodic/`, `Lyapunov/`, and `MultiplicativeErgodic.lean` (the proved target theorem). |
 | `lakefile.toml` | Package config: one `Oseledets` lib, depends on Mathlib. |
 | `lean-toolchain` | Pinned Lean version (`leanprover/lean4:v4.30.0-rc2`). |
 | `lake-manifest.json` | Pinned dependency revisions. |
@@ -28,9 +28,14 @@ the final composition and the development history.
 
 ```bash
 lake build          # build the library (alias: make build)
-lake exe cache get  # fetch the Mathlib precompiled cache (first checkout)
+lake exe cache get  # fetch the Mathlib precompiled cache (first checkout ONLY — see below)
 lake clean          # remove local build artifacts (make clean)
 ```
+
+**Do not run `lake exe cache get` in this devcontainer**: the cache host is
+DNS-blocked here and the command stalls indefinitely (verified 2026-06-10).
+The Mathlib cache is already present (fetched by `.devcontainer/post-create.sh`
+at container creation); incremental `lake build` is all that is ever needed.
 
 ## Conventions
 

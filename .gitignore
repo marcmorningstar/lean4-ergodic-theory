@@ -27,3 +27,4 @@ Thumbs.db
 # Scratch
 prompt.md
 build.log
+/scratch_*.lean

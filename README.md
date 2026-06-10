@@ -3,16 +3,20 @@
 A Lean 4 + Mathlib formalization of the **Oseledets multiplicative ergodic
 theorem** (MET).
 
-> Status: **skeleton.** The project is freshly scaffolded — the library
-> currently builds an empty shell with no mathematical content yet. The
-> theorem statements and proofs are added incrementally from here.
+> Status: **complete.** The target theorem `Oseledets.oseledets_filtration`
+> (`Oseledets/MultiplicativeErgodic.lean`) is fully proved: the library builds
+> sorry-free and the axiom audit prints exactly
+> `[propext, Classical.choice, Quot.sound]`.
 
 ## Layout
 
 ```
 Oseledets.lean        -- library root; imports every module
 Oseledets/
-  Basic.lean          -- placeholder module (no content yet)
+  Cocycle/            -- iterated linear cocycle, norms, Furstenberg–Kesten
+  Ergodic/            -- maximal ergodic inequality, Birkhoff, Kingman
+  Lyapunov/           -- exponents, filtration, measurability, final assembly
+  MultiplicativeErgodic.lean  -- the proved target theorem (MET, filtration form)
 lakefile.toml         -- package config (single `Oseledets` library, depends on Mathlib)
 lean-toolchain        -- pinned Lean version
 ```

@@ -8,9 +8,9 @@ import Oseledets.Lyapunov.TopGapEnvelope
 # The Oseledets multiplicative ergodic theorem (one-sided, filtration form)
 
 This is the **target theorem** of the development (milestone `M10` / layer `L6.1`;
-see `docs/research/target-and-milestones.md`). It is stated here with the proof left
-as `sorry`; the proof is assembled, in the implementation phases, from the milestone
-lemmas in `Oseledets/Ergodic/`, `Oseledets/Cocycle/`, and `Oseledets/Lyapunov/`.
+see `docs/research/target-and-milestones.md`). It is **fully proved** here, assembled
+from the milestone lemmas in `Oseledets/Ergodic/`, `Oseledets/Cocycle/`, and
+`Oseledets/Lyapunov/` (final composition recorded in `docs/progress/STATE.md`).
 
 ## Statement
 

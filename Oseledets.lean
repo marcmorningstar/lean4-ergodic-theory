@@ -57,7 +57,7 @@ Root module of the `Oseledets` library: a Lean 4 + Mathlib formalization of the
 This module imports the whole development. The mathematical and planning context lives
 under `docs/` (research dossier, target & milestone ladder, phased plan, progress).
 
-## Layout
+## Layout (principal entry points)
 
 * `Oseledets.Cocycle.Basic` — the iterated linear cocycle and its basic API.
 * `Oseledets.Cocycle.Norm` — measurability of the L2 operator norm and matrix inverse.
@@ -66,8 +66,11 @@ under `docs/` (research dossier, target & milestone ladder, phased plan, progres
 * `Oseledets.Ergodic.Birkhoff` — pointwise Birkhoff ergodic theorem (`M2`, `M3`).
 * `Oseledets.Ergodic.Kingman` — Kingman's subadditive ergodic theorem (`M4`).
 * `Oseledets.Lyapunov.MeasurableSubspace` — measurably-varying subspaces (`M7` infra).
+* `Oseledets.Lyapunov.*` — the Lyapunov-exponent / filtration layers and the
+  final assembly chain (`OseledetsLimit`, `TopGapEnvelope`, `AssemblyTopGap`, …).
 * `Oseledets.MultiplicativeErgodic` — the target theorem `oseledets_filtration` (`M10`).
 
-The development is currently a `sorry`-stubbed skeleton; gaps are filled phase by phase
-(see `docs/plan/implementation-plan.md` and `docs/progress/STATE.md`).
+The development is **complete**: the target theorem `Oseledets.oseledets_filtration` is
+proved sorry-free, using only the standard axioms `[propext, Classical.choice, Quot.sound]`
+(see `docs/progress/STATE.md` for the final composition).
 -/
