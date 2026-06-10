@@ -29,19 +29,22 @@ The mathematical content `V' i x = Vassembled A T (numExp lam0 d) i x` a.e. is t
 identification of the slow spectral filtration with the limsup flag.  It factors through the single
 clean a.e. hypothesis
 
-  `hslowflag : ∀ᵐ x, ∀ t : ℝ, Vslow A T t x = lambdaSublevel A T x t`
+  `hslowflag : ∀ᵐ x, ∀ t : ℝ, Vslow A T (Real.exp t) x = lambdaSublevel A T x t`
 
-— the per-point identification of the slow band's range with the `lambdaBar`-sublevel at the *same*
-threshold `t`.  This `hslowflag` packages the two genuine inclusions:
+— the per-point identification of the slow band's range with the `lambdaBar`-sublevel, **with the
+exponential change of scale**: `Vslow`'s threshold cuts the spectrum of the limit matrix
+`Λ = lim (Qₙ)^{1/2n}` whose eigenvalues are `e^{λᵢ}` (exp scale), while `lambdaSublevel`'s
+threshold cuts the growth function `lambdaBar` whose values are the exponents `λᵢ` themselves
+(log scale).  This `hslowflag` packages the two genuine inclusions:
 
 * `lambdaSublevel ⊆ Vslow` — the committed *growth-slowness ⟹ membership in the Λ-slow space*
   direction (wired from `overlap_limsup_le_of_lambdaBar` / `limsup_log_norm_cocycle_eq_lambdaBar`);
 * `Vslow ⊆ lambdaSublevel` — the per-vector **spectral upper bound** (`v` in the Λ-slow space at
-  level `t` ⟹ `lambdaBar v ≤ t`), the Ruelle Prop 1.3 route being proved by the parallel worker.
+  level `e^t` ⟹ `lambdaBar v ≤ t`), the Ruelle Prop 1.3 route being proved by the parallel worker.
 
-Both inclusions live entirely inside `Vslow`'s native real-cutoff scale, so `hslowflag` is the
-*minimal* cleanly-typed datum: once a committed `Vslow = lambdaSublevel` lemma exists it discharges
-`hslowflag` verbatim, and `hae` follows from it together with the deterministic `Vassembled` cast
+So `hslowflag` is the *minimal* cleanly-typed datum: once a committed
+`Vslow (exp t) = lambdaSublevel t` lemma exists it discharges `hslowflag` verbatim, and `hae`
+follows from it together with the deterministic `Vassembled` cast
 bookkeeping and the ergodic `hspec` alignment (taken as the same `hspec` interface consumed by the
 committed assembly).
 
@@ -74,7 +77,7 @@ filtration `Vslow` (interior levels) and the everywhere-`⊥` family (last level
 everywhere-defined and everywhere-measurable. -/
 noncomputable def V' (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (lam0 : ℕ → ℝ)
     (i : Fin (numExp lam0 d + 1)) (x : X) : Submodule ℝ (EuclideanSpace ℝ (Fin d)) :=
-  if (i : ℕ) < numExp lam0 d then Vslow A T (slowCutoff lam0 d i) x else ⊥
+  if (i : ℕ) < numExp lam0 d then Vslow A T (Real.exp (slowCutoff lam0 d i)) x else ⊥
 
 /-! ## `hmeas'` — unconditional measurability of every level -/
 
@@ -91,8 +94,8 @@ theorem hmeas'_V' (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X)
   unfold V'
   by_cases h : (i : ℕ) < numExp lam0 d
   · simp only [if_pos h]
-    exact measurableSubspace_Vslow A T (slowCutoff lam0 d i)
-      (measurable_slowProjector A T (slowCutoff lam0 d i) hAmeas hTmeas)
+    exact measurableSubspace_Vslow A T (Real.exp (slowCutoff lam0 d i))
+      (measurable_slowProjector A T (Real.exp (slowCutoff lam0 d i)) hAmeas hTmeas)
   · simp only [if_neg h]
     -- the constant `⊥` family is a `MeasurableSubspace`: its projection matrix is constant.
     exact measurable_const
@@ -107,7 +110,7 @@ bookkeeping against the ergodic `hspec` interface. -/
 
 * `hspec` — the same ergodic spectrum-constancy interface consumed by the committed assembly
   (`specCard = numExp` and `specList = expEnum` along the cast, a.e.); and
-* `hslowflag` — the L11 per-point identification `Vslow A T t x = lambdaSublevel A T x t` for all
+* `hslowflag` — the L11 per-point identification `Vslow A T (Real.exp t) x = lambdaSublevel A T x t` for all
   thresholds `t`, a.e. `x`,
 
 the deterministic-cutoff slow family `V'` agrees, a.e. and levelwise, with the committed assembled
@@ -117,7 +120,7 @@ theorem hae_of_slowflag
     {μ : Measure X} {T : X → X} (A : X → Matrix (Fin d) (Fin d) ℝ) (lam0 : ℕ → ℝ)
     (hspec : ∀ᵐ x ∂μ, ∃ h : specCard A T x = numExp lam0 d,
       ∀ i : Fin (specCard A T x), specList A T x i = expEnum lam0 d (Fin.cast h i))
-    (hslowflag : ∀ᵐ x ∂μ, ∀ t : ℝ, Vslow A T t x = lambdaSublevel A T x t) :
+    (hslowflag : ∀ᵐ x ∂μ, ∀ t : ℝ, Vslow A T (Real.exp t) x = lambdaSublevel A T x t) :
     ∀ᵐ x ∂μ, ∀ i, V' A T lam0 i x = Vassembled A T (numExp lam0 d) i x := by
   filter_upwards [hspec, hslowflag] with x hspecx hflagx
   obtain ⟨hcard, hlist⟩ := hspecx
@@ -174,7 +177,7 @@ theorem oseledets_filtration_of_slowflag
     (lam0 : ℕ → ℝ)
     (hspec : ∀ᵐ x ∂μ, ∃ h : specCard A T x = numExp lam0 d,
       ∀ i : Fin (specCard A T x), specList A T x i = expEnum lam0 d (Fin.cast h i))
-    (hslowflag : ∀ᵐ x ∂μ, ∀ t : ℝ, Vslow A T t x = lambdaSublevel A T x t)
+    (hslowflag : ∀ᵐ x ∂μ, ∀ t : ℝ, Vslow A T (Real.exp t) x = lambdaSublevel A T x t)
     (hgrowth : ∀ᵐ x ∂μ, ∀ i : Fin (specCard A T x),
       ∀ v ∈ (Vflag A T x i.castSucc : Set (EuclideanSpace ℝ (Fin d))),
         v ∉ Vflag A T x i.succ →
