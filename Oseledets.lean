@@ -46,6 +46,11 @@ import Oseledets.Lyapunov.Spectrum
 import Oseledets.Lyapunov.ExponentSums
 import Oseledets.Lyapunov.ExteriorCocycle
 import Oseledets.Lyapunov.DetIdentity
+import Oseledets.Lyapunov.Inverse
+import Oseledets.Lyapunov.Restriction
+import Oseledets.Lyapunov.NonErgodic
+import Oseledets.Lyapunov.Regularity
+import Oseledets.Lyapunov.Singular
 import Oseledets.AxiomAudit
 
 /-!

@@ -9,6 +9,11 @@ import Oseledets.Lyapunov.Spectrum
 import Oseledets.Lyapunov.ExponentSums
 import Oseledets.Lyapunov.ExteriorCocycle
 import Oseledets.Lyapunov.DetIdentity
+import Oseledets.Lyapunov.Inverse
+import Oseledets.Lyapunov.Restriction
+import Oseledets.Lyapunov.NonErgodic
+import Oseledets.Lyapunov.Regularity
+import Oseledets.Lyapunov.Singular
 
 /-!
 # Axiom audit
@@ -112,3 +117,73 @@ informational dump (it produces no output on success).
 /-- info: 'Oseledets.tendsto_log_abs_det_cocycle' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms Oseledets.tendsto_log_abs_det_cocycle
+
+-- Inverse / time reversal (item 8).
+
+/-- info: 'Oseledets.singularValues_inv' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.singularValues_inv
+
+/-- info: 'Oseledets.tendsto_log_singularValue_inv_cocycle' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.tendsto_log_singularValue_inv_cocycle
+
+/-- info: 'Oseledets.topExponent_inv_eq_neg_bot' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.topExponent_inv_eq_neg_bot
+
+-- Restriction to an invariant subbundle (item 5).
+
+/-- info: 'Oseledets.restrictedSpectrum_subset_ae' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.restrictedSpectrum_subset_ae
+
+/-- info: 'Oseledets.restricted_multiplicity_le' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.restricted_multiplicity_le
+
+/-- info: 'Oseledets.restricted_finrank_invariant_ae' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.restricted_finrank_invariant_ae
+
+-- Non-ergodic version (item 9A).
+
+/-- info: 'Oseledets.tendsto_GammaK_nonergodic' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.tendsto_GammaK_nonergodic
+
+/-- info: 'Oseledets.exists_exponents_nonergodic' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.exists_exponents_nonergodic
+
+-- Regularity in the generator: Fekete inf + USC/LSC (item 4).
+
+/-- info: 'Oseledets.gammaK_eq_GammaKInf' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.gammaK_eq_GammaKInf
+
+/-- info: 'Oseledets.GammaK_eq_iInf' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.GammaK_eq_iInf
+
+/-- info: 'Oseledets.GammaK_upperSemicontinuous' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.GammaK_upperSemicontinuous
+
+/-- info: 'Oseledets.topExponent_upperSemicontinuous' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.topExponent_upperSemicontinuous
+
+/-- info: 'Oseledets.botExp_lowerSemicontinuous' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.botExp_lowerSemicontinuous
+
+-- Singular / one-sided upper bounds without invertibility (item 9B).
+
+/-- info: 'Oseledets.limsup_logNorm_le_top' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.limsup_logNorm_le_top
+
+/-- info: 'Oseledets.limsup_logSprod_le_top' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.limsup_logSprod_le_top
