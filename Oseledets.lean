@@ -43,6 +43,7 @@ import Oseledets.Lyapunov.AssemblyTopGap
 import Oseledets.Lyapunov.TopGapEnvelope
 import Oseledets.Lyapunov.Corollaries
 import Oseledets.Lyapunov.Spectrum
+import Oseledets.Lyapunov.ExponentSums
 import Oseledets.AxiomAudit
 
 /-!

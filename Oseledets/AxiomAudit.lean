@@ -6,6 +6,7 @@ Authors: Marcel Morgenstern
 import Oseledets.MultiplicativeErgodic
 import Oseledets.Lyapunov.Corollaries
 import Oseledets.Lyapunov.Spectrum
+import Oseledets.Lyapunov.ExponentSums
 
 /-!
 # Axiom audit
@@ -69,3 +70,21 @@ informational dump (it produces no output on success).
 /-- info: 'Oseledets.exp_exponents_eq_eigenvalues₀_oseledetsLimit' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms Oseledets.exp_exponents_eq_eigenvalues₀_oseledetsLimit
+
+-- Exponent sums, sign/vanishing, and the top-k telescoping (items 1, 3).
+
+/-- info: 'Oseledets.sumPosExp_nonneg' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.sumPosExp_nonneg
+
+/-- info: 'Oseledets.sumPosExp_eq_zero_iff' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.sumPosExp_eq_zero_iff
+
+/-- info: 'Oseledets.sumPosExp_pos_iff' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.sumPosExp_pos_iff
+
+/-- info: 'Oseledets.gammaK_eq_sum_top_exponents' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.gammaK_eq_sum_top_exponents
