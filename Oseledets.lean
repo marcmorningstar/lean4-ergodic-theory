@@ -54,6 +54,7 @@ import Oseledets.Lyapunov.Singular
 import Oseledets.TwoSided.Invertible
 import Oseledets.TwoSided.SpectralRank
 import Oseledets.TwoSided.MeasurableInf
+import Oseledets.TwoSided.StrongExport
 import Oseledets.AxiomAudit
 
 /-!

@@ -17,6 +17,7 @@ import Oseledets.Lyapunov.Singular
 import Oseledets.TwoSided.Invertible
 import Oseledets.TwoSided.SpectralRank
 import Oseledets.TwoSided.MeasurableInf
+import Oseledets.TwoSided.StrongExport
 
 /-!
 # Axiom audit
@@ -214,3 +215,9 @@ informational dump (it produces no output on success).
 /-- info: 'Oseledets.tendsto_pow_orthProj_inf' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms Oseledets.tendsto_pow_orthProj_inf
+
+-- Two-sided splitting, P2 (strong one-sided export with the dimension formula).
+
+/-- info: 'Oseledets.oseledets_filtration_dims' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.oseledets_filtration_dims
