@@ -3451,3 +3451,5 @@ theorem tendsto_kingman_ergodic
   rwa [hcx'] at hx
 
 end Oseledets
+
+set_option linter.style.longFile 3600
