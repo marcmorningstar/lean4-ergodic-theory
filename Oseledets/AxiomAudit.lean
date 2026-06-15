@@ -14,6 +14,7 @@ import Oseledets.Lyapunov.Restriction
 import Oseledets.Lyapunov.NonErgodic
 import Oseledets.Lyapunov.Regularity
 import Oseledets.Lyapunov.Singular
+import Oseledets.TwoSided.Invertible
 
 /-!
 # Axiom audit
@@ -187,3 +188,13 @@ informational dump (it produces no output on success).
 /-- info: 'Oseledets.limsup_logSprod_le_top' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms Oseledets.limsup_logSprod_le_top
+
+-- Two-sided splitting, Phase 0 (backward generator / cocycle infrastructure).
+
+/-- info: 'Oseledets.cocycle_backwardGen' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.cocycle_backwardGen
+
+/-- info: 'Oseledets.exists_conull_biinvariant' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.exists_conull_biinvariant

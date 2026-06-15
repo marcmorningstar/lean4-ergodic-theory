@@ -51,6 +51,7 @@ import Oseledets.Lyapunov.Restriction
 import Oseledets.Lyapunov.NonErgodic
 import Oseledets.Lyapunov.Regularity
 import Oseledets.Lyapunov.Singular
+import Oseledets.TwoSided.Invertible
 import Oseledets.AxiomAudit
 
 /-!
