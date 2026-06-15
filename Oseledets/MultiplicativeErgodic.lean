@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 Marcel Morgenstern. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Marcel Morgenstern
+-/
 import Oseledets.Cocycle.Basic
 import Oseledets.Lyapunov.MeasurableSubspace
 import Oseledets.Lyapunov.AssemblyTopGap
@@ -7,10 +12,8 @@ import Oseledets.Lyapunov.TopGapEnvelope
 /-!
 # The Oseledets multiplicative ergodic theorem (one-sided, filtration form)
 
-This is the **target theorem** of the development (milestone `M10` / layer `L6.1`;
-see `docs/research/target-and-milestones.md`). It is **fully proved** here, assembled
-from the milestone lemmas in `Oseledets/Ergodic/`, `Oseledets/Cocycle/`, and
-`Oseledets/Lyapunov/` (final composition recorded in `docs/progress/STATE.md`).
+This is the main theorem of the development, assembled from the lemmas in
+`Oseledets/Ergodic/`, `Oseledets/Cocycle/`, and `Oseledets/Lyapunov/`.
 
 ## Statement
 
@@ -73,9 +76,5 @@ theorem oseledets_filtration
     haveI : NeZero d := ⟨hd.ne'⟩
     exact oseledets_filtration_of_topgap hT A hA hAmeas hint hint'
       (fun lam0 hlam0 => topGapMassEnvelope_ae hT hA hAmeas hint hint' lam0 hlam0)
-
-/-! ## Axiom audit -/
-
-#print axioms oseledets_filtration
 
 end Oseledets

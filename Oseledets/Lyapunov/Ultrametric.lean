@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 Marcel Morgenstern. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Marcel Morgenstern
+-/
 import Mathlib.LinearAlgebra.Dimension.Finrank
 import Mathlib.LinearAlgebra.LinearIndependent.Lemmas
 import Mathlib.LinearAlgebra.Dimension.Finite
@@ -28,7 +33,7 @@ The main results:
 * `IsUltrametricGrowth.sublevel` — each sublevel set `{v | v = 0 ∨ g v ≤ t}` is a submodule;
 * `IsUltrametricGrowth.sublevel_mono` — these sublevel submodules are monotone in `t`.
 
-Reference: Oseledets MET, ultrametric growth function, blueprint `lyapunov-to-target.md` §1.
+Reference: Oseledets multiplicative ergodic theorem, ultrametric growth function.
 -/
 
 namespace Oseledets

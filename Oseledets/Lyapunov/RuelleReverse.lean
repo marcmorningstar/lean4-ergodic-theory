@@ -1,10 +1,15 @@
+/-
+Copyright (c) 2026 Marcel Morgenstern. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Marcel Morgenstern
+-/
 import Mathlib.LinearAlgebra.Matrix.Adjugate
 import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
 import Mathlib.Analysis.SpecialFunctions.Exp
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
 
 /-!
-# M5 (reverse side of Ruelle's Lemma 1.4) — deterministic entry bound
+# Reverse-side entry bound for Ruelle's Lemma 1.4
 
 `entry_reverse_bound_of_orthogonal`: for an orthogonal matrix `S` (here `S * Sᵀ = 1`)
 whose entries obey the *graded forward* bound `|S a b| ≤ c · exp(-(max (g b - g a) 0))`,
@@ -235,7 +240,5 @@ theorem entry_reverse_bound_of_orthogonal {d : ℕ} (S : Matrix (Fin d) (Fin d) 
         apply mul_le_mul_of_nonneg_right _ hB0
         exact_mod_cast hcardle
     _ = (d - 1).factorial * c ^ (d - 1) * Real.exp (-(g i - g j)) := by rw [hBdef]; ring
-
-#print axioms entry_reverse_bound_of_orthogonal
 
 end Ruelle13

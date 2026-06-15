@@ -1,11 +1,26 @@
+/-
+Copyright (c) 2026 Marcel Morgenstern. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Marcel Morgenstern
+-/
 import Oseledets.Lyapunov.ForwardV
+
+/-!
+# Measurability of spectral sublevel projectors
+
+For a measurable family of self-adjoint real matrices, the orthogonal projection onto the
+eigenspace for eigenvalues `≤ t` is measurable in the parameter. Since this projector is the
+continuous functional calculus of the *discontinuous* indicator `Set.indicator (Set.Iic t) 1`,
+measurability is obtained by approximating the indicator from above by continuous downward ramps
+`gApprox t m`, whose CFCs are measurable, and passing to the entrywise pointwise limit. The main
+results are `measurable_spectralProjector` and its specialization `measurable_slowProjector` to
+the sanitized Oseledets limit `lambdaHat`.
+-/
 
 open MeasureTheory Filter Topology Matrix
 open scoped Matrix
 
 namespace Oseledets
-
-set_option linter.unusedSectionVars false
 
 variable {X : Type*} [MeasurableSpace X] {d : ℕ} [NeZero d]
 
@@ -29,7 +44,8 @@ theorem gApprox_of_le (t : ℝ) (m : ℕ) {s : ℝ} (hs : s ≤ t) : gApprox t m
           apply mul_le_mul_of_nonneg_right this hm.le
   rw [min_eq_left h1, max_eq_right (by norm_num)]
 
-/-- For `s > t`, eventually (once `1/(m+1) < s - t`) the ramp is `0`, agreeing with the indicator. -/
+/-- For `s > t`, eventually (once `1/(m+1) < s - t`) the ramp is `0`, agreeing with the
+indicator. -/
 theorem gApprox_eventually_zero (t : ℝ) {s : ℝ} (hs : t < s) :
     ∀ᶠ m in atTop, gApprox t m s = 0 := by
   -- need 1/(m+1) ≤ s - t, i.e. m+1 ≥ 1/(s-t)
@@ -59,8 +75,8 @@ theorem gApprox_eventually_eq_indicator (t : ℝ) (s : ℝ) :
     filter_upwards [gApprox_eventually_zero t hs] with m hm
     rw [hm, Set.indicator_of_notMem (by simp; linarith)]
 
-/-- **Uniform convergence on the finite spectrum.** On a finite set, the eventual-pointwise
-equality of `gApprox t m` with the indicator upgrades to uniform convergence. -/
+/-- Uniform convergence on the finite spectrum: on a finite set, the eventual pointwise equality of
+`gApprox t m` with the indicator upgrades to uniform convergence. -/
 theorem tendstoUniformlyOn_gApprox (t : ℝ) {S : Set ℝ} (hS : S.Finite) :
     TendstoUniformlyOn (gApprox t) (Set.indicator (Set.Iic t) (1 : ℝ → ℝ)) atTop S := by
   rw [Metric.tendstoUniformlyOn_iff]
@@ -73,6 +89,7 @@ theorem tendstoUniformlyOn_gApprox (t : ℝ) {S : Set ℝ} (hS : S.Finite) :
     rw [hm, dist_self]; exact hε
   exact (hS.eventually_all.2 hev).mono fun m hm s hs => hm s hs
 
+omit [NeZero d] in
 /-- **Spectral CFC convergence.** For a self-adjoint matrix `M`, the continuous CFCs of the
 ramp `gApprox t m` converge (in the matrix topology) to the CFC of the discontinuous indicator. -/
 theorem tendsto_cfc_gApprox (t : ℝ) (M : Matrix (Fin d) (Fin d) ℝ) :
@@ -83,9 +100,9 @@ theorem tendsto_cfc_gApprox (t : ℝ) (M : Matrix (Fin d) (Fin d) ℝ) :
   · filter_upwards with m
     exact (continuous_gApprox t m).continuousOn
 
-/-- **The genuine, upstreamable content.** For a measurable family `M : X → matrix` of self-adjoint
-real matrices, the spectral sublevel projector
-`x ↦ cfc (Set.indicator (Set.Iic t) 1) (M x)` — the orthogonal projection onto the `≤ t`
+omit [NeZero d] in
+/-- For a measurable family `M : X → matrix` of self-adjoint real matrices, the spectral sublevel
+projector `x ↦ cfc (Set.indicator (Set.Iic t) 1) (M x)` — the orthogonal projection onto the `≤ t`
 eigenspace — is measurable. The indicator is *discontinuous*, so this is obtained as the entrywise
 pointwise limit of the measurable continuous-CFC ramps `cfc (gApprox t m) (M x)`. -/
 theorem measurable_spectralProjector
@@ -105,10 +122,10 @@ theorem measurable_spectralProjector
   rw [tendsto_pi_nhds]; intro x
   exact ((continuous_matrix_entry i j).tendsto _).comp (tendsto_cfc_gApprox t (M x))
 
-/-- **L10 deliverable.** Measurability of the slow (sublevel) spectral projector family
+/-- Measurability of the slow (sublevel) spectral projector family
 `x ↦ slowProjector A T t x = cfc (indicator (Iic t) 1) (lambdaHat A T x)`, obtained by composing
-the spectral-projector measurability with the (already proved) measurability and everywhere
-self-adjointness of the sanitized Oseledets limit `lambdaHat`. -/
+the spectral-projector measurability with the measurability and everywhere self-adjointness of the
+sanitized Oseledets limit `lambdaHat`. -/
 theorem measurable_slowProjector
     (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (t : ℝ)
     (hAmeas : Measurable A) (hTmeas : Measurable T) :

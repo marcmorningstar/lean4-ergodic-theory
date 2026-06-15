@@ -1,17 +1,21 @@
+/-
+Copyright (c) 2026 Marcel Morgenstern. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Marcel Morgenstern
+-/
 import Oseledets.Lyapunov.FiltrationAssemblyBridge
 import Oseledets.Lyapunov.SpectralMeasurable
 
 /-!
-# L11 — the everywhere-measurable slow filtration `V'` and the identification `hae`
+# The everywhere-measurable slow filtration `V'` and the identification `hae`
 
-This module discharges the `V'`/`hmeas'`/`hae` inputs of the committed
-`Oseledets.oseledets_filtration_of_interfaces'`
-(`Oseledets/Lyapunov/FiltrationAssemblyBridge.lean`).
+This module discharges the `V'`/`hmeas'`/`hae` inputs of
+`Oseledets.oseledets_filtration_of_interfaces'`.
 
 ## The construction
 
-`V'` is the deterministic-index reindexing of the **slow spectral filtration** `Vslow`
-(`Oseledets/Lyapunov/ForwardV.lean`): for an index `i : Fin (numExp lam0 d + 1)`,
+`V'` is the deterministic-index reindexing of the **slow spectral filtration** `Vslow`:
+for an index `i : Fin (numExp lam0 d + 1)`,
 
 * on the interior `(i : ℕ) < numExp lam0 d` we take `Vslow` at the deterministic cutoff
   `slowCutoff lam0 d i := expEnum lam0 d ⟨i, _⟩` (the `i`-th descending exponent), the natural
@@ -21,9 +25,9 @@ This module discharges the `V'`/`hmeas'`/`hae` inputs of the committed
 
 Crucially `V'` is built **only** from `Vslow`, which is everywhere-defined and
 everywhere-measurable, so `hmeas' : ∀ i, MeasurableSubspace (V' i)` is **unconditional** (it uses
-only the committed `measurableSubspace_Vslow` fed `measurable_slowProjector`).
+only `measurableSubspace_Vslow` fed `measurable_slowProjector`).
 
-## The identification `hae` (= L11, `Vslow = Vflag` a.e. levelwise)
+## The identification `hae` (`Vslow = Vflag` a.e. levelwise)
 
 The mathematical content `V' i x = Vassembled A T (numExp lam0 d) i x` a.e. is the levelwise
 identification of the slow spectral filtration with the limsup flag.  It factors through the single
@@ -37,16 +41,16 @@ exponential change of scale**: `Vslow`'s threshold cuts the spectrum of the limi
 threshold cuts the growth function `lambdaBar` whose values are the exponents `λᵢ` themselves
 (log scale).  This `hslowflag` packages the two genuine inclusions:
 
-* `lambdaSublevel ⊆ Vslow` — the committed *growth-slowness ⟹ membership in the Λ-slow space*
-  direction (wired from `overlap_limsup_le_of_lambdaBar` / `limsup_log_norm_cocycle_eq_lambdaBar`);
+* `lambdaSublevel ⊆ Vslow` — the *growth-slowness ⟹ membership in the Λ-slow space*
+  direction (via `overlap_limsup_le_of_lambdaBar` / `limsup_log_norm_cocycle_eq_lambdaBar`);
 * `Vslow ⊆ lambdaSublevel` — the per-vector **spectral upper bound** (`v` in the Λ-slow space at
-  level `e^t` ⟹ `lambdaBar v ≤ t`), the Ruelle Prop 1.3 route being proved by the parallel worker.
+  level `e^t` ⟹ `lambdaBar v ≤ t`), following Ruelle's Prop. 1.3.
 
-So `hslowflag` is the *minimal* cleanly-typed datum: once a committed
-`Vslow (exp t) = lambdaSublevel t` lemma exists it discharges `hslowflag` verbatim, and `hae`
+So `hslowflag` is the *minimal* cleanly-typed datum: a
+`Vslow (exp t) = lambdaSublevel t` lemma discharges `hslowflag` verbatim, and `hae`
 follows from it together with the deterministic `Vassembled` cast
-bookkeeping and the ergodic `hspec` alignment (taken as the same `hspec` interface consumed by the
-committed assembly).
+bookkeeping and the ergodic `hspec` alignment (the same `hspec` interface consumed by the
+assembly).
 
 ## Deliverables
 
@@ -59,8 +63,6 @@ open MeasureTheory Filter Topology Matrix
 open scoped Matrix
 
 namespace Oseledets
-
-set_option linter.unusedSectionVars false
 
 variable {X : Type*} [MeasurableSpace X] {d : ℕ} [NeZero d]
 
@@ -82,8 +84,8 @@ noncomputable def V' (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (lam0 
 /-! ## `hmeas'` — unconditional measurability of every level -/
 
 /-- **`hmeas'` (unconditional).**  Every level of `V'` is a `MeasurableSubspace`.  Interior levels
-are `Vslow` at a fixed cutoff (measurable via the committed `measurableSubspace_Vslow` fed
-`measurable_slowProjector`); the last level is the constant `⊥` (trivially a `MeasurableSubspace`).
+are `Vslow` at a fixed cutoff (measurable via `measurableSubspace_Vslow` fed
+`measurable_slowProjector`); the last level is the constant `⊥`, trivially a `MeasurableSubspace`.
 
 This is the headline deliverable: it carries **no** mathematical (a.e.) hypothesis — only the
 measurability of `A` and `T`, exactly as the slow-projector measurability bridge requires. -/
@@ -102,18 +104,20 @@ theorem hmeas'_V' (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X)
 
 /-! ## `hae` — the levelwise identification `V' = Vassembled` a.e.
 
-The only non-committed input is `hslowflag`: the per-point identification of the slow band range
+The only non-spectral input is `hslowflag`: the per-point identification of the slow band range
 with the `lambdaBar`-sublevel at the same real threshold.  Given it, `hae` is pure `Vassembled`/cast
 bookkeeping against the ergodic `hspec` interface. -/
 
+omit [NeZero d] in
 /-- **`hae` from the slow-flag identification.**  Under
 
-* `hspec` — the same ergodic spectrum-constancy interface consumed by the committed assembly
+* `hspec` — the ergodic spectrum-constancy interface consumed by the assembly
   (`specCard = numExp` and `specList = expEnum` along the cast, a.e.); and
-* `hslowflag` — the L11 per-point identification `Vslow A T (Real.exp t) x = lambdaSublevel A T x t` for all
+* `hslowflag` — the per-point identification
+  `Vslow A T (Real.exp t) x = lambdaSublevel A T x t` for all
   thresholds `t`, a.e. `x`,
 
-the deterministic-cutoff slow family `V'` agrees, a.e. and levelwise, with the committed assembled
+the deterministic-cutoff slow family `V'` agrees, a.e. and levelwise, with the assembled
 family `Vassembled A T (numExp lam0 d)`.  This is exactly the `hae` input of
 `oseledets_filtration_of_interfaces'`. -/
 theorem hae_of_slowflag
@@ -158,13 +162,12 @@ theorem hae_of_slowflag
 /-! ## Assembling `hae`'s sibling: the final-site application
 
 For completeness we also record the *end-to-end* application: feeding `V'`, `hmeas'_V'`, and
-`hae_of_slowflag` into the committed `oseledets_filtration_of_interfaces'` discharges its
-`V'`/`hmeas'`/`hae` arguments.  This is the precise drop-in shape the orchestrator consumes. -/
+`hae_of_slowflag` into `oseledets_filtration_of_interfaces'` discharges its
+`V'`/`hmeas'`/`hae` arguments. -/
 
-/-- **End-to-end drop-in.**  The committed `oseledets_filtration_of_interfaces'` with its
+/-- **End-to-end application.**  The theorem `oseledets_filtration_of_interfaces'` with its
 `V'`/`hmeas'`/`hae` arguments supplied by `V'`, `hmeas'_V'`, and `hae_of_slowflag`.  The remaining
-hypotheses are exactly those the committed assembly already needs, plus the single L11 datum
-`hslowflag`. -/
+hypotheses are exactly those the assembly already needs, plus the single datum `hslowflag`. -/
 theorem oseledets_filtration_of_slowflag
     {μ : Measure X} [IsProbabilityMeasure μ] {T : X → X}
     (hT : Ergodic T μ)
@@ -203,11 +206,5 @@ theorem oseledets_filtration_of_slowflag
   oseledets_filtration_of_interfaces' hT A hA hAmeas hint hint' lam0 hspec
     (V' A T lam0) (hmeas'_V' A T hAmeas hTmeas lam0)
     (hae_of_slowflag A lam0 hspec hslowflag) hgrowth
-
-/-! ## Axiom audit -/
-
-#print axioms hmeas'_V'
-#print axioms hae_of_slowflag
-#print axioms oseledets_filtration_of_slowflag
 
 end Oseledets

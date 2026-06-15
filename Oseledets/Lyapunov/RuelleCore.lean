@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 Marcel Morgenstern. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Marcel Morgenstern
+-/
 import Mathlib.Analysis.InnerProductSpace.PiL2
 import Mathlib.Analysis.InnerProductSpace.Adjoint
 import Mathlib.Analysis.SpecialFunctions.Log.Basic
@@ -5,9 +10,9 @@ import Mathlib.Topology.Algebra.Order.LiminfLimsup
 import Mathlib.Order.Filter.AtTopBot.Basic
 
 /-!
-# RuelleCore — deterministic core of Ruelle's Prop 1.3 / Lemma 1.4
+# Deterministic core of Ruelle's spectral upper bound
 
-This file formalises, **deterministically**, the analytic heart of Ruelle's argument
+This file formalises, deterministically, the analytic heart of Ruelle's argument
 (Publ. IHES 50, 1979, Lemma 1.4 / Prop 1.3) for the per-vector spectral upper bound
 
   `limsup (1/n) log ‖Mⁿ v‖ ≤ λ⁽ʳ⁾`   for `v` in the limit slow space.
@@ -15,47 +20,41 @@ This file formalises, **deterministically**, the analytic heart of Ruelle's argu
 We abstract the SVD data of a sequence of operators `f n : E →ₗ E` on a finite-dimensional
 real inner product space `E` by:
 
-* a per-time orthonormal **right-singular** basis `e n : OrthonormalBasis (Fin d) ℝ E`;
-* per-time **singular values** `σ n : Fin d → ℝ` (`≥ 0`);
-* the defining **Parseval identity**
+* a per-time orthonormal right-singular basis `e n : OrthonormalBasis (Fin d) ℝ E`;
+* per-time singular values `σ n : Fin d → ℝ` (`≥ 0`);
+* the defining Parseval identity
     `‖f n u‖² = Σ_j (σ n j)² · ⟪e n j, u⟫²`.
 
-From this single identity we derive *both* halves of Ruelle's one-step sandwich (Step 1):
+From this single identity we derive both halves of Ruelle's one-step sandwich:
 
 * `normSq_apply_le_of_mem_span` — restricted SVD upper bound on a "slow" right-singular span;
 * `singularValue_norm_proj_le_norm_apply` — SVD lower bound via a "fast" right-singular projection.
 
-The convention here matches **Ruelle's** (increasing): the index set is split by a *cut* into a
+The convention here matches Ruelle's (increasing): the index set is split by a *cut* into a
 "slow / low" part (small indices, small singular values) and a "fast / high" part (large indices,
-large singular values).  [The repo sorts singular values *decreasing*; that is a relabelling
-`j ↦ d-1-j` applied at the a.e.-wiring layer, which is deliberately out of scope here.]
+large singular values).
 
-## Milestones delivered
+## Main results
 
-* **M1** — `oneStep_sandwich`: the one-step two-sided estimate.  For `u` in the slow span at time `n`,
-  the fast projection of `f (n+1) u` decays at the *full* pairwise band gap (`t·‖fastProj‖ ≤ b·s·‖u‖`),
-  combining the slow SVD upper bound at time `n` with the fast SVD lower bound at time `n+1` through the
-  one-step operator bound `b`.
-* **M2** — the `k`-uniform forward leakage chain.  `geometric_recursion` solves the discrete linear
+* `oneStep_sandwich`: the one-step two-sided estimate.  For `u` in the slow span at time `n`,
+  the fast projection of `f (n+1) u` decays at the full pairwise band gap
+  (`t·‖fastProj‖ ≤ b·s·‖u‖`),
+  combining the slow SVD upper bound at time `n` with the fast SVD lower bound at time `n+1` through
+  the one-step operator bound `b`.
+* The `k`-uniform forward leakage chain.  `geometric_recursion` solves the discrete linear
   recursion `a(i+1) ≤ q·a i + c i` exactly; `geometric_recursion_uniform` and `chain_leakage_exp`
   package it with a uniform source rate / explicit `exp` rates, giving the sub-exponential envelope
-  `a k ≤ exp(-kγ)·a 0 + R·k·exp(-(k-1)·min γ γ')` at the *full pairwise gap*.  This is the analytic
+  `a k ≤ exp(-kγ)·a 0 + R·k·exp(-(k-1)·min γ γ')` at the full pairwise gap.  This is the analytic
   engine of Ruelle's Lemma 1.4 band-distance induction (his displayed geometric-series computation).
-* **M3** — `orthogonal_block_mass_symm`: the reverse-side block-norm symmetry.  For any orthonormal
-  change of basis the off-diagonal block over `(A,Aᶜ)` carries the same squared (Frobenius) mass as the
-  transposed block over `(Aᶜ,A)`, so the slow→fast and fast→slow leakages coincide.  Pure orthogonality
-  (Parseval in each basis); pins the reverse side to the forward rate for the dominant gap.
-* **M4** — `normSq_apply_le_band_sum`: the band-grouped Parseval envelope (Ruelle's part b)).  For a
+* `orthogonal_block_mass_symm`: the reverse-side block-norm symmetry.  For any orthonormal
+  change of basis the off-diagonal block over `(A,Aᶜ)` carries the same squared (Frobenius) mass as
+  the transposed block over `(Aᶜ,A)`, so the slow→fast and fast→slow leakages coincide.  This is
+  pure orthogonality (Parseval in each basis), pinning the reverse side to the forward rate for the
+  dominant gap.
+* `normSq_apply_le_band_sum`: the band-grouped Parseval envelope (Ruelle's part b).  For a
   partition of the right-singular indices into bands with per-band singular-value caps,
-  `‖f n v‖² ≤ Σ_r (cap r)²·‖fastProj n (band r) v‖²`; fed the M2 leakage envelopes this yields the
+  `‖f n v‖² ≤ Σ_r (cap r)²·‖fastProj n (band r) v‖²`; fed the leakage envelopes this yields the
   `λ⁽ᵖ⁾` growth.
-
-What is *not* in this deterministic core: the a.e. wiring (M5) to the cocycle (uses the committed
-`Oseledets.tendsto_log_singularValue`, the L7c.2 tempered steps, and `tendsto_bandProjector_of_gap`),
-and the deep permutation/cofactor route to the reverse side (M3 supplies the elementary
-same-rate fact instead).
-
-Everything below is `sorry`-free with axioms `[propext, Classical.choice, Quot.sound]`.
 -/
 
 open Filter Topology
@@ -152,9 +151,9 @@ lemma normSq_apply_le_of_mem_span (n : ℕ) (lo : Finset (Fin d)) (s : ℝ) (hs 
   intro j _ _
   positivity
 
-/-- **SVD lower bound via a fast projection.**  Fix a "fast / high" index set `hi` with every singular
-value there `≥ t ≥ 0`.  Let `w = Σ_{j ∈ hi} ⟪e n j, u⟫ • e n j` be the orthogonal projection of `u`
-onto the fast span.  Then `t · ‖w‖ ≤ ‖f n u‖`. -/
+/-- **SVD lower bound via a fast projection.**  Fix a "fast / high" index set `hi` with every
+singular value there `≥ t ≥ 0`.  Let `w = Σ_{j ∈ hi} ⟪e n j, u⟫ • e n j` be the orthogonal
+projection of `u` onto the fast span.  Then `t · ‖w‖ ≤ ‖f n u‖`. -/
 lemma singularValue_norm_proj_le_norm_apply (n : ℕ) (hi : Finset (Fin d)) (t : ℝ) (ht : 0 ≤ t)
     (hσ : ∀ j ∈ hi, t ≤ S.σ n j) (u : E) :
     (t * ‖∑ j ∈ hi, ⟪S.e n j, u⟫ • S.e n j‖) ^ 2 ≤ ‖S.apply n u‖ ^ 2 := by
@@ -189,7 +188,7 @@ lemma singularValue_norm_proj_le_norm_apply (n : ℕ) (hi : Finset (Fin d)) (t :
         apply Finset.sum_le_sum_of_subset_of_nonneg (Finset.subset_univ hi)
         intro j _ _; positivity
 
-/-! ## M1 — the one-step two-sided sandwich -/
+/-! ## The one-step two-sided sandwich -/
 
 /-- The orthogonal projection of `u` onto the span of the time-`n` right-singular vectors with
 index in `hi` (the "fast" band at time `n`):  `Σ_{j ∈ hi} ⟪e n j, u⟫ • e n j`. -/
@@ -218,18 +217,18 @@ lemma singularValue_norm_fastProj_le_norm_apply (n : ℕ) (hi : Finset (Fin d)) 
     (t * ‖S.fastProj n hi u‖) ^ 2 ≤ ‖S.apply n u‖ ^ 2 :=
   S.singularValue_norm_proj_le_norm_apply n hi t ht hσ u
 
-/-- **M1 — Ruelle's one-step two-sided SVD sandwich.**
+/-- **Ruelle's one-step two-sided SVD sandwich.**
 
-Fix consecutive times `n, n+1`.  Let `u` lie in the time-`n` *slow* span (indices `lo`, each singular
-value `≤ s`), and let `hi` be a *fast* band at time `n+1` (each singular value `≥ t > 0`).  Suppose the
-one-step operator bound `‖f (n+1) u‖ ≤ b · ‖f n u‖` holds with `b ≥ 0`.  Then the time-`(n+1)` fast
-projection of `u` satisfies
+Fix consecutive times `n, n+1`.  Let `u` lie in the time-`n` *slow* span (indices `lo`, each
+singular value `≤ s`), and let `hi` be a *fast* band at time `n+1` (each singular value `≥ t > 0`).
+Suppose the one-step operator bound `‖f (n+1) u‖ ≤ b · ‖f n u‖` holds with `b ≥ 0`.  Then the
+time-`(n+1)` fast projection of `u` satisfies
 
     t · ‖fastProj (n+1) hi u‖  ≤  b · s · ‖u‖ .
 
-This is the leakage at the *full pairwise band gap*: combining the SVD lower bound at time `n+1`
-(`fastProj` term) with the SVD upper bound on the slow span at time `n` (`s‖u‖`) through the one-step
-step bound `b`. -/
+This is the leakage at the full pairwise band gap: combining the SVD lower bound at time `n+1`
+(`fastProj` term) with the SVD upper bound on the slow span at time `n` (`s‖u‖`) through the
+one-step step bound `b`. -/
 theorem oneStep_sandwich (n : ℕ) (lo hi : Finset (Fin d)) (s t b : ℝ)
     (hs : 0 ≤ s) (ht : 0 ≤ t) (hb : 0 ≤ b)
     (hσlo : ∀ j ∈ lo, S.σ n j ≤ s) (hσhi : ∀ j ∈ hi, t ≤ S.σ (n + 1) j)
@@ -259,11 +258,11 @@ theorem oneStep_sandwich (n : ℕ) (lo hi : Finset (Fin d)) (s t b : ℝ)
   have hR : 0 ≤ b * s * ‖u‖ := by positivity
   nlinarith [hchain, hL, hR]
 
-/-! ## M4 — the band-grouped Parseval envelope (Step 4, part b)) -/
+/-! ## The band-grouped Parseval envelope -/
 
 /-- **Band-restricted Parseval mass.**  The partial Parseval sum over a band `B` is exactly
-`Σ_{j ∈ B} (σ n j)² ⟪e n j, v⟫²`, and is bounded by `Sr² · ‖fastProj n B v‖²` whenever every singular
-value in `B` is `≤ Sr`.  (This is the per-band term that, with the leakage envelope on
+`Σ_{j ∈ B} (σ n j)² ⟪e n j, v⟫²`, and is bounded by `Sr² · ‖fastProj n B v‖²` whenever every
+singular value in `B` is `≤ Sr`.  (This is the per-band term that, with the leakage envelope on
 `‖fastProj n B v‖`, yields the `λ⁽ᵖ⁾` growth.) -/
 lemma band_partial_normSq_le (n : ℕ) (B : Finset (Fin d)) (Sr : ℝ) (hSr : 0 ≤ Sr)
     (hσ : ∀ j ∈ B, S.σ n j ≤ Sr) (v : E) :
@@ -276,15 +275,16 @@ lemma band_partial_normSq_le (n : ℕ) (B : Finset (Fin d)) (Sr : ℝ) (hSr : 0 
   · linarith [S.σ_nonneg n j, hσ j hj, hSr]
   · exact hσ j hj
 
-/-- **M4 — band-grouped SVD envelope.**  Let `bands : Finset ι` index a partition of `Fin d` into
+/-- **Band-grouped SVD envelope.**  Let `bands : Finset ι` index a partition of `Fin d` into
 bands via `B : ι → Finset (Fin d)` (covering all indices: `Finset.univ ⊆ ⋃_{r ∈ bands} B r`), with a
 per-band singular-value cap `Sr : ι → ℝ` (`σ n j ≤ Sr r` for `j ∈ B r`, `0 ≤ Sr r`).  Then
 
     ‖f n v‖²  ≤  Σ_{r ∈ bands} (Sr r)² · ‖fastProj n (B r) v‖² .
 
-Summing the band-restricted Parseval masses (`band_partial_normSq_le`).  With the leakage envelopes of
-M2 on each `‖fastProj n (B r) v‖`, the right side is `≤ (#bands)·K²·exp(2n(λ⁽ᵖ⁾+δ))·‖v‖²`, giving
-`limsup (1/n) log‖f n v‖ ≤ λ⁽ᵖ⁾` (Ruelle's part b)). -/
+This sums the band-restricted Parseval masses (`band_partial_normSq_le`).  With the leakage
+envelopes on each `‖fastProj n (B r) v‖`, the right side is `≤ (#bands)·K²·exp(2n(λ⁽ᵖ⁾+δ))·‖v‖²`,
+giving
+`limsup (1/n) log‖f n v‖ ≤ λ⁽ᵖ⁾` (Ruelle's part b). -/
 theorem normSq_apply_le_band_sum {ι : Type*} (n : ℕ) (bands : Finset ι)
     (B : ι → Finset (Fin d)) (Sr : ι → ℝ) (hSr : ∀ r ∈ bands, 0 ≤ Sr r)
     (hσ : ∀ r ∈ bands, ∀ j ∈ B r, S.σ n j ≤ Sr r)
@@ -311,28 +311,29 @@ theorem normSq_apply_le_band_sum {ι : Type*} (n : ℕ) (bands : Finset ι)
   rw [hstep2] at hstep1
   exact hstep1.trans hstep3
 
-/-! ## M2 — the `k`-uniform forward chain (geometric recursion)
+/-! ## The `k`-uniform forward chain (geometric recursion)
 
 Ruelle's Lemma 1.4 controls the leakage of *slow* mass into the *fast* bands accumulated over the
-window `n, n+1, …, n+k`.  Iterating the one-step sandwich (M1) along the window produces, for the
+window `n, n+1, …, n+k`.  Iterating the one-step sandwich along the window produces, for the
 mass arriving in a fixed fast band, a *discrete linear recursion*
 
     a (i+1)  ≤  q · a i  +  R · ρ^i ,
 
-whose solution is the geometric envelope below.  Here `a i` is the band-leakage budget at time `n+i`,
-`q ∈ [0,1)` the one-step survival/decay factor of the gap, `R·ρ^i` the fresh mass injected at step `i`
-(itself decaying at the source rate `ρ`).  The lemma is the *core analytic engine* of Lemma 1.4: the
-band-distance induction reduces to iterating exactly this recursion, and the resulting geometric sum
-is Ruelle's displayed computation.  It is stated and proved abstractly so it can be driven by the M1
-sandwich factors at each step. -/
+whose solution is the geometric envelope below.  Here `a i` is the band-leakage budget at time
+`n+i`, `q ∈ [0,1)` the one-step survival/decay factor of the gap, `R·ρ^i` the fresh mass injected at
+step `i` (itself decaying at the source rate `ρ`).  This is the core analytic engine of Lemma 1.4:
+the band-distance induction reduces to iterating exactly this recursion, and the resulting
+geometric sum is Ruelle's displayed computation.  It is stated and proved abstractly so it can be
+driven by the sandwich factors at each step. -/
 
-/-- **Discrete geometric recursion (Grönwall-type).**  If `a (i+1) ≤ q · a i + c i` for all `i`, with
-`0 ≤ q`, then for every `k`,
+/-- **Discrete geometric recursion (Grönwall-type).**  If `a (i+1) ≤ q · a i + c i` for all `i`,
+with `0 ≤ q`, then for every `k`,
 
     a k  ≤  q^k · a 0  +  Σ_{i<k} q^{k-1-i} · c i .
 
-This is the exact solution of Ruelle's per-step leakage recursion; the second term is the accumulated
-freshly-injected mass, each contribution surviving `k-1-i` further steps at factor `q`. -/
+This is the exact solution of Ruelle's per-step leakage recursion; the second term is the
+accumulated freshly-injected mass, each contribution surviving `k-1-i` further steps at factor
+`q`. -/
 theorem geometric_recursion (a c : ℕ → ℝ) (q : ℝ) (hq : 0 ≤ q)
     (hrec : ∀ i, a (i + 1) ≤ q * a i + c i) (k : ℕ) :
     a k ≤ q ^ k * a 0 + ∑ i ∈ Finset.range k, q ^ (k - 1 - i) * c i := by
@@ -347,7 +348,8 @@ theorem geometric_recursion (a c : ℕ → ℝ) (q : ℝ) (hq : 0 ≤ q)
       linarith
     refine hstep.trans (le_of_eq ?_)
     rw [Finset.sum_range_succ]
-    -- Reindex the surviving terms: each `q^{k-1-i}` gains one factor of `q`, becoming `q^{(k+1)-1-i}`.
+    -- Reindex the surviving terms: each `q^{k-1-i}` gains one factor of `q`, becoming
+    -- `q^{(k+1)-1-i}`.
     have hpow : ∀ i ∈ Finset.range k,
         q * (q ^ (k - 1 - i) * c i) = q ^ (k + 1 - 1 - i) * c i := by
       intro i hi
@@ -402,7 +404,7 @@ theorem geometric_recursion_uniform (a : ℕ → ℝ) (q ρ R : ℝ)
         rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
     _ = R * (k : ℝ) * (max q ρ) ^ (k - 1) := by ring
 
-/-- **M2 — `k`-uniform forward leakage envelope (exponential form).**
+/-- **`k`-uniform forward leakage envelope (exponential form).**
 
 This is Ruelle's Lemma 1.4 leakage bound in its application-facing form.  Model the band-leakage
 budget `a i` over the window `n, n+1, …` by the recursion `a (i+1) ≤ q·a i + R·ρ^i`, where:
@@ -415,9 +417,9 @@ Then, writing `M = max q ρ = exp(-(min γ γ'))`, the time-`(n+k)` leakage obey
 
     a k  ≤  exp(-k·γ)·a 0  +  R·k·exp(-(k-1)·min γ γ') ,
 
-an envelope decaying at the **full pairwise gap** `min γ γ'` (up to the harmless polynomial `k` and
-boundary factor).  This packages `geometric_recursion_uniform` with explicit `exp` rates so it composes
-directly with the SVD sandwich factors of M1. -/
+an envelope decaying at the full pairwise gap `min γ γ'` (up to the harmless polynomial `k` and
+boundary factor).  This packages `geometric_recursion_uniform` with explicit `exp` rates so it
+composes directly with the SVD sandwich factors. -/
 theorem chain_leakage_exp (a : ℕ → ℝ) (γ γ' R : ℝ) (hR : 0 ≤ R)
     (hrec : ∀ i, a (i + 1) ≤ Real.exp (-γ) * a i + R * Real.exp (-γ') ^ i) (k : ℕ) :
     a k ≤ Real.exp (-(k : ℝ) * γ) * a 0
@@ -438,15 +440,16 @@ theorem chain_leakage_exp (a : ℕ → ℝ) (γ γ' R : ℝ) (hR : 0 ≤ R)
     · rw [← Real.exp_nat_mul]; congr 1
       rw [Nat.cast_sub hk]; push_cast; ring
 
-/-! ## M3 — the reverse side (orthogonal block-norm symmetry)
+/-! ## The reverse side (orthogonal block-norm symmetry)
 
-Ruelle's reverse-side estimate (Step 3) bounds the entries of the orthogonal change-of-basis matrix
-`S_{ij} = ⟪e_n j, e_m i⟫` on the *other* side of the band diagonal (slow `i` at time `m`, fast `j` at
-time `n`) at the **full pairwise rate**.  The deep route is the cofactor/permutation expansion.  Here we
-record the elementary structural fact that already pins the reverse-side block to the **same Frobenius
-mass** as the forward-side block, which is the quantitative heart of the rate transfer for the
-dominant gap: for *any* orthonormal change of basis, the off-diagonal block over `(A, Aᶜ)` carries the
-same squared mass as the transposed block over `(Aᶜ, A)`.
+Ruelle's reverse-side estimate bounds the entries of the orthogonal change-of-basis matrix
+`S_{ij} = ⟪e_n j, e_m i⟫` on the *other* side of the band diagonal (slow `i` at time `m`, fast `j`
+at time `n`) at the full pairwise rate.  The deep route is the cofactor/permutation expansion.
+Here we
+record the elementary structural fact that already pins the reverse-side block to the same Frobenius
+mass as the forward-side block, which is the quantitative heart of the rate transfer for the
+dominant gap: for *any* orthonormal change of basis, the off-diagonal block over `(A, Aᶜ)` carries
+the same squared mass as the transposed block over `(Aᶜ, A)`.
 
 This is purely orthogonality (`SᵀS = I = SSᵀ`, realised as Parseval in each basis): no permutation
 combinatorics.  It gives the reverse-side leakage `Σ_{j∈Aᶜ}⟪e_m i, e_n j⟫²` (summed over slow `i∈A`)
@@ -459,15 +462,15 @@ lemma orthonormalBasis_normSq_eq (b : OrthonormalBasis (Fin d) ℝ E) (u : E) :
   apply Finset.sum_congr rfl
   intro j _; rw [real_inner_comm (b j) u]; ring
 
-/-- **M3 — orthogonal off-diagonal block-norm symmetry.**  For two orthonormal bases `b, b'` of a
+/-- **Orthogonal off-diagonal block-norm symmetry.**  For two orthonormal bases `b, b'` of a
 finite-dimensional real inner product space and any index set `A`, the cross-overlap mass of
 "`A`-rows against `Aᶜ`-columns" equals that of "`Aᶜ`-rows against `A`-columns":
 
     Σ_{i∈A} Σ_{j∈Aᶜ} ⟪b' i, b j⟫²  =  Σ_{i∈Aᶜ} Σ_{j∈A} ⟪b' i, b j⟫² .
 
 Equivalently the slow→fast leakage equals the fast→slow leakage.  Proof: each side equals
-`|A| − Σ_{i∈A}Σ_{j∈A} ⟪b' i, b j⟫²`, using that every row sums to `1` (Parseval of `b' i` in basis `b`)
-and every column sums to `1` (Parseval of `b j` in basis `b'`). -/
+`|A| − Σ_{i∈A}Σ_{j∈A} ⟪b' i, b j⟫²`, using that every row sums to `1` (Parseval of `b' i` in basis
+`b`) and every column sums to `1` (Parseval of `b j` in basis `b'`). -/
 theorem orthogonal_block_mass_symm (b b' : OrthonormalBasis (Fin d) ℝ E) (A : Finset (Fin d)) :
     ∑ i ∈ A, ∑ j ∈ Aᶜ, ⟪b' i, b j⟫ ^ 2 = ∑ i ∈ Aᶜ, ∑ j ∈ A, ⟪b' i, b j⟫ ^ 2 := by
   classical
@@ -507,18 +510,6 @@ theorem orthogonal_block_mass_symm (b b' : OrthonormalBasis (Fin d) ℝ E) (A : 
     rw [hcongr, Finset.sum_sub_distrib, Finset.sum_const, nsmul_eq_mul, mul_one,
       Finset.sum_comm]
   rw [hL, hR]
-
-/-! ## Axiom audit -/
-
-#print axioms SVDData.normSq_apply_le_of_mem_span
-#print axioms SVDData.singularValue_norm_proj_le_norm_apply
-#print axioms SVDData.oneStep_sandwich
-#print axioms geometric_recursion
-#print axioms geometric_recursion_uniform
-#print axioms chain_leakage_exp
-#print axioms SVDData.band_partial_normSq_le
-#print axioms SVDData.normSq_apply_le_band_sum
-#print axioms SVDData.orthogonal_block_mass_symm
 
 end SVDData
 
