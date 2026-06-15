@@ -5,6 +5,7 @@ Authors: Marcel Morgenstern
 -/
 import Oseledets.MultiplicativeErgodic
 import Oseledets.Lyapunov.Corollaries
+import Oseledets.Lyapunov.Spectrum
 
 /-!
 # Axiom audit
@@ -54,3 +55,17 @@ informational dump (it produces no output on success).
 /-- info: 'Oseledets.IsOseledetsFiltration.exists_multiplicity' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms Oseledets.IsOseledetsFiltration.exists_multiplicity
+
+-- Additive extensions (request_prompt.md): the full spectrum object (item 6).
+
+/-- info: 'Oseledets.exponents_antitone' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.exponents_antitone
+
+/-- info: 'Oseledets.exponents_tendsto_log_singularValue' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.exponents_tendsto_log_singularValue
+
+/-- info: 'Oseledets.exp_exponents_eq_eigenvalues₀_oseledetsLimit' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.exp_exponents_eq_eigenvalues₀_oseledetsLimit

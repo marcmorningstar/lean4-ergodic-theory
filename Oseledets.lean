@@ -42,6 +42,7 @@ import Oseledets.Lyapunov.ForwardGradedOverlapTopGap
 import Oseledets.Lyapunov.AssemblyTopGap
 import Oseledets.Lyapunov.TopGapEnvelope
 import Oseledets.Lyapunov.Corollaries
+import Oseledets.Lyapunov.Spectrum
 import Oseledets.AxiomAudit
 
 /-!
