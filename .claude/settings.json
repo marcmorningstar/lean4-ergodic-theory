@@ -12,7 +12,6 @@
     ],
     "deny": [
       "Bash(git reset:*)",
-      "Bash(git push:*)",
       "Bash(git clean:*)",
       "Bash(git stash:*)"
     ]
