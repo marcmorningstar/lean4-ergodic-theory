@@ -1,26 +1,28 @@
+/-
+Copyright (c) 2026 Marcel Morgenstern. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Marcel Morgenstern
+-/
 import Oseledets.Lyapunov.AssemblyFromUpper
 
 /-!
-# M5 spectral residuals — `hub_spec`, `hlb_spec`, and the per-stratum lower bound
+# Spectral residuals: `hub_spec`, `hlb_spec`, and the per-stratum lower bound
 
-This scratch module discharges three residuals of the MET final composer
-`Oseledets.oseledets_filtration_of_upper` (in `Oseledets/Lyapunov/AssemblyFromUpper.lean`):
+This module discharges three residuals of the MET final composer
+`Oseledets.oseledets_filtration_of_upper`:
 
 * `hub_spec_of_slowflag` — every realized exponent is one of the deterministic `lam0 i`;
 * `hlb_spec_of_slowflag` — every deterministic exponent is realized;
-* `hlb_of_slowflag_ident` — the per-stratum liminf lower bound (replacing the unsatisfiable
-  `hband` route).
+* `hlb_of_slowflag_ident` — the per-stratum liminf lower bound.
 
-All three are derived from two hypothesis parameters with fixed shapes (the parallel worker's
-outputs): `hident` (band-projector convergence to the indicator CFC of `lambdaHat`) and
-`hslowflag` (`Vslow (exp t) = lambdaSublevel t`).
+All three are derived from two hypotheses with fixed shapes: `hident` (band-projector
+convergence to the indicator CFC of `lambdaHat`) and `hslowflag`
+(`Vslow (exp t) = lambdaSublevel t`).
 -/
 
 open MeasureTheory Filter Topology Matrix
 
 namespace Oseledets
-
-set_option linter.unusedSectionVars false
 
 variable {X : Type*} [MeasurableSpace X] {d : ℕ} [NeZero d]
 
@@ -64,10 +66,11 @@ theorem spectrum_lambdaHat_eq_ae
 
 /-! ## Local constancy of the slow projector across an eigenvalue-free gap -/
 
+omit [MeasurableSpace X] [NeZero d] in
 /-- **`slowProjector` is constant across a gap with no eigenvalue.**  If the spectrum of
 `lambdaHat A T x` is `{exp (lamSing j)}` and no `lamSing j` lies in the half-open interval
-`(t₁, t₂]` (i.e. each is `≤ t₁` or `> t₂`), then the two indicator cutoffs `Iic (exp t₁)` and
-`Iic (exp t₂)` agree on the spectrum, so the corresponding slow projectors coincide. -/
+`(t₁, t₂]` (i.e. each is `≤ t₁` or `> t₂`), then the two indicator cutoffs `Iic (exp t₁)`
+and `Iic (exp t₂)` agree on the spectrum, so the corresponding slow projectors coincide. -/
 theorem slowProjector_eq_of_gap
     {A : X → Matrix (Fin d) (Fin d) ℝ} {T : X → X} {x : X} {t₁ t₂ : ℝ}
     (hspec : _root_.spectrum ℝ (lambdaHat A T x)
@@ -90,6 +93,7 @@ theorem slowProjector_eq_of_gap
     rw [Set.indicator_of_notMem (by simp [Set.mem_Iic]; linarith),
       Set.indicator_of_notMem (by simp [Set.mem_Iic]; linarith)]
 
+omit [MeasurableSpace X] [NeZero d] in
 /-- `Vslow` inherits local constancy from `slowProjector`. -/
 theorem Vslow_eq_of_gap
     {A : X → Matrix (Fin d) (Fin d) ℝ} {T : X → X} {x : X} {t₁ t₂ : ℝ}
@@ -103,11 +107,13 @@ theorem Vslow_eq_of_gap
 
 /-! ## Nested slow projectors and the difference (band) projector -/
 
+omit [MeasurableSpace X] [NeZero d] in
 /-- **Nested slow projectors multiply to the smaller.**  For `t₁ ≤ t₂`,
 `slowProjector (exp t₁) · slowProjector (exp t₂) = slowProjector (exp t₁)`, since the smaller
 sublevel indicator absorbs the larger on the spectrum. -/
 theorem slowProjector_mul_le
-    {A : X → Matrix (Fin d) (Fin d) ℝ} {T : X → X} {x : X} {t₁ t₂ : ℝ} (h : t₁ ≤ t₂) :
+    {A : X → Matrix (Fin d) (Fin d) ℝ} {T : X → X} {x : X} {t₁ t₂ : ℝ}
+    (h : t₁ ≤ t₂) :
     slowProjector A T (Real.exp t₁) x * slowProjector A T (Real.exp t₂) x
       = slowProjector A T (Real.exp t₁) x := by
   have hidem : (_root_.spectrum ℝ (lambdaHat A T x)).EqOn
@@ -129,6 +135,7 @@ theorem slowProjector_mul_le
   simp only [slowProjector]
   rw [← cfc_mul _ _ _ hcont₁ hcont₂, cfc_congr hidem]
 
+omit [MeasurableSpace X] [NeZero d] in
 /-- **The complementary (fast) projector.**  `1 - slowProjector (exp t)` is the CFC of the
 indicator of `(exp t, ∞)`, since `1 - 𝟙_{Iic} = 𝟙_{Ioi}` pointwise. -/
 theorem one_sub_slowProjector
@@ -157,6 +164,7 @@ theorem one_sub_slowProjector
     cfc_sub _ _ (lambdaHat A T x) hcontOne hcontIic
   rw [slowProjector, ← cfc_one (R := ℝ) (a := lambdaHat A T x) hsa, ← hsub, hfun]
 
+omit [MeasurableSpace X] [NeZero d] in
 /-- **A CFC is nonzero if its symbol is nonzero at some eigenvalue.**  If `g` is continuous on the
 spectrum of `lambdaHat A T x` and `g (exp (lamSing j)) ≠ 0`, then `cfc g (lambdaHat A T x) ≠ 0`
 (via `eqOn_of_cfc_eq_cfc` against `cfc 0`). -/
@@ -177,9 +185,10 @@ theorem cfc_ne_zero_of_eigenvalue
     continuousOn_const hsa
   exact hg (heqon hmem)
 
+omit [MeasurableSpace X] [NeZero d] in
 /-- The slow projector at `exp s` is nonzero when `s` is realized by some eigenvalue `lamSing j`:
-`cfc (indicator (Iic (exp s))) lambdaHat` takes value `1` at the eigenvalue `exp (lamSing j) ≤ exp s`,
-so it is not the zero CFC. -/
+`cfc (indicator (Iic (exp s))) lambdaHat` takes value `1` at the eigenvalue
+`exp (lamSing j) ≤ exp s`, so it is not the zero CFC. -/
 theorem slowProjector_ne_zero_of_mem
     {A : X → Matrix (Fin d) (Fin d) ℝ} {T : X → X} {x : X} {s : ℝ} {j : Fin d}
     (hspec : _root_.spectrum ℝ (lambdaHat A T x)
@@ -209,6 +218,7 @@ theorem slowProjector_ne_zero_of_mem
 
 /-! ## Range membership for idempotent matrices -/
 
+omit [NeZero d] in
 /-- `toEuclideanLin` turns matrix multiplication into composition (applied form). -/
 theorem toEuclideanLin_mul_apply
     (M N : Matrix (Fin d) (Fin d) ℝ) (w : EuclideanSpace ℝ (Fin d)) :
@@ -219,11 +229,13 @@ theorem toEuclideanLin_mul_apply
     rw [← Matrix.coe_toEuclideanCLM_eq_toEuclideanLin]; rfl
   rw [hcoe, hcoe, hcoe, map_mul]; rfl
 
+omit [NeZero d] in
 theorem mem_range_toEuclideanCLM_iff
     {Q : Matrix (Fin d) (Fin d) ℝ} (hidem : Q * Q = Q) {v : EuclideanSpace ℝ (Fin d)} :
     v ∈ LinearMap.range (Matrix.toEuclideanCLM (𝕜 := ℝ) Q).toLinearMap
       ↔ Matrix.toEuclideanLin Q v = v := by
-  have hcoe : ∀ w, (Matrix.toEuclideanCLM (𝕜 := ℝ) Q).toLinearMap w = Matrix.toEuclideanLin Q w :=
+  have hcoe : ∀ w, (Matrix.toEuclideanCLM (𝕜 := ℝ) Q).toLinearMap w
+      = Matrix.toEuclideanLin Q w :=
     fun w => rfl
   -- idempotency at the CLM level, via `toEuclideanLin_mul_apply`.
   have hLidem : ∀ w, Matrix.toEuclideanLin Q (Matrix.toEuclideanLin Q w)
@@ -235,12 +247,14 @@ theorem mem_range_toEuclideanCLM_iff
     simp only [hcoe]; exact hLidem u
   · intro hv; exact ⟨v, by simp only [hcoe]; exact hv⟩
 
+omit [MeasurableSpace X] [NeZero d] in
 /-- **Finding a gap strictly below a non-eigenvalue.**  If `s` is not among the `lamSing` values,
 there is `t' < s` with no `lamSing j` in `(t', s]`. -/
 theorem exists_gap_below
     {A : X → Matrix (Fin d) (Fin d) ℝ} {T : X → X} {x : X} {s : ℝ}
     (hnot : ∀ j : Fin d, lamSing A T x (j : ℕ) ≠ s) :
-    ∃ t' : ℝ, t' < s ∧ ∀ j : Fin d, lamSing A T x (j : ℕ) ≤ t' ∨ s < lamSing A T x (j : ℕ) := by
+    ∃ t' : ℝ, t' < s ∧
+      ∀ j : Fin d, lamSing A T x (j : ℕ) ≤ t' ∨ s < lamSing A T x (j : ℕ) := by
   classical
   set L : Finset ℝ :=
     (Finset.univ.image (fun j : Fin d => lamSing A T x (j : ℕ))).filter (· < s) with hL
@@ -248,7 +262,8 @@ theorem exists_gap_below
   · refine ⟨L.max' hne, ?_, ?_⟩
     · -- `max' < s` since every element of `L` is `< s`.
       have hm := L.max'_mem hne
-      have : L.max' hne ∈ (Finset.univ.image (fun j : Fin d => lamSing A T x (j : ℕ))).filter (· < s) := hm
+      have : L.max' hne
+          ∈ (Finset.univ.image (fun j : Fin d => lamSing A T x (j : ℕ))).filter (· < s) := hm
       exact (Finset.mem_filter.mp this).2
     · intro j
       by_cases hlt : lamSing A T x (j : ℕ) < s
@@ -269,18 +284,22 @@ theorem exists_gap_below
       this (Finset.mem_image_of_mem _ (Finset.mem_univ j))
     exact lt_of_le_of_ne (not_lt.mp hge) (Ne.symm (hnot j))
 
+omit [MeasurableSpace X] [NeZero d] in
 /-- **Finding a gap with no eigenvalue in the open interval `(t', s)`.**  For ANY `s` there is
-`t' < s` with no `lamSing j` strictly between `t'` and `s` (each `lamSing j` is `≤ t'` or `≥ s`). -/
+`t' < s` with no `lamSing j` strictly between `t'` and `s` (each `lamSing j` is `≤ t'` or
+`≥ s`). -/
 theorem exists_gap_below_open
     {A : X → Matrix (Fin d) (Fin d) ℝ} {T : X → X} {x : X} (s : ℝ) :
-    ∃ t' : ℝ, t' < s ∧ ∀ j : Fin d, lamSing A T x (j : ℕ) ≤ t' ∨ s ≤ lamSing A T x (j : ℕ) := by
+    ∃ t' : ℝ, t' < s ∧
+      ∀ j : Fin d, lamSing A T x (j : ℕ) ≤ t' ∨ s ≤ lamSing A T x (j : ℕ) := by
   classical
   set L : Finset ℝ :=
     (Finset.univ.image (fun j : Fin d => lamSing A T x (j : ℕ))).filter (· < s) with hL
   by_cases hne : L.Nonempty
   · refine ⟨L.max' hne, ?_, ?_⟩
     · have hm := L.max'_mem hne
-      have : L.max' hne ∈ (Finset.univ.image (fun j : Fin d => lamSing A T x (j : ℕ))).filter (· < s) := hm
+      have : L.max' hne
+          ∈ (Finset.univ.image (fun j : Fin d => lamSing A T x (j : ℕ))).filter (· < s) := hm
       exact (Finset.mem_filter.mp this).2
     · intro j
       by_cases hlt : lamSing A T x (j : ℕ) < s
@@ -315,10 +334,10 @@ theorem ae_lamSing_eq_lam0
   filter_upwards [hlam0 (j : ℕ) j.isLt] with x hx
   exact lamSing_eq_of_tendsto hx
 
-/-! ## Deliverable 1 — `hub_spec` -/
+/-! ## Upper spectral bound: `hub_spec` -/
 
-/-- **`hub_spec`: every realized exponent is deterministic.**  A.e., the limsup spectrum is contained
-in the deterministic distinct-exponent set `distinctExp lam0 d`. -/
+/-- **`hub_spec`: every realized exponent is deterministic.**  A.e., the limsup spectrum is
+contained in the deterministic distinct-exponent set `distinctExp lam0 d`. -/
 theorem hub_spec_of_slowflag
     {μ : Measure X} [IsProbabilityMeasure μ] {T : X → X} (hT : Ergodic T μ)
     {A : X → Matrix (Fin d) (Fin d) ℝ} (hA : ∀ x, (A x).det ≠ 0) (hAmeas : Measurable A)
@@ -355,7 +374,7 @@ theorem hub_spec_of_slowflag
   obtain ⟨j, hj⟩ := hattained
   exact ⟨(j : ℕ), j.isLt, by rw [← hlameq j, hj]⟩
 
-/-! ## Deliverable 2 — `hlb_spec` -/
+/-! ## Lower spectral bound: `hlb_spec` -/
 
 /-- **`hlb_spec`: every deterministic exponent is realized.**  A.e., the deterministic
 distinct-exponent set is contained in the limsup spectrum: each `lam0 j` (`j < d`) is the value
@@ -416,9 +435,9 @@ theorem hlb_spec_of_slowflag
       refine Set.indicator_of_notMem ?_ _
       simp only [Set.mem_Iic, not_le]
       exact Real.exp_lt_exp.mpr ht'lt
-    show g (Real.exp s) ≠ 0
+    change g (Real.exp s) ≠ 0
     rw [hg]
-    show Set.indicator (Set.Iic (Real.exp s)) (1 : ℝ → ℝ) (Real.exp s)
+    change Set.indicator (Set.Iic (Real.exp s)) (1 : ℝ → ℝ) (Real.exp s)
       - Set.indicator (Set.Iic (Real.exp t')) (1 : ℝ → ℝ) (Real.exp s) ≠ 0
     rw [h1, h0]; norm_num
   have hDne : Qs - Qt ≠ 0 := by
@@ -456,13 +475,13 @@ theorem hlb_spec_of_slowflag
     exact hnmem_t.2
   -- `lambdaBar v` is some `lamSing k`, hence (no eigenvalue in `(t', s)`) equals `s`.
   have hbarmem : lambdaBar A T x v ∈ spectrum A T x := lambdaBar_mem_spectrum hx hvne
-  -- Use Deliverable-1-style: `lambdaBar v ∈ {lamSing k}`.  We prove `lambdaBar v = s` directly.
+  -- Using `lambdaBar v ∈ {lamSing k}`, we prove `lambdaBar v = s` directly.
   have hbareq : lambdaBar A T x v = s := by
-    -- Suppose `lambdaBar v ≠ s`.  It lies in `(t', s]`, hence in `(t', s)`, but it is an eigenvalue
-    -- (a `lamSing k`), contradicting the gap.
+    -- Suppose `lambdaBar v ≠ s`.  It lies in `(t', s]`, hence in `(t', s)`, but it is an
+    -- eigenvalue (a `lamSing k`), contradicting the gap.
     by_contra hne
     have hlt : lambdaBar A T x v < s := lt_of_le_of_ne hle hne
-    -- `lambdaBar v` is realized so it is some `lamSing k` (Deliverable-1 attainment argument).
+    -- `lambdaBar v` is realized so it is some `lamSing k` (the attainment argument).
     have hk : ∃ k : Fin d, lamSing A T x (k : ℕ) = lambdaBar A T x v := by
       by_contra hcon
       push Not at hcon
@@ -482,19 +501,20 @@ theorem hlb_spec_of_slowflag
     · rw [hk] at hkge; exact absurd hkge (not_le.mpr hlt)
   exact ⟨v, hvne, by rw [hbareq, hsval]⟩
 
-/-! ## Deliverable 3 — per-stratum liminf lower bound -/
+/-! ## Per-stratum liminf lower bound -/
 
 /-- **Per-stratum liminf lower bound (`hlb`).**  On each stratum `Vflag i.castSucc \ Vflag i.succ`,
-the cocycle grows at least at rate `specList A T x i`.  Replaces the unsatisfiable `hband` route by
-sweeping thresholds `c = exp (specList i − ε')` STRICTLY BELOW the stratum eigenvalue up to it:
-for each such `c` (not an eigenvalue), `1 - slowProjector c = cfc (indicator (Ioi c)) lambdaHat` has
-nonzero action on `v` (else `v ∈ Vslow c`, contradicting `lambdaBar v = specList i > log c`), and
+the cocycle grows at least at rate `specList A T x i`.  The argument sweeps thresholds
+`c = exp (specList i − ε')` strictly below the stratum eigenvalue up to it: for each such `c`
+(not an eigenvalue), `1 - slowProjector c = cfc (indicator (Ioi c)) lambdaHat` has nonzero
+action on `v` (else `v ∈ Vslow c`, contradicting `lambdaBar v = specList i > log c`), and
 `hident` supplies the band-projector convergence feeding `log_le_liminf_log_cocycle_apply`. -/
 theorem hlb_of_slowflag_ident
     {μ : Measure X} [IsProbabilityMeasure μ] {T : X → X} (hT : Ergodic T μ)
     {A : X → Matrix (Fin d) (Fin d) ℝ} (hA : ∀ x, (A x).det ≠ 0) (hAmeas : Measurable A)
     (hint : IntegrableLogNorm A μ) (hint' : IntegrableLogNorm (fun x => (A x)⁻¹) μ)
-    (hident : ∀ᵐ x ∂μ, ∀ c : ℝ, 0 < c → (∀ i : Fin d, Real.exp (lamSing A T x (i : ℕ)) ≠ c) →
+    (hident : ∀ᵐ x ∂μ, ∀ c : ℝ, 0 < c →
+      (∀ i : Fin d, Real.exp (lamSing A T x (i : ℕ)) ≠ c) →
       Filter.Tendsto (fun n => bandProjector A T (Set.indicator (Set.Ioi c) 1) n x)
         Filter.atTop (𝓝 (cfc (Set.indicator (Set.Ioi c) (1 : ℝ → ℝ)) (lambdaHat A T x))))
     (hslowflag : ∀ᵐ x ∂μ, ∀ t : ℝ, Vslow A T (Real.exp t) x = lambdaSublevel A T x t) :
@@ -567,16 +587,10 @@ theorem hlb_of_slowflag_ident
       rw [hPeq, hmapsub, LinearMap.sub_apply, hone]
     rw [hsplit, sub_eq_zero] at h0
     exact h0.symm
-  -- Apply the committed liminf lower bound.
+  -- Apply the liminf lower bound.
   have hkey := log_le_liminf_log_cocycle_apply A T hA hcpos htend hPv hcob
   rw [hc, Real.log_exp] at hkey
   -- `r < r' ≤ L`.
   exact lt_of_lt_of_le hrr' hkey
-
-/-! ## Axiom audit -/
-
-#print axioms hub_spec_of_slowflag
-#print axioms hlb_spec_of_slowflag
-#print axioms hlb_of_slowflag_ident
 
 end Oseledets

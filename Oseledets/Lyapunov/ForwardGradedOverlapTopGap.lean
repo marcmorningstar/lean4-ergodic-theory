@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 Marcel Morgenstern. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Marcel Morgenstern
+-/
 import Oseledets.Lyapunov.RuelleCore
 import Oseledets.Lyapunov.OseledetsLimit
 import Oseledets.Lyapunov.Forward
@@ -8,35 +13,35 @@ import Oseledets.Lyapunov.ChainRecursion
 import Oseledets.Lyapunov.ForwardGradedOverlap
 
 /-!
-# `forward_graded_overlap'` — the hchain-free forward graded overlap (Ruelle Lemma 1.4)
+# `forward_graded_overlap'` — forward graded overlap via the top-gap envelope (Ruelle Lemma 1.4)
 
-This module replaces the refuted arbitrary-cut chain envelope `hchain` (see the obstruction
-note in `Oseledets.Lyapunov.ChainRecursion` and the refutation tool
-`bandProjector_mass_ge_abs_inner_of_fix`) with the **sound corrected envelope**
-`TopGapMassEnvelope`: the cut `c₀` is restricted to the **top gap** below `λ_e` — no stratum
-value of `lam0` lies in `(log c₀, λ_e)` (encoded `∀ i, lam0 i ≤ log c₀ ∨ lam0 e ≤ lam0 i`).
+This module proves the forward graded overlap estimate using the envelope `TopGapMassEnvelope`,
+in which the cut `c₀` is restricted to the **top gap** below `λ_e`: no stratum value of `lam0`
+lies in `(log c₀, λ_e)` (encoded `∀ i, lam0 i ≤ log c₀ ∨ lam0 e ≤ lam0 i`). An
+arbitrary-cut chain envelope is *not* available here: at a cut interior to the spectrum,
+directions belonging to intermediate strata can oscillate in and out of the band under
+singular-value fluctuations, so the band mass need not decay. Restricting the cut to the top
+gap removes that obstruction.
 
-* `forward_graded_overlap'` is the committed `forward_graded_overlap` with `hchain` deleted and
-  the single isolated analytic hypothesis `htopgap : ∀ᵐ x ∂μ, TopGapMassEnvelope A T lam0 x`
-  in its place; the conclusion is byte-for-byte identical.  The gap-pair cut selection goes
-  through the new `exists_topgap_cut` (top-gap, spectrum-avoiding) instead of the committed
-  `exists_spectral_cut` (arbitrary).
-* The remainder of the module is the verified Step-A **engine** for discharging `htopgap` by
-  Ruelle's per-stratum strong induction: qpow↔rpow σ-comparisons, σ-localization at all times,
-  the tempered one-step operator factor, the per-step band-mass recursion
-  (`bandMass_oneStep_recursion`, wired through `Ruelle13.SVDData.oneStep_recursion` and
+* `forward_graded_overlap'` carries the single isolated analytic hypothesis
+  `htopgap : ∀ᵐ x ∂μ, TopGapMassEnvelope A T lam0 x`. The gap-pair cut selection goes through
+  `exists_topgap_cut` (a top-gap, spectrum-avoiding cut).
+* The remainder of the module is the Step-A engine for discharging `htopgap` via Ruelle's
+  per-stratum strong induction: qpow↔rpow singular-value comparisons, σ-localization at all
+  times, the tempered one-step operator factor, the per-step band-mass recursion
+  (`bandMass_oneStep_recursion`, built on `Ruelle13.SVDData.oneStep_recursion` and
   `toEuclideanLin_bandProjector_eq_fastProj`), and the `a₀ = 0` initialization
   (`bandMass_init_zero`).
 
-## Why the induction is unavoidable (adversarial finding)
+## Why the induction is unavoidable
 
 With the top-gap cut `c₀ = exp(λ_e − g/2)` (`g` the top gap), the direct bottom-stratum leakage
-rate is `log c₀ − λ_a = λ_e − g/2 − λ_a`, which MISSES the target rate `λ_e − λ_a − δ` whenever
-`δ < g/2`.  The genuine mechanism: the leakage source is not mass-1 — it is itself the graded
-overlap of `u_a(n)` with the intermediate strata, decaying at rate `λ_r − λ_a`, i.e. the
-recursion is **self-referential** and Ruelle's strong induction over distinct stratum values is
-mathematically required, not a convenient encoding.  Slacks must be quantized against the
-minimum **distinct-stratum** gap (raw index-adjacent gaps can vanish under multiplicity).
+rate is `log c₀ − λ_a = λ_e − g/2 − λ_a`, which misses the target rate `λ_e − λ_a − δ`
+whenever `δ < g/2`. The leakage source is not of mass one: it is itself the graded overlap of
+`u_a(n)` with the intermediate strata, decaying at rate `λ_r − λ_a`, so the recursion is
+self-referential and Ruelle's strong induction over distinct stratum values is mathematically
+required. Slacks must be quantized against the minimum distinct-stratum gap, since raw
+index-adjacent gaps can vanish under multiplicity.
 -/
 
 open MeasureTheory Filter Topology Matrix
@@ -48,8 +53,6 @@ namespace Oseledets
 
 variable {X : Type*} [MeasurableSpace X] {μ : MeasureTheory.Measure X} {d : ℕ} {T : X → X}
 
-set_option linter.unusedSectionVars false
-
 /-! ## σ-cap helpers: converting qpow-eigenvalue (= σ^{1/m}) comparisons to σ comparisons -/
 
 /-- The `j`-th qpow eigenvalue at time `m` equals `σ_j(m)^{1/m}`. -/
@@ -60,7 +63,8 @@ theorem qpow_eigenvalue_eq_rpow [NeZero d] (A : X → Matrix (Fin d) (Fin d) ℝ
   eigenvalues₀_qpow_eq A T m x j
 
 /-- For `m ≥ 1` and `c₀ > 0`: `σ^{1/m} ≤ c₀ ↔ σ ≤ c₀^m`. -/
-theorem rpow_inv_le_iff_le_pow {σ c₀ : ℝ} (hσ : 0 ≤ σ) (hc₀ : 0 < c₀) {m : ℕ} (hm : 1 ≤ m) :
+theorem rpow_inv_le_iff_le_pow {σ c₀ : ℝ} (hσ : 0 ≤ σ) (hc₀ : 0 < c₀) {m : ℕ}
+    (hm : 1 ≤ m) :
     σ ^ ((m : ℝ)⁻¹) ≤ c₀ ↔ σ ≤ c₀ ^ m := by
   have hmpos : (0 : ℝ) < (m : ℝ) := by exact_mod_cast hm
   constructor
@@ -73,19 +77,21 @@ theorem rpow_inv_le_iff_le_pow {σ c₀ : ℝ} (hσ : 0 ≤ σ) (hc₀ : 0 < c�
   · intro h
     have h2 : σ ^ ((m : ℝ)⁻¹) ≤ (c₀ ^ m) ^ ((m : ℝ)⁻¹) :=
       Real.rpow_le_rpow hσ h (by positivity)
-    rwa [← Real.rpow_natCast c₀ m, ← Real.rpow_mul hc₀.le, mul_inv_cancel₀ (ne_of_gt hmpos),
-      Real.rpow_one] at h2
+    rwa [← Real.rpow_natCast c₀ m, ← Real.rpow_mul hc₀.le,
+      mul_inv_cancel₀ (ne_of_gt hmpos), Real.rpow_one] at h2
 
 /-- For `m ≥ 1` and `c₀ > 0`: `c₀ < σ^{1/m} ↔ c₀^m < σ`. -/
-theorem lt_rpow_inv_iff_pow_lt {σ c₀ : ℝ} (hσ : 0 ≤ σ) (hc₀ : 0 < c₀) {m : ℕ} (hm : 1 ≤ m) :
+theorem lt_rpow_inv_iff_pow_lt {σ c₀ : ℝ} (hσ : 0 ≤ σ) (hc₀ : 0 < c₀) {m : ℕ}
+    (hm : 1 ≤ m) :
     c₀ < σ ^ ((m : ℝ)⁻¹) ↔ c₀ ^ m < σ := by
   rw [← not_le, ← not_le, rpow_inv_le_iff_le_pow hσ hc₀ hm]
 
 /-! ## σ-localization: the qpow eigenvalue σ_j(t)^{1/t} converges to exp(λ_j) -/
 
 /-- `σ_j(t)^{1/t} = exp((1/t)·log σ_j(t))` for `t ≥ 1` (the singular value is positive). -/
-theorem rpow_inv_eq_exp_log [NeZero d] {A : X → Matrix (Fin d) (Fin d) ℝ} (hA : ∀ x, (A x).det ≠ 0)
-    (x : X) {j : ℕ} (hj : j < d) {t : ℕ} (ht : 1 ≤ t) :
+theorem rpow_inv_eq_exp_log [NeZero d] {A : X → Matrix (Fin d) (Fin d) ℝ}
+    (hA : ∀ x, (A x).det ≠ 0)
+    (x : X) {j : ℕ} (hj : j < d) {t : ℕ} (_ht : 1 ≤ t) :
     (Matrix.toEuclideanLin (cocycle A T t x)).singularValues j ^ ((t : ℝ)⁻¹)
       = Real.exp ((t : ℝ)⁻¹ *
           Real.log ((Matrix.toEuclideanLin (cocycle A T t x)).singularValues j)) := by
@@ -144,10 +150,11 @@ theorem eventually_qpow_eigenvalue_localized [NeZero d] {A : X → Matrix (Fin d
 /-! ## The one-step recursion specialised to the cocycle SVD chain at a fixed cut
 
 We instantiate `Ruelle13.SVDData.oneStep_recursion` on `chainSVD A T x` with slow cap `c₀^t`,
-fast floor `c₀^{t+1}`, and step factor `b = ‖A(T^[t] x)‖`, identifying `fastProj` with the band
-projector via `toEuclideanLin_bandProjector_eq_fastProj`.  This produces the per-step inequality
-on the band masses.  -/
+fast floor `c₀^{t+1}`, and step factor `b = ‖A(T^[t] x)‖`, identifying `fastProj` with the
+band projector via `toEuclideanLin_bandProjector_eq_fastProj`.  This produces the per-step
+inequality on the band masses.  -/
 
+omit [MeasurableSpace X] in
 /-- The one-step operator factor along the orbit: `‖toEuclideanLin (cocycle (t+1) x) w‖
 ≤ ‖A(T^[t] x)‖ · ‖toEuclideanLin (cocycle t x) w‖`. -/
 theorem chain_oneStep_opNorm [NeZero d] (A : X → Matrix (Fin d) (Fin d) ℝ) (t : ℕ) (x : X)
@@ -159,34 +166,32 @@ theorem chain_oneStep_opNorm [NeZero d] (A : X → Matrix (Fin d) (Fin d) ℝ) (
   have hmul : Matrix.toEuclideanLin (cocycle A T (t + 1) x) w
       = Matrix.toEuclideanLin (A (T^[t] x)) (Matrix.toEuclideanLin (cocycle A T t x) w) := by
     rw [hcoc]
-    simp only [Matrix.toEuclideanLin_apply, Matrix.mulVec_mulVec]
+    simp only [Matrix.toLpLin_apply, Matrix.mulVec_mulVec]
   rw [hmul]
   exact ExteriorNorm.norm_toEuclideanLin_apply_le (A (T^[t] x))
     (Matrix.toEuclideanLin (cocycle A T t x) w)
 
-/-! ## Step A — the corrected TOP-GAP fast-band-mass envelope (Ruelle Lemma 1.4 core)
+/-! ## Step A — the top-gap fast-band-mass envelope (Ruelle Lemma 1.4 core)
 
-The CORRECTED envelope (cf. the obstruction note in `ChainRecursion.lean`): the cut `c₀` is
-restricted to the TOP GAP below `λ_e`, i.e. NO stratum value lies in `(log c₀, λ_e)`.  This is
-the sound replacement for the refuted arbitrary-cut `hchain`.  It is stated here as the single
-isolated analytic hypothesis `TopGapMassEnvelope` (Ruelle's band-distance strong induction over
-strata, eqns (1.3)/(1.4); the deterministic engine `Ruelle13.SVDData.{oneStep_recursion,
-chain_geometric_sum}` and the σ-localization layer above are its ingredients).  Everything
-downstream (Step B) is discharged unconditionally from it. -/
+In this envelope the cut `c₀` is restricted to the top gap below `λ_e`, i.e. no stratum value
+lies in `(log c₀, λ_e)`. It is stated here as the single isolated analytic hypothesis
+`TopGapMassEnvelope`, established by Ruelle's band-distance strong induction over strata
+(eqns (1.3)/(1.4)); the deterministic engine
+`Ruelle13.SVDData.{oneStep_recursion, chain_geometric_sum}` and the σ-localization layer above
+are its ingredients. Everything downstream (Step B) is discharged from it. -/
 
-/-- **Corrected top-gap fast-band-mass envelope** (the sound replacement for the refuted
-`hchain`).  For a gap pair `λ_a < λ_e` and ANY cut `c₀` in the OPEN INTERIOR of the TOP GAP
-below `λ_e` (`exp λ_a < c₀ < exp λ_e` with every stratum value of `lam0` either STRICTLY below
-`log c₀` or at least `λ_e`, encoded `∀ i, lam0 i < Real.log c₀ ∨ lam0 e ≤ lam0 i`), the
-time-`m` band mass of the time-`n` slow eigenvector `u_a(n)` decays like
-`exp(−n(λ_e − λ_a − δ))` uniformly in `m ≥ n`.
+/-- **Top-gap fast-band-mass envelope.** For a gap pair `λ_a < λ_e` and any cut `c₀` in the open
+interior of the top gap below `λ_e` (`exp λ_a < c₀ < exp λ_e`, with every stratum value of
+`lam0` either strictly below `log c₀` or at least `λ_e`, encoded
+`∀ i, lam0 i < Real.log c₀ ∨ lam0 e ≤ lam0 i`), the time-`m` band mass of the time-`n` slow
+eigenvector `u_a(n)` decays like `exp(−n(λ_e − λ_a − δ))` uniformly in `m ≥ n`.
 
-The strictness in the first disjunct is essential: at a boundary cut `log c₀ = λ_p` (the
-largest stratum below `λ_e`) the `λ_p`-directions can oscillate in and out of the band under
-σ-fluctuations, so the envelope is not provable there.  Gap-interior cuts are all the Step-B
-consumer ever uses (`exists_topgap_cut` produces the gap midpoint). -/
-def TopGapMassEnvelope [NeZero d] (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (lam0 : ℕ → ℝ)
-    (x : X) : Prop :=
+The strictness in the first disjunct is essential: at a boundary cut `log c₀ = λ_p` (the largest
+stratum below `λ_e`) the `λ_p`-directions can oscillate in and out of the band under
+σ-fluctuations, so the envelope fails there. Gap-interior cuts are all the Step-B consumer ever
+uses (`exists_topgap_cut` produces the gap midpoint). -/
+def TopGapMassEnvelope [NeZero d] (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X)
+    (lam0 : ℕ → ℝ) (x : X) : Prop :=
   ∀ δ : ℝ, 0 < δ → ∃ C : ℝ, 1 ≤ C ∧ ∀ a e : Fin d,
     lam0 (a : ℕ) < lam0 (e : ℕ) →
     ∀ c₀ : ℝ, Real.exp (lam0 (a : ℕ)) < c₀ → c₀ < Real.exp (lam0 (e : ℕ)) →
@@ -241,19 +246,16 @@ theorem exists_topgap_cut (lam0 : ℕ → ℝ) {a e : Fin d}
     · rw [hii] at h; linarith
     · rw [hii] at h; linarith
 
-/-! ## Step B — the a.e. wrapper (the committed `forward_graded_overlap` body, with the corrected
-top-gap envelope `TopGapMassEnvelope` in place of the refuted `hchain`).
+/-! ## Step B — the almost-everywhere wrapper
 
-This is the TARGET theorem `forward_graded_overlap'`: it has EXACTLY the hypotheses of the
-committed `forward_graded_overlap` with `hchain` DELETED, save for the single isolated, sound
-analytic hypothesis `htopgap` (the corrected top-gap envelope — strictly weaker than, and the
-correct replacement for, the refuted `hchain`).  The gap-cut now uses `exists_topgap_cut` (the
-top-gap selection) instead of the arbitrary `exists_spectral_cut`. -/
+This is the theorem `forward_graded_overlap'`. It carries the single isolated analytic
+hypothesis `htopgap` (the top-gap envelope `TopGapMassEnvelope`). The gap-cut is selected by
+`exists_topgap_cut` (the top-gap selection). -/
 
 theorem forward_graded_overlap' [MeasureTheory.IsProbabilityMeasure μ] [NeZero d]
-    (hT : Ergodic T μ)
-    {A : X → Matrix (Fin d) (Fin d) ℝ} (hA : ∀ x, (A x).det ≠ 0) (hAmeas : Measurable A)
-    (hint : IntegrableLogNorm A μ) (hint' : IntegrableLogNorm (fun x => (A x)⁻¹) μ)
+    (_hT : Ergodic T μ)
+    {A : X → Matrix (Fin d) (Fin d) ℝ} (_hA : ∀ x, (A x).det ≠ 0) (_hAmeas : Measurable A)
+    (_hint : IntegrableLogNorm A μ) (_hint' : IntegrableLogNorm (fun x => (A x)⁻¹) μ)
     (lam0 : ℕ → ℝ)
     (hlam0 : ∀ i : ℕ, i < d → ∀ᵐ x ∂μ, Filter.Tendsto
       (fun n : ℕ => (n : ℝ)⁻¹ *
@@ -263,13 +265,14 @@ theorem forward_graded_overlap' [MeasureTheory.IsProbabilityMeasure μ] [NeZero 
     (hb' : ∀ᵐ x ∂μ, ∀ e : Fin d,
       Matrix.toEuclideanLin (lambdaHat A T x) (b' x e)
         = Real.exp (lamSing A T x (e : ℕ)) • b' x e)
-    (hident : ∀ᵐ x ∂μ, ∀ c : ℝ, 0 < c → (∀ i : Fin d, Real.exp (lamSing A T x (i : ℕ)) ≠ c) →
+    (hident : ∀ᵐ x ∂μ, ∀ c : ℝ, 0 < c →
+        (∀ i : Fin d, Real.exp (lamSing A T x (i : ℕ)) ≠ c) →
       Filter.Tendsto (fun n : ℕ => bandProjector A T (Set.indicator (Set.Ioi c) 1) n x)
         Filter.atTop (𝓝 (cfc (Set.indicator (Set.Ioi c) (1 : ℝ → ℝ)) (lambdaHat A T x))))
-    -- ISOLATED SOUND ANALYTIC HYPOTHESIS (the corrected top-gap fast-band-mass envelope).
+    -- The isolated analytic hypothesis: the top-gap fast-band-mass envelope.
     (htopgap : ∀ᵐ x ∂μ, TopGapMassEnvelope A T lam0 x) :
-    ∀ᵐ x ∂μ, ∀ δ : ℝ, 0 < δ → ∃ c : ℝ, 1 ≤ c ∧ ∀ᶠ n : ℕ in Filter.atTop,
-      ∀ a e : Fin d,
+    ∀ᵐ x ∂μ, ∀ δ : ℝ, 0 < δ → ∃ c : ℝ, 1 ≤ c ∧
+      ∀ᶠ n : ℕ in Filter.atTop, ∀ a e : Fin d,
         |(inner ℝ (b' x e) (sortedGramEigenbasis A T n x
             ⟨(a : ℕ), lt_of_lt_of_eq a.isLt (Fintype.card_fin d).symm⟩) : ℝ)|
           ≤ c * Real.exp (-(n : ℝ) * (max (lam0 (e : ℕ) - lam0 (a : ℕ)) 0 - δ)) := by
@@ -304,7 +307,8 @@ theorem forward_graded_overlap' [MeasureTheory.IsProbabilityMeasure μ] [NeZero 
       filter_upwards [hmass] with n hmassn
       rw [hmaxeq]
       exact abs_inner_le_of_bandProjector_mass_bound htend hPinfsa (b' x e)
-        (sortedGramEigenbasis A T n x ⟨(a : ℕ), lt_of_lt_of_eq a.isLt (Fintype.card_fin d).symm⟩)
+        (sortedGramEigenbasis A T n x
+          ⟨(a : ℕ), lt_of_lt_of_eq a.isLt (Fintype.card_fin d).symm⟩)
         (le_of_eq ((b' x).orthonormal.1 e)) hfix
         (Filter.eventually_atTop.2 ⟨n, hmassn⟩)
     · -- TRIVIAL pair.
@@ -342,7 +346,8 @@ theorem forward_graded_overlap' [MeasureTheory.IsProbabilityMeasure μ] [NeZero 
 We instantiate `Ruelle13.SVDData.oneStep_recursion` on `chainSVD A T x`.  The fast band at time
 `t` is `hiBand A T t x c₀`; its complement is the slow band.  We supply:
 * slow cap `s` valid at time `t`: every slow `σ_j(t) ≤ s`;
-* fast floor `c₀^{t+1}` at time `t+1`: every fast `σ_j(t+1) ≥ c₀^{t+1}` (from the band definition);
+* fast floor `c₀^{t+1}` at time `t+1`: every fast `σ_j(t+1) ≥ c₀^{t+1}` (from the band
+  definition);
 * step factor `b = ‖A(T^[t] x)‖` (from `chain_oneStep_opNorm`).
 The band projector mass is `fastProj` via `toEuclideanLin_bandProjector_eq_fastProj`. -/
 
@@ -382,12 +387,13 @@ theorem bandMass_oneStep_recursion [NeZero d] (A : X → Matrix (Fin d) (Fin d) 
   rw [toEuclideanLin_bandProjector_eq_fastProj, toEuclideanLin_bandProjector_eq_fastProj]
   exact hrec
 
-/-! ## Initialization (`a_0 = 0`): the time-`n` slow eigenvector has no fast-band mass at time `n` -/
+/-! ## Initialization (`a_0 = 0`): the time-`n` slow eigenvector has no fast-band mass at
+time `n` -/
 
 /-- If the index `⟨a⟩` is NOT in the fast band at time `n` (i.e. `σ_a(n)^{1/n} ≤ c₀`), then the
 band projector at cut `c₀`, time `n`, annihilates the basis vector `u_a(n)`. -/
-theorem bandMass_init_zero [NeZero d] (A : X → Matrix (Fin d) (Fin d) ℝ) (n : ℕ) (x : X) (c₀ : ℝ)
-    {a : Fin (Fintype.card (Fin d))} (ha : a ∉ hiBand A T n x c₀) :
+theorem bandMass_init_zero [NeZero d] (A : X → Matrix (Fin d) (Fin d) ℝ) (n : ℕ) (x : X)
+    (c₀ : ℝ) {a : Fin (Fintype.card (Fin d))} (ha : a ∉ hiBand A T n x c₀) :
     Matrix.toEuclideanLin (bandProjector A T (Set.indicator (Set.Ioi c₀) 1) n x)
         (sortedGramEigenbasis A T n x a) = 0 := by
   classical
@@ -400,17 +406,3 @@ theorem bandMass_init_zero [NeZero d] (A : X → Matrix (Fin d) (Fin d) ℝ) (n 
   simp only [hne, if_false, zero_smul]
 
 end Oseledets
-
-/-! ## Axiom audit -/
-
-#print axioms Oseledets.qpow_eigenvalue_eq_rpow
-#print axioms Oseledets.rpow_inv_le_iff_le_pow
-#print axioms Oseledets.lt_rpow_inv_iff_pow_lt
-#print axioms Oseledets.rpow_inv_eq_exp_log
-#print axioms Oseledets.eventually_qpow_eigenvalue_localized
-#print axioms Oseledets.chain_oneStep_opNorm
-#print axioms Oseledets.fast_sigma_floor
-#print axioms Oseledets.bandMass_oneStep_recursion
-#print axioms Oseledets.bandMass_init_zero
-#print axioms Oseledets.exists_topgap_cut
-#print axioms Oseledets.forward_graded_overlap'

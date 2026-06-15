@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 Marcel Morgenstern. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Marcel Morgenstern
+-/
 import Oseledets.Lyapunov.ForwardLowerWiring
 import Oseledets.Lyapunov.SlowFlagBridge
 import Oseledets.Lyapunov.SpectrumResiduals
@@ -12,6 +17,11 @@ Main results:
 2. `ae_tendsto_bandProjector_cfc_indicator` — a.e., the band projector limit at a non-eigenvalue
    threshold `c` is the Λ-spectral projector `cfc 𝟙_{(c,∞)} (lambdaHat …)`.
 3. `ae_lambdaSublevel_le_Vslow` — the reverse slow-flag inclusion `lambdaSublevel t ⊆ Vslow (e^t)`.
+
+The first result rests on a Frobenius / Hilbert–Schmidt Lipschitz estimate for the functional
+calculus; the second uses a continuous Lipschitz clamp surrogate for the indicator of `(c, ∞)` to
+transfer convergence through the calculus; the third combines the spectral identification with the
+Furstenberg–Kesten growth bounds to obtain the inclusion of sublevel sets into slow spaces.
 -/
 
 open MeasureTheory Filter Topology Matrix
@@ -19,11 +29,9 @@ open scoped Matrix Matrix.Norms.L2Operator InnerProductSpace
 
 namespace Oseledets
 
-set_option linter.unusedSectionVars false
-
 variable {X : Type*} [MeasurableSpace X] {d : ℕ} [NeZero d]
 
-/-! ## Deliverable 1 — CFC is matrix-limit continuous for Lipschitz functions
+/-! ## The functional calculus is matrix-limit continuous for Lipschitz functions
 
 We prove the Frobenius / Hilbert–Schmidt Lipschitz bound: for Hermitian `A, B` and `K`-Lipschitz
 `f`, `HS_B (cfc f A - cfc f B) ≤ K² HS_B (A - B)`, where `HS_B Y := ∑ⱼ ‖toEuclideanLin Y (vⱼ)‖²`
@@ -46,7 +54,8 @@ theorem norm_sq_toEuclideanLin_cfc_sub_eigenvectorBasis_le
   have hAsym : (Matrix.toEuclideanLin A).IsSymmetric :=
     Matrix.isSymmetric_toEuclideanLin_iff.mpr hA
   have hcfcAsym : (Matrix.toEuclideanLin (cfc f A)).IsSymmetric :=
-    Matrix.isSymmetric_toEuclideanLin_iff.mpr (cfc_predicate f A : IsSelfAdjoint (cfc f A)).isHermitian
+    Matrix.isSymmetric_toEuclideanLin_iff.mpr
+      (cfc_predicate f A : IsSelfAdjoint (cfc f A)).isHermitian
   -- Inner products with each `uᵢ`.
   have hcfc_inner : ∀ i, ⟪u i, Matrix.toEuclideanLin (cfc f A - cfc f B) vj⟫_ℝ
       = (f (hA.eigenvalues i) - f (hB.eigenvalues j)) * ⟪u i, vj⟫_ℝ := by
@@ -63,11 +72,11 @@ theorem norm_sq_toEuclideanLin_cfc_sub_eigenvectorBasis_le
     intro i
     have hAv : ⟪u i, Matrix.toEuclideanLin A vj⟫_ℝ = hA.eigenvalues i * ⟪u i, vj⟫_ℝ := by
       have hAui : Matrix.toEuclideanLin A (u i) = hA.eigenvalues i • u i := by
-        rw [hu, Matrix.toEuclideanLin_apply]
+        rw [hu, Matrix.toLpLin_apply]
         rw [Matrix.IsHermitian.mulVec_eigenvectorBasis hA i]; rfl
       rw [← hAsym (u i) vj, hAui, inner_smul_left, conj_trivial]
     have hBv : Matrix.toEuclideanLin B vj = hB.eigenvalues j • vj := by
-      rw [hvj, Matrix.toEuclideanLin_apply, Matrix.IsHermitian.mulVec_eigenvectorBasis hB j]; rfl
+      rw [hvj, Matrix.toLpLin_apply, Matrix.IsHermitian.mulVec_eigenvectorBasis hB j]; rfl
     rw [map_sub, LinearMap.sub_apply, inner_sub_right, hAv, hBv, inner_smul_right]; ring
   -- Parseval in the `u`-basis for both sides.
   have hpars_cfc : ‖Matrix.toEuclideanLin (cfc f A - cfc f B) vj‖ ^ 2
@@ -97,7 +106,7 @@ theorem norm_sq_toEuclideanLin_cfc_sub_eigenvectorBasis_le
     _ = (K : ℝ) ^ 2 * (hA.eigenvalues i - hB.eigenvalues j) ^ 2 := by
         rw [mul_pow, sq_abs]
 
-/-- **Deliverable 1.** The continuous functional calculus of a Lipschitz (hence continuous) function
+/-- The continuous functional calculus of a Lipschitz (hence continuous) function
 is continuous under matrix limits of Hermitian matrices: if `M n → L` with all `M n` and `L`
 Hermitian, then `cfc f (M n) → cfc f L`. -/
 theorem tendsto_cfc_of_tendsto_of_lipschitz {M : ℕ → Matrix (Fin d) (Fin d) ℝ}
@@ -174,7 +183,7 @@ theorem tendsto_cfc_of_tendsto_of_lipschitz {M : ℕ → Matrix (Fin d) (Fin d) 
       Tendsto.const_mul _ (Tendsto.const_mul _ hnorm0)
     simpa using this
 
-/-! ## Deliverable 2 — band-projector limit IS the Λ-spectral projector -/
+/-! ## The band-projector limit is the Λ-spectral projector -/
 
 /-- A continuous clamp surrogate `χ` for the indicator of `(c, ∞)`: `χ = 0` on `(-∞, c]`,
 `χ = 1` on `[c + h, ∞)`, linear in between, Lipschitz with constant `h⁻¹` for `h > 0`. -/
@@ -213,7 +222,9 @@ theorem clampSurrogate_eq_one {c h : ℝ} (hh : 0 < h) {t : ℝ} (ht : c + h ≤
     rw [le_div_iff₀ hh]; linarith
   rw [min_eq_left h1, max_eq_right (by norm_num)]
 
-/-- Every real spectrum value of a Hermitian matrix is one of its sorted eigenvalues `eigenvalues₀`. -/
+omit [NeZero d] in
+/-- Every real spectrum value of a Hermitian matrix is one of its sorted eigenvalues
+`eigenvalues₀`. -/
 theorem exists_eigenvalues₀_eq_of_mem_spectrum {M : Matrix (Fin d) (Fin d) ℝ}
     (hM : M.IsHermitian) {s : ℝ} (hs : s ∈ _root_.spectrum ℝ M) :
     ∃ i : Fin (Fintype.card (Fin d)), hM.eigenvalues₀ i = s := by
@@ -221,7 +232,7 @@ theorem exists_eigenvalues₀_eq_of_mem_spectrum {M : Matrix (Fin d) (Fin d) ℝ
   obtain ⟨i, rfl⟩ := hs
   exact ⟨_, rfl⟩
 
-/-- **Deliverable 2.** A.e., for every threshold `c > 0` that is not one of the limiting eigenvalues
+/-- A.e., for every threshold `c > 0` that is not one of the limiting eigenvalues
 `e^{lamSing i}`, the band projector `cfc 𝟙_{(c,∞)} (qpow n)` converges to the Λ-spectral projector
 `cfc 𝟙_{(c,∞)} (lambdaHat A T x)`. -/
 theorem ae_tendsto_bandProjector_cfc_indicator
@@ -327,7 +338,7 @@ theorem ae_tendsto_bandProjector_cfc_indicator
         simp only [Set.mem_Ioi]; linarith
       rw [Set.indicator_of_mem hsmem, Pi.one_apply, hχ,
         clampSurrogate_eq_one (by linarith) (by linarith)]
-  -- Deliverable 1: `cfc χ (qpow n) → cfc χ (lambdaHat)`.
+  -- Functional-calculus continuity: `cfc χ (qpow n) → cfc χ (lambdaHat)`.
   have hcfctend : Tendsto (fun n => cfc χ (qpow A T n x)) atTop (𝓝 (cfc χ (lambdaHat A T x))) :=
     tendsto_cfc_of_tendsto_of_lipschitz (fun n => (qpow_isSelfAdjoint A T n x).isHermitian) hLH
       hχlip (by rw [hLeq]; exact hxlim)
@@ -341,10 +352,10 @@ theorem ae_tendsto_bandProjector_cfc_indicator
   filter_upwards [hEqOnQ] with n hn
   rw [bandProjector, cfc_congr (fun s hs => (hn hs).symm)]
 
-/-! ## Deliverable 3 — the reverse slow-flag inclusion `hslowrev` -/
+/-! ## The reverse slow-flag inclusion -/
 
-/-- **Deliverable 3.** A.e., for every `t`, the `lambdaBar`-sublevel at `t` is contained in the
-Λ-slow space `Vslow (e^t)`.  This is the residual `hslowrev` consumed by
+/-- A.e., for every `t`, the `lambdaBar`-sublevel at `t` is contained in the
+Λ-slow space `Vslow (e^t)`.  This is the inclusion consumed by
 `Oseledets.oseledets_filtration_of_upper`. -/
 theorem ae_lambdaSublevel_le_Vslow
     {μ : Measure X} [IsProbabilityMeasure μ] {T : X → X} (hT : Ergodic T μ)
@@ -367,10 +378,11 @@ theorem ae_lambdaSublevel_le_Vslow
     · exact h
   -- Suppose for contradiction `v ∉ Vslow (exp t)`.
   by_contra hvnot
-  -- Some eigenvalue `exp (lamSing j) > exp t`, else `slowProjector (exp t) = 1` and `Vslow = ⊤ ∋ v`.
+  -- Some eigenvalue `exp (lamSing j) > exp t`, else `slowProjector (exp t) = 1` and
+  -- `Vslow = ⊤ ∋ v`.
   have hexists : ∃ j : Fin d, Real.exp t < Real.exp (lamSing A T x (j : ℕ)) := by
     by_contra hno
-    push_neg at hno
+    push Not at hno
     -- every eigenvalue `≤ exp t`, so the `Iic (exp t)` indicator is `1` on the spectrum.
     apply hvnot
     have hQ1 : slowProjector A T (Real.exp t) x = 1 := by
@@ -412,9 +424,9 @@ theorem ae_lambdaSublevel_le_Vslow
     by_cases hgt : Real.exp t < Real.exp (lamSing A T x (i : ℕ))
     · have : estar ≤ Real.exp (lamSing A T x (i : ℕ)) := hestar_le i hgt
       exact ne_of_gt (lt_of_lt_of_le hce this)
-    · push_neg at hgt; exact ne_of_lt (lt_of_le_of_lt hgt hct)
-  -- The gap below `c` realizes `slowProjector c = slowProjector (exp t)` (no eigenvalue in `(t, c]`,
-  -- equivalently in `(t, log c]`).
+    · push Not at hgt; exact ne_of_lt (lt_of_le_of_lt hgt hct)
+  -- The gap below `c` realizes `slowProjector c = slowProjector (exp t)` (no eigenvalue in
+  -- `(t, c]`, equivalently in `(t, log c]`).
   have hQeq : slowProjector A T c x = slowProjector A T (Real.exp t) x := by
     have hgap : ∀ j : Fin d,
         lamSing A T x (j : ℕ) ≤ t ∨ Real.log c < lamSing A T x (j : ℕ) := by
@@ -425,7 +437,7 @@ theorem ae_lambdaSublevel_le_Vslow
         rw [Real.log_lt_iff_lt_exp hcpos]
         exact lt_of_lt_of_le hce hge
       · left
-        push_neg at hgt
+        push Not at hgt
         exact (Real.exp_le_exp).mp hgt
     have hgapeq := slowProjector_eq_of_gap (A := A) (T := T) (x := x)
       (t₁ := t) (t₂ := Real.log c) hspec (le_of_lt ((Real.lt_log_iff_exp_lt hcpos).mpr hct)) hgap
@@ -458,7 +470,7 @@ theorem ae_lambdaSublevel_le_Vslow
   have hcob : IsCoboundedUnder (· ≥ ·) atTop
       (fun n : ℕ => (n : ℝ)⁻¹ * Real.log ‖Matrix.toEuclideanLin (cocycle A T n x) v‖) :=
     hba.isCoboundedUnder_ge
-  -- The committed liminf lower bound: `log c ≤ liminf …`.
+  -- The liminf lower bound: `log c ≤ liminf …`.
   have hkey := log_le_liminf_log_cocycle_apply A T hA hcpos htend hPv hcob
   -- But `liminf ≤ limsup = lambdaBar v ≤ t < log c`.
   have hlimsupbar : limsup (fun n : ℕ => (n : ℝ)⁻¹ *
@@ -473,11 +485,5 @@ theorem ae_lambdaSublevel_le_Vslow
   -- Chain: `log c ≤ liminf ≤ limsup = lambdaBar v ≤ t < log c`, contradiction.
   rw [hlimsupbar] at hliminf_le_limsup
   exact absurd (le_trans hkey (le_trans hliminf_le_limsup hbar)) (not_le.mpr hlogc)
-
-/-! ## Axiom audit -/
-
-#print axioms tendsto_cfc_of_tendsto_of_lipschitz
-#print axioms ae_tendsto_bandProjector_cfc_indicator
-#print axioms ae_lambdaSublevel_le_Vslow
 
 end Oseledets
