@@ -7,6 +7,8 @@ import Oseledets.MultiplicativeErgodic
 import Oseledets.Lyapunov.Corollaries
 import Oseledets.Lyapunov.Spectrum
 import Oseledets.Lyapunov.ExponentSums
+import Oseledets.Lyapunov.ExteriorCocycle
+import Oseledets.Lyapunov.DetIdentity
 
 /-!
 # Axiom audit
@@ -88,3 +90,25 @@ informational dump (it produces no output on success).
 /-- info: 'Oseledets.gammaK_eq_sum_top_exponents' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms Oseledets.gammaK_eq_sum_top_exponents
+
+-- Exterior/wedge growth (item 2) and the trace/determinant identity (item 7).
+
+/-- info: 'Oseledets.cocycle_extGen_eq_compound' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.cocycle_extGen_eq_compound
+
+/-- info: 'Oseledets.tendsto_log_opNorm_compound_cocycle' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.tendsto_log_opNorm_compound_cocycle
+
+/-- info: 'Oseledets.sumPosExp_eq_gammaK_card_pos' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.sumPosExp_eq_gammaK_card_pos
+
+/-- info: 'Oseledets.sumAllExp_eq_integral_log_abs_det' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.sumAllExp_eq_integral_log_abs_det
+
+/-- info: 'Oseledets.tendsto_log_abs_det_cocycle' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.tendsto_log_abs_det_cocycle

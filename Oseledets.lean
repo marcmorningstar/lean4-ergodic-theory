@@ -44,6 +44,8 @@ import Oseledets.Lyapunov.TopGapEnvelope
 import Oseledets.Lyapunov.Corollaries
 import Oseledets.Lyapunov.Spectrum
 import Oseledets.Lyapunov.ExponentSums
+import Oseledets.Lyapunov.ExteriorCocycle
+import Oseledets.Lyapunov.DetIdentity
 import Oseledets.AxiomAudit
 
 /-!
