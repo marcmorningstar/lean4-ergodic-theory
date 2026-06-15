@@ -15,6 +15,8 @@ import Oseledets.Lyapunov.NonErgodic
 import Oseledets.Lyapunov.Regularity
 import Oseledets.Lyapunov.Singular
 import Oseledets.TwoSided.Invertible
+import Oseledets.TwoSided.SpectralRank
+import Oseledets.TwoSided.MeasurableInf
 
 /-!
 # Axiom audit
@@ -198,3 +200,17 @@ informational dump (it produces no output on success).
 /-- info: 'Oseledets.exists_conull_biinvariant' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms Oseledets.exists_conull_biinvariant
+
+-- Two-sided splitting, P1 (forward dimension formula) and P7 (intersection measurability).
+
+/-- info: 'Oseledets.ae_finrank_Vslow' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.ae_finrank_Vslow
+
+/-- info: 'Oseledets.MeasurableSubspace.inf' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.MeasurableSubspace.inf
+
+/-- info: 'Oseledets.tendsto_pow_orthProj_inf' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.tendsto_pow_orthProj_inf
