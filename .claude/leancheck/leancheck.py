@@ -42,8 +42,7 @@ KEY = os.environ.get("LEANCHECK_KEY", "default")
 SOCK = os.path.join(os.environ.get("LEANCHECK_SOCKDIR", "/tmp"), f"leancheck-{KEY}.sock")
 WARM_IMPORT = os.environ.get("LEANCHECK_IMPORT", "import Oseledets")
 DEFAULT_SETOPTS = ("autoImplicit false;linter.mathlibStandardSet true;"
-                   "linter.unusedSectionVars true;linter.unusedVariables true;"
-                   "linter.style.longFile 1500")
+                   "linter.unusedSectionVars true;linter.unusedVariables true")
 SETOPTS = [f"set_option {o.strip()}" for o in
            os.environ.get("LEANCHECK_SETOPTS", DEFAULT_SETOPTS).split(";") if o.strip()]
 
@@ -81,6 +80,8 @@ def format_response(resp, relpath, kept):
         line = map_line(pos.get("line", 0), kept)
         col = pos.get("column", 0)
         data = (m.get("data") or "").strip().split("\n", 1)[0]
+        if line is None and sev != "error":
+            continue  # prelude (set_option) noise, not about the edited file
         loc = f"{relpath}:{line}:{col}" if line else f"{relpath}:<prelude>"
         if sev == "error":
             n_err += 1
