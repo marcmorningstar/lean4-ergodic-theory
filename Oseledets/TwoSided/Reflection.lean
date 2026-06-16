@@ -12,7 +12,7 @@ import Oseledets.Ergodic.Birkhoff
 # Exponent reflection for the two-sided Oseledets theorem (Phase P6)
 
 This module is the purely *additive* Phase-P6 step of the two-sided Oseledets splitting
-(see `docs/plan/blueprints/two-sided-met.md`, section P6).  It establishes the **exponent
+(phase P6).  It establishes the **exponent
 reflection** principle: the backward singular spectrum is the reflected negation of the
 forward one.
 

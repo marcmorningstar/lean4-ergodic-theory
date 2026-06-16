@@ -16,7 +16,7 @@ Lyapunov exponent `λᵢ = expEnum lam0 d i`, and derives the **backward-orbit e
 `limsup (1/n) log ‖A⁽ⁿ⁾(T⁻ⁿx) · P_{Vᵢ(T⁻ⁿx)}‖ ≤ λᵢ` (the `≤` direction is the only one
 consumed downstream by the transversality crux of Phase P5).
 
-The architecture, following `docs/plan/blueprints/two-sided-met.md` (P4b):
+The architecture (phase P4b):
 
 * `limsup_log_sum_le_max` — for finitely many eventually-positive sequences `aⱼ`,
   `limsup (1/n) log (Σⱼ aⱼ n) ≤ maxⱼ limsup (1/n) log aⱼ n`.  Built from the

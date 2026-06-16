@@ -18,8 +18,7 @@ import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
 /-!
 # The two-sided Oseledets splitting (Phase P8)
 
-This is the final phase P8 of the two-sided Oseledets multiplicative ergodic theorem (see
-`docs/plan/blueprints/two-sided-met.md`, sections 1, 2.5 and P8).  It assembles the
+This is the final phase P8 of the two-sided Oseledets multiplicative ergodic theorem (phases 1, 2.5 and P8).  It assembles the
 forward and backward one-sided Oseledets filtrations into a single measurable,
 `A`-equivariant **splitting** `ℝᵈ = E₁(x) ⊕ ⋯ ⊕ E_k(x)` with two-sided growth: for a
 nonzero `v ∈ Eᵢ(x)` the forward cocycle grows at rate `λᵢ` and the backward cocycle at

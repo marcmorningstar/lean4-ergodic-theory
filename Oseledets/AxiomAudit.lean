@@ -79,7 +79,7 @@ informational dump (it produces no output on success).
 #guard_msgs in
 #print axioms Oseledets.IsOseledetsFiltration.exists_multiplicity
 
--- Additive extensions (request_prompt.md): the full spectrum object (item 6).
+-- Additive extensions: the full Lyapunov spectrum object.
 
 /-- info: 'Oseledets.exponents_antitone' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in

@@ -11,7 +11,7 @@ import Oseledets.TwoSided.RestrictedExponent
 # The transversality crux of the two-sided Oseledets theorem (Phase P5)
 
 This module establishes the **transversality crux** `χ⁺ + χ⁻ ≥ 0` in the form needed by the
-two-sided Oseledets splitting (see `docs/plan/blueprints/two-sided-met.md`, section P5): if a
+two-sided Oseledets splitting (phase P5): if a
 nonzero vector has forward (restricted) growth rate `≤ a` along the backward orbit and backward
 decay rate `≤ b` with `a + b < 0`, then it cannot exist.  Concretely the opposite-sign
 sublevels of the forward and backward Oseledets filtrations are transverse, and the resulting

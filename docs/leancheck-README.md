@@ -6,7 +6,7 @@ the agent **automatically on each edit** — the agent just writes Lean and read
 errors, never JSON. A Stop hook then enforces an authoritative cold `lake build` before any
 worker may finish, so "done" always means "really verified."
 
-Built on the validated finding in `docs/plan/lean-server-evaluation.md`
+Built on a validated warm-REPL evaluation
 (repl @ `f0a88bfca1fa` = our `v4.30.0-rc2`; warm re-check ~0.012 s; verdict matches cold).
 
 ## Pieces

@@ -11,7 +11,7 @@ import Oseledets.Lyapunov.OseledetsLimit
 # Forward spectral-rank / dimension formula (two-sided MET, Phase P1)
 
 This module is the first, purely additive plumbing step of the two-sided Oseledets
-splitting (see `docs/plan/blueprints/two-sided-met.md`, section P1).  It records the
+splitting (phase P1).  It records the
 *forward dimension formula* for the slow spectral filtration `Vslow` of the sanitized
 Oseledets limit operator: almost everywhere,
 

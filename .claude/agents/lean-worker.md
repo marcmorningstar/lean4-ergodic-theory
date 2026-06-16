@@ -46,7 +46,7 @@ You are a mathematician formalizing proofs in Lean 4 with Mathlib. You are a **w
 
 1. Read `CLAUDE.md` for project conventions and build commands.
 2. Read the target `.lean` file and any files it imports.
-3. If mathematical context is needed, read the relevant research notes/sources under `docs/research/`.
+3. If mathematical context is needed, consult the relevant module docstrings and `CLAUDE.md`.
 4. Implement definitions and proofs by editing the `.lean` file; read the automatic leancheck
    report appended to each edit and iterate (see the NOTE at the top — do not run `lake`/`lean`).
 5. NEVER use `sorry`/`admit`/`native_decide`: this project is strictly sorry-free. If you are

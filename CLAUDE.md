@@ -6,16 +6,19 @@ multiplicative ergodic theorem (MET)**. It is a single-purpose Lean project
 
 ## Status
 
-**Core theorem COMPLETE.** The target theorem `Oseledets.oseledets_filtration`
-(`Oseledets/MultiplicativeErgodic.lean`) is fully proved sorry-free, together with
-companion corollaries (`Oseledets/Lyapunov/Corollaries.lean`: spectrum uniqueness,
-top-exponent = norm growth, a.e.-constant multiplicities, …). A guarded audit module
+**COMPLETE.** The target theorem `Oseledets.oseledets_filtration`
+(`Oseledets/MultiplicativeErgodic.lean`) is fully proved sorry-free, together with companion
+corollaries (`Oseledets/Lyapunov/Corollaries.lean`: spectrum uniqueness, top-exponent = norm
+growth, a.e.-constant multiplicities, …), the additive extensions (`Oseledets/Lyapunov/`:
+Lyapunov spectrum, exponent sums, exterior/wedge growth, trace–det identity, inverse/time-
+reversal, restriction, non-ergodic, regularity, singular), the **two-sided splitting**
+(`Oseledets/TwoSided/`: `oseledets_splitting`), and the **continuous-flow MET**
+(`Oseledets/Continuous/`: `oseledets_flow`). A guarded audit module
 (`Oseledets/AxiomAudit.lean`) checks on every build — via `#guard_msgs in #print axioms`
-— that the target theorem and each companion result depend on exactly
+— that the target theorem and each of these results depend on exactly
 `[propext, Classical.choice, Quot.sound]` (the build fails if this ever changes; it is
 not printed). The library is Mathlib-style linter-clean under
-`linter.mathlibStandardSet`. See `docs/progress/STATE.md` for the final composition and
-history; further additive extensions are tracked in `request_prompt.md`.
+`linter.mathlibStandardSet`. See `docs/progress/STATE.md` for the final composition.
 
 ## Layout
 

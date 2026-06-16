@@ -11,7 +11,7 @@ import Oseledets.TwoSided.SpectralRank
 # Strong export of the forward Oseledets filtration (two-sided MET, Phase P2)
 
 This module is the purely additive orchestration step P2 of the two-sided Oseledets
-splitting (see `docs/plan/blueprints/two-sided-met.md`, section P2).  It records the
+splitting (phase P2).  It records the
 one-sided Oseledets filtration theorem in a **strong form**: the deterministic spectral
 data `lam0` and the everywhere-measurable filtration `V` are *exposed* by the
 existential (rather than buried), the Lyapunov exponents are the concrete descending
