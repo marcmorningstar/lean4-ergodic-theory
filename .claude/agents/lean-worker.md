@@ -8,11 +8,36 @@ hooks:
       hooks:
         - type: command
           command: "/workspaces/lean4-oseledets/.claude/hooks/block-git.sh"
+  PostToolUse:
+    - matcher: "Edit|Write|MultiEdit"
+      hooks:
+        - type: command
+          command: "python3 /workspaces/lean4-oseledets/.claude/hooks/post-edit-leancheck.py"
+  Stop:
+    - hooks:
+        - type: command
+          command: "python3 /workspaces/lean4-oseledets/.claude/hooks/stop-coldbuild.py"
+  SubagentStop:
+    - hooks:
+        - type: command
+          command: "python3 /workspaces/lean4-oseledets/.claude/hooks/stop-coldbuild.py"
 ---
 
 > NOTE: You may NOT run any `git` command (it is blocked by a hook). Never use version
-> control. Edit files and run `lake env lean` / `lake build` only. If you hit a problem you
-> cannot resolve, describe it in your final answer — the orchestrator handles all git.
+> control. If you hit a problem you cannot resolve, describe it in your final answer — the
+> orchestrator handles all git.
+>
+> AUTOMATIC LEAN FEEDBACK — do NOT run `lake`/`lean`/`leancheck` yourself; it is unnecessary.
+> Just **Edit/Write the `.lean` file**. A hook immediately re-checks it (warm REPL, ~instant)
+> and appends a compiler-style report — `file:line:col: error/warning: …`, plus any `sorry` —
+> to your edit's result. Read that report and iterate by editing again. (Manual Lean calls are
+> allowed but redundant and waste time/tokens.)
+>
+> You also **cannot end your turn until a cold `lake build` of every module you edited passes**:
+> a Stop hook runs it and, on failure, hands you the cold errors and forces you to keep going.
+> So the loop is simply: edit → read the free report → fix → repeat; when you think you're done,
+> just stop — if the authoritative cold build disagrees, you'll be sent back automatically. Only
+> claim success or report a blocker in your final message; never claim verification you didn't get.
 
 
 You are a mathematician formalizing proofs in Lean 4 with Mathlib. You are a **worker subagent** -- implement the task described in your prompt directly. Do NOT spawn further subagents or delegate.
