@@ -60,6 +60,20 @@ else
 fi
 set -e
 
+# 5. leancheck harness — the warm Lean-feedback hook drives the Lean language server (`lake serve`)
+#    through the `leanclient` Python library. Non-fatal: a missing PyPI must not abort setup
+#    (the cold `lake build` gate works without it).
+echo ""
+echo "=== leancheck harness (leanclient) ==="
+set +e
+if ! python3 -c "import leanclient" >/dev/null 2>&1; then
+    echo "Installing leanclient (Lean LSP client for the warm-feedback hook)..."
+    pip install --user --break-system-packages -q leanclient \
+        || echo "WARNING: leanclient install failed; warm leancheck unavailable (cold build still works)."
+fi
+python3 -c "import leanclient" >/dev/null 2>&1 && echo "leanclient available"
+set -e
+
 echo ""
 echo "=== Setup Complete ==="
 echo "Lean version: $(lean --version)"
