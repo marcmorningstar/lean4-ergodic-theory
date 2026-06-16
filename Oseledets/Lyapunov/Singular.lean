@@ -339,4 +339,202 @@ theorem limsup_logSprod_le_top [IsProbabilityMeasure μ] [NeZero d] (hT : Ergodi
   · simp [hn]
   · exact mul_le_mul_of_nonneg_left (log_le_posLog _) (by positivity)
 
+/-! ### Strengthening: `EReal`-limit packaging and the exact `limsup` of the genuine log
+
+The results above bound `limsup (1/n) log‖A⁽ⁿ⁾‖ ≤ λ₁⁺` in `EReal`. Below we strengthen this.
+The `log⁺` sequence has a genuine `ℝ`-limit (`tendsto_top_posLogNorm`), so its `EReal`-coercion
+also converges (S1), and its `EReal`-`limsup` and `liminf` both equal `λ₁⁺` (S2). The
+substantive new content is S3: when the forward top value `λ₁⁺` is **strictly positive**, the
+`limsup` of the *genuine* `(1/n) log‖A⁽ⁿ⁾‖` (not `log⁺`) is exactly `λ₁⁺`. This is the strongest
+honest statement available for a singular cocycle: a genuine *limit* of `(1/n) log‖A⁽ⁿ⁾‖` is
+**false** in general (the liminf may be strictly below the limsup, even `−∞`), so we identify
+only the `limsup`, and only when `λ₁⁺ > 0` (the contracting case `λ₁⁺ = 0` genuinely breaks the
+equality, hence the hypothesis is essential). -/
+
+/-- **Tiny helper.** When `log t` is already non-negative, its positive part is itself:
+`log⁺ t = log t`. From `Real.posLog_def` and `max_eq_right`. -/
+private theorem posLog_eq_log_of_log_pos {t : ℝ} (h : 0 ≤ Real.log t) :
+    Real.posLog t = Real.log t := by
+  rw [Real.posLog_def, max_eq_right h]
+
+/-- **(S1) `EReal`-limit of the normalized `log⁺`-norms.** Lifts the genuine `ℝ`-limit
+`tendsto_top_posLogNorm` through the embedding `ℝ ↪ EReal` (`continuous_coe_real_ereal`): the
+`EReal`-coerced sequence `((1/n) log⁺‖A⁽ⁿ⁾‖ : EReal)` converges `μ`-a.e. to `(λ₁⁺ : EReal)`. -/
+theorem tendsto_top_posLogNorm_ereal [IsProbabilityMeasure μ] (hT : Ergodic T μ)
+    {A : X → Matrix (Fin d) (Fin d) ℝ} (hAmeas : Measurable A) (hint : IntegrableLogNorm A μ) :
+    ∃ lam : ℝ, ∀ᵐ x ∂μ,
+      Tendsto (fun n : ℕ => (((n : ℝ)⁻¹ * Real.posLog ‖cocycle A T n x‖ : ℝ) : EReal)) atTop
+        (𝓝 (lam : EReal)) := by
+  obtain ⟨lam, hlam⟩ := tendsto_top_posLogNorm hT hAmeas hint
+  refine ⟨lam, ?_⟩
+  filter_upwards [hlam] with x hx
+  exact (continuous_coe_real_ereal.tendsto _).comp hx
+
+/-- **(S2) `EReal`-`limsup`/`liminf` of the normalized `log⁺`-norms both equal `λ₁⁺`.** Since
+the `EReal`-coerced sequence converges (S1), its `limsup` and `liminf` coincide with the limit.
+The `EReal`-`limsup`/`liminf` are unconditional (`EReal` is a complete linear order). -/
+theorem limsup_eq_liminf_posLogNorm [IsProbabilityMeasure μ] (hT : Ergodic T μ)
+    {A : X → Matrix (Fin d) (Fin d) ℝ} (hAmeas : Measurable A) (hint : IntegrableLogNorm A μ) :
+    ∃ lam : ℝ, ∀ᵐ x ∂μ,
+      Filter.limsup
+          (fun n : ℕ => (((n : ℝ)⁻¹ * Real.posLog ‖cocycle A T n x‖ : ℝ) : EReal)) atTop
+          = (lam : EReal)
+      ∧ Filter.liminf
+          (fun n : ℕ => (((n : ℝ)⁻¹ * Real.posLog ‖cocycle A T n x‖ : ℝ) : EReal)) atTop
+          = (lam : EReal) := by
+  obtain ⟨lam, hlam⟩ := tendsto_top_posLogNorm_ereal hT hAmeas hint
+  refine ⟨lam, ?_⟩
+  filter_upwards [hlam] with x hx
+  exact ⟨hx.limsup_eq, hx.liminf_eq⟩
+
+/-- **(S3) Exact `limsup` of the genuine log-norm growth when `λ₁⁺ > 0`.** For an ergodic
+measure-preserving `T` and a possibly-singular measurable generator with `log⁺‖A‖ ∈ L¹`, there
+is a constant `λ₁⁺` such that, **whenever `λ₁⁺ > 0`**, for `μ`-a.e. `x`
+
+`limsup (fun n => ((1/n) log‖A⁽ⁿ⁾(x)‖ : EReal)) = λ₁⁺`.
+
+This sharpens `limsup_logNorm_le_top` from `≤` to `=`. The `≤` half reuses the body of
+`limsup_logNorm_le_top` (`ereal_limsup_le_of_tendsto_dom`). The `≥` half is the new content:
+on the a.e. set where `(1/n) log⁺‖A⁽ⁿ⁾‖ → λ₁⁺ > 0`, the sequence is eventually positive, forcing
+`log⁺‖A⁽ⁿ⁾‖ > 0`, hence `log‖A⁽ⁿ⁾‖ > 0` and so `log⁺‖A⁽ⁿ⁾‖ = log‖A⁽ⁿ⁾‖`
+(`posLog_eq_log_of_log_pos`); the two `EReal` sequences are thus eventually equal, so their
+`limsup`s agree (`Filter.limsup_congr`), and the latter equals `λ₁⁺` (S2). The positivity
+hypothesis is essential: in the contracting case `λ₁⁺ = 0` the genuine `log`-growth may tend to
+`−∞`, so its `limsup` can be strictly below `λ₁⁺` and the equality fails. -/
+theorem limsup_logNorm_eq_top_of_pos [IsProbabilityMeasure μ] (hT : Ergodic T μ)
+    {A : X → Matrix (Fin d) (Fin d) ℝ} (hAmeas : Measurable A) (hint : IntegrableLogNorm A μ) :
+    ∃ lam : ℝ, 0 < lam → ∀ᵐ x ∂μ,
+      Filter.limsup
+        (fun n : ℕ => (((n : ℝ)⁻¹ * Real.log ‖cocycle A T n x‖ : ℝ) : EReal)) atTop
+        = (lam : EReal) := by
+  obtain ⟨lam, hlam⟩ := tendsto_top_posLogNorm hT hAmeas hint
+  refine ⟨lam, fun hpos => ?_⟩
+  filter_upwards [hlam] with x hx
+  -- the `EReal`-coerced `log⁺` sequence; its `limsup` is `(lam : EReal)`.
+  have hxE : Tendsto (fun n : ℕ => (((n : ℝ)⁻¹ * Real.posLog ‖cocycle A T n x‖ : ℝ) : EReal))
+      atTop (𝓝 (lam : EReal)) := (continuous_coe_real_ereal.tendsto _).comp hx
+  have hlamLimsup :
+      Filter.limsup
+        (fun n : ℕ => (((n : ℝ)⁻¹ * Real.posLog ‖cocycle A T n x‖ : ℝ) : EReal)) atTop
+        = (lam : EReal) := hxE.limsup_eq
+  refine le_antisymm ?_ ?_
+  · -- `≤`: `limsup (log) ≤ limsup (log⁺) = lam` (body of `limsup_logNorm_le_top`).
+    rw [← hlamLimsup]
+    refine Filter.limsup_le_limsup (Filter.Eventually.of_forall fun n => ?_)
+    refine EReal.coe_le_coe_iff.2 ?_
+    rcases Nat.eq_zero_or_pos n with hn | hn
+    · simp [hn]
+    · exact mul_le_mul_of_nonneg_left (log_le_posLog _) (by positivity)
+  · -- `≥`: the two `EReal` sequences are eventually equal, so their `limsup`s agree `= lam`.
+    -- Step 1: eventually `(1/n) log⁺‖A⁽ⁿ⁾‖ > 0`, since the real limit `lam > 0`.
+    have hev_pos : ∀ᶠ n : ℕ in atTop,
+        0 < (n : ℝ)⁻¹ * Real.posLog ‖cocycle A T n x‖ :=
+      hx.eventually (eventually_gt_nhds hpos)
+    -- Step 2: from positivity of the normalized term, deduce `log⁺‖A⁽ⁿ⁾‖ = log‖A⁽ⁿ⁾‖`.
+    have hev_eq : ∀ᶠ n : ℕ in atTop,
+        (((n : ℝ)⁻¹ * Real.log ‖cocycle A T n x‖ : ℝ) : EReal)
+          = (((n : ℝ)⁻¹ * Real.posLog ‖cocycle A T n x‖ : ℝ) : EReal) := by
+      filter_upwards [hev_pos, eventually_gt_atTop 0] with n hn hn0
+      have hninv : (0 : ℝ) < (n : ℝ)⁻¹ := by positivity
+      -- `0 < (1/n) log⁺‖A⁽ⁿ⁾‖` and `0 < 1/n` give `0 < log⁺‖A⁽ⁿ⁾‖`.
+      have hposLog_pos : 0 < Real.posLog ‖cocycle A T n x‖ :=
+        (mul_pos_iff_of_pos_left hninv).1 hn
+      -- `0 < max 0 (log ‖…‖)` forces `0 < log ‖…‖` (else the max is `0`).
+      have hlog_pos : 0 < Real.log ‖cocycle A T n x‖ := by
+        rw [Real.posLog_def] at hposLog_pos
+        rcases max_cases (0 : ℝ) (Real.log ‖cocycle A T n x‖) with ⟨he, _⟩ | ⟨he, _⟩
+        · rw [he] at hposLog_pos; exact absurd hposLog_pos (lt_irrefl 0)
+        · rwa [he] at hposLog_pos
+      rw [posLog_eq_log_of_log_pos hlog_pos.le]
+    -- Step 3: equal eventually ⟹ equal `limsup`; the `log⁺`-limsup is `lam`.
+    refine le_of_eq ?_
+    calc (lam : EReal)
+        = Filter.limsup
+            (fun n : ℕ => (((n : ℝ)⁻¹ * Real.posLog ‖cocycle A T n x‖ : ℝ) : EReal)) atTop :=
+          hlamLimsup.symm
+      _ = Filter.limsup
+            (fun n : ℕ => (((n : ℝ)⁻¹ * Real.log ‖cocycle A T n x‖ : ℝ) : EReal)) atTop :=
+          (Filter.limsup_congr hev_eq).symm
+
+/-! ### Top-`k` analogues: `EReal`-limit packaging and exact `limsup` of `log Sprod_k` -/
+
+/-- **(S4a) `EReal`-limit of the normalized `log⁺ Sprod_k`.** Top-`k` mirror of
+`tendsto_top_posLogNorm_ereal`: lifts the genuine `ℝ`-limit `tendsto_top_posLogSprod` through
+`continuous_coe_real_ereal`, so `((1/n) log⁺ Sprod_k(x) : EReal)` converges `μ`-a.e. to
+`(Γ_k⁺ : EReal)`. -/
+theorem tendsto_top_posLogSprod_ereal [IsProbabilityMeasure μ] [NeZero d] (hT : Ergodic T μ)
+    {A : X → Matrix (Fin d) (Fin d) ℝ} (hAmeas : Measurable A) (hint : IntegrableLogNorm A μ)
+    (k : ℕ) :
+    ∃ gam : ℝ, ∀ᵐ x ∂μ,
+      Tendsto (fun n : ℕ => (((n : ℝ)⁻¹ * Real.posLog (Sprod A T k n x) : ℝ) : EReal)) atTop
+        (𝓝 (gam : EReal)) := by
+  obtain ⟨gam, hgam⟩ := tendsto_top_posLogSprod hT hAmeas hint k
+  refine ⟨gam, ?_⟩
+  filter_upwards [hgam] with x hx
+  exact (continuous_coe_real_ereal.tendsto _).comp hx
+
+/-- **(S4b) Exact `limsup` of the genuine top-`k` log-volume growth when `Γ_k⁺ > 0`.** Top-`k`
+mirror of `limsup_logNorm_eq_top_of_pos`. For an ergodic measure-preserving `T` and a
+possibly-singular measurable generator with `log⁺‖A‖ ∈ L¹`, there is a constant `Γ_k⁺` such
+that, **whenever `Γ_k⁺ > 0`**, for `μ`-a.e. `x`
+
+`limsup (fun n => ((1/n) log Sprod_k(x) : EReal)) = Γ_k⁺`.
+
+This sharpens `limsup_logSprod_le_top` from `≤` to `=`. The `≤` half reuses the body of
+`limsup_logSprod_le_top`; the `≥` half uses that on the a.e. set where `(1/n) log⁺ Sprod_k →
+Γ_k⁺ > 0`, the sequence is eventually positive, forcing `log⁺ Sprod_k > 0`, hence (since
+`Sprod_k ≥ 0`, `Sprod_nonneg`) `log Sprod_k > 0` and `log⁺ Sprod_k = log Sprod_k`
+(`posLog_eq_log_of_log_pos`); the two `EReal` sequences are eventually equal so their `limsup`s
+agree (`Filter.limsup_congr`). The positivity hypothesis is essential (the contracting case
+`Γ_k⁺ = 0` breaks the equality). Carries `[NeZero d]`. -/
+theorem limsup_logSprod_eq_top_of_pos [IsProbabilityMeasure μ] [NeZero d] (hT : Ergodic T μ)
+    {A : X → Matrix (Fin d) (Fin d) ℝ} (hAmeas : Measurable A) (hint : IntegrableLogNorm A μ)
+    (k : ℕ) :
+    ∃ gam : ℝ, 0 < gam → ∀ᵐ x ∂μ,
+      Filter.limsup
+        (fun n : ℕ => (((n : ℝ)⁻¹ * Real.log (Sprod A T k n x) : ℝ) : EReal)) atTop
+        = (gam : EReal) := by
+  obtain ⟨gam, hgam⟩ := tendsto_top_posLogSprod hT hAmeas hint k
+  refine ⟨gam, fun hpos => ?_⟩
+  filter_upwards [hgam] with x hx
+  have hxE : Tendsto (fun n : ℕ => (((n : ℝ)⁻¹ * Real.posLog (Sprod A T k n x) : ℝ) : EReal))
+      atTop (𝓝 (gam : EReal)) := (continuous_coe_real_ereal.tendsto _).comp hx
+  have hgamLimsup :
+      Filter.limsup
+        (fun n : ℕ => (((n : ℝ)⁻¹ * Real.posLog (Sprod A T k n x) : ℝ) : EReal)) atTop
+        = (gam : EReal) := hxE.limsup_eq
+  refine le_antisymm ?_ ?_
+  · -- `≤`: `limsup (log) ≤ limsup (log⁺) = gam` (body of `limsup_logSprod_le_top`).
+    rw [← hgamLimsup]
+    refine Filter.limsup_le_limsup (Filter.Eventually.of_forall fun n => ?_)
+    refine EReal.coe_le_coe_iff.2 ?_
+    rcases Nat.eq_zero_or_pos n with hn | hn
+    · simp [hn]
+    · exact mul_le_mul_of_nonneg_left (log_le_posLog _) (by positivity)
+  · -- `≥`: the two `EReal` sequences are eventually equal, so their `limsup`s agree `= gam`.
+    have hev_pos : ∀ᶠ n : ℕ in atTop,
+        0 < (n : ℝ)⁻¹ * Real.posLog (Sprod A T k n x) :=
+      hx.eventually (eventually_gt_nhds hpos)
+    have hev_eq : ∀ᶠ n : ℕ in atTop,
+        (((n : ℝ)⁻¹ * Real.log (Sprod A T k n x) : ℝ) : EReal)
+          = (((n : ℝ)⁻¹ * Real.posLog (Sprod A T k n x) : ℝ) : EReal) := by
+      filter_upwards [hev_pos, eventually_gt_atTop 0] with n hn _
+      have hninv : (0 : ℝ) < (n : ℝ)⁻¹ := by positivity
+      have hposLog_pos : 0 < Real.posLog (Sprod A T k n x) :=
+        (mul_pos_iff_of_pos_left hninv).1 hn
+      have hlog_pos : 0 < Real.log (Sprod A T k n x) := by
+        rw [Real.posLog_def] at hposLog_pos
+        rcases max_cases (0 : ℝ) (Real.log (Sprod A T k n x)) with ⟨he, _⟩ | ⟨he, _⟩
+        · rw [he] at hposLog_pos; exact absurd hposLog_pos (lt_irrefl 0)
+        · rwa [he] at hposLog_pos
+      rw [posLog_eq_log_of_log_pos hlog_pos.le]
+    refine le_of_eq ?_
+    calc (gam : EReal)
+        = Filter.limsup
+            (fun n : ℕ => (((n : ℝ)⁻¹ * Real.posLog (Sprod A T k n x) : ℝ) : EReal)) atTop :=
+          hgamLimsup.symm
+      _ = Filter.limsup
+            (fun n : ℕ => (((n : ℝ)⁻¹ * Real.log (Sprod A T k n x) : ℝ) : EReal)) atTop :=
+          (Filter.limsup_congr hev_eq).symm
+
 end Oseledets

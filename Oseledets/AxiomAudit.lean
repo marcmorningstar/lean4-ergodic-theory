@@ -161,6 +161,32 @@ informational dump (it produces no output on success).
 #guard_msgs in
 #print axioms Oseledets.restricted_finrank_invariant_ae
 
+-- Restriction Stage (ii): the full restricted (strict) Oseledets filtration (item 5, deferred part).
+
+/-- info: 'Oseledets.restricted_inf_measurableSubspace' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.restricted_inf_measurableSubspace
+
+/-- info: 'Oseledets.restricted_inf_witness_equivariant' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.restricted_inf_witness_equivariant
+
+/-- info: 'Oseledets.restricted_inf_witness_finrank_invariant_ae' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.restricted_inf_witness_finrank_invariant_ae
+
+/-- info: 'Oseledets.restricted_inf_finrank_ae_eq' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.restricted_inf_finrank_ae_eq
+
+/-- info: 'Oseledets.restricted_flag_structure_ae' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.restricted_flag_structure_ae
+
+/-- info: 'Oseledets.restricted_strict_filtration' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.restricted_strict_filtration
+
 -- Non-ergodic version (item 9A).
 
 /-- info: 'Oseledets.tendsto_GammaK_nonergodic' depends on axioms: [propext, Classical.choice, Quot.sound] -/
@@ -193,6 +219,24 @@ informational dump (it produces no output on success).
 #guard_msgs in
 #print axioms Oseledets.botExp_lowerSemicontinuous
 
+-- Regularity regime 2: a.e.-convergence + uniform integrability (Vitali) continuity (item 4, deferred part).
+
+/-- info: 'Oseledets.ae_tendsto_logSprod_of_ae_tendsto_generator' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.ae_tendsto_logSprod_of_ae_tendsto_generator
+
+/-- info: 'Oseledets.tendsto_integral_logSprod_of_unifIntegrable' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.tendsto_integral_logSprod_of_unifIntegrable
+
+/-- info: 'Oseledets.tendsto_integral_logSprod_of_ae_unifIntegrable' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.tendsto_integral_logSprod_of_ae_unifIntegrable
+
+/-- info: 'Oseledets.GammaK_upperSemicontinuous_of_ae_unifIntegrable' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.GammaK_upperSemicontinuous_of_ae_unifIntegrable
+
 -- Singular / one-sided upper bounds without invertibility (item 9B).
 
 /-- info: 'Oseledets.limsup_logNorm_le_top' depends on axioms: [propext, Classical.choice, Quot.sound] -/
@@ -202,6 +246,28 @@ informational dump (it produces no output on success).
 /-- info: 'Oseledets.limsup_logSprod_le_top' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms Oseledets.limsup_logSprod_le_top
+
+-- Singular / one-sided: EReal lift of the log⁺ limits + the limsup = exponent sharpening (item 9B).
+
+/-- info: 'Oseledets.tendsto_top_posLogNorm_ereal' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.tendsto_top_posLogNorm_ereal
+
+/-- info: 'Oseledets.limsup_eq_liminf_posLogNorm' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.limsup_eq_liminf_posLogNorm
+
+/-- info: 'Oseledets.limsup_logNorm_eq_top_of_pos' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.limsup_logNorm_eq_top_of_pos
+
+/-- info: 'Oseledets.tendsto_top_posLogSprod_ereal' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.tendsto_top_posLogSprod_ereal
+
+/-- info: 'Oseledets.limsup_logSprod_eq_top_of_pos' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.limsup_logSprod_eq_top_of_pos
 
 -- Two-sided splitting, Phase 0 (backward generator / cocycle infrastructure).
 

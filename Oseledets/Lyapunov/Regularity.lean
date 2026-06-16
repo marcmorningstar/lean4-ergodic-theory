@@ -6,6 +6,7 @@ Authors: Marcel Morgenstern
 import Oseledets.Lyapunov.DetIdentity
 import Oseledets.Ergodic.Birkhoff
 import Mathlib.MeasureTheory.Integral.DominatedConvergence
+import Mathlib.MeasureTheory.Function.UniformIntegrable
 
 /-!
 # Regularity of the Lyapunov exponents in the generating cocycle (item #4)
@@ -692,5 +693,222 @@ theorem botExp_lowerSemicontinuous (hT : Ergodic T μ) [l.IsCountablyGenerated] 
     _ ≤ liminf (u + v) l := hkey
 
 end BotLSC
+
+/-! ## Per-`n` integral continuity under a.e. generator convergence + uniform integrability
+(regime 2, the Vitali route)
+
+The second per-`n` continuity regime replaces the *fixed integrable envelope* of regime 1
+(`tendsto_integral_logSprod_of_dominated`) by the honest `L¹`-log control hypothesis of **uniform
+integrability** of the integrand family `log Sprod_k(B m, n, ·)`, together with `μ`-a.e.
+convergence of the *generators* `B m → A`. The latter is purely analytic: it propagates through
+the cocycle (a finite matrix product / orbit composition), the Gram matrix, its sorted
+eigenvalues (Weyl perturbation, `tendsto_eigenvalues₀`), the singular values
+(`gram_eigenvalues₀_eq_sq_singularValues`), and finally `Sprod = ∏ σ` and `Real.log`. This is the
+`HELPER` `ae_tendsto_logSprod_of_ae_tendsto_generator`. The integral continuity is then Vitali's
+convergence theorem (`tendsto_Lp_finite_of_tendsto_ae` + `tendsto_integral_of_L1'`), packaged in
+the `PRIMARY` theorem `tendsto_integral_logSprod_of_unifIntegrable` and combined with the helper in
+the `WRAPPER` `tendsto_integral_logSprod_of_ae_unifIntegrable`.
+
+**Honest caveat (mandatory).** Uniform integrability is an *explicit hypothesis*, not something
+derived from pure `L¹`-log convergence of the generators: `log Sprod` is **not** `L¹`-continuous in
+`posLog‖·‖`, so pure `L¹`-log convergence of the generators does **not** imply integral continuity.
+Uniform integrability is the correct `L¹`-log control that, together with a.e. convergence, makes
+the Vitali theorem applicable. Note also that the a.e. *generator*-convergence helper genuinely
+needs `T` to be measure-preserving: the integrand at `x` samples the generator along the finite
+orbit `x, Tx, …, T^{n-1}x`, so propagating an a.e. statement from `x` to its orbit requires
+quasi-measure-preservation of `T`. (At the wrapper's call site this is supplied by `Ergodic.T`.) -/
+
+section RegimeTwo
+
+variable {B : ℕ → X → Matrix (Fin d) (Fin d) ℝ}
+    {A : X → Matrix (Fin d) (Fin d) ℝ}
+
+omit [NeZero d] [MeasurableSpace X] μ in
+/-- **Cocycle continuity along a convergent orbit.** If, at every orbit point `T^[j] x`, the
+generators converge `B m (T^[j] x) → A (T^[j] x)`, then the cocycle iterate converges
+`cocycle (B m) T n x → cocycle A T n x`. The cocycle is a finite matrix product over the orbit
+(`cocycle_succ`), so this is continuity of multiplication (`Tendsto.mul`, the matrix
+`ContinuousMul`) by induction on `n`. -/
+private theorem tendsto_cocycle_of_tendsto_orbit {x : X}
+    (horb : ∀ j : ℕ, Tendsto (fun m => B m (T^[j] x)) atTop (𝓝 (A (T^[j] x)))) (n : ℕ) :
+    Tendsto (fun m => cocycle (B m) T n x) atTop (𝓝 (cocycle A T n x)) := by
+  induction n generalizing x with
+  | zero => simp only [cocycle_zero]; exact tendsto_const_nhds
+  | succ n ih =>
+    simp only [cocycle_succ]
+    -- IH at the shifted base `T x`: the orbit of `T x` is the tail of the orbit of `x`.
+    have horbT : ∀ j : ℕ, Tendsto (fun m => B m (T^[j] (T x))) atTop (𝓝 (A (T^[j] (T x)))) := by
+      intro j
+      rw [← Function.iterate_succ_apply]
+      exact horb (j + 1)
+    exact (ih horbT).mul (horb 0)
+
+omit [NeZero d] in
+/-- **A.e. cocycle continuity from a.e. generator convergence.** Promotes the a.e. generator
+convergence `B m → A` to a.e. convergence of the cocycle iterate `cocycle (B m) T n x →
+cocycle A T n x`, using quasi-measure-preservation of `T` to push the a.e. statement along the
+finite forward orbit sampled by the cocycle. -/
+private theorem ae_tendsto_cocycle_of_ae_tendsto_generator
+    (hT : MeasurePreserving T μ μ)
+    (hconv : ∀ᵐ x ∂μ, Tendsto (fun m => B m x) atTop (𝓝 (A x))) (n : ℕ) :
+    ∀ᵐ x ∂μ, Tendsto (fun m => cocycle (B m) T n x) atTop (𝓝 (cocycle A T n x)) := by
+  -- For each `j`, the a.e. statement holds along `T^[j]`.
+  have horb : ∀ᵐ x ∂μ, ∀ j : ℕ,
+      Tendsto (fun m => B m (T^[j] x)) atTop (𝓝 (A (T^[j] x))) := by
+    rw [ae_all_iff]
+    intro j
+    exact (hT.iterate j).quasiMeasurePreserving.tendsto_ae hconv
+  filter_upwards [horb] with x hx
+  exact tendsto_cocycle_of_tendsto_orbit hx n
+
+/-- **HELPER — a.e. continuity of `log Sprod` from a.e. generator convergence.** If the
+generators converge `μ`-a.e. `B m → A`, then for each fixed iterate count `n` and `k ≤ d`,
+`μ`-a.e. the integrand converges `log Sprod_k(B m, n, x) → log Sprod_k(A, n, x)`.
+
+This is the analytic core of regime 2. The chain is: a.e. `B m → A` propagates to the cocycle
+(`ae_tendsto_cocycle_of_ae_tendsto_generator`); the Gram matrix `Qₙ = cocycleᵀ · cocycle`
+converges (continuity of transpose and matrix multiplication); its sorted eigenvalues converge
+(Weyl perturbation, `tendsto_eigenvalues₀`); the squared singular values equal the Gram
+eigenvalues (`gram_eigenvalues₀_eq_sq_singularValues`), so each `σᵢ(B m)² → σᵢ(A)²`, hence
+`σᵢ(B m) → σᵢ(A)` (`Real.sqrt` continuity, `σᵢ ≥ 0`); the finite product
+`Sprod = ∏_{i<k} σᵢ` converges (`tendsto_finsetProd`); and `Real.log` is continuous at the strictly
+positive limit `Sprod_k(A, n, x) > 0` (`Sprod_pos`).
+
+The measure-preserving hypothesis `hT` is genuinely required: `log Sprod_k(·, n, x)` samples the
+generator along the finite orbit `x, Tx, …, T^{n-1}x`, so an a.e. statement at `x` propagates to
+its orbit only through quasi-measure-preservation of `T`. -/
+theorem ae_tendsto_logSprod_of_ae_tendsto_generator (hA : ∀ x, (A x).det ≠ 0) {k : ℕ}
+    (hk : k ≤ d) {n : ℕ} (hT : MeasurePreserving T μ μ)
+    (hconv : ∀ᵐ x ∂μ, Tendsto (fun m => B m x) atTop (𝓝 (A x))) :
+    ∀ᵐ x ∂μ, Tendsto (fun m => Real.log (Sprod (B m) T k n x)) atTop
+      (𝓝 (Real.log (Sprod A T k n x))) := by
+  filter_upwards [ae_tendsto_cocycle_of_ae_tendsto_generator hT hconv n] with x hcoc
+  -- The Gram matrix converges (transpose and matrix multiplication are continuous).
+  have htr : Tendsto (fun m => Matrix.transpose (cocycle (B m) T n x)) atTop
+      (𝓝 (Matrix.transpose (cocycle A T n x))) :=
+    ((Continuous.matrix_transpose continuous_id).tendsto (cocycle A T n x)).comp hcoc
+  have hgram : Tendsto (fun m => gram (B m) T n x) atTop (𝓝 (gram A T n x)) := by
+    simpa only [gram, Matrix.transpose] using htr.mul hcoc
+  -- Each (top-`k`) squared singular value converges, via the Gram eigenvalues (Weyl perturbation).
+  have hsq : ∀ i : ℕ, i < d →
+      Tendsto (fun m => (Matrix.toEuclideanLin (cocycle (B m) T n x)).singularValues i)
+        atTop (𝓝 ((Matrix.toEuclideanLin (cocycle A T n x)).singularValues i)) := by
+    intro i hi
+    have hic : i < Fintype.card (Fin d) := by rwa [Fintype.card_fin]
+    -- Sorted Gram eigenvalues converge (Weyl).
+    have heig := Weyl.tendsto_eigenvalues₀ (M := fun m => gram (B m) T n x) (M₀ := gram A T n x)
+      (fun m => (gram_posSemidef (B m) T n x).isHermitian) (gram_posSemidef A T n x).isHermitian
+      hgram ⟨i, hic⟩
+    -- Rewrite eigenvalues as `σᵢ²` on both sides.
+    simp only [gram_eigenvalues₀_eq_sq_singularValues] at heig
+    -- `σᵢ = √(σᵢ²)`, so `√` continuity transports the convergence.
+    have hAnn : 0 ≤ (Matrix.toEuclideanLin (cocycle A T n x)).singularValues i :=
+      (Matrix.toEuclideanLin (cocycle A T n x)).singularValues_nonneg i
+    have hsqrt := heig.sqrt
+    rwa [Real.sqrt_sq hAnn,
+      funext (fun m => Real.sqrt_sq
+        ((Matrix.toEuclideanLin (cocycle (B m) T n x)).singularValues_nonneg i))] at hsqrt
+  -- The finite product `Sprod = ∏_{i<k} σᵢ` converges.
+  have hprod : Tendsto (fun m => Sprod (B m) T k n x) atTop (𝓝 (Sprod A T k n x)) := by
+    simp only [Sprod]
+    exact tendsto_finsetProd (Finset.range k)
+      (fun i hi => hsq i (lt_of_lt_of_le (Finset.mem_range.mp hi) hk))
+  -- `Real.log` is continuous at the strictly positive limit `Sprod_k(A, n, x) > 0`.
+  exact hprod.log (ne_of_gt (Sprod_pos hA hk n x))
+
+omit [NeZero d] in
+/-- **PRIMARY — per-`n` integral continuity via uniform integrability (Vitali, regime 2).**
+For a fixed iterate count `n` and `k ≤ d`, if the integrand family `log Sprod_k(B m, n, ·)` is
+uniformly integrable (`hui`), `μ`-a.e.-strongly-measurable (`hBmeas`), and converges `μ`-a.e. to
+`log Sprod_k(A, n, ·)` (`hlim`, with the limit `L¹`, `hAmemLp`), then the integrals converge:
+`∫ log Sprod_k(B m, n) → ∫ log Sprod_k(A, n)`.
+
+This is Vitali's convergence theorem: a.e. convergence with uniform integrability yields
+`L¹`-convergence (`tendsto_Lp_finite_of_tendsto_ae`), which gives integral convergence
+(`tendsto_integral_of_L1'`). Uniform integrability is the honest `L¹`-log control replacing the
+fixed envelope of regime 1; it is **not** derivable from pure `L¹`-log convergence of the
+generators (`log Sprod` is not `L¹`-continuous in `posLog‖·‖`) and is kept as a hypothesis. -/
+theorem tendsto_integral_logSprod_of_unifIntegrable [IsFiniteMeasure μ] {k n : ℕ}
+    (hBmeas : ∀ m, AEStronglyMeasurable (fun x => Real.log (Sprod (B m) T k n x)) μ)
+    (hAmemLp : MemLp (fun x => Real.log (Sprod A T k n x)) 1 μ)
+    (hui : UnifIntegrable (fun m x => Real.log (Sprod (B m) T k n x)) 1 μ)
+    (hlim : ∀ᵐ x ∂μ, Tendsto (fun m => Real.log (Sprod (B m) T k n x)) atTop
+      (𝓝 (Real.log (Sprod A T k n x)))) :
+    Tendsto (fun m => ∫ x, Real.log (Sprod (B m) T k n x) ∂μ) atTop
+      (𝓝 (∫ x, Real.log (Sprod A T k n x) ∂μ)) := by
+  set f : ℕ → X → ℝ := fun m x => Real.log (Sprod (B m) T k n x) with hfdef
+  set g : X → ℝ := fun x => Real.log (Sprod A T k n x) with hgdef
+  -- Vitali: a.e. convergence + uniform integrability ⟹ `L¹`-convergence.
+  have hL1 : Tendsto (fun m => eLpNorm (f m - g) 1 μ) atTop (𝓝 0) :=
+    MeasureTheory.tendsto_Lp_finite_of_tendsto_ae (le_refl 1) one_ne_top hBmeas hAmemLp hui hlim
+  -- Eventually each `f m` is integrable: `eLpNorm (f m - g) 1 μ` is eventually finite, and
+  -- `f m = (f m - g) + g` with `g ∈ L¹`.
+  have hFi : ∀ᶠ m in atTop, Integrable (f m) μ := by
+    have hev : ∀ᶠ m in atTop, eLpNorm (f m - g) 1 μ < ⊤ := by
+      have := (ENNReal.tendsto_atTop_zero.mp hL1) 1 (by norm_num)
+      obtain ⟨N, hN⟩ := this
+      filter_upwards [eventually_ge_atTop N] with m hm
+      exact lt_of_le_of_lt (hN m hm) (by norm_num)
+    filter_upwards [hev] with m hm
+    have hsub : MemLp (f m - g) 1 μ :=
+      ⟨(hBmeas m).sub hAmemLp.aestronglyMeasurable, hm⟩
+    have hfm : MemLp (f m) 1 μ := by
+      have heq : f m = (f m - g) + g := by
+        funext x; simp only [Pi.add_apply, Pi.sub_apply]; ring
+      rw [heq]; exact hsub.add hAmemLp
+    exact (memLp_one_iff_integrable.mp hfm)
+  -- Integral convergence from `L¹`-convergence.
+  exact MeasureTheory.tendsto_integral_of_L1' g (memLp_one_iff_integrable.mp hAmemLp) hFi hL1
+
+/-- **WRAPPER — per-`n` integral continuity from a.e. generator convergence + uniform
+integrability.** Combines the `HELPER` (a.e. generator convergence `B m → A` ⟹ a.e. integrand
+convergence) with the `PRIMARY` Vitali theorem. The output is exactly the per-`n` continuity
+hypothesis `hcont` consumed by `GammaK_upperSemicontinuous`, `topExponent_upperSemicontinuous`,
+and `botExp_lowerSemicontinuous` (those take `hcont` over any countably-generated `NeBot` filter,
+and `atTop` on `ℕ` qualifies). It thus delivers regime-2 semicontinuity with no change to those
+theorems — see `GammaK_upperSemicontinuous_of_ae_unifIntegrable`.
+
+The measure-preserving hypothesis is supplied at the USC call site by `Ergodic.toMeasurePreserving`.
+Uniform integrability remains an explicit hypothesis (the honest `L¹`-log control), not derived
+from pure `L¹`-log convergence of the generators. -/
+theorem tendsto_integral_logSprod_of_ae_unifIntegrable [IsProbabilityMeasure μ]
+    (hA : ∀ x, (A x).det ≠ 0) {k : ℕ} (hk : k ≤ d) {n : ℕ} (hT : MeasurePreserving T μ μ)
+    (hconv : ∀ᵐ x ∂μ, Tendsto (fun m => B m x) atTop (𝓝 (A x)))
+    (hBmeas : ∀ m, AEStronglyMeasurable (fun x => Real.log (Sprod (B m) T k n x)) μ)
+    (hAmemLp : MemLp (fun x => Real.log (Sprod A T k n x)) 1 μ)
+    (hui : UnifIntegrable (fun m x => Real.log (Sprod (B m) T k n x)) 1 μ) :
+    Tendsto (fun m => ∫ x, Real.log (Sprod (B m) T k n x) ∂μ) atTop
+      (𝓝 (∫ x, Real.log (Sprod A T k n x) ∂μ)) :=
+  tendsto_integral_logSprod_of_unifIntegrable hBmeas hAmemLp hui
+    (ae_tendsto_logSprod_of_ae_tendsto_generator hA hk hT hconv)
+
+/-- **Regime-2 upper semicontinuity of the partial sums.** Specializing `GammaK_upperSemicontinuous`
+to the filter `atTop` on `ℕ` with the regime-2 per-`n` continuity from the `WRAPPER`: under a.e.
+generator convergence `B m → A` (`hconv`) and, for each fixed iterate count, a.e.-strong
+measurability (`hBmeas`), an `L¹` limit (`hAmemLp`), and uniform integrability (`hui`) of the
+integrand family, the partial-sum growth rate `Γ_k` is upper semicontinuous:
+`limsup_m Γ_k(B m) ≤ Γ_k(A)`. This shows regime 2 feeds the existing USC machinery with **no change**
+to `GammaK_upperSemicontinuous`.
+
+As always, this is *upper* semicontinuity, not continuity, and uniform integrability is an explicit
+`L¹`-log hypothesis, not a consequence of pure `L¹`-log generator convergence. -/
+theorem GammaK_upperSemicontinuous_of_ae_unifIntegrable [IsProbabilityMeasure μ]
+    (hB : ∀ m, (∀ x, (B m x).det ≠ 0) ∧ Measurable (B m) ∧ IntegrableLogNorm (B m) μ
+      ∧ IntegrableLogNorm (fun x => (B m x)⁻¹) μ)
+    (hA : ∀ x, (A x).det ≠ 0) (hAmeas : Measurable A) (hint : IntegrableLogNorm A μ)
+    (hint' : IntegrableLogNorm (fun x => (A x)⁻¹) μ) (hT : Ergodic T μ) {k : ℕ} (hk : k ≤ d)
+    (hcobdd : IsCoboundedUnder (· ≤ ·) atTop
+      (fun m => gammaK hT (hB m).1 (hB m).2.1 (hB m).2.2.1 (hB m).2.2.2 hk))
+    (hconv : ∀ᵐ x ∂μ, Tendsto (fun m => B m x) atTop (𝓝 (A x)))
+    (hBmeas : ∀ n m, AEStronglyMeasurable (fun x => Real.log (Sprod (B m) T k (n + 1) x)) μ)
+    (hAmemLp : ∀ n, MemLp (fun x => Real.log (Sprod A T k (n + 1) x)) 1 μ)
+    (hui : ∀ n, UnifIntegrable (fun m x => Real.log (Sprod (B m) T k (n + 1) x)) 1 μ) :
+    limsup (fun m => gammaK hT (hB m).1 (hB m).2.1 (hB m).2.2.1 (hB m).2.2.2 hk) atTop
+      ≤ gammaK hT hA hAmeas hint hint' hk :=
+  GammaK_upperSemicontinuous hB hA hAmeas hint hint' hT hk hcobdd
+    (fun n => tendsto_integral_logSprod_of_ae_unifIntegrable hA hk hT.toMeasurePreserving hconv
+      (hBmeas n) (hAmemLp n) (hui n))
+
+end RegimeTwo
 
 end Oseledets
