@@ -27,17 +27,13 @@ hooks:
 > control. If you hit a problem you cannot resolve, describe it in your final answer — the
 > orchestrator handles all git.
 >
-> WARM LEAN FEEDBACK — run the checker yourself after each edit. After you Edit/Write a
-> `.lean` file, run (from the repo root):
-> ```
-> python3 .claude/leancheck/leancheck.py <path/to/File.lean>
-> ```
-> It returns compiler-style diagnostics — `file:line:col: error/warning: …`, any `sorry`, or
-> `✓ no errors` — from a persistent warm REPL: the FIRST call warms it once (~1–3 min), every
-> call after is ~instant. Read that output and iterate by editing again. **Do NOT wait for a
-> report to appear automatically on your edit result** — the passive edit hook does not reliably
-> reach subagents, so always run `leancheck` yourself. (`git` is blocked; `leancheck` and
-> `lake env lean` are allowed.)
+> AUTOMATIC LEAN FEEDBACK — after each Edit/Write of a `.lean` file under `Oseledets/`, a hook
+> automatically runs the warm checker and appends a compiler-style report to your edit's result as
+> context: `file:line:col: error/warning: …`, any `sorry`, or `✓ no errors`. Just read it and
+> iterate by editing again — you do NOT need to run anything. (If an early edit instead says the
+> REPL is "warming in the background", it is still loading (~1–2 min) and the report will appear
+> automatically on a subsequent edit; you MAY run `python3 .claude/leancheck/leancheck.py <file>`
+> once to force a check during that window, but it is optional.) `git` is blocked.
 >
 > You also **cannot end your turn until a cold `lake build` of every module you edited passes**:
 > a Stop hook runs it and, on failure, hands you the cold errors and forces you to keep going.
