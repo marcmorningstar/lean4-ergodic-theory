@@ -24,6 +24,11 @@ import Oseledets.TwoSided.RestrictedCocycle
 import Oseledets.TwoSided.RestrictedExponent
 import Oseledets.TwoSided.Transversality
 import Oseledets.TwoSided.SplittingAssembly
+import Oseledets.Continuous.Flow
+import Oseledets.Continuous.Reduction
+import Oseledets.Continuous.BetweenTimes
+import Oseledets.Continuous.Equivariance
+import Oseledets.Continuous.MultiplicativeErgodicFlow
 
 /-!
 # Axiom audit
@@ -291,3 +296,49 @@ informational dump (it produces no output on success).
 /-- info: 'Oseledets.oseledets_splitting' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms Oseledets.oseledets_splitting
+
+-- Continuous-flow MET, P0 (flow + cocycle reduction identity).
+
+/-- info: 'Oseledets.MeasurePreservingFlow.natCast_eq_iterate' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.MeasurePreservingFlow.natCast_eq_iterate
+
+/-- info: 'Oseledets.FlowCocycle.toCocycle_eq' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.FlowCocycle.toCocycle_eq
+
+-- Continuous-flow MET, P2 (reduction to the discrete theorem at the time-1 map).
+
+/-- info: 'Oseledets.exists_isOseledetsFiltration_timeOne' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.exists_isOseledetsFiltration_timeOne
+
+-- Continuous-flow MET, P1 (between-times sandwich: integer-time → continuous-time growth).
+
+/-- info: 'Oseledets.ae_tendsto_flowError_zero' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.ae_tendsto_flowError_zero
+
+/-- info: 'Oseledets.tendsto_log_norm_atTop_of_discrete' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.tendsto_log_norm_atTop_of_discrete
+
+-- Continuous-flow MET, P3a (flow-equivariance machinery: fixed-time sublinearity, limsup shift).
+
+/-- info: 'Oseledets.ae_tendsto_logNorm_fixedTime_zero' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.ae_tendsto_logNorm_fixedTime_zero
+
+/-- info: 'Oseledets.glim_shift' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.glim_shift
+
+/-- info: 'Oseledets.ae_flow_equivariant' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.ae_flow_equivariant
+
+-- Continuous-flow MET, P3b (the headline theorem: flow-equivariant filtration, continuous-time growth).
+
+/-- info: 'Oseledets.oseledets_flow' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.oseledets_flow
