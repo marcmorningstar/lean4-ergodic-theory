@@ -22,6 +22,7 @@ import Oseledets.TwoSided.KingmanMeans
 import Oseledets.TwoSided.Reflection
 import Oseledets.TwoSided.RestrictedCocycle
 import Oseledets.TwoSided.RestrictedExponent
+import Oseledets.TwoSided.Transversality
 
 /-!
 # Axiom audit
@@ -269,3 +270,17 @@ informational dump (it produces no output on success).
 /-- info: 'Oseledets.ae_limsup_restricted_backward_le' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms Oseledets.ae_limsup_restricted_backward_le
+
+-- Two-sided splitting, P5 (transversality crux + counting bound).
+
+/-- info: 'Oseledets.ae_crux' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.ae_crux
+
+/-- info: 'Oseledets.ae_counting' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.ae_counting
+
+/-- info: 'Oseledets.inf_eq_bot_of_neg_sum' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.inf_eq_bot_of_neg_sum
