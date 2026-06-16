@@ -13,8 +13,9 @@ cmd = (d.get("tool_input") or {}).get("command", "") or ""
 if re.search(r"(^|[\s;&|()])git(\s|$)", cmd):
     sys.stderr.write(
         "BLOCKED: this worker subagent may not run any git command. Do not use version "
-        "control. Edit files and run `lake env lean` only. If you hit a problem you cannot "
-        "resolve, describe it in your final answer so the orchestrator can handle it.\n"
+        "control. Just edit `.lean` files and read the automatic leancheck report appended to "
+        "each edit (no need to run lake/lean). If you hit a problem you cannot resolve, describe "
+        "it in your final answer so the orchestrator can handle it.\n"
     )
     sys.exit(2)
 sys.exit(0)

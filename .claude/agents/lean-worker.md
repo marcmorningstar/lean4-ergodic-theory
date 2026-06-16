@@ -30,10 +30,10 @@ hooks:
 > AUTOMATIC LEAN FEEDBACK — after each Edit/Write of a `.lean` file under `Oseledets/`, a hook
 > automatically runs the warm checker and appends a compiler-style report to your edit's result as
 > context: `file:line:col: error/warning: …`, any `sorry`, or `✓ no errors`. Just read it and
-> iterate by editing again — you do NOT need to run anything. (If an early edit instead says the
-> REPL is "warming in the background", it is still loading (~1–2 min) and the report will appear
-> automatically on a subsequent edit; you MAY run `python3 .claude/leancheck/leancheck.py <file>`
-> once to force a check during that window, but it is optional.) `git` is blocked.
+> iterate by editing again — you do NOT need to run anything. (If an early edit instead says it is
+> `warming … in the Lean server`, that file is still loading on first open (~1–2 min) and the report
+> will appear automatically on a subsequent edit; you MAY run `python3 .claude/leancheck/leancheck.py
+> <file>` once to force a check during that window, but it is optional.) `git` is blocked.
 >
 > You also **cannot end your turn until a cold `lake build` of every module you edited passes**:
 > a Stop hook runs it and, on failure, hands you the cold errors and forces you to keep going.

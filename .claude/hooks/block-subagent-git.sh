@@ -18,9 +18,9 @@ if "/subagents/" in tp:       # this is a worker
     sys.stderr.write(
         "BLOCKED by orchestrator policy: subagents may NOT run any git command "
         "(no add/commit/reset/checkout/restore/stash/clean/rm/push/etc.). Do not use "
-        "version control at all. Edit files and run `lake env lean` only. If you hit a "
-        "problem you cannot resolve, describe it in your final answer so the orchestrator "
-        "can handle it.\n"
+        "version control at all. Just edit `.lean` files and read the automatic leancheck "
+        "report appended to each edit (no need to run lake/lean). If you hit a problem you "
+        "cannot resolve, describe it in your final answer so the orchestrator can handle it.\n"
     )
     sys.exit(2)               # exit 2 = block the tool call, feed stderr to the agent
 sys.exit(0)

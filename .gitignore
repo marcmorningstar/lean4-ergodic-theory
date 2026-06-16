@@ -15,6 +15,10 @@
 .claude/cache/
 .claude/local/
 
+# Python bytecode (leancheck engine + hooks)
+__pycache__/
+*.pyc
+
 # OS-specific
 .DS_Store
 Thumbs.db

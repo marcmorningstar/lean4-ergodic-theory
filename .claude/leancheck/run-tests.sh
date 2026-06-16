@@ -3,7 +3,7 @@
 # network required. Run from anywhere: `.claude/leancheck/run-tests.sh`.
 set -euo pipefail
 cd "$(dirname "$0")/../.."   # -> repo root
-echo "== leancheck.py     (import-strip, exact line remap, response->diagnostics, sorry/clean) =="
+echo "== leancheck.py     (LSP->compiler-style formatting [1-based line/col, first-line], Mathlib guard, per-root key/lock/pid) =="
 python3 .claude/leancheck/leancheck.py --selftest
 echo "== post-edit hook   (Oseledets/.lean target detection, warm/cold context, JSON envelope) =="
 python3 .claude/hooks/post-edit-leancheck.py --selftest

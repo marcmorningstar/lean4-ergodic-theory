@@ -20,16 +20,36 @@ earlier bespoke warm-REPL that was a parade of edge cases (cold-start cutoff, st
   (inherent: loading the import closure; same one-time cost as a cold `lake env lean`).
 - **Warm re-checks are ~instant** (incremental within-file elaboration), and **accurate for existing
   wired files** (the LSP elaborates the file from source against its imports — no self-collision).
+- **Re-checks see your latest edit.** Each re-check first re-syncs the file's *current on-disk content*
+  into the server (a `didChange`) before reading diagnostics. Without this the language server would
+  keep returning the diagnostics from the file's *first* open — i.e. stale results that ignore later
+  edits. (The first iteration after a fresh open is the "warming" note; the re-sync applies to every
+  subsequent check.)
 - **Non-blocking:** a check on a not-yet-warm file returns a "warming" note immediately and elaborates
   it on a background thread; the real diagnostics arrive automatically on the next edit. So the hook
   never blocks the agent and never hits a hook timeout.
+- **Concurrency:** the daemon handles each connection on its own thread and holds *no* global server
+  lock — leanclient is internally thread-safe (its diagnostics wait releases the per-file lock on a
+  condition variable while a dedicated reader thread updates state). So a slow warm/recheck of one
+  file never stalls the accept loop or a concurrent check of another file. The warm uses a generous
+  background timeout (`LEANCHECK_WARM_MAX`, 240s); a re-check is bounded (`LEANCHECK_RECHECK_MAX`,
+  55s) to stay under the post-edit hook's 80s budget — a longer wait returns a "may be incomplete;
+  cold build is authoritative" note rather than a hook timeout.
+- **Robust lifecycle:** the daemon is a per-root **singleton** (an `flock` on `<sock>.lock`), so two
+  racing callers can never spawn — and orphan — a second multi-GB `lake serve`. Liveness is probed by
+  an actual socket *connection*, not by the socket file's mere existence, so a stale socket left by a
+  crashed/SIGKILLed daemon is detected, swept, and the daemon respawned (instead of silently
+  disabling warm feedback). A pidfile (`<sock>.pid`) lets a fresh daemon reap a predecessor's orphaned
+  `lake serve` after an ungraceful death.
 
 ## Pieces
 - `.claude/leancheck/leancheck.py` — engine + CLI:
   - `leancheck <file.lean>` warm diagnostics (non-blocking; talks to the daemon over a Unix socket);
   - `leancheck --cold <file|module>` authoritative `lake build` (the QA gate);
   - `leancheck --warm [file]` start the daemon (with a file, also start warming it); `--stop` clean
-    shutdown (kills `lake serve` + its `lean --server` child via leanclient); `--selftest` offline tests.
+    shutdown — signals the daemon over its socket so leanclient kills `lake serve` + its
+    `lean --server` child (falls back to the pidfile if the socket is already gone; a no-op if neither
+    exists); `--selftest` offline tests.
 - `.claude/hooks/post-edit-leancheck.py` — PostToolUse(Edit|Write|MultiEdit, `Oseledets/**/*.lean`):
   calls leancheck and returns the report as `additionalContext`; if the daemon isn't up yet it spawns
   a detached background start and returns a "warming" note. Logs to `/tmp/leancheck-hook.log`.
@@ -75,14 +95,23 @@ present — true in this devcontainer) since imports resolve from oleans; the da
 client with `prevent_cache_get=True` (the cache fetch is DNS-blocked here and would otherwise stall).
 
 ## Env knobs
-`LEANCHECK_ROOT` [cwd], `LEANCHECK_KEY` [derived per project root], `LEANCHECK_MAXFILES` [8] (max
-files held open in the server before idle ones are closed), `LEANCHECK_HOOK_LOG`
-[/tmp/leancheck-hook.log], `LEANCHECK_ALLOW_MATHLIB_REBUILD` [unset] (set to `1` to opt past the
-Mathlib-rebuild guard and accept a from-scratch compile).
+`LEANCHECK_ROOT` [cwd], `LEANCHECK_KEY` [derived per project root], `LEANCHECK_SOCKDIR` [/tmp]
+(directory for the daemon's `<key>.sock`, `.sock.lock`, `.sock.pid`), `LEANCHECK_MAXFILES` [8] (max
+files held open in the server before idle ones are closed), `LEANCHECK_WARM_MAX` [240] (background
+first-open ceiling, seconds), `LEANCHECK_RECHECK_MAX` [55] (re-check diagnostics-wait ceiling, kept
+under the hook budget), `LEANCHECK_HOOK_LOG` [/tmp/leancheck-hook.log],
+`LEANCHECK_ALLOW_MATHLIB_REBUILD` [unset] (set to `1` to opt past the Mathlib-rebuild guard and
+accept a from-scratch compile).
 
 ## Tests
-`bash .claude/leancheck/run-tests.sh` → all three `--selftest` suites (pure formatting / decision
-logic). End-to-end validated against the real server: clean existing file → `✓ no errors`; a
-deliberate `(1:Nat)=2 := rfl` → error at the correct `line:col`; warm re-check ~instant; clean
-shutdown. The cold `lake build` + guarded `AxiomAudit` remain the authoritative gate, so any
-warm/cold divergence only costs iteration time.
+`bash .claude/leancheck/run-tests.sh` runs all three `--selftest` suites — pure formatting / decision
+logic only (no Lean, no daemon, no network).
+
+End-to-end behavior is validated by a separate live driver (not part of the offline suite, since it
+needs a real `lake serve`). Last run (2026-06-16, against the real server) all green: non-blocking
+warming (`warming` note in <12s); warmed clean file → `✓ no errors`; **edit the file to
+`(1:Nat)=2 := rfl` and the re-check reports `error: Type mismatch` at the right `line:col`** (the
+staleness regression test); edit it back → `✓ no errors`; SIGKILL the daemon → next check sweeps the
+stale socket and respawns; two racing `--daemon` spawns collapse to one survivor (flock); `--stop`
+removes the socket + pidfile; zero leaked `lake serve` processes. The cold `lake build` + guarded
+`AxiomAudit` remain the authoritative gate, so any warm/cold divergence only costs iteration time.
