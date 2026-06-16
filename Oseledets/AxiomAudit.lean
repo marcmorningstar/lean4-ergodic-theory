@@ -21,6 +21,7 @@ import Oseledets.TwoSided.StrongExport
 import Oseledets.TwoSided.KingmanMeans
 import Oseledets.TwoSided.Reflection
 import Oseledets.TwoSided.RestrictedCocycle
+import Oseledets.TwoSided.RestrictedExponent
 
 /-!
 # Axiom audit
@@ -258,3 +259,13 @@ informational dump (it produces no output on success).
 /-- info: 'Oseledets.restLog_backward_kingman' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms Oseledets.restLog_backward_kingman
+
+-- Two-sided splitting, P4b (restricted Kingman constant = λᵢ; backward envelope).
+
+/-- info: 'Oseledets.restricted_const_eq' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.restricted_const_eq
+
+/-- info: 'Oseledets.ae_limsup_restricted_backward_le' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.ae_limsup_restricted_backward_le
