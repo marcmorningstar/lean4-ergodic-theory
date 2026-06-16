@@ -4,6 +4,7 @@
       "Bash(lake env lean *)",
       "Bash(lake build)",
       "Bash(lake build *)",
+      "Bash(python3 *leancheck.py *)",
       "Bash(git add *)",
       "Bash(git commit *)",
       "Bash(firecrawl search *)",

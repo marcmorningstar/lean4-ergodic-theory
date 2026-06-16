@@ -22,7 +22,12 @@ def main():
     proj = os.environ.get("CLAUDE_PROJECT_DIR", os.getcwd())
     leancheck = os.path.join(proj, ".claude", "leancheck", "leancheck.py")
     session = d.get("session_id", "default")
-    env = dict(os.environ, LEANCHECK_KEY=session, LEANCHECK_ROOT=proj)
+    # Use a stable per-repo daemon key (NOT the session id) so that this hook and the
+    # worker's own active `leancheck <file>` calls share the same warm REPL: the hook
+    # then doubles as a warmer for the agent's active checks. (The passive report below
+    # is best-effort; PostToolUse additionalContext does not reliably reach subagent loops,
+    # so workers are told to run the check themselves — see .claude/agents/lean-worker.md.)
+    env = dict(os.environ, LEANCHECK_KEY="oseledets", LEANCHECK_ROOT=proj)
 
     # record the touched module for the Stop cold-gate
     try:

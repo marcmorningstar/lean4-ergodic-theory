@@ -24,7 +24,19 @@ Built on a validated warm-REPL evaluation
   stop. Loop-guard: blocks ≤ `MAX_TRIES` (6), then allows stop with an `UNVERIFIED` banner so a
   stuck state is reported, never hung.
 - `.claude/agents/lean-worker.md` — frontmatter wires the two hooks (alongside the git block) and
-  tells the agent to rely on the automatic feedback and the cold gate instead of calling Lean.
+  tells the agent to run `leancheck <file>` **actively** after each edit, and to rely on the
+  authoritative cold gate.
+
+## Warm-feedback delivery to subagents (measured 2026-06-16)
+The daemon is keyed by `LEANCHECK_KEY` (default `oseledets`) so the PostToolUse hook, the worker's
+active `leancheck <file>` calls, and orchestrator/manual calls all share ONE warm process.
+**Pre-warm it** (`leancheck --warm`) before dispatching workers: the passive PostToolUse report
+only surfaces if the daemon is already warm — otherwise the hook's first-edit call blocks on the
+~1–3 min cold import and is cut off before it can emit, which is why early subagents got no passive
+report and (worse) assumed "clean". With the daemon pre-warmed, BOTH the passive report and the
+active CLI deliver correct diagnostics to subagents (verified end-to-end: clean → error-with-line
+→ clean). Active calls are the robust path; never trust a "clean" claim not backed by a real
+`leancheck`/cold-build result.
 
 ## Deploy (in the MAIN repo, on a FRESH session)
 Hook command paths are absolute `/workspaces/lean4-oseledets/.claude/...` (matching the existing

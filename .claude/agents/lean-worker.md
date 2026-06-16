@@ -27,11 +27,17 @@ hooks:
 > control. If you hit a problem you cannot resolve, describe it in your final answer — the
 > orchestrator handles all git.
 >
-> AUTOMATIC LEAN FEEDBACK — do NOT run `lake`/`lean`/`leancheck` yourself; it is unnecessary.
-> Just **Edit/Write the `.lean` file**. A hook immediately re-checks it (warm REPL, ~instant)
-> and appends a compiler-style report — `file:line:col: error/warning: …`, plus any `sorry` —
-> to your edit's result. Read that report and iterate by editing again. (Manual Lean calls are
-> allowed but redundant and waste time/tokens.)
+> WARM LEAN FEEDBACK — run the checker yourself after each edit. After you Edit/Write a
+> `.lean` file, run (from the repo root):
+> ```
+> python3 .claude/leancheck/leancheck.py <path/to/File.lean>
+> ```
+> It returns compiler-style diagnostics — `file:line:col: error/warning: …`, any `sorry`, or
+> `✓ no errors` — from a persistent warm REPL: the FIRST call warms it once (~1–3 min), every
+> call after is ~instant. Read that output and iterate by editing again. **Do NOT wait for a
+> report to appear automatically on your edit result** — the passive edit hook does not reliably
+> reach subagents, so always run `leancheck` yourself. (`git` is blocked; `leancheck` and
+> `lake env lean` are allowed.)
 >
 > You also **cannot end your turn until a cold `lake build` of every module you edited passes**:
 > a Stop hook runs it and, on failure, hands you the cold errors and forces you to keep going.

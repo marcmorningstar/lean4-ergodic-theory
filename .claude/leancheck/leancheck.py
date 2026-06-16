@@ -38,7 +38,7 @@ Design notes
 import sys, os, json, socket, subprocess, time, argparse, re, atexit, signal
 
 ROOT = os.environ.get("LEANCHECK_ROOT", os.getcwd())
-KEY = os.environ.get("LEANCHECK_KEY", "default")
+KEY = os.environ.get("LEANCHECK_KEY", "oseledets")
 SOCK = os.path.join(os.environ.get("LEANCHECK_SOCKDIR", "/tmp"), f"leancheck-{KEY}.sock")
 WARM_IMPORT = os.environ.get("LEANCHECK_IMPORT", "import Oseledets")
 DEFAULT_SETOPTS = ("autoImplicit false;linter.mathlibStandardSet true;"
