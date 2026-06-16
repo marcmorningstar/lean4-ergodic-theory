@@ -19,6 +19,7 @@ import Oseledets.TwoSided.SpectralRank
 import Oseledets.TwoSided.MeasurableInf
 import Oseledets.TwoSided.StrongExport
 import Oseledets.TwoSided.KingmanMeans
+import Oseledets.TwoSided.Reflection
 
 /-!
 # Axiom audit
@@ -228,3 +229,17 @@ informational dump (it produces no output on success).
 /-- info: 'Oseledets.tendsto_kingman_ergodic_means' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms Oseledets.tendsto_kingman_ergodic_means
+
+-- Two-sided splitting, P6 (exponent reflection: backward spectrum = -forward reversed).
+
+/-- info: 'Oseledets.sum_mu0_eq_neg_sum_lam0' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.sum_mu0_eq_neg_sum_lam0
+
+/-- info: 'Oseledets.reflect_of_counting_and_sum' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.reflect_of_counting_and_sum
+
+/-- info: 'Oseledets.expEnum_eq_neg_rev_of_counting' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.expEnum_eq_neg_rev_of_counting
