@@ -345,8 +345,7 @@ multiplicity profile `i ↦ finrank (W ⊓ V i)` is a.e. equal to a deterministi
 sequence `m : Fin (k+1) → ℕ`. Antitone (not strictly: `W` may capture the same dimension at
 consecutive levels — honest sub-multiplicity). -/
 theorem restricted_inf_finrank_ae_eq [IsProbabilityMeasure μ] (hT : Ergodic T μ)
-    {A : X → Matrix (Fin d) (Fin d) ℝ} (hA : ∀ x, (A x).det ≠ 0) (_hAmeas : Measurable A)
-    (_hint : IntegrableLogNorm A μ) (_hint' : IntegrableLogNorm (fun x => (A x)⁻¹) μ)
+    {A : X → Matrix (Fin d) (Fin d) ℝ} (hA : ∀ x, (A x).det ≠ 0)
     {k : ℕ} {lam : Fin k → ℝ}
     {V : Fin (k + 1) → X → Submodule ℝ (EuclideanSpace ℝ (Fin d))}
     (Wb : InvariantSubbundle μ T A) (hV : IsOseledetsFiltration μ T A k lam V) :
@@ -390,7 +389,7 @@ measurable, and a.e. forms an `A`-equivariant antitone flag from `W` (level `0`)
 (level `last k`), on which every vector of stratum `i` (in `W ⊓ V i.castSucc` but not in
 `W ⊓ V i.succ`) grows at the exact rate `lam i`. This is the non-strict precursor of the
 restricted Oseledets filtration; collapsing the constant-dimension levels turns it into a
-strict flag (`restricted_oseledets_filtration`). -/
+strict flag (`restricted_strict_filtration`). -/
 theorem restricted_flag_structure_ae
     {A : X → Matrix (Fin d) (Fin d) ℝ} (hA : ∀ x, (A x).det ≠ 0)
     {k : ℕ} {lam : Fin k → ℝ}
@@ -516,7 +515,8 @@ private theorem survivingSet_m_const_on_interval {k k' : ℕ} {m : Fin (k + 1) �
     exact h.2
   have hi₁first : ∀ j, j < i₁ → m j ≠ m i₁ := by
     intro j hj hmj
-    have : i₁ ≤ j := Finset.min'_le _ j (by rw [Finset.mem_filter]; exact ⟨Finset.mem_univ _, by rw [hmj, hi₁mem]⟩)
+    have : i₁ ≤ j :=
+      Finset.min'_le _ j (by rw [Finset.mem_filter]; exact ⟨Finset.mem_univ _, by rw [hmj, hi₁mem]⟩)
     exact absurd (lt_of_lt_of_le hj this) (lt_irrefl _)
   have hi₁surv : i₁ ∈ survivingSet m := firstOccurrence_mem_survivingSet hm i₁ hi₁first
   -- `i₁ ≤ p` since `i₁` is the minimal index with that value
@@ -561,9 +561,10 @@ private theorem survivingSet_m_max' {k : ℕ} {m : Fin (k + 1) → ℕ} (hm : An
 
 /-! ### The full restricted Oseledets filtration (strict flag)
 
-This is the deliverable of Stage (ii): a genuine **strict** Oseledets filtration realized
-*inside* the invariant subbundle `W`. Its top level is `W` (not the ambient `⊤`), so it is the
-Oseledets filtration of the restricted sub-cocycle, with all levels lying in `W`.
+This is the full restricted (strict) Oseledets filtration: a genuine **strict** Oseledets
+filtration realized *inside* the invariant subbundle `W`. Its top level is `W` (not the ambient
+`⊤`), so it is the Oseledets filtration of the restricted sub-cocycle, with all levels lying in
+`W`.
 
 **Honest note on packaging.** The non-strict precursor `i ↦ W ⊓ V i` has `W ⊓ V 0 = W`. Hence
 the top level of the strict restricted flag is `W`, which is `⊤` *only when `W = ⊤`*. The
@@ -573,6 +574,20 @@ flag with all levels `≤ W` for a *proper* subbundle `W` cannot satisfy `IsOsel
 directly (top `= W`, strict descending flag to `⊥`, equivariance, exact growth rates, all
 levels `≤ W`) rather than reusing `IsOseledetsFiltration`. -/
 
+/-- **The full restricted (strict) Oseledets filtration.** Collapsing the constant-dimension
+levels of the non-strict precursor `i ↦ W ⊓ V i` (via the first-occurrence `survivingSet` of its
+antitone dimension profile, enumerated by `Finset.orderEmbOfFin`) yields a genuine **strict**
+Oseledets filtration realized *inside* the invariant subbundle `W`. There is a `StrictAnti`
+exponent list `lam' : Fin k' → ℝ` and an everywhere-measurable family `V'` such that, `μ`-a.e.,
+the flag `V'` is strictly descending (`V' i.succ x < V' i.castSucc x`) from its top level
+`V' 0 x = W x` down to `V' (last k') x = ⊥`, is `A`-equivariant, has exact growth rate `lam' i`
+on each stratum, and has all levels lying inside `W` (`V' i x ≤ W x`).
+
+**Honest packaging note.** The top level of the restricted strict flag is `W`, which equals the
+ambient `⊤` only when `W = ⊤`. Since `IsOseledetsFiltration` hard-codes `V 0 = ⊤`, a strict
+restricted flag with all levels `≤ W` for a *proper* subbundle cannot satisfy that predicate
+(it would force `⊤ ≤ W`). This theorem therefore states the restricted-filtration content
+directly (top `= W`) rather than reusing `IsOseledetsFiltration`. -/
 theorem restricted_strict_filtration [IsProbabilityMeasure μ] (hT : Ergodic T μ)
     {A : X → Matrix (Fin d) (Fin d) ℝ} (hA : ∀ x, (A x).det ≠ 0) (hAmeas : Measurable A)
     (hint : IntegrableLogNorm A μ) (hint' : IntegrableLogNorm (fun x => (A x)⁻¹) μ)
@@ -599,7 +614,7 @@ theorem restricted_strict_filtration [IsProbabilityMeasure μ] (hT : Ergodic T �
   obtain ⟨k, lam, V, hV⟩ := oseledets_filtration' hT A hA hAmeas hint hint'
   -- antitone restricted dimension profile `m`
   obtain ⟨m, hmanti, hmae⟩ :=
-    restricted_inf_finrank_ae_eq hT hA hAmeas hint hint' Wb hV
+    restricted_inf_finrank_ae_eq hT hA Wb hV
   -- structural a.e. facts of the non-strict flag
   obtain ⟨hUmeas, hUae⟩ := restricted_flag_structure_ae hA Wb hV
   -- `m (last k) = 0`, read off a single good point
@@ -645,7 +660,7 @@ theorem restricted_strict_filtration [IsProbabilityMeasure μ] (hT : Ergodic T �
     intro a b hab
     refine hV.1 (?_ : (⟨(g a.succ : ℕ) - 1, hstrat_lt a⟩ : Fin k)
       < ⟨(g b.succ : ℕ) - 1, hstrat_lt b⟩)
-    show (g a.succ : ℕ) - 1 < (g b.succ : ℕ) - 1
+    change (g a.succ : ℕ) - 1 < (g b.succ : ℕ) - 1
     -- `a < b ⟹ a.succ < b.succ ⟹ g a.succ < g b.succ`
     have hab' : a.succ < b.succ := by
       rw [Fin.lt_def, Fin.val_succ, Fin.val_succ]; exact Nat.succ_lt_succ (Fin.lt_def.mp hab)

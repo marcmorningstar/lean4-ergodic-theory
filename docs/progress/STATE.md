@@ -29,10 +29,17 @@ uniqueness; top exponent = operator-norm growth rate; a.e.-constant multipliciti
 * `ExteriorCocycle.lean` — exterior/wedge (k-volume) growth via the compound cocycle.
 * `DetIdentity.lean` — trace/determinant identity (`sumAllExp_eq_integral_log_abs_det`).
 * `Inverse.lean` — inverse / time-reversal (`singularValues_inv`, `topExponent_inv_eq_neg_bot`).
-* `Restriction.lean` — restriction to an invariant subbundle.
+* `Restriction.lean` — restriction to an invariant subbundle: sub-spectrum interlacing, and the
+  **full restricted (strict) Oseledets filtration** realized inside the subbundle
+  (`restricted_strict_filtration`, with top level `W` via explicit conjuncts since the ambient
+  `IsOseledetsFiltration` hard-codes `V 0 = ⊤`).
 * `NonErgodic.lean` — non-ergodic relaxation (a.e.-defined exponents).
-* `Regularity.lean` — Fekete inf form + upper/lower semicontinuity of the exponents in the generator.
-* `Singular.lean` — one-sided upper bounds without invertibility.
+* `Regularity.lean` — Fekete inf form, upper/lower semicontinuity of the exponents in the generator,
+  and the **L¹ / uniform-integrability (Vitali) regime** (`tendsto_integral_logSprod_of_unifIntegrable`
+  and the a.e.-convergence helper) feeding the same USC results under a.e. generator convergence.
+* `Singular.lean` — one-sided results without invertibility: `log⁺` upper bounds, their **genuine
+  EReal limits**, and the **bare-log `limsup` = top exponent** sharpening when that exponent is
+  positive (a genuine bare-log limit is false for singular cocycles).
 
 ## Two-sided splitting (`Oseledets/TwoSided/`)
 

@@ -704,10 +704,10 @@ convergence of the *generators* `B m → A`. The latter is purely analytic: it p
 the cocycle (a finite matrix product / orbit composition), the Gram matrix, its sorted
 eigenvalues (Weyl perturbation, `tendsto_eigenvalues₀`), the singular values
 (`gram_eigenvalues₀_eq_sq_singularValues`), and finally `Sprod = ∏ σ` and `Real.log`. This is the
-`HELPER` `ae_tendsto_logSprod_of_ae_tendsto_generator`. The integral continuity is then Vitali's
-convergence theorem (`tendsto_Lp_finite_of_tendsto_ae` + `tendsto_integral_of_L1'`), packaged in
-the `PRIMARY` theorem `tendsto_integral_logSprod_of_unifIntegrable` and combined with the helper in
-the `WRAPPER` `tendsto_integral_logSprod_of_ae_unifIntegrable`.
+a.e. convergence of `log Sprod` in `ae_tendsto_logSprod_of_ae_tendsto_generator`. The integral
+continuity is then Vitali's convergence theorem (`tendsto_Lp_finite_of_tendsto_ae` +
+`tendsto_integral_of_L1'`), packaged in `tendsto_integral_logSprod_of_unifIntegrable` and combined
+with the a.e. generator convergence in `tendsto_integral_logSprod_of_ae_unifIntegrable`.
 
 **Honest caveat (mandatory).** Uniform integrability is an *explicit hypothesis*, not something
 derived from pure `L¹`-log convergence of the generators: `log Sprod` is **not** `L¹`-continuous in
@@ -761,7 +761,7 @@ private theorem ae_tendsto_cocycle_of_ae_tendsto_generator
   filter_upwards [horb] with x hx
   exact tendsto_cocycle_of_tendsto_orbit hx n
 
-/-- **HELPER — a.e. continuity of `log Sprod` from a.e. generator convergence.** If the
+/-- **A.e. convergence of `log Sprod` from a.e. generator convergence.** If the
 generators converge `μ`-a.e. `B m → A`, then for each fixed iterate count `n` and `k ≤ d`,
 `μ`-a.e. the integrand converges `log Sprod_k(B m, n, x) → log Sprod_k(A, n, x)`.
 
@@ -817,7 +817,7 @@ theorem ae_tendsto_logSprod_of_ae_tendsto_generator (hA : ∀ x, (A x).det ≠ 0
   exact hprod.log (ne_of_gt (Sprod_pos hA hk n x))
 
 omit [NeZero d] in
-/-- **PRIMARY — per-`n` integral continuity via uniform integrability (Vitali, regime 2).**
+/-- **Per-`n` integral continuity via uniform integrability (Vitali, regime 2).**
 For a fixed iterate count `n` and `k ≤ d`, if the integrand family `log Sprod_k(B m, n, ·)` is
 uniformly integrable (`hui`), `μ`-a.e.-strongly-measurable (`hBmeas`), and converges `μ`-a.e. to
 `log Sprod_k(A, n, ·)` (`hlim`, with the limit `L¹`, `hAmemLp`), then the integrals converge:
@@ -860,10 +860,11 @@ theorem tendsto_integral_logSprod_of_unifIntegrable [IsFiniteMeasure μ] {k n : 
   -- Integral convergence from `L¹`-convergence.
   exact MeasureTheory.tendsto_integral_of_L1' g (memLp_one_iff_integrable.mp hAmemLp) hFi hL1
 
-/-- **WRAPPER — per-`n` integral continuity from a.e. generator convergence + uniform
-integrability.** Combines the `HELPER` (a.e. generator convergence `B m → A` ⟹ a.e. integrand
-convergence) with the `PRIMARY` Vitali theorem. The output is exactly the per-`n` continuity
-hypothesis `hcont` consumed by `GammaK_upperSemicontinuous`, `topExponent_upperSemicontinuous`,
+/-- **Per-`n` integral continuity from a.e. generator convergence and uniform integrability.**
+Combines `ae_tendsto_logSprod_of_ae_tendsto_generator` (a.e. generator convergence `B m → A` ⟹
+a.e. integrand convergence) with the Vitali theorem `tendsto_integral_logSprod_of_unifIntegrable`.
+The output is exactly the per-`n` continuity hypothesis `hcont` consumed by
+`GammaK_upperSemicontinuous`, `topExponent_upperSemicontinuous`,
 and `botExp_lowerSemicontinuous` (those take `hcont` over any countably-generated `NeBot` filter,
 and `atTop` on `ℕ` qualifies). It thus delivers regime-2 semicontinuity with no change to those
 theorems — see `GammaK_upperSemicontinuous_of_ae_unifIntegrable`.
@@ -871,7 +872,7 @@ theorems — see `GammaK_upperSemicontinuous_of_ae_unifIntegrable`.
 The measure-preserving hypothesis is supplied at the USC call site by `Ergodic.toMeasurePreserving`.
 Uniform integrability remains an explicit hypothesis (the honest `L¹`-log control), not derived
 from pure `L¹`-log convergence of the generators. -/
-theorem tendsto_integral_logSprod_of_ae_unifIntegrable [IsProbabilityMeasure μ]
+theorem tendsto_integral_logSprod_of_ae_unifIntegrable [IsFiniteMeasure μ]
     (hA : ∀ x, (A x).det ≠ 0) {k : ℕ} (hk : k ≤ d) {n : ℕ} (hT : MeasurePreserving T μ μ)
     (hconv : ∀ᵐ x ∂μ, Tendsto (fun m => B m x) atTop (𝓝 (A x)))
     (hBmeas : ∀ m, AEStronglyMeasurable (fun x => Real.log (Sprod (B m) T k n x)) μ)
@@ -883,12 +884,13 @@ theorem tendsto_integral_logSprod_of_ae_unifIntegrable [IsProbabilityMeasure μ]
     (ae_tendsto_logSprod_of_ae_tendsto_generator hA hk hT hconv)
 
 /-- **Regime-2 upper semicontinuity of the partial sums.** Specializing `GammaK_upperSemicontinuous`
-to the filter `atTop` on `ℕ` with the regime-2 per-`n` continuity from the `WRAPPER`: under a.e.
+to the filter `atTop` on `ℕ` with the regime-2 per-`n` continuity from
+`tendsto_integral_logSprod_of_ae_unifIntegrable`: under a.e.
 generator convergence `B m → A` (`hconv`) and, for each fixed iterate count, a.e.-strong
 measurability (`hBmeas`), an `L¹` limit (`hAmemLp`), and uniform integrability (`hui`) of the
 integrand family, the partial-sum growth rate `Γ_k` is upper semicontinuous:
-`limsup_m Γ_k(B m) ≤ Γ_k(A)`. This shows regime 2 feeds the existing USC machinery with **no change**
-to `GammaK_upperSemicontinuous`.
+`limsup_m Γ_k(B m) ≤ Γ_k(A)`. This shows regime 2 feeds the existing USC machinery with
+**no change** to `GammaK_upperSemicontinuous`.
 
 As always, this is *upper* semicontinuity, not continuity, and uniform integrability is an explicit
 `L¹`-log hypothesis, not a consequence of pure `L¹`-log generator convergence. -/
