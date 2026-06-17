@@ -5,7 +5,7 @@ Authors: Marcel Morgenstern
 -/
 import Oseledets.Lyapunov.OseledetsLimit.Limit
 import Oseledets.Cocycle.FurstenbergKesten
-import Oseledets.Ergodic.Kingman
+import Oseledets.Ergodic.Kingman.Core
 
 /-!
 # Singular (one-sided) cocycles: top-exponent upper bounds without invertibility

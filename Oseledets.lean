@@ -3,7 +3,7 @@ import Oseledets.Cocycle.Norm
 import Oseledets.Cocycle.FurstenbergKesten
 import Oseledets.Ergodic.MaximalErgodic
 import Oseledets.Ergodic.Birkhoff
-import Oseledets.Ergodic.Kingman
+import Oseledets.Ergodic.Kingman.Core
 import Oseledets.Lyapunov.ExteriorNorm.Weyl
 import Oseledets.Lyapunov.MeasurableSubspace
 import Oseledets.Lyapunov.Measurable

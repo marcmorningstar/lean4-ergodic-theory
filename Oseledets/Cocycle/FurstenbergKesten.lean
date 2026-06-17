@@ -5,7 +5,7 @@ Authors: Marcel Morgenstern
 -/
 import Oseledets.Cocycle.Basic
 import Oseledets.Cocycle.Norm
-import Oseledets.Ergodic.Kingman
+import Oseledets.Ergodic.Kingman.Core
 import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
 
 /-!

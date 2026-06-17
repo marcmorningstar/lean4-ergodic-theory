@@ -6,7 +6,7 @@ Authors: Marcel Morgenstern
 import Oseledets.Lyapunov.ExteriorNorm.Weyl
 import Oseledets.Lyapunov.Measurable
 import Oseledets.Cocycle.FurstenbergKesten
-import Oseledets.Ergodic.Kingman
+import Oseledets.Ergodic.Kingman.Core
 import Mathlib.Analysis.InnerProductSpace.Adjoint
 import Mathlib.LinearAlgebra.Matrix.PosDef
 import Mathlib.Analysis.CStarAlgebra.Matrix
