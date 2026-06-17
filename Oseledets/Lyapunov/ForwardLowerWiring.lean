@@ -195,16 +195,16 @@ theorem isBoundedUnder_inv_mul_log_norm_cocycle_apply_of_mem_stratum {μ : Measu
 The per-vector liminf lower bound rests on the analytic core
 `log_le_liminf_log_cocycle_apply`: at threshold `c = e^{specList i} > 0`, if the band
 projectors for `(c, ∞)` converge to a limit `P` with `P v ≠ 0`, then
-`specList i = log c ≤ liminf …`.  The
-remaining `IsCoboundedUnder (· ≥ ·)` side-condition is exactly the lower boundedness already
-furnished by `isBoundedUnder_inv_mul_log_norm_cocycle_apply_of_mem_stratum` (a bounded-below
-sequence is cobounded-below).
+`specList i = log c ≤ liminf …`.  The remaining `IsCoboundedUnder (· ≥ ·)` side-condition is
+the lower boundedness furnished by
+`isBoundedUnder_inv_mul_log_norm_cocycle_apply_of_mem_stratum` (a bounded-below sequence is
+cobounded-below).
 
 The band-projector convergence datum (`hP`, `hPv`) is the spectral-band identification of
-`vflag` membership — `v ∉ vflag i.succ` says `v` has a nonzero component in the band at level
-`≥ specList i`, i.e. `P v ≠ 0` for the limit projector at threshold `e^{specList i}`.  That
-identification is taken here as the minimal cleanly-typed hypothesis `hband`; any
-`vflag`-to-band lemma of this shape discharges `hband` directly. -/
+`vflag` membership: `v ∉ vflag i.succ` says `v` has a nonzero component in the band at level
+`≥ specList i`, i.e. `P v ≠ 0` for the limit projector at threshold `e^{specList i}`.  This
+identification appears as the hypothesis `hband`, discharged by any `vflag`-to-band lemma of
+this shape. -/
 
 /-- **Liminf lower bound from band-projector convergence.**  Given, a.e. and per stratum-vector,
 the band projector convergence datum at threshold `e^{specList i}` (`hband`) and the lower
@@ -213,7 +213,7 @@ boundedness of the log-growth sequence
 `specList i ≤ liminf …` holds.
 
 The cobounded-below side-condition of `log_le_liminf_log_cocycle_apply` is supplied by the same
-`IsBoundedUnder (· ≥ ·)` already proved in
+`IsBoundedUnder (· ≥ ·)` from
 `isBoundedUnder_inv_mul_log_norm_cocycle_apply_of_mem_stratum`
 (`IsBoundedUnder.isCoboundedUnder_ge`, using that `atTop` is `NeBot`). -/
 theorem specList_le_liminf_inv_mul_log_norm_cocycle_apply_of_bandProjector [NeZero d]

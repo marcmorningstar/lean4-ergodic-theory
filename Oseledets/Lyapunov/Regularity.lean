@@ -9,15 +9,12 @@ import Mathlib.MeasureTheory.Integral.DominatedConvergence
 import Mathlib.MeasureTheory.Function.UniformIntegrable
 
 /-!
-# Regularity of the Lyapunov exponents in the generating cocycle (item #4)
+# Regularity of the Lyapunov exponents in the generating cocycle
 
-This module is purely *additive* on top of the spectrum object
-`Oseledets.exponents : Fin d → ℝ`, the telescoping growth rate `Oseledets.gammaK`
-(`Oseledets/Lyapunov/ExponentSums.lean`), and the determinant identity
-`Oseledets.sumAllExp_eq_integral_log_abs_det` (`Oseledets/Lyapunov/DetIdentity.lean`). It
-records the **regularity** of the exponents as functions of the generator `A`.
-
-This is the genuinely subtle requested extension. The honest summary is:
+The **regularity** of the Lyapunov exponents as functions of the generator `A`, built on
+the spectrum object `Oseledets.exponents : Fin d → ℝ`, the telescoping growth rate
+`Oseledets.gammaK` (`Oseledets/Lyapunov/ExponentSums.lean`), and the determinant identity
+`Oseledets.sumAllExp_eq_integral_log_abs_det` (`Oseledets/Lyapunov/DetIdentity.lean`).
 
 * **The Fekete infimum representation** `Γ_k = ⨅ n, (∫ log sprod_k(n+1))/(n+1)`
   (`GammaK_eq_iInf`). The normalized integral sequence is the average of a *subadditive*
@@ -38,29 +35,20 @@ This is the genuinely subtle requested extension. The honest summary is:
   *continuous* in the generator is **upper semicontinuous**; hence each `Γ_k` (the sum of the
   top-`k` exponents) and the top exponent `λ₁ = Γ_1` are USC: `limsup_m Γ_k(Aₘ) ≤ Γ_k(A)`. The
   positive-exponent sum `max_k Γ_k` is then USC as a finite maximum of USC functions (a finite
-  `max` of `limsup`s), which we leave to the consumer to assemble from `GammaK_upperSemicontinuous`.
+  `max` of `limsup`s), assembled by the consumer from `GammaK_upperSemicontinuous`.
 
 * **Lower semicontinuity of the bottom exponent** (`botExp_lowerSemicontinuous`). Because
   `Γ_d = ∫ log|det|` is *continuous* (in fact linear in `log|det|`, see the determinant
   identity), and the bottom exponent is `λ_d = Γ_d − Γ_{d-1}` with `Γ_{d-1}` USC, the difference
   is **lower** semicontinuous.
 
-## Honest caveats (these are mandatory and stated in the relevant docstrings)
-
-* **USC, not continuity.** The partial sums `Γ_k` and the positive-exponent sum are only *upper*
-  semicontinuous, not continuous, in the generator. Full continuity of individual exponents
-  *fails* in general: the spectrum can jump as a spectral gap closes.
-* **Individual interior exponents have no semicontinuity.** An interior exponent
-  `λᵢ = Γ_{i+1} − Γ_i` is a *difference* of two USC functions, hence is in general neither USC
-  nor LSC. The bottom exponent is the exception: it is LSC because `Γ_d` is continuous.
-* **The convergence hypothesis is essential.** The semicontinuity statements are stated for the
-  uniform or `L¹`-log convergence regime with a *fixed integrable envelope* dominating
-  `‖Aₘ‖, ‖Aₘ⁻¹‖`. Pointwise generator convergence alone does not suffice (the per-`n` integral
-  continuity step is a dominated-convergence argument that requires domination).
-
-## Main definitions / results
+## Main definitions
 
 * `Oseledets.gammaKInf` — the Fekete infimum `⨅ n, (∫ log sprod_k(n+1))/(n+1)`.
+* `Oseledets.botExp` — the bottom exponent `λ_d = Γ_d − Γ_{d-1}`.
+
+## Main results
+
 * `Oseledets.integral_logSprod_subadditive` — the integral sequence is subadditive.
 * `Oseledets.tendsto_integral_logSprod` — Fekete: the normalized integral sequence converges to
   `gammaKInf`.
@@ -70,8 +58,21 @@ This is the genuinely subtle requested extension. The honest summary is:
   log-integrable envelope (regime 1).
 * `Oseledets.GammaK_upperSemicontinuous` — USC of the top-`k` partial-sum growth rate `Γ_k`.
 * `Oseledets.topExponent_upperSemicontinuous` — USC of the top exponent `λ₁ = Γ_1`.
-* `Oseledets.botExp`, `Oseledets.botExp_eq_exponents_last`,
-  `Oseledets.botExp_lowerSemicontinuous` — the bottom exponent `λ_d = Γ_d − Γ_{d-1}` and its LSC.
+* `Oseledets.botExp_eq_exponents_last`, `Oseledets.botExp_lowerSemicontinuous` — the bottom
+  exponent equals the smallest spectral value, and is lower semicontinuous.
+
+## Implementation notes
+
+* The partial sums `Γ_k` and the positive-exponent sum are only *upper* semicontinuous, not
+  continuous, in the generator. Full continuity of individual exponents fails in general: the
+  spectrum can jump as a spectral gap closes.
+* An interior exponent `λᵢ = Γ_{i+1} − Γ_i` is a *difference* of two USC functions, hence is in
+  general neither USC nor LSC. The bottom exponent is the exception: it is LSC because `Γ_d` is
+  continuous.
+* The semicontinuity statements assume the uniform or `L¹`-log convergence regime with a *fixed
+  integrable envelope* dominating `‖Aₘ‖, ‖Aₘ⁻¹‖`. Pointwise generator convergence alone does not
+  suffice: the per-`n` integral continuity step is a dominated-convergence argument that requires
+  domination.
 -/
 
 open MeasureTheory Filter Topology ENNReal
@@ -121,7 +122,7 @@ section Fekete
 variable [IsProbabilityMeasure μ]
 
 /-- The integral of a measure-preserving composition equals the integral:
-`∫ g (T^[m] x) ∂μ = ∫ g x ∂μ`. (A local copy of the Kingman-file helper, which is private.) -/
+`∫ g (T^[m] x) ∂μ = ∫ g x ∂μ`. -/
 private theorem integral_comp_iterate_logSprod {A : X → Matrix (Fin d) (Fin d) ℝ}
     (hA : ∀ x, (A x).det ≠ 0) (hAmeas : Measurable A) (hT : MeasurePreserving T μ μ)
     (hTmeas : Measurable T) (hint : IntegrableLogNorm A μ)
@@ -233,7 +234,7 @@ theorem tendsto_integral_logSprod {A : X → Matrix (Fin d) (Fin d) ℝ}
 
 end Fekete
 
-/-! ## The ergodic constant equals the Fekete infimum (the crux) -/
+/-! ## The ergodic constant equals the Fekete infimum -/
 
 section Crux
 
@@ -253,7 +254,7 @@ private theorem integral_birkhoffAverage_succ (hmp : MeasurePreserving T μ μ) 
   push_cast
   field_simp
 
-/-- **The crux: the ergodic constant is the Fekete infimum.** `gammaK = gammaKInf`. The
+/-- **The ergodic constant is the Fekete infimum.** `gammaK = gammaKInf`. The
 inequality `gammaK ≤ gammaKInf` is a Fatou estimate on `f_n − L_n ≥ 0` where
 `L_n = −k·birkhoffAverage(log⁺‖A⁻¹‖)` converges a.e. (Birkhoff) to a constant; the reverse
 `gammaKInf ≤ gammaK` is the symmetric Fatou estimate on `U_n − f_n ≥ 0` with
@@ -423,7 +424,7 @@ theorem gammaK_eq_gammaKInf {k : ℕ} (hk : k ≤ d) :
     linarith [hfatou]
   linarith [hlower, hupper]
 
-/-- **The Fekete infimum representation of `Γ_k`** (item #4 foundation). The ergodic growth
+/-- **The Fekete infimum representation of `Γ_k`.** The ergodic growth
 rate equals the infimum, over `n`, of the normalized integrals:
 `Γ_k = ⨅ n, (∫ log sprod_k(n+1))/(n+1)`. This is the representation that makes `Γ_k` an
 infimum of functions *continuous* in the generator, hence upper semicontinuous. -/
@@ -449,7 +450,7 @@ integrand `log sprod_k(B m, n, x) → log sprod_k(A, n, x)` converges, and is do
 
 The a.e. integrand convergence is supplied, e.g., by entrywise a.e. convergence `B m → A`
 through the continuity of the singular-value product `sprod` in the matrix entries; the fixed
-`bound` (e.g. `k·(log⁺‖·‖ + log⁺‖·⁻¹‖)` for a uniform envelope) is the mandatory `L¹`-log
+`bound` (e.g. `k·(log⁺‖·‖ + log⁺‖·⁻¹‖)` for a uniform envelope) is the required `L¹`-log
 domination. **Pointwise generator convergence alone is insufficient**: the dominated-convergence
 theorem requires a fixed integrable envelope. -/
 theorem tendsto_integral_logSprod_of_dominated {k n : ℕ} {bound : X → ℝ}
@@ -481,7 +482,7 @@ such that for *every fixed* `n` the per-`n` integral is continuous along the fil
 (`hcont`, the conclusion of `tendsto_integral_logSprod_of_dominated`). Then the partial-sum
 growth rate `Γ_k` is **upper semicontinuous**: `limsup_i Γ_k(B i) ≤ Γ_k(A)`.
 
-CAVEAT (honest): this is *upper* semicontinuity, **not continuity**. `Γ_k` is an infimum of the
+This is *upper* semicontinuity, **not continuity**. `Γ_k` is an infimum of the
 per-`n` continuous normalized integrals (`GammaK_eq_iInf`); an infimum of continuous functions is
 USC, and the inequality can be strict — full continuity of the partial sums (and a fortiori of
 individual exponents) fails in general when a spectral gap closes. The per-`n` continuity
@@ -516,8 +517,7 @@ theorem GammaK_upperSemicontinuous (hT : Ergodic T μ) [l.IsCountablyGenerated] 
     _ = (∫ x, Real.log (sprod A T k (n + 1) x) ∂μ) / (n + 1) := haconv.limsup_eq
 
 /-- `gammaK` at `k = 1` is the top Lyapunov exponent `topExponent = exponents 0`.
-(Local copy with this argument order; the public form is `Oseledets.gammaK_one_eq_topExponent`
-in `ExteriorCocycle`.) -/
+See also `Oseledets.gammaK_one_eq_topExponent` in `ExteriorCocycle`. -/
 private theorem gammaK_one_eq_topExponent (hT : Ergodic T μ) :
     gammaK hT hA hAmeas hint hint' (Nat.one_le_iff_ne_zero.mpr (NeZero.ne d))
       = topExponent hT hA hAmeas hint hint' := by
@@ -604,7 +604,7 @@ continuity for the top-`(d-1)` sum (`hcont`, supplying USC of `Γ_{d-1}`) and co
 determinant growth `Γ_d = ∫ log|det|` (`hdet`), the bottom exponent is **lower** semicontinuous:
 `botExp(A) ≤ liminf_i botExp(B i)`.
 
-CAVEAT (honest): this LSC is the *opposite* asymmetry to the top exponent's USC, and is special
+This LSC is the *opposite* asymmetry to the top exponent's USC, and is special
 to the bottom exponent: it holds precisely because `Γ_d = ∫ log|det|` is continuous (indeed
 linear) in the generator, whereas a generic *interior* exponent `λᵢ = Γ_{i+1} − Γ_i` is a
 difference of two USC functions and has **no** semicontinuity in either direction. -/
@@ -698,7 +698,7 @@ end BotLSC
 (regime 2, the Vitali route)
 
 The second per-`n` continuity regime replaces the *fixed integrable envelope* of regime 1
-(`tendsto_integral_logSprod_of_dominated`) by the honest `L¹`-log control hypothesis of **uniform
+(`tendsto_integral_logSprod_of_dominated`) by the `L¹`-log control hypothesis of **uniform
 integrability** of the integrand family `log sprod_k(B m, n, ·)`, together with `μ`-a.e.
 convergence of the *generators* `B m → A`. The latter is purely analytic: it propagates through
 the cocycle (a finite matrix product / orbit composition), the Gram matrix, its sorted
@@ -709,12 +709,12 @@ continuity is then Vitali's convergence theorem (`tendsto_Lp_finite_of_tendsto_a
 `tendsto_integral_of_L1'`), packaged in `tendsto_integral_logSprod_of_unifIntegrable` and combined
 with the a.e. generator convergence in `tendsto_integral_logSprod_of_ae_unifIntegrable`.
 
-**Honest caveat (mandatory).** Uniform integrability is an *explicit hypothesis*, not something
+Uniform integrability is an *explicit hypothesis*, not something
 derived from pure `L¹`-log convergence of the generators: `log sprod` is **not** `L¹`-continuous in
 `posLog‖·‖`, so pure `L¹`-log convergence of the generators does **not** imply integral continuity.
 Uniform integrability is the correct `L¹`-log control that, together with a.e. convergence, makes
-the Vitali theorem applicable. Note also that the a.e. *generator*-convergence helper genuinely
-needs `T` to be measure-preserving: the integrand at `x` samples the generator along the finite
+the Vitali theorem applicable. The a.e. *generator*-convergence helper requires
+`T` to be measure-preserving: the integrand at `x` samples the generator along the finite
 orbit `x, Tx, …, T^{n-1}x`, so propagating an a.e. statement from `x` to its orbit requires
 quasi-measure-preservation of `T`. (At the wrapper's call site this is supplied by `Ergodic.T`.) -/
 
@@ -774,7 +774,7 @@ eigenvalues (`gram_eigenvalues₀_eq_sq_singularValues`), so each `σᵢ(B m)² 
 `sprod = ∏_{i<k} σᵢ` converges (`tendsto_finsetProd`); and `Real.log` is continuous at the strictly
 positive limit `sprod_k(A, n, x) > 0` (`sprod_pos`).
 
-The measure-preserving hypothesis `hT` is genuinely required: `log sprod_k(·, n, x)` samples the
+The measure-preserving hypothesis `hT` is required: `log sprod_k(·, n, x)` samples the
 generator along the finite orbit `x, Tx, …, T^{n-1}x`, so an a.e. statement at `x` propagates to
 its orbit only through quasi-measure-preservation of `T`. -/
 theorem ae_tendsto_logSprod_of_ae_tendsto_generator (hA : ∀ x, (A x).det ≠ 0) {k : ℕ}
@@ -825,7 +825,7 @@ uniformly integrable (`hui`), `μ`-a.e.-strongly-measurable (`hBmeas`), and conv
 
 This is Vitali's convergence theorem: a.e. convergence with uniform integrability yields
 `L¹`-convergence (`tendsto_Lp_finite_of_tendsto_ae`), which gives integral convergence
-(`tendsto_integral_of_L1'`). Uniform integrability is the honest `L¹`-log control replacing the
+(`tendsto_integral_of_L1'`). Uniform integrability is the `L¹`-log control replacing the
 fixed envelope of regime 1; it is **not** derivable from pure `L¹`-log convergence of the
 generators (`log sprod` is not `L¹`-continuous in `posLog‖·‖`) and is kept as a hypothesis. -/
 theorem tendsto_integral_logSprod_of_unifIntegrable [IsFiniteMeasure μ] {k n : ℕ}
@@ -866,11 +866,11 @@ a.e. integrand convergence) with the Vitali theorem `tendsto_integral_logSprod_o
 The output is exactly the per-`n` continuity hypothesis `hcont` consumed by
 `GammaK_upperSemicontinuous`, `topExponent_upperSemicontinuous`,
 and `botExp_lowerSemicontinuous` (those take `hcont` over any countably-generated `NeBot` filter,
-and `atTop` on `ℕ` qualifies). It thus delivers regime-2 semicontinuity with no change to those
-theorems — see `GammaK_upperSemicontinuous_of_ae_unifIntegrable`.
+and `atTop` on `ℕ` qualifies), so it feeds the regime-2 semicontinuity statement
+`GammaK_upperSemicontinuous_of_ae_unifIntegrable` directly.
 
 The measure-preserving hypothesis is supplied at the USC call site by `Ergodic.toMeasurePreserving`.
-Uniform integrability remains an explicit hypothesis (the honest `L¹`-log control), not derived
+Uniform integrability remains an explicit hypothesis (the `L¹`-log control), not derived
 from pure `L¹`-log convergence of the generators. -/
 theorem tendsto_integral_logSprod_of_ae_unifIntegrable [IsFiniteMeasure μ]
     (hA : ∀ x, (A x).det ≠ 0) {k : ℕ} (hk : k ≤ d) {n : ℕ} (hT : MeasurePreserving T μ μ)
@@ -889,10 +889,10 @@ to the filter `atTop` on `ℕ` with the regime-2 per-`n` continuity from
 generator convergence `B m → A` (`hconv`) and, for each fixed iterate count, a.e.-strong
 measurability (`hBmeas`), an `L¹` limit (`hAmemLp`), and uniform integrability (`hui`) of the
 integrand family, the partial-sum growth rate `Γ_k` is upper semicontinuous:
-`limsup_m Γ_k(B m) ≤ Γ_k(A)`. This shows regime 2 feeds the existing USC machinery with
-**no change** to `GammaK_upperSemicontinuous`.
+`limsup_m Γ_k(B m) ≤ Γ_k(A)`. Regime 2 thus feeds the same USC statement
+`GammaK_upperSemicontinuous`.
 
-As always, this is *upper* semicontinuity, not continuity, and uniform integrability is an explicit
+This is *upper* semicontinuity, not continuity, and uniform integrability is an explicit
 `L¹`-log hypothesis, not a consequence of pure `L¹`-log generator convergence. -/
 theorem GammaK_upperSemicontinuous_of_ae_unifIntegrable [IsProbabilityMeasure μ]
     (hB : ∀ m, (∀ x, (B m x).det ≠ 0) ∧ Measurable (B m) ∧ IntegrableLogNorm (B m) μ

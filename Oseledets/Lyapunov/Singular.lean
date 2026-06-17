@@ -10,11 +10,11 @@ import Oseledets.Ergodic.Kingman
 /-!
 # Singular (one-sided) cocycles: top-exponent upper bounds without invertibility
 
-This module records the **honest, one-sided** Lyapunov data available for a
+This module develops the one-sided Lyapunov data available for a
 **possibly-singular** matrix cocycle, i.e. a generator `A : X → Matrix (Fin d) (Fin d) ℝ`
-that is **not** assumed everywhere invertible (`det A ≠ 0` is *dropped*) and for which only
-the *forward* integrability `IntegrableLogNorm A μ` (`log⁺‖A‖ ∈ L¹`) is assumed (the inverse
-integrability `IntegrableLogNorm (fun x => (A x)⁻¹) μ` is *dropped*).
+that is **not** assumed everywhere invertible (no `det A ≠ 0`) and for which only
+the *forward* integrability `IntegrableLogNorm A μ` (`log⁺‖A‖ ∈ L¹`) is assumed (no inverse
+integrability `IntegrableLogNorm (fun x => (A x)⁻¹) μ`).
 
 Submultiplicativity of the operator norm holds with **no invertibility hypothesis**
 (`Matrix.l2_opNorm_mul`), and the positive part `log⁺ = Real.posLog` of a product is
@@ -23,7 +23,7 @@ subadditive (`Real.posLog_mul`). Hence the **non-negative** cocycle
 automatically bounded below by `0`, so its normalized integrals are bounded below for free —
 no `log⁺‖A⁻¹‖` is needed to keep the Furstenberg–Kesten/Kingman limit finite from below.
 Feeding it to `tendsto_kingman_ergodic` produces an a.e.-constant **forward top value**
-`λ₁⁺ := lim (1/n) log⁺‖A⁽ⁿ⁾(x)‖`, and since `log t ≤ log⁺ t` we obtain the genuine upper bound
+`λ₁⁺ := lim (1/n) log⁺‖A⁽ⁿ⁾(x)‖`, and since `log t ≤ log⁺ t` this yields the upper bound
 
 `∀ᵐ x, limsup (fun n => (1/n) log‖A⁽ⁿ⁾(x)‖) ≤ λ₁⁺`.
 
@@ -32,23 +32,6 @@ singular-value product `sprod` (whose submultiplicativity `sprod_submul` *also* 
 invertibility), giving an a.e.-constant top-`k` volume value `Γ_k⁺` with the matching
 upper bound `limsup (1/n) log sprod_k ≤ Γ_k⁺`.
 
-## Scope and caveats (read carefully)
-
-* These are **one-sided UPPER bounds only**. There is **no Oseledets filtration**, **no exact
-  exponents**, and **no lower bound** for a singular cocycle: a singular generator can collapse
-  directions, so `(1/n) log‖A⁽ⁿ⁾‖` need not converge, and the *true* limit may live in
-  `[-∞, ∞)`. We bound the `limsup` from above by the *forward* top value `λ₁⁺`, which is the
-  `log⁺` (not `log`) Furstenberg–Kesten constant.
-* `λ₁⁺` and `Γ_k⁺` are the limits of the **positive parts** `log⁺‖A⁽ⁿ⁾‖`, `log⁺ sprod_k`. They
-  coincide with the usual exponents whenever the latter are `≥ 0`; when the cocycle is
-  asymptotically contracting they are pinned at `0` and the bound `limsup log-growth ≤ λ₁⁺`
-  remains correct (the true growth is then `≤ 0`).
-* This module **drops** both `∀ x, (A x).det ≠ 0` and `IntegrableLogNorm (fun x => (A x)⁻¹) μ`.
-  Everything here uses *only* the forward hypothesis `IntegrableLogNorm A μ`.
-* Ergodicity (via `tendsto_kingman_ergodic`) is still used to make `λ₁⁺`, `Γ_k⁺` a.e.
-  constant; a non-ergodic variant would replace these by invariant measurable functions
-  (`tendsto_kingman`), not pursued here.
-
 ## Main results
 
 * `Oseledets.isSubadditiveCocycle_posLogNorm` — `log⁺‖A⁽ⁿ⁾‖` is a subadditive cocycle, no
@@ -56,11 +39,27 @@ upper bound `limsup (1/n) log sprod_k ≤ Γ_k⁺`.
 * `Oseledets.integrable_posLogNorm_cocycle`, `Oseledets.bddBelow_posLogNorm` — the Kingman
   provisos, discharged from `IntegrableLogNorm A μ` alone.
 * `Oseledets.tendsto_top_posLogNorm` — the a.e.-constant forward top value `λ₁⁺`.
-* `Oseledets.limsup_logNorm_le_top` — **the headline upper bound**
+* `Oseledets.limsup_logNorm_le_top` — the upper bound
   `limsup (1/n) log‖A⁽ⁿ⁾‖ ≤ λ₁⁺`.
 * `Oseledets.isSubadditiveCocycle_posLogSprod`, `Oseledets.integrable_posLogSprod`,
   `Oseledets.tendsto_top_posLogSprod`, `Oseledets.limsup_logSprod_le_top` — the analogous
   top-`k` volume statements via `sprod_submul`.
+
+## Implementation notes
+
+* These are **one-sided upper bounds only**. There is no Oseledets filtration, no exact
+  exponents, and no lower bound for a singular cocycle: a singular generator can collapse
+  directions, so `(1/n) log‖A⁽ⁿ⁾‖` need not converge, and the limit may live in
+  `[-∞, ∞)`. The `limsup` is bounded above by the *forward* top value `λ₁⁺`, which is the
+  `log⁺` (not `log`) Furstenberg–Kesten constant.
+* `λ₁⁺` and `Γ_k⁺` are the limits of the **positive parts** `log⁺‖A⁽ⁿ⁾‖`, `log⁺ sprod_k`. They
+  coincide with the usual exponents whenever the latter are `≥ 0`; when the cocycle is
+  asymptotically contracting they are pinned at `0` and the bound `limsup log-growth ≤ λ₁⁺`
+  remains correct (the true growth is then `≤ 0`).
+* The development uses neither `∀ x, (A x).det ≠ 0` nor `IntegrableLogNorm (fun x => (A x)⁻¹) μ`;
+  only the forward hypothesis `IntegrableLogNorm A μ` is needed.
+* Ergodicity (via `tendsto_kingman_ergodic`) makes `λ₁⁺`, `Γ_k⁺` a.e. constant; a non-ergodic
+  variant replaces these by invariant measurable functions (`tendsto_kingman`).
 -/
 
 open MeasureTheory Filter Topology
@@ -190,7 +189,7 @@ theorem tendsto_top_posLogNorm [IsProbabilityMeasure μ] (hT : Ergodic T μ)
     (fun n => integrable_posLogNorm_cocycle hmp hAmeas hTmeas hint n)
     (bddBelow_posLogNorm A)
 
-/-- **Headline upper bound (singular top exponent).** For an ergodic measure-preserving `T` and
+/-- **Upper bound on the singular top exponent.** For an ergodic measure-preserving `T` and
 a **possibly-singular** measurable generator with `log⁺‖A‖ ∈ L¹` (and *no* invertibility, *no*
 inverse integrability), there is a constant `λ₁⁺` such that for `μ`-a.e. `x`
 
@@ -339,21 +338,19 @@ theorem limsup_logSprod_le_top [IsProbabilityMeasure μ] [NeZero d] (hT : Ergodi
   · simp [hn]
   · exact mul_le_mul_of_nonneg_left (log_le_posLog _) (by positivity)
 
-/-! ### Strengthening: `EReal`-limit packaging and the exact `limsup` of the genuine log
+/-! ### `EReal`-limit packaging and the exact `limsup` of the genuine log
 
-The results above bound `limsup (1/n) log‖A⁽ⁿ⁾‖ ≤ λ₁⁺` in `EReal`. Below we strengthen this.
-The `log⁺` sequence has a genuine `ℝ`-limit (`tendsto_top_posLogNorm`), so its `EReal`-coercion
-also converges (`tendsto_top_posLogNorm_ereal`), and its `EReal`-`limsup` and `liminf` both equal
-`λ₁⁺` (`limsup_eq_liminf_posLogNorm`). The substantive new content is
-`limsup_logNorm_eq_top_of_pos`: when the forward top value `λ₁⁺` is **strictly positive**, the
-`limsup` of the *genuine*
-`(1/n) log‖A⁽ⁿ⁾‖` (not `log⁺`) is exactly `λ₁⁺`. This is the strongest honest statement available
-for a singular cocycle: a genuine *limit* of `(1/n) log‖A⁽ⁿ⁾‖` is **false** in general (the liminf
-may be strictly below the limsup, even `−∞`), so we identify only the `limsup`, and only when
-`λ₁⁺ > 0` (the contracting case `λ₁⁺ = 0` genuinely breaks the equality, hence the hypothesis is
-essential). -/
+The results above bound `limsup (1/n) log‖A⁽ⁿ⁾‖ ≤ λ₁⁺` in `EReal`. The `log⁺` sequence has an
+`ℝ`-limit (`tendsto_top_posLogNorm`), so its `EReal`-coercion also converges
+(`tendsto_top_posLogNorm_ereal`), and its `EReal`-`limsup` and `liminf` both equal `λ₁⁺`
+(`limsup_eq_liminf_posLogNorm`). The sharper statement `limsup_logNorm_eq_top_of_pos` shows that,
+when the forward top value `λ₁⁺` is **strictly positive**, the `limsup` of the *genuine*
+`(1/n) log‖A⁽ⁿ⁾‖` (not `log⁺`) is exactly `λ₁⁺`. A genuine *limit* of `(1/n) log‖A⁽ⁿ⁾‖` is false in
+general for a singular cocycle (the liminf may be strictly below the limsup, even `−∞`), so only
+the `limsup` is identified, and only when `λ₁⁺ > 0`: the contracting case `λ₁⁺ = 0` breaks the
+equality, so the positivity hypothesis is essential. -/
 
-/-- **Tiny helper.** When `log t` is already non-negative, its positive part is itself:
+/-- When `log t` is already non-negative, its positive part is itself:
 `log⁺ t = log t`. From `Real.posLog_def` and `max_eq_right`. -/
 private theorem posLog_eq_log_of_log_nonneg {t : ℝ} (h : 0 ≤ Real.log t) :
     Real.posLog t = Real.log t := by

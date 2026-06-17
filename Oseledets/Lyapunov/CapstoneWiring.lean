@@ -14,13 +14,15 @@ import Oseledets.Cocycle.Basic
 /-!
 # The per-vector spectral upper bound on the limit slow space
 
-This file combines the deterministic reverse-side overlap transfer of Ruelle
-(`Oseledets/Lyapunov/RuelleCore.lean`, `Oseledets/Lyapunov/RuelleReverse.lean`) with the
-almost-everywhere cocycle infrastructure (`OseledetsLimit.lean`, `Forward.lean`, `ForwardV.lean`)
-into the per-vector spectral upper bound for a vector in the limit slow space `vslow`:
+For an ergodic cocycle `A⁽ⁿ⁾ = cocycle A T n` of invertible matrices over `(X, μ, T)`, a
+vector in the limit slow space `vslow A T (exp t) x` has normalized log-growth bounded above
+by the threshold `t`:
 
   `∀ᵐ x, ∀ t, ∀ v ∈ vslow A T (exp t) x, v ≠ 0 →`
   `      limsup (1/n) log ‖A⁽ⁿ⁾ v‖ ≤ t`.
+
+The reverse-side overlap transfer of `Oseledets.RuelleCofactor` combines with the
+almost-everywhere singular-value asymptotics to yield this bound.
 
 ## Main results
 
@@ -32,32 +34,25 @@ into the per-vector spectral upper bound for a vector in the limit slow space `v
   transposed-graded reverse decay.
 * `Oseledets.limsup_le_of_mem_vslow`: the per-vector spectral upper bound itself.
 
-## Strategy
+## Implementation notes
 
-The terminal theorem `limsup_le_of_mem_vslow` is proved by assembly:
+The bound `limsup_le_of_mem_vslow` follows from the envelope criterion
+`limsup_inv_mul_log_norm_cocycle_apply_le`. Its two side conditions hold outright:
+positivity `0 < ‖A⁽ⁿ⁾ v‖` for every `n` from `cocycle_apply_ne_zero` (`det (A x) ≠ 0` makes
+`A⁽ⁿ⁾` invertible, hence injective on `v ≠ 0`), and the `IsCoboundedUnder (· ≤ ·)` condition
+from a bounded-below lower bound (`isCoboundedUnder_le_of_boundedUnder_ge`).
 
-1. The two side conditions of the envelope criterion
-   `Oseledets.limsup_inv_mul_log_norm_cocycle_apply_le` are discharged outright:
-   * positivity `0 < ‖A⁽ⁿ⁾ v‖` for *every* `n` from `cocycle_apply_ne_zero`
-     (`det (A x) ≠ 0` makes `A⁽ⁿ⁾` invertible, hence injective on `v ≠ 0`);
-   * the `IsCoboundedUnder (· ≤ ·)` side condition from a bounded-below lower bound
-     (`isCoboundedUnder_le_of_boundedUnder_ge`), itself from the operator lower sandwich.
-
-2. The criterion is fed the per-index envelope `specTerm ≤ exp(n(2t + ε))` for every spectral
-   index `j`.  Slow indices (`lam j ≤ t`) are handled by `specTerm_envelope_slow`.  Fast
-   indices (`t < lam j`) rest on Ruelle's chain of singular-value estimates, entering through
-   two hypotheses:
-   * `hfwd`, the forward graded overlap bound, uniform in the band index: the level-increasing
-     entries of the change of basis between the limit eigenbasis and the time-`n` Gram
-     eigenbasis decay at the graded rate (the forward chain of Ruelle's Lemma 1.4);
-   * `hbridge`, the band-limit bridge from the *reverse* graded entry bound to the fast-index
-     `specTerm` envelope (see `tendsto_bandProjector_of_gap` in `OseledetsLimit.lean`).
-
-   The forward bound is converted into the reverse bound by `reverse_graded_overlap_bound`,
-   which consumes the hypothesis `hrev` — Ruelle's reverse-side cofactor bound for orthogonal
-   matrices with graded forward decay.  The exact statement required is proved as
-   `Oseledets.RuelleCofactor.entry_reverse_bound_of_orthogonal` in
-   `Oseledets/Lyapunov/RuelleReverse.lean`.
+The criterion takes the per-index envelope `specTerm ≤ exp(n(2t + ε))` for every spectral
+index `j`. Slow indices (`lam j ≤ t`) follow from `specTerm_envelope_slow`. Fast indices
+(`t < lam j`) rest on Ruelle's chain of singular-value estimates, entering through two
+hypotheses: `hfwd`, the forward graded overlap bound (the level-increasing entries of the
+change of basis between the limit eigenbasis and the time-`n` Gram eigenbasis decay at the
+graded rate, the forward chain of Ruelle's Lemma 1.4); and `hbridge`, the band-limit bridge
+from the reverse graded entry bound to the fast-index `specTerm` envelope (via
+`tendsto_bandProjector_of_gap`). The forward bound is converted into the reverse bound by
+`reverse_graded_overlap_bound`, which consumes `hrev`, Ruelle's reverse-side cofactor bound
+for orthogonal matrices with graded forward decay
+(`Oseledets.RuelleCofactor.entry_reverse_bound_of_orthogonal`).
 
 ## References
 
@@ -191,19 +186,18 @@ theorem reverse_graded_overlap_bound
 
 /-! ## The per-vector spectral upper bound
 
-Everything is derived from the infrastructure above except the genuinely Ruelle-dependent
-content, which enters through three hypotheses:
+The Ruelle-dependent content enters through three hypotheses:
 
 * `hrev` — Ruelle's reverse-side cofactor bound
-  (`Oseledets.RuelleCofactor.entry_reverse_bound_of_orthogonal`), taken as a hypothesis parameter
-  with the exact statement needed;
+  (`Oseledets.RuelleCofactor.entry_reverse_bound_of_orthogonal`), with the exact statement
+  needed;
 * `hfwd` — the forward graded overlap bound, uniform in the band index, the output of the
   forward chain of Ruelle's Lemma 1.4 (`Oseledets.RuelleCofactor.SVDData.oneStep_sandwich` and
   `Oseledets.RuelleCofactor.chain_leakage_exp`, the full pairwise gap);
 * `hbridge` — the band-limit bridge: from the reverse graded entry bound to the fast-index
   `specTerm` envelope, via the band-limit identification `tendsto_bandProjector_of_gap`.
 
-The *slow* indices (`lam j ≤ t`) are discharged with no Ruelle input by
+The slow indices (`lam j ≤ t`) need no Ruelle input; they follow from
 `specTerm_envelope_slow`.
 -/
 

@@ -18,13 +18,13 @@ This module identifies that constant with the limit of the normalized integral m
 `(∫ g (n+1)) / (n+1)`, which exists by Fekete's lemma applied to the subadditive sequence
 `n ↦ ∫ gₙ`.
 
-## Main result
+## Main statements
 
 * `Oseledets.tendsto_kingman_ergodic_means`: there is a single constant `c` that is *both* the
   limit of the integral means `(∫ g (n+1)) / (n+1)` *and* the `μ`-a.e. limit of the normalized
   cocycle `(n : ℝ)⁻¹ • gₙ`.
 
-## Strategy
+## Implementation notes
 
 The two halves `c ≤ L` and `c ≥ L` of the identification `c = L := lim (∫ gₙ)/n` are proved
 separately.

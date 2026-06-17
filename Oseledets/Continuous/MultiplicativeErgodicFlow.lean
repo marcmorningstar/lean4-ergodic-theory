@@ -12,13 +12,13 @@ import Oseledets.Lyapunov.Corollaries
 /-!
 # The continuous-flow Oseledets multiplicative ergodic theorem
 
-This file assembles the **headline theorem** of the continuous-flow Oseledets multiplicative
-ergodic theorem (MET): `Oseledets.oseledets_flow`. It is the continuous-time analogue of the
-discrete-time target `Oseledets.oseledets_filtration`, stated over a measure-preserving
-one-parameter flow `φ` (`Oseledets.MeasurePreservingFlow`) and a continuous-time linear
-cocycle `A` (`Oseledets.FlowCocycle`).
+This file contains the continuous-flow Oseledets multiplicative ergodic theorem (MET):
+`Oseledets.oseledets_flow`. It is the continuous-time analogue of the discrete-time target
+`Oseledets.oseledets_filtration`, stated over a measure-preserving one-parameter flow `φ`
+(`Oseledets.MeasurePreservingFlow`) and a continuous-time linear cocycle `A`
+(`Oseledets.FlowCocycle`).
 
-The proof is a pure assembly of four already-proved continuous-flow ingredients:
+The proof combines four continuous-flow ingredients:
 
 * **Reduction** (`Oseledets.exists_isOseledetsFiltration_timeOne`): the discrete MET applied to
   the generator `A 1` over the ergodic time-`1` dynamics `φ 1` produces an Oseledets filtration
@@ -35,7 +35,7 @@ The proof is a pure assembly of four already-proved continuous-flow ingredients:
   growth rate of a vector forces the *continuous-time* growth rate `t⁻¹ log ‖A t x v‖` to the
   same limit as `t → ∞`.
 
-## Main result
+## Main statements
 
 * `Oseledets.oseledets_flow`: the continuous-flow Oseledets MET. For an ergodic
   (at time `1`) measure-preserving flow `φ` on a probability space and a continuous-time linear

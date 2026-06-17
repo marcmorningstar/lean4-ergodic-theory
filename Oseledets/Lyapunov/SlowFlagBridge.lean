@@ -9,29 +9,37 @@ import Oseledets.Lyapunov.SpectralMeasurable
 /-!
 # The everywhere-measurable slow filtration `vprime` and the identification `hae`
 
-This module discharges the `vprime`/`hmeas'`/`hae` inputs of
+This module provides the `vprime`/`hmeas'`/`hae` inputs of
 `Oseledets.oseledets_filtration_of_interfaces'`.
 
-## The construction
+## Main results
+
+* `slowCutoff`, `vprime` — the explicit deterministic-cutoff slow family.
+* `measurableSubspace_vprime` — `MeasurableSubspace` for every level, with no a.e. hypothesis.
+* `vprime_eq_vassembled_of_slowflag` — `hae` from `hslowflag` and `hspec`.
+
+## Implementation notes
+
+### The construction
 
 `vprime` is the deterministic-index reindexing of the **slow spectral filtration** `vslow`:
 for an index `i : Fin (numExp lam0 d + 1)`,
 
-* on the interior `(i : ℕ) < numExp lam0 d` we take `vslow` at the deterministic cutoff
+* on the interior `(i : ℕ) < numExp lam0 d` it is `vslow` at the deterministic cutoff
   `slowCutoff lam0 d i := expEnum lam0 d ⟨i, _⟩` (the `i`-th descending exponent), the natural
   threshold matching the `i`-th `vflag` stratum (whose level is `lambdaSublevel … (specList i)`
   and, under the ergodic identification `specList = expEnum`, that is exactly `expEnum lam0 d i`);
-* at the last index `i = numExp lam0 d` we take the everywhere-`⊥` family.
+* at the last index `i = numExp lam0 d` it is the everywhere-`⊥` family.
 
-Crucially `vprime` is built **only** from `vslow`, which is everywhere-defined and
-everywhere-measurable, so `hmeas' : ∀ i, MeasurableSubspace (vprime i)` is **unconditional**
-(it uses only `measurableSubspace_vslow` fed `measurable_slowProjector`).
+`vprime` is built only from `vslow`, which is everywhere-defined and everywhere-measurable, so
+`hmeas' : ∀ i, MeasurableSubspace (vprime i)` carries no a.e. hypothesis (it uses only
+`measurableSubspace_vslow` fed `measurable_slowProjector`).
 
-## The identification `hae` (`vslow = vflag` a.e. levelwise)
+### The identification `hae` (`vslow = vflag` a.e. levelwise)
 
-The mathematical content `vprime i x = vassembled A T (numExp lam0 d) i x` a.e. is the levelwise
-identification of the slow spectral filtration with the limsup flag.  It factors through the single
-clean a.e. hypothesis
+The content `vprime i x = vassembled A T (numExp lam0 d) i x` a.e. is the levelwise
+identification of the slow spectral filtration with the limsup flag.  It factors through the
+single a.e. hypothesis
 
   `hslowflag : ∀ᵐ x, ∀ t : ℝ, vslow A T (Real.exp t) x = lambdaSublevel A T x t`
 
@@ -39,25 +47,16 @@ clean a.e. hypothesis
 exponential change of scale**: `vslow`'s threshold cuts the spectrum of the limit matrix
 `Λ = lim (Qₙ)^{1/2n}` whose eigenvalues are `e^{λᵢ}` (exp scale), while `lambdaSublevel`'s
 threshold cuts the growth function `lambdaBar` whose values are the exponents `λᵢ` themselves
-(log scale).  This `hslowflag` packages the two genuine inclusions:
+(log scale).  This `hslowflag` packages the two inclusions:
 
 * `lambdaSublevel ⊆ vslow` — the *growth-slowness ⟹ membership in the Λ-slow space*
   direction (via `overlap_limsup_le_of_lambdaBar` / `limsup_log_norm_cocycle_eq_lambdaBar`);
 * `vslow ⊆ lambdaSublevel` — the per-vector **spectral upper bound** (`v` in the Λ-slow space at
   level `e^t` ⟹ `lambdaBar v ≤ t`), following Ruelle's Prop. 1.3.
 
-So `hslowflag` is the *minimal* cleanly-typed datum: a
-`vslow (exp t) = lambdaSublevel t` lemma discharges `hslowflag` verbatim, and `hae`
-follows from it together with the deterministic `vassembled` cast
-bookkeeping and the ergodic `hspec` alignment (the same `hspec` interface consumed by the
-assembly).
-
-## Deliverables
-
-* `slowCutoff`, `vprime` — the explicit deterministic-cutoff slow family.
-* `measurableSubspace_vprime` — **unconditional** `MeasurableSubspace` for every level (the
-  headline result).
-* `vprime_eq_vassembled_of_slowflag` — `hae` from `hslowflag` + `hspec`.
+A `vslow (exp t) = lambdaSublevel t` lemma discharges `hslowflag` verbatim, and `hae`
+follows from it together with the deterministic `vassembled` cast bookkeeping and the ergodic
+`hspec` alignment (the same `hspec` interface consumed by the assembly).
 -/
 
 open MeasureTheory Filter Topology Matrix
@@ -82,14 +81,14 @@ noncomputable def vprime (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (l
     (i : Fin (numExp lam0 d + 1)) (x : X) : Submodule ℝ (EuclideanSpace ℝ (Fin d)) :=
   if (i : ℕ) < numExp lam0 d then vslow A T (Real.exp (slowCutoff lam0 d i)) x else ⊥
 
-/-! ## `hmeas'` — unconditional measurability of every level -/
+/-! ## `hmeas'` — measurability of every level -/
 
-/-- **`hmeas'` (unconditional).**  Every level of `vprime` is a `MeasurableSubspace`.  Interior
+/-- **Measurability of every level of `vprime`.**  Each level is a `MeasurableSubspace`.  Interior
 levels are `vslow` at a fixed cutoff (measurable via `measurableSubspace_vslow` fed
 `measurable_slowProjector`); the last level is the constant `⊥`, trivially a `MeasurableSubspace`.
 
-This is the headline deliverable: it carries **no** mathematical (a.e.) hypothesis — only the
-measurability of `A` and `T`, exactly as the slow-projector measurability bridge requires. -/
+This carries no a.e. hypothesis — only the measurability of `A` and `T`, as the slow-projector
+measurability bridge requires. -/
 theorem measurableSubspace_vprime (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X)
     (hAmeas : Measurable A) (hTmeas : Measurable T) (lam0 : ℕ → ℝ) :
     ∀ i : Fin (numExp lam0 d + 1), MeasurableSubspace (fun x => vprime A T lam0 i x) := by
@@ -160,17 +159,15 @@ theorem vprime_eq_vassembled_of_slowflag
     have hi'ge : ¬ (i' : ℕ) < specCard A T x := by rw [hi'val, hcard]; exact hi
     rw [vflag, dif_neg hi'ge]
 
-/-! ## Assembling `hae`'s sibling: the final-site application
+/-! ## The end-to-end application
 
-For completeness we also record the *end-to-end* application: feeding `vprime`,
-`measurableSubspace_vprime`, and `vprime_eq_vassembled_of_slowflag` into
-`oseledets_filtration_of_interfaces'` discharges its
-`vprime`/`hmeas'`/`hae` arguments. -/
+Feeding `vprime`, `measurableSubspace_vprime`, and `vprime_eq_vassembled_of_slowflag` into
+`oseledets_filtration_of_interfaces'` discharges its `vprime`/`hmeas'`/`hae` arguments. -/
 
 /-- **End-to-end application.**  The theorem `oseledets_filtration_of_interfaces'` with its
 `vprime`/`hmeas'`/`hae` arguments supplied by `vprime`, `measurableSubspace_vprime`, and
-`vprime_eq_vassembled_of_slowflag`.  The remaining hypotheses are exactly those the assembly
-already needs, plus the single datum `hslowflag`. -/
+`vprime_eq_vassembled_of_slowflag`.  The remaining hypotheses are those the assembly needs,
+together with the single datum `hslowflag`. -/
 theorem oseledets_filtration_of_slowflag
     {μ : Measure X} [IsProbabilityMeasure μ] {T : X → X}
     (hT : Ergodic T μ)

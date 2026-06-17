@@ -88,7 +88,7 @@ theorem condExp_invariants_comp
       (hT.integrable_comp_of_integrable hg) (fun s _ _ => ?_) (fun s hs _ => ?_) ?_
     · -- `(μ[g | I]) ∘ T` is integrable, hence integrable on `s`.
       exact (hT.integrable_comp_of_integrable integrable_condExp).integrableOn
-    · -- The set-integral identity, the heart of the proof.
+    · -- The set-integral identity.
       obtain ⟨hsm, hsinv⟩ := (MeasurableSpace.measurableSet_invariants).1 hs
       calc ∫ x in s, ((μ[g | MeasurableSpace.invariants T]) ∘ T) x ∂μ
           = ∫ x in s, (μ[g | MeasurableSpace.invariants T]) x ∂μ :=

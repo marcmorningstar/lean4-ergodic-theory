@@ -10,18 +10,20 @@ import Oseledets.TwoSided.MeasurableInf
 /-!
 # Restriction of the cocycle to an invariant subbundle
 
-This module realizes the *restriction to invariant sub-cocycles* extension (item 5 of the
-additive-extensions blueprint). Given a measurable, cocycle-invariant subbundle
+Given a measurable, cocycle-invariant subbundle
 `W : X → Submodule ℝ (EuclideanSpace ℝ (Fin d))` of the ambient bundle, the Lyapunov
 spectrum realized inside `W` is a sub-object of the ambient limsup spectrum.
 
-## What is delivered (Stage (i), guaranteed)
+## Main definitions
 
 * `InvariantSubbundle` — a measurable, a.e. cocycle-invariant subbundle, with the
   equivariance shape `Submodule.map (toEuclideanCLM (A x)).toLinearMap (W x) = W (T x)`
   matching `Oseledets.IsOseledetsFiltration` / `vflag_equivariant`.
 * `restrictedSpectrum` — the exponents realized by nonzero vectors of `W x`, as a
   sub-`Finset` of `lyapunovSpectrum A T x`.
+
+## Main results
+
 * `restrictedSpectrum_subset` / `restrictedSpectrum_subset_ae` — the restricted spectrum is
   a subset of the ambient spectrum (immediate from `lambdaBar_mem_lyapunovSpectrum`).
 * `restricted_finrank_le` — the dimension interlacing
@@ -29,40 +31,39 @@ spectrum realized inside `W` is a sub-object of the ambient limsup spectrum.
 * `restricted_inf_lambdaSublevel_equivariant` — the intersections `W ⊓ vflag` are themselves
   `A`-equivariant a.e., so the *restricted* multiplicities `finrank (W ⊓ vflag i)` are a.e.
   `T`-invariant.
-
-The honest meaning of "interlacing" here: the restricted exponents form a **sub-multiset of
-the ambient exponent multiset** (with multiplicities bounded by `finrank` monotonicity of
-`W ⊓ vflag` inside `vflag`). This is **not** classical Cauchy eigenvalue interlacing.
-
-## What is delivered (Stage (ii), the full restricted filtration)
-
-Intersecting `W` with the **forward Oseledets witness** `V` of an `IsOseledetsFiltration`
-(the everywhere-measurable family — *not* the a.e.-only `vflag`, which has no
-`MeasurableSubspace` instance) sidesteps the old blocker: `MeasurableSubspace.inf`
-(`Oseledets/TwoSided/MeasurableInf.lean`) discharges measurability of `x ↦ W x ⊓ V i x` in one
-line. From there:
-
 * `restricted_inf_measurableSubspace` — each restricted level `x ↦ W x ⊓ V i x` is everywhere
   measurable.
 * `restricted_inf_witness_equivariant` / `restricted_inf_witness_finrank_invariant_ae` — the
   restricted levels are `A`-equivariant a.e., so their dimensions are a.e. `T`-invariant.
 * `restricted_inf_finrank_ae_eq` — for ergodic `T`, the restricted dimension profile
-  `i ↦ finrank (W ⊓ V i)` is a.e. a deterministic **antitone** sequence `m` (not strictly:
-  `W` may capture the same dimension at consecutive ambient levels — honest sub-multiplicity).
+  `i ↦ finrank (W ⊓ V i)` is a.e. a deterministic **antitone** sequence `m`.
 * `restricted_flag_structure_ae` — the non-strict `Fin (k+1)`-indexed flag `i ↦ W ⊓ V i` a.e.
   runs from `W` (level `0`) to `⊥` (level `last k`), is equivariant and antitone, with exact
   growth rate `lam i` on each non-strict stratum.
 * `restricted_strict_filtration` — collapsing the constant-dimension levels (via the
-  first-occurrence `survivingSet` of `m`, enumerated by `Finset.orderEmbOfFin`) yields a genuine
+  first-occurrence `survivingSet` of `m`, enumerated by `Finset.orderEmbOfFin`) yields a
   **strict** Oseledets filtration realized inside `W`: a `StrictAnti` exponent list `lam'`, an
   everywhere-measurable strictly descending equivariant flag from `W` to `⊥` with exact growth
   rates, and all levels `≤ W`.
 
-**Honest packaging note.** The top level of the restricted strict flag is `W`, which equals the
-ambient `⊤` only when `W = ⊤`. Since `IsOseledetsFiltration` hard-codes `V 0 = ⊤`, a strict
-restricted flag with all levels `≤ W` for a *proper* subbundle cannot satisfy that predicate
-(it would force `⊤ ≤ W`). `restricted_strict_filtration` therefore states the restricted
-filtration content directly (top `= W`) rather than reusing `IsOseledetsFiltration`.
+## Implementation notes
+
+The "interlacing" here means that the restricted exponents form a **sub-multiset of the ambient
+exponent multiset** (with multiplicities bounded by `finrank` monotonicity of `W ⊓ vflag` inside
+`vflag`). This is **not** classical Cauchy eigenvalue interlacing. The restricted dimension
+profile is antitone but not strictly so: `W` may capture the same dimension at consecutive
+ambient levels.
+
+The full restricted filtration intersects `W` with the **forward Oseledets witness** `V` of an
+`IsOseledetsFiltration` (the everywhere-measurable family — *not* the a.e.-only `vflag`, which
+has no `MeasurableSubspace` instance). Measurability of `x ↦ W x ⊓ V i x` then follows from
+`MeasurableSubspace.inf` (`Oseledets/TwoSided/MeasurableInf.lean`).
+
+The top level of the restricted strict flag is `W`, which equals the ambient `⊤` only when
+`W = ⊤`. Since `IsOseledetsFiltration` hard-codes `V 0 = ⊤`, a strict restricted flag with all
+levels `≤ W` for a *proper* subbundle cannot satisfy that predicate (it would force `⊤ ≤ W`).
+`restricted_strict_filtration` therefore states the restricted-filtration content directly
+(top `= W`) rather than reusing `IsOseledetsFiltration`.
 
 All standing hypotheses match the rest of the development
 (`hT : Ergodic T μ`, `hA : ∀ x, (A x).det ≠ 0`, `hAmeas : Measurable A`,
@@ -136,8 +137,7 @@ theorem lambdaBar_mem_restrictedSpectrum {A : X → Matrix (Fin d) (Fin d) ℝ} 
 variable [MeasurableSpace X] {μ : Measure X} {T : X → X}
 
 /-- **The restricted spectrum is a.e. a subset of the ambient spectrum.** This is immediate
-from the pointwise `restrictedSpectrum_subset`; it is the a.e. form requested by the
-blueprint. -/
+from the pointwise `restrictedSpectrum_subset`. -/
 theorem restrictedSpectrum_subset_ae (A : X → Matrix (Fin d) (Fin d) ℝ)
     (W : X → Submodule ℝ (EuclideanSpace ℝ (Fin d))) :
     ∀ᵐ x ∂μ, restrictedSpectrum A T W x ⊆ lyapunovSpectrum A T x :=
@@ -147,7 +147,7 @@ theorem restrictedSpectrum_subset_ae (A : X → Matrix (Fin d) (Fin d) ℝ)
 
 The restricted multiplicities are bounded by the ambient multiplicities: at each flag level
 `vflag A T x i`, the part captured by `W x` is the intersection `W x ⊓ vflag A T x i`, whose
-dimension is at most that of the ambient level by `finrank` monotonicity. The honest
+dimension is at most that of the ambient level by `finrank` monotonicity. The
 "interlacing" is that the restricted exponents form a sub-multiset of the ambient exponent
 multiset. -/
 
@@ -163,7 +163,7 @@ theorem restricted_finrank_le (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → 
 
 omit [MeasurableSpace X] in
 /-- The restricted multiplicity at a stratum is bounded by the ambient multiplicity:
-`dim (W ⊓ V i) - dim (W ⊓ V (i+1)) ≤ dim (V i) - dim (V (i+1))`. This is the honest
+`dim (W ⊓ V i) - dim (W ⊓ V (i+1)) ≤ dim (V i) - dim (V (i+1))`. This is the
 sub-multiset interlacing of the exponent multisets (not Cauchy interlacing).
 
 Mathematically: `(W ⊓ V i) / (W ⊓ V (i+1))` embeds into `(V i) / (V (i+1))`, so the restricted
@@ -207,8 +207,8 @@ the index-type transport `specCard A T x = specCard A T (T x)`; the flag levels 
 on the interior are exactly such sublevels (`vflag_of_lt`).
 
 Hence the restricted multiplicities `finrank (W ⊓ lambdaSublevel … t)` are a.e. `T`-invariant.
-Their a.e. *constancy* by ergodicity is deferred — see the module docstring: it needs
-`MeasurableSubspace.inf`, which is not yet available. -/
+Their a.e. *constancy* by ergodicity is obtained via the forward witness `V` below, whose levels
+carry a `MeasurableSubspace` instance. -/
 
 /-- **`A`-equivariance of the restricted sublevels (a.e.).** For a.e. `x` and every threshold
 `t`, the action of `A x` maps the restricted sublevel `W x ⊓ lambdaSublevel A T x t` onto
@@ -244,8 +244,8 @@ theorem restricted_inf_lambdaSublevel_equivariant [IsProbabilityMeasure μ] (hT 
 `t`, the dimension of the restricted sublevel is preserved by `T`:
 `finrank (W (T x) ⊓ lambdaSublevel A T (T x) t) = finrank (W x ⊓ lambdaSublevel A T x t)`.
 
-This is the invariance underlying ergodic constancy; the constancy itself is deferred (it
-needs `MeasurableSubspace.inf`; see the module docstring). -/
+This is the invariance underlying ergodic constancy; the constancy is obtained via the forward
+witness `V` below, whose levels carry a `MeasurableSubspace` instance. -/
 theorem restricted_finrank_invariant_ae [IsProbabilityMeasure μ] (hT : Ergodic T μ)
     {A : X → Matrix (Fin d) (Fin d) ℝ} (hA : ∀ x, (A x).det ≠ 0) (hAmeas : Measurable A)
     (hint : IntegrableLogNorm A μ) (hint' : IntegrableLogNorm (fun x => (A x)⁻¹) μ)
@@ -270,7 +270,7 @@ theorem restricted_finrank_invariant_ae [IsProbabilityMeasure μ] (hT : Ergodic 
   rw [← hx t]
   exact heq.symm
 
-/-! ### Stage (ii): the full restricted Oseledets filtration
+/-! ### The full restricted Oseledets filtration
 
 Intersecting the invariant subbundle `W` with the **forward Oseledets witness** `V` (the
 everywhere-measurable family from `IsOseledetsFiltration`, *not* the a.e.-only `vflag`) gives a
@@ -342,8 +342,8 @@ theorem restricted_inf_witness_finrank_invariant_ae
 
 /-- **(B) A.e.-constant restricted level dimensions.** For ergodic `T`, the restricted
 multiplicity profile `i ↦ finrank (W ⊓ V i)` is a.e. equal to a deterministic antitone
-sequence `m : Fin (k+1) → ℕ`. Antitone (not strictly: `W` may capture the same dimension at
-consecutive levels — honest sub-multiplicity). -/
+sequence `m : Fin (k+1) → ℕ`. The sequence is antitone but not strictly so: `W` may capture the
+same dimension at consecutive levels. -/
 theorem restricted_inf_finrank_ae_eq [IsProbabilityMeasure μ] (hT : Ergodic T μ)
     {A : X → Matrix (Fin d) (Fin d) ℝ} (hA : ∀ x, (A x).det ≠ 0)
     {k : ℕ} {lam : Fin k → ℝ}
@@ -561,18 +561,18 @@ private theorem survivingSet_m_max' {k : ℕ} {m : Fin (k + 1) → ℕ} (hm : An
 
 /-! ### The full restricted Oseledets filtration (strict flag)
 
-This is the full restricted (strict) Oseledets filtration: a genuine **strict** Oseledets
+The full restricted (strict) Oseledets filtration: a **strict** Oseledets
 filtration realized *inside* the invariant subbundle `W`. Its top level is `W` (not the ambient
 `⊤`), so it is the Oseledets filtration of the restricted sub-cocycle, with all levels lying in
 `W`.
 
-**Honest note on packaging.** The non-strict precursor `i ↦ W ⊓ V i` has `W ⊓ V 0 = W`. Hence
-the top level of the strict restricted flag is `W`, which is `⊤` *only when `W = ⊤`*. The
-project's `IsOseledetsFiltration` predicate hard-codes `V 0 = ⊤` (the ambient top), so a strict
-flag with all levels `≤ W` for a *proper* subbundle `W` cannot satisfy `IsOseledetsFiltration`
-(that would force `⊤ ≤ W`). The deliverable therefore states the restricted-filtration content
-directly (top `= W`, strict descending flag to `⊥`, equivariance, exact growth rates, all
-levels `≤ W`) rather than reusing `IsOseledetsFiltration`. -/
+The non-strict precursor `i ↦ W ⊓ V i` has `W ⊓ V 0 = W`. Hence the top level of the strict
+restricted flag is `W`, which is `⊤` *only when `W = ⊤`*. The `IsOseledetsFiltration` predicate
+hard-codes `V 0 = ⊤` (the ambient top), so a strict flag with all levels `≤ W` for a *proper*
+subbundle `W` cannot satisfy `IsOseledetsFiltration` (that would force `⊤ ≤ W`). The statement
+below therefore expresses the restricted-filtration content directly (top `= W`, strict
+descending flag to `⊥`, equivariance, exact growth rates, all levels `≤ W`) rather than reusing
+`IsOseledetsFiltration`. -/
 
 /-- **The full restricted (strict) Oseledets filtration.** Collapsing the constant-dimension
 levels of the non-strict precursor `i ↦ W ⊓ V i` (via the first-occurrence `survivingSet` of its
@@ -583,11 +583,11 @@ the flag `vprime` is strictly descending (`vprime i.succ x < vprime i.castSucc x
 level `vprime 0 x = W x` down to `vprime (last k') x = ⊥`, is `A`-equivariant, has exact growth
 rate `lam' i` on each stratum, and has all levels lying inside `W` (`vprime i x ≤ W x`).
 
-**Honest packaging note.** The top level of the restricted strict flag is `W`, which equals the
-ambient `⊤` only when `W = ⊤`. Since `IsOseledetsFiltration` hard-codes `V 0 = ⊤`, a strict
-restricted flag with all levels `≤ W` for a *proper* subbundle cannot satisfy that predicate
-(it would force `⊤ ≤ W`). This theorem therefore states the restricted-filtration content
-directly (top `= W`) rather than reusing `IsOseledetsFiltration`. -/
+The top level of the restricted strict flag is `W`, which equals the ambient `⊤` only when
+`W = ⊤`. Since `IsOseledetsFiltration` hard-codes `V 0 = ⊤`, a strict restricted flag with all
+levels `≤ W` for a *proper* subbundle cannot satisfy that predicate (it would force `⊤ ≤ W`),
+so the statement expresses the restricted-filtration content directly (top `= W`) rather than
+reusing `IsOseledetsFiltration`. -/
 theorem restricted_strict_filtration [IsProbabilityMeasure μ] (hT : Ergodic T μ)
     {A : X → Matrix (Fin d) (Fin d) ℝ} (hA : ∀ x, (A x).det ≠ 0) (hAmeas : Measurable A)
     (hint : IntegrableLogNorm A μ) (hint' : IntegrableLogNorm (fun x => (A x)⁻¹) μ)

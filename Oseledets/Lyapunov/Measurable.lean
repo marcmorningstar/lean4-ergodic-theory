@@ -17,11 +17,11 @@ import Mathlib.Topology.ContinuousMap.Weierstrass
 /-!
 # Measurability infrastructure for the Lyapunov filtration
 
-This module assembles the measurability tools for the Oseledets flag. The strategy routes the
-measurability of the flag **through the concrete continuous-functional-calculus spectral
-projections of the Oseledets limit operator** `Λ x = lim_n ((A⁽ⁿ⁾)ᵀ A⁽ⁿ⁾)^{1/(2n)}`, rather
-than through a measurable selection of an orthonormal frame for the abstract sublevel subspace
-(which would need a Kuratowski–Ryll-Nardzewski selection theorem absent from Mathlib).
+This module develops the measurability tools for the Oseledets flag. The measurability of the
+flag is established **through the concrete continuous-functional-calculus spectral projections
+of the Oseledets limit operator** `Λ x = lim_n ((A⁽ⁿ⁾)ᵀ A⁽ⁿ⁾)^{1/(2n)}`, rather than through
+a measurable selection of an orthonormal frame for the abstract sublevel subspace (which would
+require a Kuratowski–Ryll-Nardzewski selection theorem).
 
 Defining the `i`-th flag projection as the CFC element `Pᵢ x := cfc gᵢ (Λ x)` (with `gᵢ` a
 continuous gap function) makes `orthProjMatrix (range (toEuclideanCLM (Pᵢ x))) = Pᵢ x`
@@ -31,7 +31,7 @@ definitionally — a self-adjoint idempotent equals the orthogonal projection on
 ## Main results
 
 * `Oseledets.measurable_lambdaBar_apply` — for fixed `v`, `x ↦ lambdaBar A T x v` is measurable
-  (the scalar scaffolding reused by the later measurability arguments).
+  (the scalar measurability used by the later arguments).
 * `Oseledets.orthProjMatrix_apply` / `Oseledets.measurable_orthProjMatrix_iff` — the projection
   matrix's entry formula and the resulting reduction of matrix measurability to projecting the
   fixed standard basis vectors.
@@ -66,7 +66,7 @@ instance instMeasurableSpaceEuclideanSpace :
 instance instBorelSpaceEuclideanSpace :
     BorelSpace (EuclideanSpace ℝ (Fin d)) := ⟨rfl⟩
 
-/-! ### Scalar measurability scaffolding -/
+/-! ### Scalar measurability -/
 
 /-- For a fixed vector `v`, the upper Lyapunov growth `x ↦ lambdaBar A T x v` is measurable: it is
 the `limsup` of the measurable sequence `x ↦ n⁻¹ · log ‖toEuclideanCLM (cocycle A T n x) v‖`. -/

@@ -12,10 +12,10 @@ import Oseledets.Lyapunov.TopGapEnvelope
 /-!
 # The Oseledets multiplicative ergodic theorem (one-sided, filtration form)
 
-This is the main theorem of the development, assembled from the lemmas in
-`Oseledets/Ergodic/`, `Oseledets/Cocycle/`, and `Oseledets/Lyapunov/`.
+The main theorem of the development, drawing on `Oseledets/Ergodic/`,
+`Oseledets/Cocycle/`, and `Oseledets/Lyapunov/`.
 
-## Statement
+## Main statements
 
 For an ergodic measure-preserving `T` on a probability space and a measurable matrix
 cocycle generator `A : X → GL(d, ℝ)` (encoded as `A x : Matrix (Fin d) (Fin d) ℝ` with
