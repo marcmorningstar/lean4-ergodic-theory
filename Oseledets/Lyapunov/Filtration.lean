@@ -15,7 +15,7 @@ growth function `lambdaBar A T x` of `Oseledets.Lyapunov.GrowthFunction`.
 
 For a.e. `x` the function `lambdaBar A T x` is an `IsUltrametricGrowth` function
 (`isUltrametricGrowth_lambdaBar`); its values on nonzero vectors then form a finite set
-(`IsUltrametricGrowth.finite_range`), the **limsup spectrum** `spectrum A T x`. Enumerating
+(`IsUltrametricGrowth.finite_range`), the **limsup spectrum** `lyapunovSpectrum A T x`. Enumerating
 the spectrum **descending** as `λ₀ > λ₁ > ⋯ > λ_{k-1}` (`specList`), the sublevel sets
 `{v | v = 0 ∨ lambdaBar A T x v ≤ λᵢ}` form a strictly decreasing flag
 
@@ -34,7 +34,7 @@ hypothesis `hx : IsUltrametricGrowth (lambdaBar A T x)`.
 * `vflag_zero` / `vflag_last` — the extremal levels are `⊤` / `⊥`;
 * `vflag_strictAnti` — strict decrease between consecutive levels;
 * `lambdaBar_eq_on_stratum` — on each stratum `lambdaBar` equals the exact exponent `λᵢ`;
-* `spectrum_equivariant_ae` / `vflag_equivariant` — `A`-equivariance of the spectrum and the
+* `lyapunovSpectrum_equivariant_ae` / `vflag_equivariant` — `A`-equivariance of the spectrum and the
   flag, a.e. in `x`.
 -/
 
@@ -50,51 +50,51 @@ variable {X : Type*} {T : X → X} {d : ℕ}
 /-- The (finite) **limsup spectrum** at `x`: the set of values of `lambdaBar A T x` on nonzero
 vectors. Defined totally, with junk value `∅` off the set where `lambdaBar A T x` is an
 `IsUltrametricGrowth` function. -/
-noncomputable def spectrum (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (x : X) :
+noncomputable def lyapunovSpectrum (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (x : X) :
     Finset ℝ :=
   open Classical in
   if h : IsUltrametricGrowth (lambdaBar A T x) then h.finite_range.toFinset else ∅
 
-/-- Membership in the spectrum: a value lies in `spectrum A T x` iff it is realized by some
+/-- Membership in the spectrum: a value lies in `lyapunovSpectrum A T x` iff it is realized by some
 nonzero vector. -/
-theorem mem_spectrum {A : X → Matrix (Fin d) (Fin d) ℝ} {x : X}
+theorem mem_lyapunovSpectrum {A : X → Matrix (Fin d) (Fin d) ℝ} {x : X}
     (hx : IsUltrametricGrowth (lambdaBar A T x)) {r : ℝ} :
-    r ∈ spectrum A T x ↔
+    r ∈ lyapunovSpectrum A T x ↔
       ∃ v : EuclideanSpace ℝ (Fin d), v ≠ 0 ∧ lambdaBar A T x v = r := by
-  rw [spectrum, dif_pos hx, Set.Finite.mem_toFinset, Set.mem_range]
+  rw [lyapunovSpectrum, dif_pos hx, Set.Finite.mem_toFinset, Set.mem_range]
   exact ⟨fun ⟨v, hv⟩ => ⟨v.1, v.2, hv⟩, fun ⟨v, hv, hvr⟩ => ⟨⟨v, hv⟩, hvr⟩⟩
 
 /-- Every value of `lambdaBar A T x` on a nonzero vector is in the spectrum. -/
-theorem lambdaBar_mem_spectrum {A : X → Matrix (Fin d) (Fin d) ℝ} {x : X}
+theorem lambdaBar_mem_lyapunovSpectrum {A : X → Matrix (Fin d) (Fin d) ℝ} {x : X}
     (hx : IsUltrametricGrowth (lambdaBar A T x)) {v : EuclideanSpace ℝ (Fin d)} (hv : v ≠ 0) :
-    lambdaBar A T x v ∈ spectrum A T x :=
-  (mem_spectrum hx).mpr ⟨v, hv, rfl⟩
+    lambdaBar A T x v ∈ lyapunovSpectrum A T x :=
+  (mem_lyapunovSpectrum hx).mpr ⟨v, hv, rfl⟩
 
 /-- The number of distinct exponents at `x`. -/
 noncomputable def specCard (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (x : X) : ℕ :=
-  (spectrum A T x).card
+  (lyapunovSpectrum A T x).card
 
 /-- The **descending** enumeration of the limsup spectrum,
 `specList A T x : Fin (specCard …) → ℝ`. Index `0` is the largest exponent; the listing is
 strictly antitone. -/
 noncomputable def specList (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (x : X) :
     Fin (specCard A T x) → ℝ :=
-  fun i => (spectrum A T x).orderEmbOfFin rfl i.rev
+  fun i => (lyapunovSpectrum A T x).orderEmbOfFin rfl i.rev
 
 /-- The descending enumeration is strictly antitone. -/
 theorem specList_strictAnti (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (x : X) :
     StrictAnti (specList A T x) :=
-  fun _ _ hij => (spectrum A T x).orderEmbOfFin rfl |>.strictMono (Fin.rev_lt_rev.mpr hij)
+  fun _ _ hij => (lyapunovSpectrum A T x).orderEmbOfFin rfl |>.strictMono (Fin.rev_lt_rev.mpr hij)
 
 /-- Each enumerated exponent lies in the spectrum. -/
 theorem specList_mem (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (x : X)
-    (i : Fin (specCard A T x)) : specList A T x i ∈ spectrum A T x :=
-  (spectrum A T x).orderEmbOfFin_mem rfl i.rev
+    (i : Fin (specCard A T x)) : specList A T x i ∈ lyapunovSpectrum A T x :=
+  (lyapunovSpectrum A T x).orderEmbOfFin_mem rfl i.rev
 
 /-- Every spectrum value is `specList A T x i` for some index `i`. -/
 theorem exists_specList_eq {A : X → Matrix (Fin d) (Fin d) ℝ} {x : X} {r : ℝ}
-    (hr : r ∈ spectrum A T x) : ∃ i : Fin (specCard A T x), specList A T x i = r := by
-  have hrange : r ∈ Set.range ⇑((spectrum A T x).orderEmbOfFin (rfl : _ = specCard A T x)) := by
+    (hr : r ∈ lyapunovSpectrum A T x) : ∃ i : Fin (specCard A T x), specList A T x i = r := by
+  have hrange : r ∈ Set.range ⇑((lyapunovSpectrum A T x).orderEmbOfFin (rfl : _ = specCard A T x)) := by
     rw [Finset.range_orderEmbOfFin]; exact hr
   obtain ⟨j, hj⟩ := hrange
   exact ⟨j.rev, by simpa [specList] using hj⟩
@@ -158,16 +158,16 @@ theorem vflag_zero {A : X → Matrix (Fin d) (Fin d) ℝ} {x : X}
   · simp [hv]
   · -- `lambdaBar x v ∈ spectrum`, so `specCard > 0`, and
     -- `lambdaBar x v ≤ specList ⟨0,_⟩ = max'`.
-    have hmem : lambdaBar A T x v ∈ spectrum A T x := lambdaBar_mem_spectrum hx hv
+    have hmem : lambdaBar A T x v ∈ lyapunovSpectrum A T x := lambdaBar_mem_lyapunovSpectrum hx hv
     have hpos : 0 < specCard A T x := Finset.card_pos.mpr ⟨_, hmem⟩
     have h0 : ((0 : Fin (specCard A T x + 1)) : ℕ) < specCard A T x := by simpa using hpos
     rw [mem_vflag hx hv]
     refine ⟨h0, ?_⟩
     -- `specList ⟨0,_⟩` is the maximum of the spectrum.
-    have hpos' : 0 < (spectrum A T x).card := hpos
+    have hpos' : 0 < (lyapunovSpectrum A T x).card := hpos
     have hmax : specList A T x ⟨(0 : Fin (specCard A T x + 1)), h0⟩
-        = (spectrum A T x).max' (Finset.card_pos.mp hpos) := by
-      rw [specList, ← Finset.orderEmbOfFin_last (s := spectrum A T x) rfl hpos']
+        = (lyapunovSpectrum A T x).max' (Finset.card_pos.mp hpos) := by
+      rw [specList, ← Finset.orderEmbOfFin_last (s := lyapunovSpectrum A T x) rfl hpos']
       congr 1
     rw [hmax]
     exact Finset.le_max' _ _ hmem
@@ -184,7 +184,7 @@ theorem vflag_last (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (x : X) 
 private theorem exists_witness {A : X → Matrix (Fin d) (Fin d) ℝ} {x : X}
     (hx : IsUltrametricGrowth (lambdaBar A T x)) (i : Fin (specCard A T x)) :
     ∃ w : EuclideanSpace ℝ (Fin d), w ≠ 0 ∧ lambdaBar A T x w = specList A T x i := by
-  exact (mem_spectrum hx).mp (specList_mem A T x i)
+  exact (mem_lyapunovSpectrum hx).mp (specList_mem A T x i)
 
 /-- The successor index, as a member of `Fin (specCard A T x)`, when it stays interior. -/
 private theorem succ_lt_specList {A : X → Matrix (Fin d) (Fin d) ℝ} {x : X}
@@ -252,7 +252,7 @@ theorem lambdaBar_eq_on_stratum {A : X → Matrix (Fin d) (Fin d) ℝ} {x : X}
     Fin.ext rfl
   rw [hid] at hle
   -- `lambdaBar v` is a spectrum value: `lambdaBar v = specList j` for some `j`.
-  obtain ⟨j, hj⟩ := exists_specList_eq (lambdaBar_mem_spectrum hx hv)
+  obtain ⟨j, hj⟩ := exists_specList_eq (lambdaBar_mem_lyapunovSpectrum hx hv)
   rw [← hj] at hle ⊢
   -- `specList j ≤ specList i ⟹ i ≤ j`.
   have hij : i ≤ j := (specList_strictAnti A T x).le_iff_ge.mp hle
@@ -324,19 +324,19 @@ private theorem Aclm_ne_zero {A : X → Matrix (Fin d) (Fin d) ℝ}
 variable [MeasurableSpace X] {μ : Measure X}
 
 /-- **`A`-equivariance of the spectrum (a.e.).** For a.e. `x`,
-`spectrum A T x = spectrum A T (T x)`, hence `specCard` and `specList` agree (the latter as
+`lyapunovSpectrum A T x = lyapunovSpectrum A T (T x)`, hence `specCard` and `specList` agree (the latter as
 indexed functions over `Fin (specCard …)`). -/
-theorem spectrum_equivariant_ae
+theorem lyapunovSpectrum_equivariant_ae
     [IsProbabilityMeasure μ] (hT : Ergodic T μ)
     {A : X → Matrix (Fin d) (Fin d) ℝ} (hA : ∀ x, (A x).det ≠ 0) (hAmeas : Measurable A)
     (hint : IntegrableLogNorm A μ) (hint' : IntegrableLogNorm (fun x => (A x)⁻¹) μ) :
-    ∀ᵐ x ∂μ, spectrum A T x = spectrum A T (T x) := by
+    ∀ᵐ x ∂μ, lyapunovSpectrum A T x = lyapunovSpectrum A T (T x) := by
   filter_upwards [lambdaBar_equivariant_ae hT hA hAmeas hint hint',
     isUltrametricGrowth_lambdaBar hT hA hAmeas hint hint',
     hT.toMeasurePreserving.quasiMeasurePreserving.ae
       (isUltrametricGrowth_lambdaBar hT hA hAmeas hint hint')] with x hequiv hx hTx
   ext r
-  rw [mem_spectrum hx, mem_spectrum hTx]
+  rw [mem_lyapunovSpectrum hx, mem_lyapunovSpectrum hTx]
   constructor
   · -- a witness `v` at `x` maps to the witness `A x · v` at `T x`.
     rintro ⟨v, hv, rfl⟩
@@ -363,7 +363,7 @@ theorem spectrum_equivariant_ae
 
 /-- **`A`-equivariance of the flag (a.e.).** For a.e. `x`, the action of `A x` maps each flag
 level at `x` onto the corresponding level at `T x` (the indices transport via the a.e.
-equality `spectrum A T x = spectrum A T (T x)`, which makes
+equality `lyapunovSpectrum A T x = lyapunovSpectrum A T (T x)`, which makes
 `specCard A T x = specCard A T (T x)` and `specList A T x = specList A T (T x)` after that
 rewrite). -/
 theorem vflag_equivariant

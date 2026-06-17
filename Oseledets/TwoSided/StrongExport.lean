@@ -164,10 +164,10 @@ theorem oseledets_filtration_dims
   have hslowflag : ∀ᵐ x ∂μ, ∀ t : ℝ, vslow A T (Real.exp t) x = lambdaSublevel A T x t :=
     vslow_eq_lambdaSublevel_of_upper hT hA hAmeas hint hint' hupper hslowrev
   -- The spectrum-identification residuals and the `hspec` interface.
-  have hub_spec : ∀ᵐ x ∂μ, spectrum A T x ⊆ distinctExp lam0 d :=
-    hub_spec_of_slowflag hT hA hAmeas hint hint' hslowflag lam0 hlam0
-  have hlb_spec : ∀ᵐ x ∂μ, distinctExp lam0 d ⊆ spectrum A T x :=
-    hlb_spec_of_slowflag hT hA hAmeas hint hint' hslowflag lam0 hlam0
+  have hub_spec : ∀ᵐ x ∂μ, lyapunovSpectrum A T x ⊆ distinctExp lam0 d :=
+    lyapunovSpectrum_subset_distinctExp_of_slowflag hT hA hAmeas hint hint' hslowflag lam0 hlam0
+  have hlb_spec : ∀ᵐ x ∂μ, distinctExp lam0 d ⊆ lyapunovSpectrum A T x :=
+    distinctExp_subset_lyapunovSpectrum_of_slowflag hT hA hAmeas hint hint' hslowflag lam0 hlam0
   have hspec := specList_eq_expEnum_of_subsets_standing hT A hA hAmeas hint hint' lam0 hub_spec hlb_spec
   -- The per-vector exact-growth interface.
   have hbdd := isBoundedUnder_inv_mul_log_norm_cocycle_apply_of_mem_stratum hT A hA hAmeas hint hint'

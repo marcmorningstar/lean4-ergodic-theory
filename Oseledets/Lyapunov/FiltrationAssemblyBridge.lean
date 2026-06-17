@@ -21,7 +21,7 @@ This file provides three independent reduction steps feeding the final assembly 
    slow spectral filtration `vslow`), transporting the a.e. structural interfaces along the a.e.
    identification `vslow = vflag`.
 
-3. `hspec_of_spectrum_const` — the spectrum-constancy interface (`hspec`), reducing it to the
+3. `specList_eq_expEnum_of_lyapunovSpectrum_const` — the spectrum-constancy interface (`hspec`), reducing it to the
    a.e. constancy of the (`T`-invariant) per-point Lyapunov spectrum.
 
 ## Main results
@@ -31,7 +31,7 @@ This file provides three independent reduction steps feeding the final assembly 
   `vassembled`, stated without any measurability conclusion.
 * `Oseledets.oseledets_filtration_of_interfaces'`: the Oseledets filtration target with the
   measurability clause carried by an everywhere-measurable witness family.
-* `Oseledets.hspec_of_spectrum_const`: the `hspec` interface from a.e. spectrum constancy.
+* `Oseledets.specList_eq_expEnum_of_lyapunovSpectrum_const`: the `hspec` interface from a.e. spectrum constancy.
 -/
 
 open MeasureTheory Filter Topology
@@ -152,7 +152,7 @@ theorem vassembled_structure_ae
   have hUM := isUltrametricGrowth_lambdaBar hT hA hAmeas hint hint'
   have hUM' := hT.toMeasurePreserving.quasiMeasurePreserving.ae hUM
   have hsubeq := vflag_equivariant hT hA hAmeas hint hint'
-  have hspeceq := spectrum_equivariant_ae hT hA hAmeas hint hint'
+  have hspeceq := lyapunovSpectrum_equivariant_ae hT hA hAmeas hint hint'
   filter_upwards [hspec, hspec', hUM, hUM', hsubeq, hspeceq, hgrowth]
     with x hsx hsTx hx hTx hmapeq hseq hgx
   obtain ⟨hcardx, hlistx⟩ := hsx
@@ -304,27 +304,27 @@ theorem oseledets_filtration_of_interfaces'
 /-! ## The spectrum-constancy interface
 
 `hspec` asks that, a.e., the per-point limsup spectrum (`specCard`/`specList`, built from the finite
-limsup spectrum `spectrum A T x` of `lambdaBar`) coincides with the deterministic
+limsup spectrum `lyapunovSpectrum A T x` of `lambdaBar`) coincides with the deterministic
 singular-value spectrum (`numExp`/`expEnum`, built from `distinctExp lam0 d`).
 
-`spectrum_equivariant_ae` provides the `T`-invariance `spectrum A T x = spectrum A T (T x)` a.e.;
-ergodicity upgrades this to a.e. *constancy* of the finite set `spectrum A T x`, and the spectral
+`lyapunovSpectrum_equivariant_ae` provides the `T`-invariance `lyapunovSpectrum A T x = lyapunovSpectrum A T (T x)` a.e.;
+ergodicity upgrades this to a.e. *constancy* of the finite set `lyapunovSpectrum A T x`, and the spectral
 identification of `Λ` pins that constant set to `distinctExp lam0 d`.  Packaging both as the
-single hypothesis `hspecconst : ∀ᵐ x, spectrum A T x = distinctExp lam0 d`, the `hspec` shape is
+single hypothesis `hspecconst : ∀ᵐ x, lyapunovSpectrum A T x = distinctExp lam0 d`, the `hspec` shape is
 then a pure `Finset`/`Fin`-reindexing computation: `specCard` and `numExp` are both the cardinality
 of the (now-equal) finite set, and `specList` and `expEnum` are both its descending
 `orderEmbOfFin`-enumeration, so they agree along the cardinality cast.
 
 The constancy-to-`distinctExp` step (`hspecconst`) is the ergodic content; it is taken here as a
-cleanly-typed hypothesis and is discharged by `hspecconst_of_lambdaBar`. -/
+cleanly-typed hypothesis and is discharged by `lyapunovSpectrum_eq_distinctExp_of_lambdaBar`. -/
 
-/-- **`hspec` from a.e. spectrum constancy.**  If the per-point limsup spectrum `spectrum A T x`
+/-- **`hspec` from a.e. spectrum constancy.**  If the per-point limsup spectrum `lyapunovSpectrum A T x`
 equals the deterministic distinct-exponent set `distinctExp lam0 d` a.e., then the `hspec` interface
 of `oseledets_filtration_of_interfaces` holds: a.e. the spectrum cardinality equals `numExp lam0 d`
 and the descending enumeration `specList` equals `expEnum lam0 d` along the cardinality cast. -/
-theorem hspec_of_spectrum_const
+theorem specList_eq_expEnum_of_lyapunovSpectrum_const
     {μ : Measure X} {T : X → X} (A : X → Matrix (Fin d) (Fin d) ℝ) (lam0 : ℕ → ℝ)
-    (hspecconst : ∀ᵐ x ∂μ, spectrum A T x = distinctExp lam0 d) :
+    (hspecconst : ∀ᵐ x ∂μ, lyapunovSpectrum A T x = distinctExp lam0 d) :
     ∀ᵐ x ∂μ, ∃ h : specCard A T x = numExp lam0 d,
       ∀ i : Fin (specCard A T x), specList A T x i = expEnum lam0 d (Fin.cast h i) := by
   filter_upwards [hspecconst] with x hx

@@ -116,7 +116,7 @@ theorem oseledets_filtration_of_interfaces
   have hUM := isUltrametricGrowth_lambdaBar hT hA hAmeas hint hint'
   have hUM' := hT.toMeasurePreserving.quasiMeasurePreserving.ae hUM
   have hsubeq := vflag_equivariant hT hA hAmeas hint hint'
-  have hspeceq := spectrum_equivariant_ae hT hA hAmeas hint hint'
+  have hspeceq := lyapunovSpectrum_equivariant_ae hT hA hAmeas hint hint'
   filter_upwards [hspec, hspec', hUM, hUM', hsubeq, hspeceq, hgrowth]
     with x hsx hsTx hx hTx hmapeq hseq hgx
   obtain ⟨hcardx, hlistx⟩ := hsx

@@ -52,14 +52,14 @@ theorem oseledets_filtration_of_upper'
         (fun n : ℕ => (n : ℝ)⁻¹ *
           Real.log ((Matrix.toEuclideanLin (cocycle A T n x)).singularValues i))
         atTop (𝓝 (lam0 i))) →
-      ∀ᵐ x ∂μ, spectrum A T x ⊆ distinctExp lam0 d)
+      ∀ᵐ x ∂μ, lyapunovSpectrum A T x ⊆ distinctExp lam0 d)
     -- Spectrum lower inclusion: every deterministic exponent is attained.
     (hlb_spec : ∀ lam0 : ℕ → ℝ,
       (∀ i : ℕ, i < d → ∀ᵐ x ∂μ, Tendsto
         (fun n : ℕ => (n : ℝ)⁻¹ *
           Real.log ((Matrix.toEuclideanLin (cocycle A T n x)).singularValues i))
         atTop (𝓝 (lam0 i))) →
-      ∀ᵐ x ∂μ, distinctExp lam0 d ⊆ spectrum A T x)
+      ∀ᵐ x ∂μ, distinctExp lam0 d ⊆ lyapunovSpectrum A T x)
     -- The spectral-identification band-projector convergence hypothesis.
     (hident : ∀ᵐ x ∂μ, ∀ c : ℝ, 0 < c →
       (∀ i : Fin d, Real.exp (lamSing A T x (i : ℕ)) ≠ c) →

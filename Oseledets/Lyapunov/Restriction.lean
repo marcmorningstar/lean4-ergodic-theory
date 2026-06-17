@@ -21,9 +21,9 @@ spectrum realized inside `W` is a sub-object of the ambient limsup spectrum.
   equivariance shape `Submodule.map (toEuclideanCLM (A x)).toLinearMap (W x) = W (T x)`
   matching `Oseledets.IsOseledetsFiltration` / `vflag_equivariant`.
 * `restrictedSpectrum` — the exponents realized by nonzero vectors of `W x`, as a
-  sub-`Finset` of `spectrum A T x`.
+  sub-`Finset` of `lyapunovSpectrum A T x`.
 * `restrictedSpectrum_subset` / `restrictedSpectrum_subset_ae` — the restricted spectrum is
-  a subset of the ambient spectrum (immediate from `lambdaBar_mem_spectrum`).
+  a subset of the ambient spectrum (immediate from `lambdaBar_mem_lyapunovSpectrum`).
 * `restricted_finrank_le` — the dimension interlacing
   `finrank (W x ⊓ vflag A T x i) ≤ finrank (vflag A T x i)` (a sub-multiplicity bound).
 * `restricted_inf_lambdaSublevel_equivariant` — the intersections `W ⊓ vflag` are themselves
@@ -99,11 +99,11 @@ structure InvariantSubbundle [MeasurableSpace X] (μ : Measure X) (T : X → X)
 /-! ### The restricted spectrum -/
 
 /-- The **restricted limsup spectrum** at `x`: the sub-`Finset` of the ambient spectrum
-`spectrum A T x` consisting of the exponents realized by some nonzero vector of `W x`. -/
+`lyapunovSpectrum A T x` consisting of the exponents realized by some nonzero vector of `W x`. -/
 noncomputable def restrictedSpectrum (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X)
     (W : X → Submodule ℝ (EuclideanSpace ℝ (Fin d))) (x : X) : Finset ℝ :=
   open Classical in
-  (spectrum A T x).filter
+  (lyapunovSpectrum A T x).filter
     (fun r => ∃ v : EuclideanSpace ℝ (Fin d), v ∈ W x ∧ v ≠ 0 ∧ lambdaBar A T x v = r)
 
 /-- A value lies in the restricted spectrum iff it is in the ambient spectrum and realized by
@@ -111,7 +111,7 @@ a nonzero vector of `W x`. -/
 theorem mem_restrictedSpectrum {A : X → Matrix (Fin d) (Fin d) ℝ} {T : X → X}
     {W : X → Submodule ℝ (EuclideanSpace ℝ (Fin d))} {x : X} {r : ℝ} :
     r ∈ restrictedSpectrum A T W x ↔
-      r ∈ spectrum A T x ∧
+      r ∈ lyapunovSpectrum A T x ∧
         ∃ v : EuclideanSpace ℝ (Fin d), v ∈ W x ∧ v ≠ 0 ∧ lambdaBar A T x v = r := by
   classical
   rw [restrictedSpectrum, Finset.mem_filter]
@@ -120,7 +120,7 @@ theorem mem_restrictedSpectrum {A : X → Matrix (Fin d) (Fin d) ℝ} {T : X →
 hypotheses): every exponent realized inside `W x` is realized in the ambient space. -/
 theorem restrictedSpectrum_subset (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X)
     (W : X → Submodule ℝ (EuclideanSpace ℝ (Fin d))) (x : X) :
-    restrictedSpectrum A T W x ⊆ spectrum A T x := by
+    restrictedSpectrum A T W x ⊆ lyapunovSpectrum A T x := by
   classical
   exact Finset.filter_subset _ _
 
@@ -131,7 +131,7 @@ theorem lambdaBar_mem_restrictedSpectrum {A : X → Matrix (Fin d) (Fin d) ℝ} 
     (hx : IsUltrametricGrowth (lambdaBar A T x)) {v : EuclideanSpace ℝ (Fin d)}
     (hvW : v ∈ W x) (hv : v ≠ 0) :
     lambdaBar A T x v ∈ restrictedSpectrum A T W x :=
-  (mem_restrictedSpectrum).mpr ⟨lambdaBar_mem_spectrum hx hv, v, hvW, hv, rfl⟩
+  (mem_restrictedSpectrum).mpr ⟨lambdaBar_mem_lyapunovSpectrum hx hv, v, hvW, hv, rfl⟩
 
 variable [MeasurableSpace X] {μ : Measure X} {T : X → X}
 
@@ -140,7 +140,7 @@ from the pointwise `restrictedSpectrum_subset`; it is the a.e. form requested by
 blueprint. -/
 theorem restrictedSpectrum_subset_ae (A : X → Matrix (Fin d) (Fin d) ℝ)
     (W : X → Submodule ℝ (EuclideanSpace ℝ (Fin d))) :
-    ∀ᵐ x ∂μ, restrictedSpectrum A T W x ⊆ spectrum A T x :=
+    ∀ᵐ x ∂μ, restrictedSpectrum A T W x ⊆ lyapunovSpectrum A T x :=
   Filter.Eventually.of_forall fun x => restrictedSpectrum_subset A T W x
 
 /-! ### Dimension interlacing (sub-multiplicity bound)

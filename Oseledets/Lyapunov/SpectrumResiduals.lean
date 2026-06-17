@@ -11,8 +11,8 @@ import Oseledets.Lyapunov.AssemblyFromUpper
 This module discharges three residuals of the MET final composer
 `Oseledets.oseledets_filtration_of_upper`:
 
-* `hub_spec_of_slowflag` — every realized exponent is one of the deterministic `lam0 i`;
-* `hlb_spec_of_slowflag` — every deterministic exponent is realized;
+* `lyapunovSpectrum_subset_distinctExp_of_slowflag` — every realized exponent is one of the deterministic `lam0 i`;
+* `distinctExp_subset_lyapunovSpectrum_of_slowflag` — every deterministic exponent is realized;
 * `specList_le_liminf_inv_mul_log_norm_cocycle_apply_of_slowflag` — the per-stratum liminf lower bound.
 
 All three are derived from two hypotheses with fixed shapes: `hident` (band-projector
@@ -338,7 +338,7 @@ theorem ae_lamSing_eq_lam0
 
 /-- **`hub_spec`: every realized exponent is deterministic.**  A.e., the limsup spectrum is
 contained in the deterministic distinct-exponent set `distinctExp lam0 d`. -/
-theorem hub_spec_of_slowflag
+theorem lyapunovSpectrum_subset_distinctExp_of_slowflag
     {μ : Measure X} [IsProbabilityMeasure μ] {T : X → X} (hT : Ergodic T μ)
     {A : X → Matrix (Fin d) (Fin d) ℝ} (hA : ∀ x, (A x).det ≠ 0) (hAmeas : Measurable A)
     (hint : IntegrableLogNorm A μ) (hint' : IntegrableLogNorm (fun x => (A x)⁻¹) μ)
@@ -348,11 +348,11 @@ theorem hub_spec_of_slowflag
       (fun n : ℕ => (n : ℝ)⁻¹ *
         Real.log ((Matrix.toEuclideanLin (cocycle A T n x)).singularValues i))
       Filter.atTop (𝓝 (lam0 i))) :
-    ∀ᵐ x ∂μ, spectrum A T x ⊆ distinctExp lam0 d := by
+    ∀ᵐ x ∂μ, lyapunovSpectrum A T x ⊆ distinctExp lam0 d := by
   filter_upwards [isUltrametricGrowth_lambdaBar hT hA hAmeas hint hint',
     spectrum_lambdaHat_eq_ae hT hA hAmeas hint hint', hslowflag,
     ae_lamSing_eq_lam0 lam0 hlam0] with x hx hspec hflag hlameq
-  rw [spectrum_subset_iff_lambdaBar_mem hx]
+  rw [lyapunovSpectrum_subset_iff_lambdaBar_mem hx]
   intro v hv
   set s := lambdaBar A T x v with hs
   -- Step 1: `s` is one of the `lamSing` values.
@@ -380,7 +380,7 @@ theorem hub_spec_of_slowflag
 distinct-exponent set is contained in the limsup spectrum: each `lam0 j` (`j < d`) is the value
 `lambdaBar A T x v` of some nonzero `v`, exhibited by the rank-jump of the slow projector at the
 eigenvalue `exp (lamSing j) = exp (lam0 j)`. -/
-theorem hlb_spec_of_slowflag
+theorem distinctExp_subset_lyapunovSpectrum_of_slowflag
     {μ : Measure X} [IsProbabilityMeasure μ] {T : X → X} (hT : Ergodic T μ)
     {A : X → Matrix (Fin d) (Fin d) ℝ} (hA : ∀ x, (A x).det ≠ 0) (hAmeas : Measurable A)
     (hint : IntegrableLogNorm A μ) (hint' : IntegrableLogNorm (fun x => (A x)⁻¹) μ)
@@ -390,7 +390,7 @@ theorem hlb_spec_of_slowflag
       (fun n : ℕ => (n : ℝ)⁻¹ *
         Real.log ((Matrix.toEuclideanLin (cocycle A T n x)).singularValues i))
       Filter.atTop (𝓝 (lam0 i))) :
-    ∀ᵐ x ∂μ, distinctExp lam0 d ⊆ spectrum A T x := by
+    ∀ᵐ x ∂μ, distinctExp lam0 d ⊆ lyapunovSpectrum A T x := by
   filter_upwards [isUltrametricGrowth_lambdaBar hT hA hAmeas hint hint',
     spectrum_lambdaHat_eq_ae hT hA hAmeas hint hint', hslowflag,
     ae_lamSing_eq_lam0 lam0 hlam0] with x hx hspec hflag hlameq
@@ -474,7 +474,7 @@ theorem hlb_spec_of_slowflag
     push Not at hnmem_t
     exact hnmem_t.2
   -- `lambdaBar v` is some `lamSing k`, hence (no eigenvalue in `(t', s)`) equals `s`.
-  have hbarmem : lambdaBar A T x v ∈ spectrum A T x := lambdaBar_mem_spectrum hx hvne
+  have hbarmem : lambdaBar A T x v ∈ lyapunovSpectrum A T x := lambdaBar_mem_lyapunovSpectrum hx hvne
   -- Using `lambdaBar v ∈ {lamSing k}`, we prove `lambdaBar v = s` directly.
   have hbareq : lambdaBar A T x v = s := by
     -- Suppose `lambdaBar v ≠ s`.  It lies in `(t', s]`, hence in `(t', s)`, but it is an
