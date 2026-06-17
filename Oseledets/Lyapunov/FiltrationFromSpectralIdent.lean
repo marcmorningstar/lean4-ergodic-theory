@@ -3,11 +3,11 @@ Copyright (c) 2026 Marcel Morgenstern. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Marcel Morgenstern
 -/
-import Oseledets.Lyapunov.AssemblyFromUpper
+import Oseledets.Lyapunov.FiltrationFromSpectralUpper
 import Oseledets.Lyapunov.SpectrumResiduals
 
 /-!
-# Assembly from the upper bound, via the spectral-identification hypothesis
+# The Oseledets filtration from the spectral-identification hypothesis
 
 This file proves a variant of `Oseledets.oseledets_filtration_of_upper` in which the
 band-projector convergence hypothesis `hband` is replaced by the spectral-identification

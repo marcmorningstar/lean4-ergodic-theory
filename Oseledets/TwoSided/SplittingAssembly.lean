@@ -47,6 +47,14 @@ satisfy `V i.castSucc = Eᵢ ⊔ V i.succ` and `Eᵢ ⊓ V i.succ = ⊥`, which 
 
 * `Oseledets.oseledets_splitting_dim_zero` — the trivial `d = 0` case.
 * `Oseledets.oseledets_splitting` — the headline two-sided splitting theorem.
+
+## References
+
+* V. I. Oseledets, *A multiplicative ergodic theorem. Lyapunov characteristic numbers for
+  dynamical systems*, Trans. Moscow Math. Soc. **19** (1968), 197–231.
+* D. Ruelle, *Ergodic theory of differentiable dynamical systems*,
+  Publ. Math. IHÉS **50** (1979), 27–58.
+* L. Arnold, *Random Dynamical Systems*, Springer Monographs in Mathematics, 1998.
 -/
 
 open MeasureTheory Filter Topology Matrix DirectSum

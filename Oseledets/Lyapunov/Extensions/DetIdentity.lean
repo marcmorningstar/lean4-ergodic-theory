@@ -3,7 +3,7 @@ Copyright (c) 2026 Marcel Morgenstern. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Marcel Morgenstern
 -/
-import Oseledets.Lyapunov.ExponentSums
+import Oseledets.Lyapunov.Extensions.ExponentSums
 import Oseledets.Ergodic.Birkhoff
 
 /-!
@@ -48,6 +48,12 @@ The proof is the standard composition:
   `∑ i, exponents i = ∫ x, log |(A x).det| ∂μ`.
 * `Oseledets.tendsto_abs_det_cocycle_atTop_zero` — volume contraction: if the sum of all
   exponents is negative, then `|det(A⁽ⁿ⁾)| → 0` `μ`-a.e.
+
+## References
+
+* D. Ruelle, *Ergodic theory of differentiable dynamical systems*,
+  Publ. Math. IHÉS **50** (1979), 27–58.
+* M. Viana, *Lectures on Lyapunov Exponents*, Cambridge Studies in Adv. Math. **145** (2014).
 -/
 
 open MeasureTheory Filter Topology

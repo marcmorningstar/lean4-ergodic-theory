@@ -21,36 +21,36 @@ import Oseledets.Lyapunov.ForwardMeasurable
 import Oseledets.Lyapunov.ForwardV
 import Oseledets.Lyapunov.SpectralMeasurable
 import Oseledets.MultiplicativeErgodic
-import Oseledets.Lyapunov.FiltrationAssembly
-import Oseledets.Lyapunov.FiltrationAssemblyBridge
-import Oseledets.Lyapunov.SlowFlagBridge
+import Oseledets.Lyapunov.FiltrationFromInterfaces
+import Oseledets.Lyapunov.FiltrationInterfaceReduction
+import Oseledets.Lyapunov.SlowFiltrationMeasurable
 import Oseledets.Lyapunov.SpectrumConstancy
 import Oseledets.Lyapunov.RuelleCore
-import Oseledets.Lyapunov.ForwardLowerWiring
-import Oseledets.Lyapunov.AssemblyFromUpper
+import Oseledets.Lyapunov.StratumLogGrowthBounds
+import Oseledets.Lyapunov.FiltrationFromSpectralUpper
 import Oseledets.Lyapunov.SpectrumResiduals
 import Oseledets.Lyapunov.RuelleReverse
-import Oseledets.Lyapunov.CapstoneWiring
+import Oseledets.Lyapunov.LimitSlowSpaceSpectralBound
 import Oseledets.Lyapunov.LimitEigenbasis
-import Oseledets.Lyapunov.AssemblyFromUpperIdent
+import Oseledets.Lyapunov.FiltrationFromSpectralIdent
 import Oseledets.Lyapunov.SpectralIdentification
 import Oseledets.Lyapunov.ForwardGradedOverlap
-import Oseledets.Lyapunov.BridgeWiring
-import Oseledets.Lyapunov.AssemblyChain
+import Oseledets.Lyapunov.FastIndexSpectralEnvelope
+import Oseledets.Lyapunov.DimZero
 import Oseledets.Lyapunov.ChainRecursion
 import Oseledets.Lyapunov.ForwardGradedOverlapTopGap
-import Oseledets.Lyapunov.AssemblyTopGap
+import Oseledets.Lyapunov.FiltrationFromTopGapEnvelope
 import Oseledets.Lyapunov.TopGapEnvelope
-import Oseledets.Lyapunov.Corollaries
-import Oseledets.Lyapunov.Spectrum
-import Oseledets.Lyapunov.ExponentSums
-import Oseledets.Lyapunov.ExteriorCocycle
-import Oseledets.Lyapunov.DetIdentity
-import Oseledets.Lyapunov.Inverse
-import Oseledets.Lyapunov.Restriction
-import Oseledets.Lyapunov.NonErgodic
-import Oseledets.Lyapunov.Regularity
-import Oseledets.Lyapunov.Singular
+import Oseledets.Lyapunov.Extensions.Corollaries
+import Oseledets.Lyapunov.Extensions.Spectrum
+import Oseledets.Lyapunov.Extensions.ExponentSums
+import Oseledets.Lyapunov.Extensions.ExteriorCocycle
+import Oseledets.Lyapunov.Extensions.DetIdentity
+import Oseledets.Lyapunov.Extensions.Inverse
+import Oseledets.Lyapunov.Extensions.Restriction
+import Oseledets.Lyapunov.Extensions.NonErgodic
+import Oseledets.Lyapunov.Extensions.Regularity
+import Oseledets.Lyapunov.Extensions.Singular
 import Oseledets.TwoSided.Invertible
 import Oseledets.TwoSided.SpectralRank
 import Oseledets.TwoSided.MeasurableInf
@@ -85,9 +85,9 @@ This module imports the whole development.
 * `Oseledets.Ergodic.Kingman` — Kingman's subadditive ergodic theorem.
 * `Oseledets.Lyapunov.MeasurableSubspace` — measurably-varying subspaces.
 * `Oseledets.Lyapunov.*` — the Lyapunov-exponent / filtration layers and the
-  final assembly chain (`OseledetsLimit`, `TopGapEnvelope`, `AssemblyTopGap`, …).
+  final assembly chain (`OseledetsLimit`, `TopGapEnvelope`, `FiltrationFromTopGapEnvelope`, …).
 * `Oseledets.MultiplicativeErgodic` — the target theorem `oseledets_filtration`.
-* `Oseledets.Lyapunov.Corollaries` — companion results (multiplicities, uniqueness,
+* `Oseledets.Lyapunov.Extensions.Corollaries` — companion results (multiplicities, uniqueness,
   top-exponent norm growth).
 
 The target theorem `Oseledets.oseledets_filtration` is proved using only the standard

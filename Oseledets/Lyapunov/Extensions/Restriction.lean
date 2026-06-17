@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Marcel Morgenstern
 -/
 import Oseledets.Lyapunov.Filtration
-import Oseledets.Lyapunov.Corollaries
+import Oseledets.Lyapunov.Extensions.Corollaries
 import Oseledets.TwoSided.MeasurableInf
 
 /-!
@@ -69,6 +69,10 @@ All standing hypotheses match the rest of the development
 (`hT : Ergodic T μ`, `hA : ∀ x, (A x).det ≠ 0`, `hAmeas : Measurable A`,
 `hint : IntegrableLogNorm A μ`, `hint' : IntegrableLogNorm (fun x => (A x)⁻¹) μ`,
 `[IsProbabilityMeasure μ]`).
+
+## References
+
+* M. Viana, *Lectures on Lyapunov Exponents*, Cambridge Studies in Adv. Math. **145** (2014).
 -/
 
 open MeasureTheory Filter Topology

@@ -60,6 +60,12 @@ upper bound `limsup (1/n) log sprod_k ≤ Γ_k⁺`.
   only the forward hypothesis `IntegrableLogNorm A μ` is needed.
 * Ergodicity (via `tendsto_kingman_ergodic`) makes `λ₁⁺`, `Γ_k⁺` a.e. constant; a non-ergodic
   variant replaces these by invariant measurable functions (`tendsto_kingman`).
+
+## References
+
+* H. Furstenberg and H. Kesten, *Products of random matrices*,
+  Ann. Math. Statist. **31** (1960), 457–469.
+* M. Viana, *Lectures on Lyapunov Exponents*, Cambridge Studies in Adv. Math. **145** (2014).
 -/
 
 open MeasureTheory Filter Topology

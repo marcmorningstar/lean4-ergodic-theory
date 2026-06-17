@@ -3,11 +3,11 @@ Copyright (c) 2026 Marcel Morgenstern. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Marcel Morgenstern
 -/
-import Oseledets.Lyapunov.FiltrationAssembly
+import Oseledets.Lyapunov.FiltrationFromInterfaces
 import Oseledets.Lyapunov.ForwardAngle
 
 /-!
-# Bridging interfaces for the Oseledets filtration assembly
+# Reducing the interface hypotheses of the Oseledets filtration
 
 This file provides three independent reduction steps feeding the final assembly of
 `Oseledets.oseledets_filtration`:

@@ -5,8 +5,8 @@ Authors: Marcel Morgenstern
 -/
 import Oseledets.Cocycle.Basic
 import Oseledets.Lyapunov.MeasurableSubspace
-import Oseledets.Lyapunov.AssemblyTopGap
-import Oseledets.Lyapunov.AssemblyChain
+import Oseledets.Lyapunov.FiltrationFromTopGapEnvelope
+import Oseledets.Lyapunov.DimZero
 import Oseledets.Lyapunov.TopGapEnvelope
 
 /-!

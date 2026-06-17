@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Marcel Morgenstern
 -/
 import Oseledets.Lyapunov.OseledetsLimit.Limit
-import Oseledets.Lyapunov.Spectrum
+import Oseledets.Lyapunov.Extensions.Spectrum
 
 /-!
 # The non-ergodic Lyapunov spectrum (exponents as invariant functions)
@@ -41,6 +41,11 @@ is trivial (so each invariant function is a.e. constant): see
   `(1/n) log σᵢ(A⁽ⁿ⁾)`.
 * `Oseledets.exists_sumPosExp_nonergodic` — the sum of the positive exponents, as a
   `T`-invariant integrable function obtained by summing the positive part of the spectrum.
+
+## References
+
+* L. Arnold, *Random Dynamical Systems*, Springer Monographs in Mathematics, 1998.
+* M. Viana, *Lectures on Lyapunov Exponents*, Cambridge Studies in Adv. Math. **145** (2014).
 -/
 
 open MeasureTheory Filter Topology

@@ -4,16 +4,16 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Marcel Morgenstern
 -/
 import Oseledets.MultiplicativeErgodic
-import Oseledets.Lyapunov.Corollaries
-import Oseledets.Lyapunov.Spectrum
-import Oseledets.Lyapunov.ExponentSums
-import Oseledets.Lyapunov.ExteriorCocycle
-import Oseledets.Lyapunov.DetIdentity
-import Oseledets.Lyapunov.Inverse
-import Oseledets.Lyapunov.Restriction
-import Oseledets.Lyapunov.NonErgodic
-import Oseledets.Lyapunov.Regularity
-import Oseledets.Lyapunov.Singular
+import Oseledets.Lyapunov.Extensions.Corollaries
+import Oseledets.Lyapunov.Extensions.Spectrum
+import Oseledets.Lyapunov.Extensions.ExponentSums
+import Oseledets.Lyapunov.Extensions.ExteriorCocycle
+import Oseledets.Lyapunov.Extensions.DetIdentity
+import Oseledets.Lyapunov.Extensions.Inverse
+import Oseledets.Lyapunov.Extensions.Restriction
+import Oseledets.Lyapunov.Extensions.NonErgodic
+import Oseledets.Lyapunov.Extensions.Regularity
+import Oseledets.Lyapunov.Extensions.Singular
 import Oseledets.TwoSided.Invertible
 import Oseledets.TwoSided.SpectralRank
 import Oseledets.TwoSided.MeasurableInf

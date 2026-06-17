@@ -2,8 +2,9 @@
 
 > **Status: COMPLETE.** The one-sided Oseledets multiplicative ergodic theorem is proved
 > sorry-free, together with its companion corollaries, ten additive extensions, the two-sided
-> splitting, and the continuous-flow version. The whole library builds clean, is Mathlib-style
-> linter-clean under `linter.mathlibStandardSet`, and every headline result is guarded in
+> splitting, and the continuous-flow version. The whole library builds clean, is enforced
+> linter-clean under `linter.mathlibStandardSet` (warnings promoted to errors in `lakefile.toml`,
+> so `lake build` and CI fail on any lint regression), and every headline result is guarded in
 > `test/AxiomAudit.lean` (a separate `AxiomAudit` lib, so the library source carries no
 > `#print axioms`) to depend on exactly `[propext, Classical.choice, Quot.sound]` (the build fails
 > if this ever drifts). This document maps the finished library.
@@ -14,15 +15,16 @@
   in filtration form: for an ergodic measure-preserving `T` and an integrable invertible matrix
   cocycle generator, `k` distinct Lyapunov exponents `λ₁ > ⋯ > λ_k` and a measurable
   `A`-equivariant flag along which `(1/n) log‖A⁽ⁿ⁾(x) v‖ → λᵢ` on each stratum.
-* `Oseledets.IsOseledetsFiltration` + `oseledets_filtration'` (`Oseledets/Lyapunov/Corollaries.lean`)
+* `Oseledets.IsOseledetsFiltration` + `oseledets_filtration'`
+  (`Oseledets/Lyapunov/Extensions/Corollaries.lean`)
   — the conclusion bundled as a consumable predicate.
 
-## Companion corollaries (`Oseledets/Lyapunov/Corollaries.lean`)
+## Companion corollaries (`Oseledets/Lyapunov/Extensions/Corollaries.lean`)
 
 Canonical growth-sublevel characterization `IsOseledetsFiltration.ae_mem_iff_limsup_le` and
 uniqueness; top exponent = operator-norm growth rate; a.e.-constant multiplicities / dimensions.
 
-## Additive extensions (`Oseledets/Lyapunov/`)
+## Additive extensions (`Oseledets/Lyapunov/Extensions/`)
 
 * `Spectrum.lean` — the full Lyapunov spectrum as a consumable object (`exponents`, antitone,
   `exponents_tendsto_log_singularValue`).

@@ -38,4 +38,7 @@ jobs:
         uses: leanprover/lean-action@v1
         with:
           build: true
+          # Style linting (Mathlib's `linter.mathlibStandardSet`) is enforced by the build itself:
+          # lakefile.toml sets `warningAsError` on the `Oseledets` lib, so any lint regression fails
+          # this `lake build`. (`lint:` here is lean-action's separate environment linter / `#lint`.)
           lint: false

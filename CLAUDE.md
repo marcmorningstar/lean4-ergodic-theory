@@ -8,8 +8,9 @@ multiplicative ergodic theorem (MET)**. It is a single-purpose Lean project
 
 **COMPLETE.** The target theorem `Oseledets.oseledets_filtration`
 (`Oseledets/MultiplicativeErgodic.lean`) is fully proved sorry-free, together with companion
-corollaries (`Oseledets/Lyapunov/Corollaries.lean`: spectrum uniqueness, top-exponent = norm
-growth, a.e.-constant multiplicities, …), the additive extensions (`Oseledets/Lyapunov/`:
+corollaries (`Oseledets/Lyapunov/Extensions/Corollaries.lean`: spectrum uniqueness,
+top-exponent = norm growth, a.e.-constant multiplicities, …), the additive extensions
+(`Oseledets/Lyapunov/Extensions/`:
 Lyapunov spectrum, exponent sums, exterior/wedge growth, trace–det identity, inverse/time-
 reversal, restriction, non-ergodic, regularity, singular), the **two-sided splitting**
 (`Oseledets/TwoSided/`: `oseledets_splitting`), and the **continuous-flow MET**
@@ -18,15 +19,16 @@ reversal, restriction, non-ergodic, regularity, singular), the **two-sided split
 library source has no `#print axioms`) checks on every build — via `#guard_msgs in #print axioms`
 — that the target theorem and each of these results depend on exactly
 `[propext, Classical.choice, Quot.sound]` (the build fails if this ever changes; it is
-not printed). The library is Mathlib-style linter-clean under
-`linter.mathlibStandardSet`. See `docs/progress/STATE.md` for the final composition.
+not printed). The `Oseledets` library is built with `linter.mathlibStandardSet` enabled and
+warnings promoted to errors (`lakefile.toml`), so `lake build` — and hence CI — fails on any
+style-lint regression. See `docs/progress/STATE.md` for the final composition.
 
 ## Layout
 
 | Path | Purpose |
 |---|---|
 | `Oseledets.lean` | Library root; imports every module of the formalization. |
-| `Oseledets/` | Library modules: `Cocycle/`, `Ergodic/`, `Lyapunov/` (incl. `Corollaries.lean`), `MultiplicativeErgodic.lean` (the proved target theorem), `TwoSided/`, `Continuous/`. |
+| `Oseledets/` | Library modules: `Cocycle/`, `Ergodic/`, `Lyapunov/` (incl. `Lyapunov/Extensions/` for the post-theorem corollaries), `MultiplicativeErgodic.lean` (the proved target theorem), `TwoSided/`, `Continuous/`. |
 | `test/AxiomAudit.lean` | The guarded axiom-check (separate `AxiomAudit` lib; not part of the `Oseledets` library). |
 | `lakefile.toml` | Package config: the `Oseledets` lib + the `AxiomAudit` test lib (both default targets), depends on Mathlib. |
 | `lean-toolchain` | Pinned Lean version (`leanprover/lean4:v4.30.0-rc2`). |

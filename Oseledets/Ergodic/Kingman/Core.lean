@@ -21,6 +21,13 @@ The supporting constructions live in the `Oseledets.Kingman` namespace across th
 
 * `Oseledets.tendsto_kingman` — a.e. convergence to a `T`-invariant integrable limit.
 * `Oseledets.tendsto_kingman_ergodic` — the ergodic case: an a.e.-constant limit.
+
+## References
+
+* J. F. C. Kingman, *The ergodic theory of subadditive stochastic processes*,
+  J. Roy. Statist. Soc. Ser. B **30** (1968), 499–510.
+* Y. Katznelson, B. Weiss, *A simple proof of some ergodic theorems*,
+  Israel J. Math. **42** (1982), 291–296.
 -/
 
 open MeasureTheory Filter Topology

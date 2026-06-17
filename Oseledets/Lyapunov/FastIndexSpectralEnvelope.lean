@@ -3,15 +3,15 @@ Copyright (c) 2026 Marcel Morgenstern. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Marcel Morgenstern
 -/
-import Oseledets.Lyapunov.CapstoneWiring
+import Oseledets.Lyapunov.LimitSlowSpaceSpectralBound
 
 /-!
 # The fast-index spectral envelope from the graded overlap bound
 
 This module proves `vslow_bridge_bound_of_forward_graded`, which discharges the `hbridge`
-hypothesis of `Oseledets.limsup_le_of_mem_vslow` (see `Oseledets/Lyapunov/CapstoneWiring.lean`),
-instantiated
-at `lam := lam0`, `g := fun x e ↦ lam0 (e : ℕ)`, `b' := b'`.
+hypothesis of `Oseledets.limsup_le_of_mem_vslow`
+(see `Oseledets/Lyapunov/LimitSlowSpaceSpectralBound.lean`), instantiated at `lam := lam0`,
+`g := fun x e ↦ lam0 (e : ℕ)`, `b' := b'`.
 
 The proof consumes:
 * `hslowperp` — slow orthogonality of `b'` against `vslow`;

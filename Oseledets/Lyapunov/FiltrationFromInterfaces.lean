@@ -9,7 +9,7 @@ import Oseledets.Lyapunov.Forward
 import Oseledets.Lyapunov.ForwardV
 
 /-!
-# Assembly of the Oseledets filtration
+# The Oseledets filtration from structural interfaces
 
 This file assembles the full Oseledets filtration statement from the structural layers
 already in place — the limsup flag `Oseledets.vflag` and the deterministic exponent

@@ -3,7 +3,7 @@ Copyright (c) 2026 Marcel Morgenstern. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Marcel Morgenstern
 -/
-import Oseledets.Lyapunov.DetIdentity
+import Oseledets.Lyapunov.Extensions.DetIdentity
 import Oseledets.Ergodic.Birkhoff
 import Mathlib.MeasureTheory.Integral.DominatedConvergence
 import Mathlib.MeasureTheory.Function.UniformIntegrable
@@ -73,6 +73,10 @@ the spectrum object `Oseledets.exponents : Fin d → ℝ`, the telescoping growt
   integrable envelope* dominating `‖Aₘ‖, ‖Aₘ⁻¹‖`. Pointwise generator convergence alone does not
   suffice: the per-`n` integral continuity step is a dominated-convergence argument that requires
   domination.
+
+## References
+
+* M. Viana, *Lectures on Lyapunov Exponents*, Cambridge Studies in Adv. Math. **145** (2014).
 -/
 
 open MeasureTheory Filter Topology ENNReal

@@ -3,7 +3,7 @@ Copyright (c) 2026 Marcel Morgenstern. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Marcel Morgenstern
 -/
-import Oseledets.Lyapunov.ExponentSums
+import Oseledets.Lyapunov.Extensions.ExponentSums
 
 /-!
 # The exterior (wedge) cocycle and the growth-rate characterization
@@ -63,6 +63,12 @@ FK theorem) is **not** used and **not** required: it would demand its own integr
 `log⁺‖C_k(A)‖ ≤ k · log⁺‖A‖ + C`. The scalar route through `sprod` is far cheaper and is what we
 use here. The cocycle structure (`cocycle_extGen_eq_compound`) is nonetheless proved, since it is
 the conceptual content of "the wedge of the cocycle is a cocycle".
+
+## References
+
+* M. S. Raghunathan, *A proof of Oseledec's multiplicative ergodic theorem*,
+  Israel J. Math. **32** (1979), 356–362.
+* M. Viana, *Lectures on Lyapunov Exponents*, Cambridge Studies in Adv. Math. **145** (2014).
 -/
 
 open MeasureTheory Filter Topology

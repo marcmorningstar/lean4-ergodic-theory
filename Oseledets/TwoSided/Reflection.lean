@@ -5,7 +5,7 @@ Authors: Marcel Morgenstern
 -/
 import Oseledets.TwoSided.Invertible
 import Oseledets.TwoSided.StrongExport
-import Oseledets.Lyapunov.DetIdentity
+import Oseledets.Lyapunov.Extensions.DetIdentity
 import Oseledets.Ergodic.Birkhoff
 
 /-!

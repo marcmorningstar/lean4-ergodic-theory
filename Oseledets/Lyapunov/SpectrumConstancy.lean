@@ -3,12 +3,12 @@ Copyright (c) 2026 Marcel Morgenstern. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Marcel Morgenstern
 -/
-import Oseledets.Lyapunov.FiltrationAssemblyBridge
+import Oseledets.Lyapunov.FiltrationInterfaceReduction
 
 /-!
 # Spectrum constancy: identifying the per-point spectrum with the deterministic exponent set
 
-`Oseledets.specList_eq_expEnum_of_lyapunovSpectrum_const` (in `FiltrationAssemblyBridge.lean`)
+`Oseledets.specList_eq_expEnum_of_lyapunovSpectrum_const` (in `FiltrationInterfaceReduction.lean`)
 reduces the `hspec` interface of the final assembly to the single hypothesis
 
 ```
@@ -204,7 +204,7 @@ theorem lyapunovSpectrum_const_invariant_ae
 /-! ## End-to-end: the `hspec` interface under the standing hypotheses
 
 Bundling everything: under the standard standing hypotheses, *given* the two analytic per-vector
-inclusions, the `hspec` interface (and hence — via the `FiltrationAssemblyBridge` results — the
+inclusions, the `hspec` interface (and hence — via the `FiltrationInterfaceReduction` results — the
 `oseledets_filtration` `hspec` slot) is discharged.  The signature lists the full standing
 hypotheses so it slots directly into the surrounding assembly, even though the proof only needs the
 two inclusions; this fixes the *shape* the spectral upper bound must provide. -/

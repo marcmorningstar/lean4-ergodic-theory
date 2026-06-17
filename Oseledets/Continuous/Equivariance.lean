@@ -6,7 +6,7 @@ Authors: Marcel Morgenstern
 import Oseledets.Continuous.Flow
 import Oseledets.Continuous.Reduction
 import Oseledets.Ergodic.Birkhoff
-import Oseledets.Lyapunov.Corollaries
+import Oseledets.Lyapunov.Extensions.Corollaries
 import Oseledets.Cocycle.FurstenbergKesten
 
 /-!

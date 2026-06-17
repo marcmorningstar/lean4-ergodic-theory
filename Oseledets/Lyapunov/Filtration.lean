@@ -36,6 +36,12 @@ hypothesis `hx : IsUltrametricGrowth (lambdaBar A T x)`.
 * `lambdaBar_eq_on_stratum` — on each stratum `lambdaBar` equals the exact exponent `λᵢ`;
 * `lyapunovSpectrum_equivariant_ae` / `vflag_equivariant` — `A`-equivariance of the spectrum and the
   flag, a.e. in `x`.
+
+## References
+
+* D. Ruelle, *Ergodic theory of differentiable dynamical systems*,
+  Publ. Math. IHÉS **50** (1979), 27–58.
+* M. Viana, *Lectures on Lyapunov Exponents*, Cambridge Studies in Adv. Math. **145** (2014).
 -/
 
 open MeasureTheory Filter Topology

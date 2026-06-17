@@ -21,8 +21,9 @@ The architecture:
 * `inf_eq_bot_of_neg_sum` — the **per-point** crux.  For a forward level family `Vfam` whose
   backward-orbit envelope has limsup `≤ a` and a backward level `Ux` along which a nonzero
   vector decays with limsup `≤ b`, if `a + b < 0` then `Vfam x ⊓ Ux = ⊥`.  The argument writes
-  `v = A⁽ⁿ⁾(Sⁿx) · (B⁽ⁿ⁾(x) v)` via the cocycle identity `cocycle_succ'`, uses forward equivariance to
-  place `B⁽ⁿ⁾(x) v ∈ Vfam(Sⁿx)`, and bounds `log‖v‖ ≤ log‖A⁽ⁿ⁾(Sⁿx)·P‖ + log‖B⁽ⁿ⁾(x) v‖`, whose
+  `v = A⁽ⁿ⁾(Sⁿx) · (B⁽ⁿ⁾(x) v)` via the cocycle identity `cocycle_succ'`, uses forward
+  equivariance to place `B⁽ⁿ⁾(x) v ∈ Vfam(Sⁿx)`, and bounds
+  `log‖v‖ ≤ log‖A⁽ⁿ⁾(Sⁿx)·P‖ + log‖B⁽ⁿ⁾(x) v‖`, whose
   normalized limit is `≤ a + b < 0`, forcing `‖v‖ = 0`.
 
 * `ae_crux` — assembles the per-point crux a.e., for all forward level / backward level pairs
@@ -36,8 +37,9 @@ The architecture:
   inequality on the spectra) outright:
   `∀ a b, a + b < 0 → #{j<d | lam0 j ≤ a} + #{j<d | mu0 j ≤ b} ≤ d`.  Thresholds are converted to
   levels via the largest enumerated exponent `≤ a` (resp. `≤ b`), the dimension formula
-  `oseledets_filtration_dims` identifies the filtration finranks with the counts, and the Grassmann identity
-  `Submodule.finrank_sup_add_finrank_inf_eq` with `V ⊓ W = ⊥` from `ae_crux` closes the count.
+  `oseledets_filtration_dims` identifies the filtration finranks with the counts, and the
+  Grassmann identity `Submodule.finrank_sup_add_finrank_inf_eq` with `V ⊓ W = ⊥` from `ae_crux`
+  closes the count.
 
 -/
 
@@ -525,8 +527,9 @@ spectra) outright — for all thresholds `a, b` with `a + b < 0`,
 
 The bound is the combinatorial input consumed by `reflect_of_counting_and_sum`.
 Each positive count is realized by a forward (resp. backward) interior level via
-`exists_level_eq_countLe`, the dimension formula `oseledets_filtration_dims` identifies the filtration finrank with the
-count, and the Grassmann identity `Submodule.finrank_sup_add_finrank_inf_eq` with the crux
+`exists_level_eq_countLe`, the dimension formula `oseledets_filtration_dims` identifies the
+filtration finrank with the count, and the Grassmann identity
+`Submodule.finrank_sup_add_finrank_inf_eq` with the crux
 `V i.castSucc x ⊓ W s.castSucc x = ⊥` (from `ae_crux`) bounds the sum by
 `finrank (V ⊔ W) ≤ d`. -/
 theorem ae_counting

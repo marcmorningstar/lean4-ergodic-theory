@@ -7,7 +7,7 @@ import Oseledets.Continuous.Flow
 import Oseledets.Continuous.Reduction
 import Oseledets.Continuous.BetweenTimes
 import Oseledets.Continuous.Equivariance
-import Oseledets.Lyapunov.Corollaries
+import Oseledets.Lyapunov.Extensions.Corollaries
 
 /-!
 # The continuous-flow Oseledets multiplicative ergodic theorem
@@ -42,6 +42,12 @@ The proof combines four continuous-flow ingredients:
   cocycle `A` whose one-step log-norms are dominated uniformly on `[0,1]` by integrable
   functions, almost every point carries a strictly decreasing, fully flow-equivariant Oseledets
   flag whose strata realise the exponents `lam i` as continuous-time growth rates.
+
+## References
+
+* V. I. Oseledets, *A multiplicative ergodic theorem. Lyapunov characteristic numbers for
+  dynamical systems*, Trans. Moscow Math. Soc. **19** (1968), 197–231.
+* L. Arnold, *Random Dynamical Systems*, Springer Monographs in Mathematics, 1998.
 -/
 
 open MeasureTheory Filter Topology

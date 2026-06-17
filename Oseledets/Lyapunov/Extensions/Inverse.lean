@@ -3,7 +3,7 @@ Copyright (c) 2026 Marcel Morgenstern. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Marcel Morgenstern
 -/
-import Oseledets.Lyapunov.Spectrum
+import Oseledets.Lyapunov.Extensions.Spectrum
 
 /-!
 # The inverse (time-reversed) singular-value spectrum
@@ -41,6 +41,12 @@ explicitly because it is *the* hypothesis carrying the inverse spectrum.
   negatives in reversed order.
 * `Oseledets.topExponent_inv_eq_neg_bot` — the top exponent of the inverse cocycle equals the
   negative of the bottom exponent of `A`, tying the positive and negative ends of the spectrum.
+
+## References
+
+* L. Arnold, *Random Dynamical Systems*, Springer Monographs in Mathematics, 1998.
+* D. Ruelle, *Ergodic theory of differentiable dynamical systems*,
+  Publ. Math. IHÉS **50** (1979), 27–58.
 -/
 
 open Module InnerProductSpace MeasureTheory Filter Topology

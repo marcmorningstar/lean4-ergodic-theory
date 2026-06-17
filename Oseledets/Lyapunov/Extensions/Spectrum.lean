@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Marcel Morgenstern
 -/
 import Oseledets.Lyapunov.OseledetsLimit.Limit
-import Oseledets.Lyapunov.Corollaries
+import Oseledets.Lyapunov.Extensions.Corollaries
 
 /-!
 # The full Lyapunov spectrum as a consumable object
@@ -41,6 +41,10 @@ definition.
 * `Oseledets.exp_exponents_eq_eigenvalues₀_oseledetsLimit` — the eigenvalue tie:
   a.e. `x`, for every sorted index `i`, `exp (exponents … i)` is the `i`-th sorted
   eigenvalue of the Oseledets limit `Λ x`.
+
+## References
+
+* M. Viana, *Lectures on Lyapunov Exponents*, Cambridge Studies in Adv. Math. **145** (2014).
 -/
 
 open MeasureTheory Filter Topology

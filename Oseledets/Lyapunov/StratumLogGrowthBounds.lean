@@ -3,8 +3,8 @@ Copyright (c) 2026 Marcel Morgenstern. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Marcel Morgenstern
 -/
-import Oseledets.Lyapunov.FiltrationAssembly
-import Oseledets.Lyapunov.FiltrationAssemblyBridge
+import Oseledets.Lyapunov.FiltrationFromInterfaces
+import Oseledets.Lyapunov.FiltrationInterfaceReduction
 import Oseledets.Lyapunov.ForwardAngle
 import Oseledets.Cocycle.FurstenbergKesten
 
@@ -17,7 +17,7 @@ lying on a stratum of the Oseledets flag (`v ∈ vflag A T x i.castSucc`,
 `v ∉ vflag A T x i.succ`).
 Together with the per-vector limsup upper bound, the results here are the inputs of
 `Oseledets.tendsto_inv_mul_log_norm_cocycle_apply_of_upper_lower`
-(in `Oseledets.Lyapunov.FiltrationAssemblyBridge`), which upgrades them to the exact growth
+(in `Oseledets.Lyapunov.FiltrationInterfaceReduction`), which upgrades them to the exact growth
 limit `specList A T x i` on each stratum.
 
 ## Main results

@@ -29,6 +29,33 @@ splitting; private / API surface; documentation; code style & tactics; PR-review
 feedback; linter ground-truth), followed by the dedicated decision guide and a
 compliance checklist.
 
+## Status update (cleanup applied)
+
+The merge-quality cleanup this report recommends has been carried out:
+
+* The three giant files above were split into topic directories (`OseledetsLimit/`,
+  `Ergodic/Kingman/`, `ExteriorNorm/`); no `longFile` override remains.
+* The dead `AssemblyChain` route was removed (its live `dim_zero` base case extracted to
+  `Lyapunov/DimZero.lean`); the 10 post-theorem corollary files were moved to
+  `Lyapunov/Extensions/`; and the build-pipeline-named assembly/wiring/bridge files were renamed
+  to mathematical names (e.g. `BridgeWiring → FastIndexSpectralEnvelope`,
+  `AssemblyTopGap → FiltrationFromTopGapEnvelope`, `FiltrationAssembly → FiltrationFromInterfaces`).
+* `## References` (prose) were added to the result-bearing modules, and `docs/references.bib`
+  now holds the canonical bibtex entries (the per-file prose → `[…][key]` conversion happens at
+  Mathlib-PR time, against Mathlib's own `references.bib`).
+* `linter.mathlibStandardSet` is enabled on the `Oseledets` lib with `warningAsError`
+  (`lakefile.toml`), so `lake build` — and hence CI — fails on any style-lint regression. The
+  full library was verified to build clean under this setting.
+
+Deferred follow-ups (documented, not blockers):
+
+* **Re-pin Mathlib to a tagged release** once Lean exits `v4.30.0-rc2`; the current pin is an
+  exact main-branch commit (intentional, for toolchain/cache coupling — see the `[[require]]`
+  note in `lakefile.toml`).
+* **Enable the environment linter** (`#lint` / `lake exe runLinter`) as an additional CI gate
+  beyond the style linters; this needs a `runLinter` target and may surface `docBlame`/`simpNF`
+  items, so it is scoped as its own pass.
+
 ---
 
 ## 1. Naming

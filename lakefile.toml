@@ -14,6 +14,13 @@ rev = "34f7a6cd150fd7a166958d989d5abab56e9e3d15"
 
 [[lean_lib]]
 name = "Oseledets"
+# Enforce Mathlib's standard style-linter set on the upstreamable library at build time, and
+# promote warnings to errors so a lint regression fails `lake build` (and hence CI) rather than
+# merely warning. Passed as raw lean args (not `[leanOptions]` keys) so the `weak.` prefix —
+# required because the option is only registered once Mathlib is imported — is not absorbed into
+# the guillemet-quoted dotted option name. The `AxiomAudit` test lib is deliberately NOT linted
+# (it uses `#print axioms`/`#guard_msgs`, which the `hashCommand` linter forbids).
+moreLeanArgs = ["-Dweak.linter.mathlibStandardSet=true", "-DwarningAsError=true"]
 
 # Axiom-audit regression check, kept OUT of the upstreamable `Oseledets` library
 # (Mathlib disallows `#print axioms` in library source). Built on every `lake build`

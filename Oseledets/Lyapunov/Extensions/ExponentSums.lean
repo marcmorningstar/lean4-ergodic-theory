@@ -3,7 +3,7 @@ Copyright (c) 2026 Marcel Morgenstern. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Marcel Morgenstern
 -/
-import Oseledets.Lyapunov.Spectrum
+import Oseledets.Lyapunov.Extensions.Spectrum
 
 /-!
 # Sums of Lyapunov exponents, sign/vanishing, and the telescoping identity
@@ -49,6 +49,10 @@ It records three things requested as additive extensions:
 * `Oseledets.gammaK_tendsto` — `gammaK k` is the a.e. limit of `(1/n) log sprod_k`.
 * `Oseledets.gammaK_eq_sum_top_exponents` — the telescoping identity
   `Γ_k = ∑_{i<k} exponents i`.
+
+## References
+
+* M. Viana, *Lectures on Lyapunov Exponents*, Cambridge Studies in Adv. Math. **145** (2014).
 -/
 
 open MeasureTheory Filter Topology
