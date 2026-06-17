@@ -409,52 +409,52 @@ of `e_t` over `B_w ⊆ (hiBand)ᶜ`). -/
 
 /-! ### Private SVDData-level helpers for the multi-source recursion (prefix `htgmulti_`) -/
 
-open Ruelle13 in
+open Oseledets.RuelleCofactor in
 /-- `fastProj t B u` lies in the span of `e t j`, `j ∈ B` (mirror of `slowProj_mem_span`). -/
 private lemma htgmulti_fastProj_mem_span {E : Type*} [NormedAddCommGroup E]
-    [InnerProductSpace ℝ E] {D : ℕ} (S : Ruelle13.SVDData E D) (t : ℕ) (B : Finset (Fin D))
+    [InnerProductSpace ℝ E] {D : ℕ} (S : Oseledets.RuelleCofactor.SVDData E D) (t : ℕ) (B : Finset (Fin D))
     (u : E) :
     S.fastProj t B u
       ∈ Submodule.span ℝ (Set.range (fun j : (B : Finset (Fin D)) => S.e t (j : Fin D))) := by
   classical
-  rw [Ruelle13.SVDData.fastProj]
+  rw [Oseledets.RuelleCofactor.SVDData.fastProj]
   apply Submodule.sum_mem
   intro j hj
   apply Submodule.smul_mem
   apply Submodule.subset_span
   exact ⟨⟨j, hj⟩, rfl⟩
 
-open Ruelle13 in
+open Oseledets.RuelleCofactor in
 /-- `fastProj t hi` distributes over a finite sum (folded from binary `fastProj_add`). -/
 private lemma htgmulti_fastProj_sum {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
-    {D : ℕ} (S : Ruelle13.SVDData E D) (t : ℕ) (hi : Finset (Fin D)) {W : Type*}
+    {D : ℕ} (S : Oseledets.RuelleCofactor.SVDData E D) (t : ℕ) (hi : Finset (Fin D)) {W : Type*}
     (Wf : Finset W) (f : W → E) :
     S.fastProj t hi (∑ w ∈ Wf, f w) = ∑ w ∈ Wf, S.fastProj t hi (f w) := by
   classical
   induction Wf using Finset.induction with
-  | empty => simp [Ruelle13.SVDData.fastProj]
+  | empty => simp [Oseledets.RuelleCofactor.SVDData.fastProj]
   | insert w Wf hw ih =>
     rw [Finset.sum_insert hw, Finset.sum_insert hw, S.fastProj_add, ih]
 
-open Ruelle13 in
+open Oseledets.RuelleCofactor in
 /-- The slow projection at time `t` decomposes over a disjoint cover of the slow indices `hiᶜ`. -/
 private lemma htgmulti_slowProj_eq_sum {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
-    {D : ℕ} (S : Ruelle13.SVDData E D) (t : ℕ) (hiT : Finset (Fin D)) {W : Type*}
+    {D : ℕ} (S : Oseledets.RuelleCofactor.SVDData E D) (t : ℕ) (hiT : Finset (Fin D)) {W : Type*}
     (Wf : Finset W) (Bw : W → Finset (Fin D)) (hcover : hiTᶜ = Wf.biUnion Bw)
     (hdisj : (Wf : Set W).PairwiseDisjoint Bw) (u : E) :
     S.slowProj t hiT u = ∑ w ∈ Wf, S.fastProj t (Bw w) u := by
   classical
-  rw [Ruelle13.SVDData.slowProj, hcover, Finset.sum_biUnion hdisj]
+  rw [Oseledets.RuelleCofactor.SVDData.slowProj, hcover, Finset.sum_biUnion hdisj]
   refine Finset.sum_congr rfl (fun w _ => ?_)
-  rw [Ruelle13.SVDData.fastProj]
+  rw [Oseledets.RuelleCofactor.SVDData.fastProj]
 
-open Ruelle13 in
+open Oseledets.RuelleCofactor in
 /-- The SVDData-level multi-source one-step recursion.  Generalizes
-`Ruelle13.SVDData.oneStep_recursion` to a disjoint sub-partition `{Bw w : w ∈ Wf}` of the slow
+`Oseledets.RuelleCofactor.SVDData.oneStep_recursion` to a disjoint sub-partition `{Bw w : w ∈ Wf}` of the slow
 indices `hiTᶜ`: the fast band mass at `t+1` is bounded by the fast band mass at `t` plus a sum of
 per-sub-band leakage sources, each with its own cap `sval w`. -/
 private lemma htgmulti_oneStep_recursion_multiSource {E : Type*} [NormedAddCommGroup E]
-    [InnerProductSpace ℝ E] {D : ℕ} (S : Ruelle13.SVDData E D) (t : ℕ) (hiT hiT1 : Finset (Fin D))
+    [InnerProductSpace ℝ E] {D : ℕ} (S : Oseledets.RuelleCofactor.SVDData E D) (t : ℕ) (hiT hiT1 : Finset (Fin D))
     {W : Type*} (Wf : Finset W) (Bw : W → Finset (Fin D)) (sval : W → ℝ) (b tt : ℝ)
     (hsval : ∀ w ∈ Wf, 0 ≤ sval w) (htt : 0 < tt) (hb : 0 ≤ b)
     (hcover : hiTᶜ = Wf.biUnion Bw) (hdisj : (Wf : Set W).PairwiseDisjoint Bw)

@@ -29,7 +29,7 @@ gap removes that obstruction.
 * The remainder of the module is the Step-A engine for discharging `htopgap` via Ruelle's
   per-stratum strong induction: qpow↔rpow singular-value comparisons, σ-localization at all
   times, the tempered one-step operator factor, the per-step band-mass recursion
-  (`bandMass_oneStep_recursion`, built on `Ruelle13.SVDData.oneStep_recursion` and
+  (`bandMass_oneStep_recursion`, built on `Oseledets.RuelleCofactor.SVDData.oneStep_recursion` and
   `toEuclideanLin_bandProjector_eq_fastProj`), and the `a₀ = 0` initialization
   (`bandMass_init_zero`).
 
@@ -149,7 +149,7 @@ theorem eventually_qpow_eigenvalue_localized [NeZero d] {A : X → Matrix (Fin d
 
 /-! ## The one-step recursion specialised to the cocycle SVD chain at a fixed cut
 
-We instantiate `Ruelle13.SVDData.oneStep_recursion` on `chainSVD A T x` with slow cap `c₀^t`,
+We instantiate `Oseledets.RuelleCofactor.SVDData.oneStep_recursion` on `chainSVD A T x` with slow cap `c₀^t`,
 fast floor `c₀^{t+1}`, and step factor `b = ‖A(T^[t] x)‖`, identifying `fastProj` with the
 band projector via `toEuclideanLin_bandProjector_eq_fastProj`.  This produces the per-step
 inequality on the band masses.  -/
@@ -177,7 +177,7 @@ In this envelope the cut `c₀` is restricted to the top gap below `λ_e`, i.e. 
 lies in `(log c₀, λ_e)`. It is stated here as the single isolated analytic hypothesis
 `TopGapMassEnvelope`, established by Ruelle's band-distance strong induction over strata
 (eqns (1.3)/(1.4)); the deterministic engine
-`Ruelle13.SVDData.{oneStep_recursion, chain_geometric_sum}` and the σ-localization layer above
+`Oseledets.RuelleCofactor.SVDData.{oneStep_recursion, chain_geometric_sum}` and the σ-localization layer above
 are its ingredients. Everything downstream (Step B) is discharged from it. -/
 
 /-- **Top-gap fast-band-mass envelope.** For a gap pair `λ_a < λ_e` and any cut `c₀` in the open
@@ -343,7 +343,7 @@ theorem forward_graded_overlap_of_topGapEnvelope [MeasureTheory.IsProbabilityMea
 
 /-! ## The per-step band-mass recursion at a fixed cut (engine instantiation)
 
-We instantiate `Ruelle13.SVDData.oneStep_recursion` on `chainSVD A T x`.  The fast band at time
+We instantiate `Oseledets.RuelleCofactor.SVDData.oneStep_recursion` on `chainSVD A T x`.  The fast band at time
 `t` is `hiBand A T t x c₀`; its complement is the slow band.  We supply:
 * slow cap `s` valid at time `t`: every slow `σ_j(t) ≤ s`;
 * fast floor `c₀^{t+1}` at time `t+1`: every fast `σ_j(t+1) ≥ c₀^{t+1}` (from the band
@@ -397,7 +397,7 @@ theorem bandMass_init_zero [NeZero d] (A : X → Matrix (Fin d) (Fin d) ℝ) (n 
     Matrix.toEuclideanLin (bandProjector A T (Set.indicator (Set.Ioi c₀) 1) n x)
         (sortedGramEigenbasis A T n x a) = 0 := by
   classical
-  rw [toEuclideanLin_bandProjector_eq_fastProj, Ruelle13.SVDData.fastProj]
+  rw [toEuclideanLin_bandProjector_eq_fastProj, Oseledets.RuelleCofactor.SVDData.fastProj]
   simp only [chainSVD_e]
   apply Finset.sum_eq_zero
   intro j hj

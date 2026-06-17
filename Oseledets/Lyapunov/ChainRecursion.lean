@@ -30,9 +30,9 @@ corrected envelope.
 
 ## Main results
 
-* `Ruelle13.SVDData.oneStep_recursion`: the deterministic one-step band-leakage recursion
+* `Oseledets.RuelleCofactor.SVDData.oneStep_recursion`: the deterministic one-step band-leakage recursion
   for the fast-band mass along an SVD chain.
-* `Ruelle13.SVDData.chain_geometric_sum`: the contraction-free chain solver — a recursion
+* `Oseledets.RuelleCofactor.SVDData.chain_geometric_sum`: the contraction-free chain solver — a recursion
   `a (i+1) ≤ a i + R·ρ^i` with `a 0 = 0` is bounded by `R/(1−ρ)` uniformly in the index.
 * `Oseledets.toEuclideanLin_bandProjector_eq_fastProj`: the band projector equals the
   explicit fast projection over the SVD chain `Oseledets.chainSVD`.
@@ -55,9 +55,9 @@ where `P^{>c₀}_m = bandProjector A T (indicator (Ioi c₀) 1) m x` is the orth
 projector onto the span of the time-`m` Gram eigenvectors `u_j(m)` whose exp-scale
 eigenvalue `σ_j(m)^{1/m}` exceeds `c₀`.
 
-### The deterministic SVD chain (`Ruelle13.SVDData`)
+### The deterministic SVD chain (`Oseledets.RuelleCofactor.SVDData`)
 
-Instantiate `Ruelle13.SVDData (EuclideanSpace ℝ (Fin d)) (card (Fin d))` at the point `x`
+Instantiate `Oseledets.RuelleCofactor.SVDData (EuclideanSpace ℝ (Fin d)) (card (Fin d))` at the point `x`
 by:
 * `e t := sortedGramEigenbasis A T t x` — the time-`t` Gram eigenbasis (right-singular
   basis);
@@ -114,7 +114,7 @@ open Filter Topology MeasureTheory
 open scoped RealInnerProductSpace BigOperators
 
 noncomputable section
-namespace Ruelle13
+namespace Oseledets.RuelleCofactor
 namespace SVDData
 
 open scoped RealInnerProductSpace
@@ -239,7 +239,7 @@ theorem chain_geometric_sum (a : ℕ → ℝ) (R ρ : ℝ) (hR : 0 ≤ R) (hρ0 
     _ = R / (1 - ρ) := by rw [div_eq_mul_inv]
 
 end SVDData
-end Ruelle13
+end Oseledets.RuelleCofactor
 
 namespace Oseledets
 
@@ -299,7 +299,7 @@ theorem toEuclideanLin_bandProjector_sortedGramEigenbasis [NeZero d]
 /-- The SVD chain data at a point `x`: time-`t` Gram eigenbasis, singular values, and the cocycle
 action.  The Parseval field is `norm_sq_cocycle_apply_eq_sum_singularValues`. -/
 def chainSVD [NeZero d] (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (x : X) :
-    Ruelle13.SVDData (EuclideanSpace ℝ (Fin d)) (Fintype.card (Fin d)) where
+    Oseledets.RuelleCofactor.SVDData (EuclideanSpace ℝ (Fin d)) (Fintype.card (Fin d)) where
   e t := sortedGramEigenbasis A T t x
   σ t j := (Matrix.toEuclideanLin (cocycle A T t x)).singularValues j
   σ_nonneg t j := (Matrix.toEuclideanLin (cocycle A T t x)).singularValues_nonneg j
@@ -351,7 +351,7 @@ theorem toEuclideanLin_bandProjector_eq_fastProj [NeZero d]
     rw [map_sum]
     refine Finset.sum_congr rfl (fun j _ => ?_)
     rw [map_smul, toEuclideanLin_bandProjector_sortedGramEigenbasis A m x χ j, smul_comm]
-  rw [hLHS, Ruelle13.SVDData.fastProj, hiBand]
+  rw [hLHS, Oseledets.RuelleCofactor.SVDData.fastProj, hiBand]
   simp only [chainSVD_e]
   -- Split univ into fast / slow and discard slow.
   rw [← Finset.sum_filter_add_sum_filter_not Finset.univ (fun j => c₀ < ev j)]

@@ -62,7 +62,7 @@ open scoped RealInnerProductSpace BigOperators
 
 noncomputable section
 
-namespace Ruelle13
+namespace Oseledets.RuelleCofactor
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 variable {d : ℕ}
@@ -513,4 +513,4 @@ theorem orthogonal_block_mass_symm (b b' : OrthonormalBasis (Fin d) ℝ E) (A : 
 
 end SVDData
 
-end Ruelle13
+end Oseledets.RuelleCofactor

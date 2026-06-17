@@ -129,7 +129,7 @@ theorem oseledets_filtration_of_chain
         ∀ (g : Fin d → ℝ) (c : ℝ), 1 ≤ c →
         (∀ a b : Fin d, |S a b| ≤ c * Real.exp (-(max (g b - g a) 0))) →
         ∀ i j : Fin d, |S i j| ≤ (d - 1).factorial * c ^ (d - 1) * Real.exp (-(g i - g j)) :=
-      fun S hS g c hc hf => Ruelle13.entry_reverse_bound_of_orthogonal S hS g c hc hf
+      fun S hS g c hc hf => Oseledets.RuelleCofactor.entry_reverse_bound_of_orthogonal S hS g c hc hf
     -- the band-limit bridge.
     have hbridge := vslow_bridge_bound_of_forward_graded (A := A) lam0 hlam0 b' hslowperp hfwdN hrev
     -- the grading `g x e := lam0 e`.

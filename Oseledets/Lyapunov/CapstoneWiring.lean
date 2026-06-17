@@ -56,7 +56,7 @@ The terminal theorem `limsup_le_of_mem_Vslow` is proved by assembly:
    The forward bound is converted into the reverse bound by `reverse_graded_overlap_bound`,
    which consumes the hypothesis `hrev` — Ruelle's reverse-side cofactor bound for orthogonal
    matrices with graded forward decay.  The exact statement required is proved as
-   `Ruelle13.entry_reverse_bound_of_orthogonal` in `Oseledets/Lyapunov/RuelleReverse.lean`.
+   `Oseledets.RuelleCofactor.entry_reverse_bound_of_orthogonal` in `Oseledets/Lyapunov/RuelleReverse.lean`.
 
 ## References
 
@@ -156,7 +156,7 @@ An orthonormal change-of-basis matrix `S i j = ⟪b' j, b i⟫` is orthogonal (`
 Parseval).  If its *forward* (level-increasing) entries decay at the graded rate
 `c·exp(-(g j - g i)₊)`, then Ruelle's cofactor bound `hrev` transfers this to the *reverse*
 (level-decreasing) entries: `|S i j| ≤ (d-1)!·c^{d-1}·exp(-(g i - g j))`.
-`Ruelle13.SVDData.orthogonal_block_mass_symm` is the Frobenius-mass companion; here `hrev`
+`Oseledets.RuelleCofactor.SVDData.orthogonal_block_mass_symm` is the Frobenius-mass companion; here `hrev`
 supplies the per-entry graded transfer. -/
 
 open scoped Matrix in
@@ -194,11 +194,11 @@ Everything is derived from the infrastructure above except the genuinely Ruelle-
 content, which enters through three hypotheses:
 
 * `hrev` — Ruelle's reverse-side cofactor bound
-  (`Ruelle13.entry_reverse_bound_of_orthogonal`), taken as a hypothesis parameter with the
+  (`Oseledets.RuelleCofactor.entry_reverse_bound_of_orthogonal`), taken as a hypothesis parameter with the
   exact statement needed;
 * `hfwd` — the forward graded overlap bound, uniform in the band index, the output of the
-  forward chain of Ruelle's Lemma 1.4 (`Ruelle13.SVDData.oneStep_sandwich` and
-  `Ruelle13.chain_leakage_exp`, the full pairwise gap);
+  forward chain of Ruelle's Lemma 1.4 (`Oseledets.RuelleCofactor.SVDData.oneStep_sandwich` and
+  `Oseledets.RuelleCofactor.chain_leakage_exp`, the full pairwise gap);
 * `hbridge` — the band-limit bridge: from the reverse graded entry bound to the fast-index
   `specTerm` envelope, via the band-limit identification `tendsto_bandProjector_of_gap`.
 
@@ -206,7 +206,7 @@ The *slow* indices (`lam j ≤ t`) are discharged with no Ruelle input by
 `specTerm_envelope_slow`.
 -/
 
-open Ruelle13 in
+open Oseledets.RuelleCofactor in
 /-- **Per-vector spectral upper bound on the limit slow space.**
 
 For `μ`-a.e. `x`, every threshold `t`, and every nonzero `v` in the limit slow space

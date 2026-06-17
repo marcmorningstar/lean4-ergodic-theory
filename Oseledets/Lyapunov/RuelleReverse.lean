@@ -27,7 +27,7 @@ open Equiv
 
 noncomputable section
 
-namespace Ruelle13
+namespace Oseledets.RuelleCofactor
 
 /-- A bare-handed Leibniz bound on `|det M|`: it is at most the number of permutations
 `σ` with `nonzero ∏` times the worst per-permutation product bound.  Here we directly bound
@@ -241,4 +241,4 @@ theorem entry_reverse_bound_of_orthogonal {d : ℕ} (S : Matrix (Fin d) (Fin d) 
         exact_mod_cast hcardle
     _ = (d - 1).factorial * c ^ (d - 1) * Real.exp (-(g i - g j)) := by rw [hBdef]; ring
 
-end Ruelle13
+end Oseledets.RuelleCofactor
