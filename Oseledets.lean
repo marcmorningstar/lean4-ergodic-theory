@@ -66,7 +66,6 @@ import Oseledets.Continuous.Reduction
 import Oseledets.Continuous.BetweenTimes
 import Oseledets.Continuous.Equivariance
 import Oseledets.Continuous.MultiplicativeErgodicFlow
-import Oseledets.AxiomAudit
 
 /-!
 # Oseledets

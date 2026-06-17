@@ -1,5 +1,5 @@
 name = "Oseledets"
-defaultTargets = ["Oseledets"]
+defaultTargets = ["Oseledets", "AxiomAudit"]
 
 [leanOptions]
 autoImplicit = false
@@ -14,3 +14,10 @@ rev = "34f7a6cd150fd7a166958d989d5abab56e9e3d15"
 
 [[lean_lib]]
 name = "Oseledets"
+
+# Axiom-audit regression check, kept OUT of the upstreamable `Oseledets` library
+# (Mathlib disallows `#print axioms` in library source). Built on every `lake build`
+# (a default target) so the guard still fails CI on axiom drift.
+[[lean_lib]]
+name = "AxiomAudit"
+srcDir = "test"

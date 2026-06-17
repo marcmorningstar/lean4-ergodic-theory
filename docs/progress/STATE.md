@@ -4,8 +4,9 @@
 > sorry-free, together with its companion corollaries, ten additive extensions, the two-sided
 > splitting, and the continuous-flow version. The whole library builds clean, is Mathlib-style
 > linter-clean under `linter.mathlibStandardSet`, and every headline result is guarded in
-> `Oseledets/AxiomAudit.lean` to depend on exactly `[propext, Classical.choice, Quot.sound]`
-> (the build fails if this ever drifts). This document maps the finished library.
+> `test/AxiomAudit.lean` (a separate `AxiomAudit` lib, so the library source carries no
+> `#print axioms`) to depend on exactly `[propext, Classical.choice, Quot.sound]` (the build fails
+> if this ever drifts). This document maps the finished library.
 
 ## Core theorem
 

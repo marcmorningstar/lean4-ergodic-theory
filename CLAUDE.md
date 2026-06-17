@@ -14,7 +14,8 @@ Lyapunov spectrum, exponent sums, exterior/wedge growth, trace–det identity, i
 reversal, restriction, non-ergodic, regularity, singular), the **two-sided splitting**
 (`Oseledets/TwoSided/`: `oseledets_splitting`), and the **continuous-flow MET**
 (`Oseledets/Continuous/`: `oseledets_flow`). A guarded audit module
-(`Oseledets/AxiomAudit.lean`) checks on every build — via `#guard_msgs in #print axioms`
+(`test/AxiomAudit.lean`, a separate `AxiomAudit` lib kept out of the upstreamable library so the
+library source has no `#print axioms`) checks on every build — via `#guard_msgs in #print axioms`
 — that the target theorem and each of these results depend on exactly
 `[propext, Classical.choice, Quot.sound]` (the build fails if this ever changes; it is
 not printed). The library is Mathlib-style linter-clean under
@@ -25,8 +26,9 @@ not printed). The library is Mathlib-style linter-clean under
 | Path | Purpose |
 |---|---|
 | `Oseledets.lean` | Library root; imports every module of the formalization. |
-| `Oseledets/` | Library modules (~45): `Cocycle/`, `Ergodic/`, `Lyapunov/` (incl. `Corollaries.lean`), `MultiplicativeErgodic.lean` (the proved target theorem), and `AxiomAudit.lean` (guarded axiom check). |
-| `lakefile.toml` | Package config: one `Oseledets` lib, depends on Mathlib. |
+| `Oseledets/` | Library modules: `Cocycle/`, `Ergodic/`, `Lyapunov/` (incl. `Corollaries.lean`), `MultiplicativeErgodic.lean` (the proved target theorem), `TwoSided/`, `Continuous/`. |
+| `test/AxiomAudit.lean` | The guarded axiom-check (separate `AxiomAudit` lib; not part of the `Oseledets` library). |
+| `lakefile.toml` | Package config: the `Oseledets` lib + the `AxiomAudit` test lib (both default targets), depends on Mathlib. |
 | `lean-toolchain` | Pinned Lean version (`leanprover/lean4:v4.30.0-rc2`). |
 | `lake-manifest.json` | Pinned dependency revisions. |
 | `.github/workflows/` | CI: `lake build` on push and PR. |
