@@ -22,6 +22,22 @@ def read_modules(touch):
         return []
     return [m for m in open(touch).read().split() if m]
 
+def module_to_path(mod, proj):
+    """Module name -> its `.lean` source path, e.g. `Oseledets.Lyapunov.Foo` ->
+    `<proj>/Oseledets/Lyapunov/Foo.lean`."""
+    return os.path.join(proj, mod.replace(".", os.sep) + ".lean")
+
+def filter_present(modules, proj):
+    """Split the touched modules into (present, skipped) by whether their source still exists.
+    A throwaway probe module that was edited (so it landed in the touched-list) and then deleted
+    leaves a PHANTOM entry: `lake build` of it fails with 'no source' and would wrongly block the
+    stop, which previously forced agents to leave probe files lying around. We skip such entries
+    (and log them) so a deleted module never blocks the gate; a real module is still always built."""
+    present, skipped = [], []
+    for m in modules:
+        (present if os.path.exists(module_to_path(m, proj)) else skipped).append(m)
+    return present, skipped
+
 def block_reason(failures, tries, max_tries):
     """Decision: return (reason_text_or_None, allow_stop). `failures` are per-module error blocks."""
     if not failures:
@@ -51,8 +67,11 @@ def main():
     proj = os.environ.get("CLAUDE_PROJECT_DIR", os.getcwd())
     leancheck = os.path.join(proj, ".claude", "leancheck", "leancheck.py")
     modules = read_modules(f"/tmp/leancheck-touched-{session}.txt")
+    modules, skipped = filter_present(modules, proj)
+    if skipped:                                    # deleted throwaway/probe modules -> never gate on them
+        dbg(f"skipped {len(skipped)} touched module(s) with no source: {' '.join(skipped)}")
     if not modules:
-        return 0                                   # nothing edited -> nothing to gate
+        return 0                                   # nothing (still) present to gate
 
     env = dict(os.environ, LEANCHECK_ROOT=proj)
     failures = []
@@ -87,6 +106,14 @@ def selftest():
     assert read_modules(f.name) == ["Oseledets.A", "Oseledets.B"], read_modules(f.name)
     os.remove(f.name)
     assert read_modules("/no/such/file") == []
+    # filter_present: a deleted/probe module (no source) is skipped; a real one is kept and gated
+    proj = tempfile.mkdtemp()
+    os.makedirs(os.path.join(proj, "Oseledets", "Lyapunov"))
+    open(os.path.join(proj, "Oseledets", "Lyapunov", "Real.lean"), "w").close()
+    present, skipped = filter_present(["Oseledets.Lyapunov.Real", "Oseledets.Lyapunov.Ghost"], proj)
+    assert present == ["Oseledets.Lyapunov.Real"], present
+    assert skipped == ["Oseledets.Lyapunov.Ghost"], skipped
+    assert filter_present([], proj) == ([], [])
     assert block_reason([], 1, 6) == (None, True)
     reason, allow = block_reason(["### M\nerr"], 1, 6)
     assert allow is False and "FAILED" in reason and "err" in reason, reason

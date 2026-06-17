@@ -7,6 +7,6 @@ echo "== leancheck.py     (LSP->compiler-style formatting [1-based line/col, fir
 python3 .claude/leancheck/leancheck.py --selftest
 echo "== post-edit hook   (Oseledets/.lean target detection, warm/cold context, JSON envelope) =="
 python3 .claude/hooks/post-edit-leancheck.py --selftest
-echo "== stop-coldbuild   (touched-module parsing, block-vs-allow decision + UNVERIFIED banner) =="
+echo "== stop-coldbuild   (touched-module parsing, skip-deleted-source filter, block-vs-allow + UNVERIFIED banner) =="
 python3 .claude/hooks/stop-coldbuild.py --selftest
 echo "ALL HARNESS SELFTESTS PASSED"

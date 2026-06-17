@@ -55,7 +55,10 @@ earlier bespoke warm-REPL that was a parade of edge cases (cold-start cutoff, st
   a detached background start and returns a "warming" note. Logs to `/tmp/leancheck-hook.log`.
 - `.claude/hooks/warm-leancheck.sh` — SessionStart hook: starts the daemon in the background.
 - `.claude/hooks/stop-coldbuild.py` — Stop/SubagentStop: cold-builds every touched module and blocks
-  the stop on failure (loop-guarded). The authoritative gate.
+  the stop on failure (loop-guarded). The authoritative gate. Touched modules whose `.lean` source no
+  longer exists (e.g. a throwaway probe file that was edited and then deleted) are **skipped** — a
+  deleted module can't be built, and gating on it would spuriously block the stop and force agents to
+  leave probe files behind.
 - `.claude/leancheck/run-tests.sh` — offline `--selftest` suites of all three scripts (no Lean,
   no server, no network).
 - `.claude/agents/lean-worker.md` — frontmatter wires the hooks for subagents; the body tells the
