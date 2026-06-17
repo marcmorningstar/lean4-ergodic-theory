@@ -11,9 +11,11 @@ import Oseledets.Lyapunov.AssemblyFromUpper
 This module discharges three residuals of the MET final composer
 `Oseledets.oseledets_filtration_of_upper`:
 
-* `lyapunovSpectrum_subset_distinctExp_of_slowflag` — every realized exponent is one of the deterministic `lam0 i`;
+* `lyapunovSpectrum_subset_distinctExp_of_slowflag` — every realized exponent is one of the
+  deterministic `lam0 i`;
 * `distinctExp_subset_lyapunovSpectrum_of_slowflag` — every deterministic exponent is realized;
-* `specList_le_liminf_inv_mul_log_norm_cocycle_apply_of_slowflag` — the per-stratum liminf lower bound.
+* `specList_le_liminf_inv_mul_log_norm_cocycle_apply_of_slowflag` — the per-stratum liminf lower
+  bound.
 
 All three are derived from two hypotheses with fixed shapes: `hident` (band-projector
 convergence to the indicator CFC of `lambdaHat`) and `hslowflag`
@@ -474,7 +476,8 @@ theorem distinctExp_subset_lyapunovSpectrum_of_slowflag
     push Not at hnmem_t
     exact hnmem_t.2
   -- `lambdaBar v` is some `lamSing k`, hence (no eigenvalue in `(t', s)`) equals `s`.
-  have hbarmem : lambdaBar A T x v ∈ lyapunovSpectrum A T x := lambdaBar_mem_lyapunovSpectrum hx hvne
+  have hbarmem : lambdaBar A T x v ∈ lyapunovSpectrum A T x :=
+    lambdaBar_mem_lyapunovSpectrum hx hvne
   -- Using `lambdaBar v ∈ {lamSing k}`, we prove `lambdaBar v = s` directly.
   have hbareq : lambdaBar A T x v = s := by
     -- Suppose `lambdaBar v ≠ s`.  It lies in `(t', s]`, hence in `(t', s)`, but it is an

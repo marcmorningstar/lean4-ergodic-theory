@@ -56,7 +56,8 @@ The terminal theorem `limsup_le_of_mem_vslow` is proved by assembly:
    The forward bound is converted into the reverse bound by `reverse_graded_overlap_bound`,
    which consumes the hypothesis `hrev` — Ruelle's reverse-side cofactor bound for orthogonal
    matrices with graded forward decay.  The exact statement required is proved as
-   `Oseledets.RuelleCofactor.entry_reverse_bound_of_orthogonal` in `Oseledets/Lyapunov/RuelleReverse.lean`.
+   `Oseledets.RuelleCofactor.entry_reverse_bound_of_orthogonal` in
+   `Oseledets/Lyapunov/RuelleReverse.lean`.
 
 ## References
 
@@ -156,8 +157,8 @@ An orthonormal change-of-basis matrix `S i j = ⟪b' j, b i⟫` is orthogonal (`
 Parseval).  If its *forward* (level-increasing) entries decay at the graded rate
 `c·exp(-(g j - g i)₊)`, then Ruelle's cofactor bound `hrev` transfers this to the *reverse*
 (level-decreasing) entries: `|S i j| ≤ (d-1)!·c^{d-1}·exp(-(g i - g j))`.
-`Oseledets.RuelleCofactor.SVDData.orthogonal_block_mass_symm` is the Frobenius-mass companion; here `hrev`
-supplies the per-entry graded transfer. -/
+`Oseledets.RuelleCofactor.SVDData.orthogonal_block_mass_symm` is the Frobenius-mass companion;
+here `hrev` supplies the per-entry graded transfer. -/
 
 open scoped Matrix in
 /-- **Reverse-side graded overlap transfer.**  For orthonormal bases `b, b'` of a
@@ -194,8 +195,8 @@ Everything is derived from the infrastructure above except the genuinely Ruelle-
 content, which enters through three hypotheses:
 
 * `hrev` — Ruelle's reverse-side cofactor bound
-  (`Oseledets.RuelleCofactor.entry_reverse_bound_of_orthogonal`), taken as a hypothesis parameter with the
-  exact statement needed;
+  (`Oseledets.RuelleCofactor.entry_reverse_bound_of_orthogonal`), taken as a hypothesis parameter
+  with the exact statement needed;
 * `hfwd` — the forward graded overlap bound, uniform in the band index, the output of the
   forward chain of Ruelle's Lemma 1.4 (`Oseledets.RuelleCofactor.SVDData.oneStep_sandwich` and
   `Oseledets.RuelleCofactor.chain_leakage_exp`, the full pairwise gap);

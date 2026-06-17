@@ -94,7 +94,8 @@ theorem specList_mem (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (x : X
 /-- Every spectrum value is `specList A T x i` for some index `i`. -/
 theorem exists_specList_eq {A : X → Matrix (Fin d) (Fin d) ℝ} {x : X} {r : ℝ}
     (hr : r ∈ lyapunovSpectrum A T x) : ∃ i : Fin (specCard A T x), specList A T x i = r := by
-  have hrange : r ∈ Set.range ⇑((lyapunovSpectrum A T x).orderEmbOfFin (rfl : _ = specCard A T x)) := by
+  have hrange :
+      r ∈ Set.range ⇑((lyapunovSpectrum A T x).orderEmbOfFin (rfl : _ = specCard A T x)) := by
     rw [Finset.range_orderEmbOfFin]; exact hr
   obtain ⟨j, hj⟩ := hrange
   exact ⟨j.rev, by simpa [specList] using hj⟩
@@ -324,8 +325,8 @@ private theorem Aclm_ne_zero {A : X → Matrix (Fin d) (Fin d) ℝ}
 variable [MeasurableSpace X] {μ : Measure X}
 
 /-- **`A`-equivariance of the spectrum (a.e.).** For a.e. `x`,
-`lyapunovSpectrum A T x = lyapunovSpectrum A T (T x)`, hence `specCard` and `specList` agree (the latter as
-indexed functions over `Fin (specCard …)`). -/
+`lyapunovSpectrum A T x = lyapunovSpectrum A T (T x)`, hence `specCard` and `specList` agree (the
+latter as indexed functions over `Fin (specCard …)`). -/
 theorem lyapunovSpectrum_equivariant_ae
     [IsProbabilityMeasure μ] (hT : Ergodic T μ)
     {A : X → Matrix (Fin d) (Fin d) ℝ} (hA : ∀ x, (A x).det ≠ 0) (hAmeas : Measurable A)

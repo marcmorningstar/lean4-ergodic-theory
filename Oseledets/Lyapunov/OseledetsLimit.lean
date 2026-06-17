@@ -3242,8 +3242,9 @@ theorem ae_forall_tendsto_block_term [IsProbabilityMeasure μ] (hT : Ergodic T �
     simp only [hcoef, zero_smul]
     exact tendsto_const_nhds
 
-/-- **L7 — the Oseledets limit exists.** Discharges `oseledetsLimitExists`: for `μ`-a.e. `x`, the candidate
-matrices `qpow A T n x = (Qₙ)^{1/(2n)}` converge in the matrix metric to a single matrix `Λ x`.
+/-- **L7 — the Oseledets limit exists.** Discharges `oseledetsLimitExists`: for `μ`-a.e. `x`, the
+candidate matrices `qpow A T n x = (Qₙ)^{1/(2n)}` converge in the matrix metric to a single
+matrix `Λ x`.
 
 The proof combines the four banked ingredients. The eigenvalues `μⱼ,ₙ = σⱼ^{1/n}` converge to the
 exponentials `e^{λⱼ}` of the deterministic exponents (`exists_lam_tendsto_singularValue` +
@@ -3406,8 +3407,8 @@ theorem tendsto_qpow [IsProbabilityMeasure μ] (hT : Ergodic T μ)
 
 /-! ## L8: a named, measurable Oseledets limit `Λ`
 
-The existence statement `oseledetsLimitExists` (`tendsto_qpow`) only asserts an a.e.-existing limit via
-`Classical.choice`. Here we pin a **concrete, measurable** representative `oseledetsLimit A T`,
+The existence statement `oseledetsLimitExists` (`tendsto_qpow`) only asserts an a.e.-existing limit
+via `Classical.choice`. Here we pin a **concrete, measurable** representative `oseledetsLimit A T`,
 defined entrywise as the real `limUnder` of the (measurable) matrix entries of `qpow A T n x`. On
 the a.e.-full convergence set this entrywise limit equals the matrix limit, so `oseledetsLimit`
 discharges `oseledetsLimitExists` while being genuinely (not merely a.e.) measurable. -/

@@ -24,8 +24,8 @@ The proof is a re-run of the committed one-sided composition with the concrete w
 `V := vprime A T lam0`: it discharges the top-gap fast-band-mass envelope, builds the
 spectral, slow-flag and growth interfaces exactly as `oseledets_filtration_of_topgap`
 and `oseledets_filtration_of_upper'` do, and reads the structural block off
-`vassembled_structure_ae` transported through `vprime_eq_vassembled_of_slowflag`.  The dimension clause is
-supplied by `ae_finrank_vslow` (Phase P1), using that on the interior `vprime A T lam0`
+`vassembled_structure_ae` transported through `vprime_eq_vassembled_of_slowflag`.  The dimension
+clause is supplied by `ae_finrank_vslow` (Phase P1), using that on the interior `vprime A T lam0`
 reduces definitionally to `vslow` at the deterministic cutoff `expEnum lam0 d i`.
 
 ## Main results
@@ -111,7 +111,9 @@ theorem oseledets_filtration_dims
         Filter.atTop (𝓝 (cfc (Set.indicator (Set.Ioi c) (1 : ℝ → ℝ)) (lambdaHat A T x))) :=
     ae_tendsto_bandProjector_cfc_indicator hT hA hAmeas hint hint'
   -- The forward graded overlap bound, consuming the top-gap envelope.
-  have hfwdN := forward_graded_overlap_of_topGapEnvelope hT hA hAmeas hint hint' lam0 hlam0 b' hb' hident htopgap
+  have hfwdN :=
+    forward_graded_overlap_of_topGapEnvelope hT hA hAmeas hint hint' lam0 hlam0 b' hb' hident
+      htopgap
   -- The reverse cofactor bound for orthogonal matrices, after Ruelle.
   have hrev : ∀ (S : Matrix (Fin d) (Fin d) ℝ), S * Sᵀ = 1 →
       ∀ (g : Fin d → ℝ) (c : ℝ), 1 ≤ c →
@@ -168,11 +170,15 @@ theorem oseledets_filtration_dims
     lyapunovSpectrum_subset_distinctExp_of_slowflag hT hA hAmeas hint hint' hslowflag lam0 hlam0
   have hlb_spec : ∀ᵐ x ∂μ, distinctExp lam0 d ⊆ lyapunovSpectrum A T x :=
     distinctExp_subset_lyapunovSpectrum_of_slowflag hT hA hAmeas hint hint' hslowflag lam0 hlam0
-  have hspec := specList_eq_expEnum_of_subsets_standing hT A hA hAmeas hint hint' lam0 hub_spec hlb_spec
+  have hspec :=
+    specList_eq_expEnum_of_subsets_standing hT A hA hAmeas hint hint' lam0 hub_spec hlb_spec
   -- The per-vector exact-growth interface.
-  have hbdd := isBoundedUnder_inv_mul_log_norm_cocycle_apply_of_mem_stratum hT A hA hAmeas hint hint'
+  have hbdd :=
+    isBoundedUnder_inv_mul_log_norm_cocycle_apply_of_mem_stratum hT A hA hAmeas hint hint'
   have hub := limsup_log_norm_cocycle_apply_le_specList_of_mem_stratum hT hA hAmeas hint hint'
-  have hlb := specList_le_liminf_inv_mul_log_norm_cocycle_apply_of_slowflag hT hA hAmeas hint hint' hident hslowflag
+  have hlb :=
+    specList_le_liminf_inv_mul_log_norm_cocycle_apply_of_slowflag hT hA hAmeas hint hint' hident
+      hslowflag
   have hgrowth := tendsto_inv_mul_log_norm_cocycle_apply_of_upper_lower A hub hlb hbdd
   -- The structural a.e. block on `vassembled` and its transport through `hae`.
   have hstruct := vassembled_structure_ae hT A hA hAmeas hint hint' lam0 hspec hgrowth

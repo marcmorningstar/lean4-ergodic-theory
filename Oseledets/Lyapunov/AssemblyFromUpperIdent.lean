@@ -12,8 +12,9 @@ import Oseledets.Lyapunov.SpectrumResiduals
 This file proves a variant of `Oseledets.oseledets_filtration_of_upper` in which the
 band-projector convergence hypothesis `hband` is replaced by the spectral-identification
 hypothesis `hident`, and the lower-bound step `hlb` is accordingly obtained from
-`specList_le_liminf_inv_mul_log_norm_cocycle_apply_of_slowflag` (fed `hident` and the slow-flag datum `hslowflag` computed earlier
-in the proof) instead of `specList_le_liminf_inv_mul_log_norm_cocycle_apply_of_bandProjector`.
+`specList_le_liminf_inv_mul_log_norm_cocycle_apply_of_slowflag` (fed `hident` and the slow-flag
+datum `hslowflag` computed earlier in the proof) instead of
+`specList_le_liminf_inv_mul_log_norm_cocycle_apply_of_bandProjector`.
 
 ## Main results
 
@@ -92,9 +93,12 @@ theorem oseledets_filtration_of_upper'
   have hslowflag := vslow_eq_lambdaSublevel_of_upper hT hA hAmeas hint hint' hupper hslowrev
   -- `hgrowth` from the upper bound (`vflag`), the lower bound (via `hident`), and the
   -- Furstenberg–Kesten boundedness.
-  have hbdd := isBoundedUnder_inv_mul_log_norm_cocycle_apply_of_mem_stratum hT A hA hAmeas hint hint'
+  have hbdd :=
+    isBoundedUnder_inv_mul_log_norm_cocycle_apply_of_mem_stratum hT A hA hAmeas hint hint'
   have hub := limsup_log_norm_cocycle_apply_le_specList_of_mem_stratum hT hA hAmeas hint hint'
-  have hlb := specList_le_liminf_inv_mul_log_norm_cocycle_apply_of_slowflag hT hA hAmeas hint hint' hident hslowflag
+  have hlb :=
+    specList_le_liminf_inv_mul_log_norm_cocycle_apply_of_slowflag hT hA hAmeas hint hint' hident
+      hslowflag
   have hgrowth := tendsto_inv_mul_log_norm_cocycle_apply_of_upper_lower A hub hlb hbdd
   -- Assemble through `oseledets_filtration_of_slowflag`.
   exact oseledets_filtration_of_slowflag hT A hA hAmeas hTmeas hint hint' lam0

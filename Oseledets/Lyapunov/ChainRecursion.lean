@@ -30,10 +30,10 @@ corrected envelope.
 
 ## Main results
 
-* `Oseledets.RuelleCofactor.SVDData.oneStep_recursion`: the deterministic one-step band-leakage recursion
-  for the fast-band mass along an SVD chain.
-* `Oseledets.RuelleCofactor.SVDData.chain_geometric_sum`: the contraction-free chain solver — a recursion
-  `a (i+1) ≤ a i + R·ρ^i` with `a 0 = 0` is bounded by `R/(1−ρ)` uniformly in the index.
+* `Oseledets.RuelleCofactor.SVDData.oneStep_recursion`: the deterministic one-step band-leakage
+  recursion for the fast-band mass along an SVD chain.
+* `Oseledets.RuelleCofactor.SVDData.chain_geometric_sum`: the contraction-free chain solver — a
+  recursion `a (i+1) ≤ a i + R·ρ^i` with `a 0 = 0` is bounded by `R/(1−ρ)` uniformly in the index.
 * `Oseledets.toEuclideanLin_bandProjector_eq_fastProj`: the band projector equals the
   explicit fast projection over the SVD chain `Oseledets.chainSVD`.
 * `Oseledets.norm_bandProjector_mono`: band mass is monotone in the cut.
@@ -57,8 +57,8 @@ eigenvalue `σ_j(m)^{1/m}` exceeds `c₀`.
 
 ### The deterministic SVD chain (`Oseledets.RuelleCofactor.SVDData`)
 
-Instantiate `Oseledets.RuelleCofactor.SVDData (EuclideanSpace ℝ (Fin d)) (card (Fin d))` at the point `x`
-by:
+Instantiate `Oseledets.RuelleCofactor.SVDData (EuclideanSpace ℝ (Fin d)) (card (Fin d))` at the
+point `x` by:
 * `e t := sortedGramEigenbasis A T t x` — the time-`t` Gram eigenbasis (right-singular
   basis);
 * `σ t j := σ_j(t)` — the time-`t` singular values;

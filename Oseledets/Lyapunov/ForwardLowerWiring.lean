@@ -16,8 +16,9 @@ file controls the normalized log-growth sequence `n ↦ (1/n) log‖A⁽ⁿ⁾ v
 lying on a stratum of the Oseledets flag (`v ∈ vflag A T x i.castSucc`,
 `v ∉ vflag A T x i.succ`).
 Together with the per-vector limsup upper bound, the results here are the inputs of
-`Oseledets.tendsto_inv_mul_log_norm_cocycle_apply_of_upper_lower` (in `Oseledets.Lyapunov.FiltrationAssemblyBridge`), which
-upgrades them to the exact growth limit `specList A T x i` on each stratum.
+`Oseledets.tendsto_inv_mul_log_norm_cocycle_apply_of_upper_lower`
+(in `Oseledets.Lyapunov.FiltrationAssemblyBridge`), which upgrades them to the exact growth
+limit `specList A T x i` on each stratum.
 
 ## Main results
 
@@ -25,12 +26,15 @@ upgrades them to the exact growth limit `specList A T x i` on each stratum.
   the sequence `(1/n) log‖A⁽ⁿ⁾ v‖` is bounded above and below, squeezed between the two
   convergent Furstenberg–Kesten envelopes `(1/n) log‖A⁽ⁿ⁾‖ + (1/n) log‖v‖` and
   `-(1/n) log‖(A⁽ⁿ⁾)⁻¹‖ + (1/n) log‖v‖`.
-* `Oseledets.isBoundedUnder_inv_mul_log_norm_cocycle_apply_of_mem_stratum`: the same two-sided boundedness for every stratum vector of the
+* `Oseledets.isBoundedUnder_inv_mul_log_norm_cocycle_apply_of_mem_stratum`: the same two-sided
+  boundedness for every stratum vector of the
   Oseledets flag (such a vector is automatically nonzero).
-* `Oseledets.specList_le_liminf_inv_mul_log_norm_cocycle_apply_of_bandProjector`: the per-vector liminf lower bound
+* `Oseledets.specList_le_liminf_inv_mul_log_norm_cocycle_apply_of_bandProjector`: the per-vector
+  liminf lower bound
   `specList A T x i ≤ liminf (1/n) log‖A⁽ⁿ⁾ v‖`, derived from a band-projector
   convergence hypothesis via `Oseledets.log_le_liminf_log_cocycle_apply`.
-* `Oseledets.tendsto_inv_mul_log_norm_cocycle_apply_of_bandProjector`: the exact per-vector growth limit, combining the limsup
+* `Oseledets.tendsto_inv_mul_log_norm_cocycle_apply_of_bandProjector`: the exact per-vector growth
+  limit, combining the limsup
   upper bound, the two-sided boundedness, and the liminf lower bound.
 -/
 
@@ -163,11 +167,13 @@ theorem isBoundedUnder_log_norm_cocycle_apply {T : X → X}
 /-! ## Two-sided boundedness on each stratum -/
 
 /-- **Two-sided boundedness from Furstenberg–Kesten.**  The two-sided `IsBoundedUnder`
-side-conditions of `tendsto_inv_mul_log_norm_cocycle_apply_of_upper_lower` hold almost everywhere for every stratum vector.
+side-conditions of `tendsto_inv_mul_log_norm_cocycle_apply_of_upper_lower` hold almost everywhere
+for every stratum vector.
 On each stratum the vector is nonzero (`0` lies in every flag level, so
 `v ∉ vflag i.succ ⟹ v ≠ 0`), and the log-growth sequence is squeezed between the two
 convergent Furstenberg–Kesten envelopes. -/
-theorem isBoundedUnder_inv_mul_log_norm_cocycle_apply_of_mem_stratum {μ : Measure X} [IsProbabilityMeasure μ] {T : X → X}
+theorem isBoundedUnder_inv_mul_log_norm_cocycle_apply_of_mem_stratum {μ : Measure X}
+    [IsProbabilityMeasure μ] {T : X → X}
     (hT : Ergodic T μ)
     (A : X → Matrix (Fin d) (Fin d) ℝ) (hA : ∀ x, (A x).det ≠ 0) (hAmeas : Measurable A)
     (hint : IntegrableLogNorm A μ) (hint' : IntegrableLogNorm (fun x => (A x)⁻¹) μ) :
@@ -191,7 +197,8 @@ The per-vector liminf lower bound rests on the analytic core
 projectors for `(c, ∞)` converge to a limit `P` with `P v ≠ 0`, then
 `specList i = log c ≤ liminf …`.  The
 remaining `IsCoboundedUnder (· ≥ ·)` side-condition is exactly the lower boundedness already
-furnished by `isBoundedUnder_inv_mul_log_norm_cocycle_apply_of_mem_stratum` (a bounded-below sequence is cobounded-below).
+furnished by `isBoundedUnder_inv_mul_log_norm_cocycle_apply_of_mem_stratum` (a bounded-below
+sequence is cobounded-below).
 
 The band-projector convergence datum (`hP`, `hPv`) is the spectral-band identification of
 `vflag` membership — `v ∉ vflag i.succ` says `v` has a nonzero component in the band at level
@@ -201,13 +208,16 @@ identification is taken here as the minimal cleanly-typed hypothesis `hband`; an
 
 /-- **Liminf lower bound from band-projector convergence.**  Given, a.e. and per stratum-vector,
 the band projector convergence datum at threshold `e^{specList i}` (`hband`) and the lower
-boundedness of the log-growth sequence (from `isBoundedUnder_inv_mul_log_norm_cocycle_apply_of_mem_stratum`), the per-vector lower bound
+boundedness of the log-growth sequence
+(from `isBoundedUnder_inv_mul_log_norm_cocycle_apply_of_mem_stratum`), the per-vector lower bound
 `specList i ≤ liminf …` holds.
 
 The cobounded-below side-condition of `log_le_liminf_log_cocycle_apply` is supplied by the same
-`IsBoundedUnder (· ≥ ·)` already proved in `isBoundedUnder_inv_mul_log_norm_cocycle_apply_of_mem_stratum` (`IsBoundedUnder.isCoboundedUnder_ge`,
-using that `atTop` is `NeBot`). -/
-theorem specList_le_liminf_inv_mul_log_norm_cocycle_apply_of_bandProjector [NeZero d] {μ : Measure X} {T : X → X}
+`IsBoundedUnder (· ≥ ·)` already proved in
+`isBoundedUnder_inv_mul_log_norm_cocycle_apply_of_mem_stratum`
+(`IsBoundedUnder.isCoboundedUnder_ge`, using that `atTop` is `NeBot`). -/
+theorem specList_le_liminf_inv_mul_log_norm_cocycle_apply_of_bandProjector [NeZero d]
+    {μ : Measure X} {T : X → X}
     (A : X → Matrix (Fin d) (Fin d) ℝ) (hA : ∀ x, (A x).det ≠ 0)
     (hband : ∀ᵐ x ∂μ, ∀ i : Fin (specCard A T x),
       ∀ v ∈ (vflag A T x i.castSucc : Set (EuclideanSpace ℝ (Fin d))),
@@ -243,9 +253,12 @@ theorem specList_le_liminf_inv_mul_log_norm_cocycle_apply_of_bandProjector [NeZe
 
 /-- The exact per-vector growth limit: given the limsup upper bound `hub` and the
 band-projector datum `hband`, the normalized log-growth sequence of every stratum vector
-converges to the corresponding exponent.  This feeds `isBoundedUnder_inv_mul_log_norm_cocycle_apply_of_mem_stratum` and `specList_le_liminf_inv_mul_log_norm_cocycle_apply_of_bandProjector`
+converges to the corresponding exponent.  This feeds
+`isBoundedUnder_inv_mul_log_norm_cocycle_apply_of_mem_stratum` and
+`specList_le_liminf_inv_mul_log_norm_cocycle_apply_of_bandProjector`
 into `tendsto_inv_mul_log_norm_cocycle_apply_of_upper_lower`. -/
-theorem tendsto_inv_mul_log_norm_cocycle_apply_of_bandProjector [NeZero d] {μ : Measure X} [IsProbabilityMeasure μ] {T : X → X}
+theorem tendsto_inv_mul_log_norm_cocycle_apply_of_bandProjector [NeZero d] {μ : Measure X}
+    [IsProbabilityMeasure μ] {T : X → X}
     (hT : Ergodic T μ)
     (A : X → Matrix (Fin d) (Fin d) ℝ) (hA : ∀ x, (A x).det ≠ 0) (hAmeas : Measurable A)
     (hint : IntegrableLogNorm A μ) (hint' : IntegrableLogNorm (fun x => (A x)⁻¹) μ)
@@ -268,7 +281,9 @@ theorem tendsto_inv_mul_log_norm_cocycle_apply_of_bandProjector [NeZero d] {μ :
           (fun n : ℕ => (n : ℝ)⁻¹ *
             Real.log ‖Matrix.toEuclideanCLM (𝕜 := ℝ) (cocycle A T n x) v‖)
           atTop (𝓝 (specList A T x i)) :=
-  have hbdd := isBoundedUnder_inv_mul_log_norm_cocycle_apply_of_mem_stratum hT A hA hAmeas hint hint'
-  tendsto_inv_mul_log_norm_cocycle_apply_of_upper_lower A hub (specList_le_liminf_inv_mul_log_norm_cocycle_apply_of_bandProjector A hA hband hbdd) hbdd
+  have hbdd :=
+    isBoundedUnder_inv_mul_log_norm_cocycle_apply_of_mem_stratum hT A hA hAmeas hint hint'
+  tendsto_inv_mul_log_norm_cocycle_apply_of_upper_lower A hub
+    (specList_le_liminf_inv_mul_log_norm_cocycle_apply_of_bandProjector A hA hband hbdd) hbdd
 
 end Oseledets

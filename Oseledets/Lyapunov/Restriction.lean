@@ -579,9 +579,9 @@ levels of the non-strict precursor `i ↦ W ⊓ V i` (via the first-occurrence `
 antitone dimension profile, enumerated by `Finset.orderEmbOfFin`) yields a genuine **strict**
 Oseledets filtration realized *inside* the invariant subbundle `W`. There is a `StrictAnti`
 exponent list `lam' : Fin k' → ℝ` and an everywhere-measurable family `vprime` such that, `μ`-a.e.,
-the flag `vprime` is strictly descending (`vprime i.succ x < vprime i.castSucc x`) from its top level
-`vprime 0 x = W x` down to `vprime (last k') x = ⊥`, is `A`-equivariant, has exact growth rate `lam' i`
-on each stratum, and has all levels lying inside `W` (`vprime i x ≤ W x`).
+the flag `vprime` is strictly descending (`vprime i.succ x < vprime i.castSucc x`) from its top
+level `vprime 0 x = W x` down to `vprime (last k') x = ⊥`, is `A`-equivariant, has exact growth
+rate `lam' i` on each stratum, and has all levels lying inside `W` (`vprime i x ≤ W x`).
 
 **Honest packaging note.** The top level of the restricted strict flag is `W`, which equals the
 ambient `⊤` only when `W = ⊤`. Since `IsOseledetsFiltration` hard-codes `V 0 = ⊤`, a strict

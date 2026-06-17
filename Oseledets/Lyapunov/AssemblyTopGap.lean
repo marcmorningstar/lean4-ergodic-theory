@@ -107,14 +107,16 @@ theorem oseledets_filtration_of_topgap
           Filter.atTop (𝓝 (cfc (Set.indicator (Set.Ioi c) (1 : ℝ → ℝ)) (lambdaHat A T x))) :=
       ae_tendsto_bandProjector_cfc_indicator hT hA hAmeas hint hint'
     -- the forward graded overlap bound, consuming the top-gap envelope.
-    have hfwdN := forward_graded_overlap_of_topGapEnvelope hT hA hAmeas hint hint' lam0 hlam0 b' hb' hident
-      (htopgap lam0 hlam0)
+    have hfwdN :=
+      forward_graded_overlap_of_topGapEnvelope hT hA hAmeas hint hint' lam0 hlam0 b' hb' hident
+        (htopgap lam0 hlam0)
     -- the reverse cofactor bound for orthogonal matrices, after Ruelle.
     have hrev : ∀ (S : Matrix (Fin d) (Fin d) ℝ), S * Sᵀ = 1 →
         ∀ (g : Fin d → ℝ) (c : ℝ), 1 ≤ c →
         (∀ a b : Fin d, |S a b| ≤ c * Real.exp (-(max (g b - g a) 0))) →
         ∀ i j : Fin d, |S i j| ≤ (d - 1).factorial * c ^ (d - 1) * Real.exp (-(g i - g j)) :=
-      fun S hS g c hc hf => Oseledets.RuelleCofactor.entry_reverse_bound_of_orthogonal S hS g c hc hf
+      fun S hS g c hc hf =>
+        Oseledets.RuelleCofactor.entry_reverse_bound_of_orthogonal S hS g c hc hf
     -- the band-limit bridge.
     have hbridge := vslow_bridge_bound_of_forward_graded (A := A) lam0 hlam0 b' hslowperp hfwdN hrev
     -- the grading `g x e := lam0 e`.
@@ -171,14 +173,18 @@ theorem oseledets_filtration_of_topgap
             Real.log ((Matrix.toEuclideanLin (cocycle A T n x)).singularValues i))
           atTop (𝓝 (lam0' i))) →
         ∀ᵐ x ∂μ, lyapunovSpectrum A T x ⊆ distinctExp lam0' d :=
-      fun lam0' hlam0' => lyapunovSpectrum_subset_distinctExp_of_slowflag hT hA hAmeas hint hint' hslowflag lam0' hlam0'
+      fun lam0' hlam0' =>
+        lyapunovSpectrum_subset_distinctExp_of_slowflag hT hA hAmeas hint hint' hslowflag lam0'
+          hlam0'
     have hlb_spec : ∀ lam0' : ℕ → ℝ,
         (∀ i : ℕ, i < d → ∀ᵐ x ∂μ, Tendsto
           (fun n : ℕ => (n : ℝ)⁻¹ *
             Real.log ((Matrix.toEuclideanLin (cocycle A T n x)).singularValues i))
           atTop (𝓝 (lam0' i))) →
         ∀ᵐ x ∂μ, distinctExp lam0' d ⊆ lyapunovSpectrum A T x :=
-      fun lam0' hlam0' => distinctExp_subset_lyapunovSpectrum_of_slowflag hT hA hAmeas hint hint' hslowflag lam0' hlam0'
+      fun lam0' hlam0' =>
+        distinctExp_subset_lyapunovSpectrum_of_slowflag hT hA hAmeas hint hint' hslowflag lam0'
+          hlam0'
     -- assemble the conclusion.
     exact oseledets_filtration_of_upper' hT hTmeas hA hAmeas hint hint' hupper hslowrev
       hub_spec hlb_spec hident

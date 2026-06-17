@@ -8,8 +8,8 @@ import Oseledets.Lyapunov.FiltrationAssemblyBridge
 /-!
 # Spectrum constancy: identifying the per-point spectrum with the deterministic exponent set
 
-`Oseledets.specList_eq_expEnum_of_lyapunovSpectrum_const` (in `FiltrationAssemblyBridge.lean`) reduces the
-`hspec` interface of the final assembly to the single hypothesis
+`Oseledets.specList_eq_expEnum_of_lyapunovSpectrum_const` (in `FiltrationAssemblyBridge.lean`)
+reduces the `hspec` interface of the final assembly to the single hypothesis
 
 ```
 hspecconst : ∀ᵐ x ∂μ, lyapunovSpectrum A T x = distinctExp lam0 d.
@@ -17,34 +17,35 @@ hspecconst : ∀ᵐ x ∂μ, lyapunovSpectrum A T x = distinctExp lam0 d.
 
 This file discharges `hspecconst`.  The per-point limsup spectrum `lyapunovSpectrum A T x` is the
 finite set of values of the upper Lyapunov growth function `lambdaBar A T x` on nonzero vectors
-(`Oseledets.lyapunovSpectrum`, `Oseledets.mem_lyapunovSpectrum`).  Pinning that finite set to the deterministic
-distinct-exponent set `distinctExp lam0 d` is a `Finset.Subset.antisymm` of two per-vector
-inclusions:
+(`Oseledets.lyapunovSpectrum`, `Oseledets.mem_lyapunovSpectrum`).  Pinning that finite set to the
+deterministic distinct-exponent set `distinctExp lam0 d` is a `Finset.Subset.antisymm` of two
+per-vector inclusions:
 
-* **upper inclusion** `lyapunovSpectrum A T x ⊆ distinctExp lam0 d` — every realized `lambdaBar` value is
-  one of the deterministic singular-value exponents `lam0 i` (`i < d`).  This is the
+* **upper inclusion** `lyapunovSpectrum A T x ⊆ distinctExp lam0 d` — every realized `lambdaBar`
+  value is one of the deterministic singular-value exponents `lam0 i` (`i < d`).  This is the
   growth→exponent direction; its per-vector core is the spectral upper bound, the genuine
   analytic step of the multiplicative ergodic theorem (via the determinant/tempering squeeze).
 
-* **lower inclusion** `distinctExp lam0 d ⊆ lyapunovSpectrum A T x` — every distinct deterministic exponent
-  `lam0 i` is *attained* by some nonzero vector, i.e. lies in the `lambdaBar`-range.  Its per-vector
-  core is the lower bound (`log_le_liminf_log_cocycle_apply`) combined with the
+* **lower inclusion** `distinctExp lam0 d ⊆ lyapunovSpectrum A T x` — every distinct deterministic
+  exponent `lam0 i` is *attained* by some nonzero vector, i.e. lies in the `lambdaBar`-range.  Its
+  per-vector core is the lower bound (`log_le_liminf_log_cocycle_apply`) combined with the
   stratum-exact `lambdaBar_eq_on_stratum`.
 
 The two inclusions compose to the constant `distinctExp lam0 d`, so ergodic constancy of the
 spectrum is automatic — the limit set is deterministic by construction, hence trivially
 `T`-invariant and constant; no separate `Finset ℝ` measurability / ergodic-averaging step
 is needed once the identification is in hand.  For completeness we also record, unconditionally
-from `lyapunovSpectrum_equivariant_ae` together with ergodicity, that the identification self-propagates: if
-it holds it holds at `T x` too, and on the full orbit.
+from `lyapunovSpectrum_equivariant_ae` together with ergodicity, that the identification
+self-propagates: if it holds it holds at `T x` too, and on the full orbit.
 
 ## What is unconditional vs. hypothesis-gated
 
-* `lyapunovSpectrum_eq_of_subsets` and `lyapunovSpectrum_eq_distinctExp_of_subsets_ae` are unconditional `Finset` algebra: they
-  turn the two per-vector inclusions into the Finset identity / the `hspec` interface, using nothing
-  but `Oseledets.specList_eq_expEnum_of_lyapunovSpectrum_const`.
-* `lyapunovSpectrum_const_invariant_ae` is unconditional (from `lyapunovSpectrum_equivariant_ae`): the
-  identification, once true a.e., is `T`-invariant a.e.
+* `lyapunovSpectrum_eq_of_subsets` and `lyapunovSpectrum_eq_distinctExp_of_subsets_ae` are
+  unconditional `Finset` algebra: they turn the two per-vector inclusions into the Finset identity /
+  the `hspec` interface, using nothing but
+  `Oseledets.specList_eq_expEnum_of_lyapunovSpectrum_const`.
+* `lyapunovSpectrum_const_invariant_ae` is unconditional (from
+  `lyapunovSpectrum_equivariant_ae`): the identification, once true a.e., is `T`-invariant a.e.
 * The two per-vector inclusion hypotheses `hub_spec` / `hlb_spec` are the analytic interface.  The
   lower one follows from the established lower bound; the upper one is the spectral upper bound.
   They are stated here in a minimal cleanly-typed Finset shape so that the surrounding assembly can
@@ -73,7 +74,8 @@ theorem lyapunovSpectrum_eq_of_subsets
 /-- **`hspecconst` from the two a.e. per-vector inclusions.**  The minimal cleanly-typed reduction:
 the a.e. upper inclusion (`spectrum ⊆ distinctExp`, the spectral upper bound) and the a.e.
 lower inclusion (`distinctExp ⊆ spectrum`, the attainment/lower-bound layer) give the a.e. spectrum
-constancy `lyapunovSpectrum A T x = distinctExp lam0 d` consumed by `specList_eq_expEnum_of_lyapunovSpectrum_const`. -/
+constancy `lyapunovSpectrum A T x = distinctExp lam0 d` consumed by
+`specList_eq_expEnum_of_lyapunovSpectrum_const`. -/
 theorem lyapunovSpectrum_eq_distinctExp_of_subsets_ae
     {μ : Measure X} {T : X → X} (A : X → Matrix (Fin d) (Fin d) ℝ) (lam0 : ℕ → ℝ)
     (hub_spec : ∀ᵐ x ∂μ, lyapunovSpectrum A T x ⊆ distinctExp lam0 d)
@@ -83,7 +85,8 @@ theorem lyapunovSpectrum_eq_distinctExp_of_subsets_ae
   exact lyapunovSpectrum_eq_of_subsets hub hlb
 
 /-- **The `hspec` interface, discharged from the two a.e. per-vector inclusions.**  Composes
-`lyapunovSpectrum_eq_distinctExp_of_subsets_ae` with `specList_eq_expEnum_of_lyapunovSpectrum_const`: the output is *exactly* the
+`lyapunovSpectrum_eq_distinctExp_of_subsets_ae` with
+`specList_eq_expEnum_of_lyapunovSpectrum_const`: the output is *exactly* the
 `hspec` hypothesis of `oseledets_filtration_of_interfaces`. -/
 theorem specList_eq_expEnum_of_subsets_ae
     {μ : Measure X} {T : X → X} (A : X → Matrix (Fin d) (Fin d) ℝ) (lam0 : ℕ → ℝ)
@@ -91,7 +94,8 @@ theorem specList_eq_expEnum_of_subsets_ae
     (hlb_spec : ∀ᵐ x ∂μ, distinctExp lam0 d ⊆ lyapunovSpectrum A T x) :
     ∀ᵐ x ∂μ, ∃ h : specCard A T x = numExp lam0 d,
       ∀ i : Fin (specCard A T x), specList A T x i = expEnum lam0 d (Fin.cast h i) :=
-  specList_eq_expEnum_of_lyapunovSpectrum_const A lam0 (lyapunovSpectrum_eq_distinctExp_of_subsets_ae A lam0 hub_spec hlb_spec)
+  specList_eq_expEnum_of_lyapunovSpectrum_const A lam0
+    (lyapunovSpectrum_eq_distinctExp_of_subsets_ae A lam0 hub_spec hlb_spec)
 
 /-! ## Reducing the inclusions to the native `lambdaBar` shape
 
@@ -172,17 +176,18 @@ theorem lyapunovSpectrum_eq_distinctExp_of_lambdaBar
 /-! ## Ergodic constancy of the spectrum
 
 The deterministic target `distinctExp lam0 d` is constant in `x`, so the identification
-`lyapunovSpectrum A T x = distinctExp lam0 d` is automatically `T`-invariant.  We make the self-propagation
-explicit and unconditional from `lyapunovSpectrum_equivariant_ae`: where the spectrum equals
-the deterministic constant and is `A`-equivariant, the same holds at `T x`.  This is the precise
-ergodic-constancy content — once the (deterministic) value is identified, ergodicity
+`lyapunovSpectrum A T x = distinctExp lam0 d` is automatically `T`-invariant.  We make the
+self-propagation explicit and unconditional from `lyapunovSpectrum_equivariant_ae`: where the
+spectrum equals the deterministic constant and is `A`-equivariant, the same holds at `T x`.  This
+is the precise ergodic-constancy content — once the (deterministic) value is identified, ergodicity
 adds nothing further, because a deterministic function is already constant. -/
 
 /-- **Self-propagation of the spectrum identity along `T` (a.e.).**  Unconditional from
 `lyapunovSpectrum_equivariant_ae`: if a.e. `lyapunovSpectrum A T x = distinctExp lam0 d`, then a.e.
 `lyapunovSpectrum A T (T x) = distinctExp lam0 d` as well.  Together with the a.e. equivariance
-`lyapunovSpectrum A T x = lyapunovSpectrum A T (T x)` this exhibits the identification as `T`-invariant, i.e. the
-spectrum is a.e. equal to the *same* deterministic constant set at `x` and at `T x`. -/
+`lyapunovSpectrum A T x = lyapunovSpectrum A T (T x)` this exhibits the identification as
+`T`-invariant, i.e. the spectrum is a.e. equal to the *same* deterministic constant set at `x` and
+at `T x`. -/
 theorem lyapunovSpectrum_const_invariant_ae
     {μ : Measure X} [IsProbabilityMeasure μ] {T : X → X}
     (hT : Ergodic T μ)

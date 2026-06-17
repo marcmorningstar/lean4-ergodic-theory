@@ -13,7 +13,8 @@ import Oseledets.Lyapunov.ChainRecursion
 import Oseledets.Lyapunov.ForwardGradedOverlap
 
 /-!
-# `forward_graded_overlap_of_topGapEnvelope` — forward graded overlap via the top-gap envelope (Ruelle Lemma 1.4)
+# `forward_graded_overlap_of_topGapEnvelope` — forward graded overlap via the top-gap
+envelope (Ruelle Lemma 1.4)
 
 This module proves the forward graded overlap estimate using the envelope `TopGapMassEnvelope`,
 in which the cut `c₀` is restricted to the **top gap** below `λ_e`: no stratum value of `lam0`
@@ -149,10 +150,10 @@ theorem eventually_qpow_eigenvalue_localized [NeZero d] {A : X → Matrix (Fin d
 
 /-! ## The one-step recursion specialised to the cocycle SVD chain at a fixed cut
 
-We instantiate `Oseledets.RuelleCofactor.SVDData.oneStep_recursion` on `chainSVD A T x` with slow cap `c₀^t`,
-fast floor `c₀^{t+1}`, and step factor `b = ‖A(T^[t] x)‖`, identifying `fastProj` with the
-band projector via `toEuclideanLin_bandProjector_eq_fastProj`.  This produces the per-step
-inequality on the band masses.  -/
+We instantiate `Oseledets.RuelleCofactor.SVDData.oneStep_recursion` on `chainSVD A T x` with
+slow cap `c₀^t`, fast floor `c₀^{t+1}`, and step factor `b = ‖A(T^[t] x)‖`, identifying
+`fastProj` with the band projector via `toEuclideanLin_bandProjector_eq_fastProj`.  This
+produces the per-step inequality on the band masses.  -/
 
 omit [MeasurableSpace X] in
 /-- The one-step operator factor along the orbit: `‖toEuclideanLin (cocycle (t+1) x) w‖
@@ -177,8 +178,9 @@ In this envelope the cut `c₀` is restricted to the top gap below `λ_e`, i.e. 
 lies in `(log c₀, λ_e)`. It is stated here as the single isolated analytic hypothesis
 `TopGapMassEnvelope`, established by Ruelle's band-distance strong induction over strata
 (eqns (1.3)/(1.4)); the deterministic engine
-`Oseledets.RuelleCofactor.SVDData.{oneStep_recursion, chain_geometric_sum}` and the σ-localization layer above
-are its ingredients. Everything downstream (Step B) is discharged from it. -/
+`Oseledets.RuelleCofactor.SVDData.{oneStep_recursion, chain_geometric_sum}` and the
+σ-localization layer above are its ingredients. Everything downstream (Step B) is discharged
+from it. -/
 
 /-- **Top-gap fast-band-mass envelope.** For a gap pair `λ_a < λ_e` and any cut `c₀` in the open
 interior of the top gap below `λ_e` (`exp λ_a < c₀ < exp λ_e`, with every stratum value of
@@ -248,8 +250,9 @@ theorem exists_topgap_cut (lam0 : ℕ → ℝ) {a e : Fin d}
 
 /-! ## Step B — the almost-everywhere wrapper
 
-This is the theorem `forward_graded_overlap_of_topGapEnvelope`. It carries the single isolated analytic
-hypothesis `htopgap` (the top-gap envelope `TopGapMassEnvelope`). The gap-cut is selected by
+This is the theorem `forward_graded_overlap_of_topGapEnvelope`. It carries the single isolated
+analytic hypothesis `htopgap` (the top-gap envelope `TopGapMassEnvelope`). The gap-cut is
+selected by
 `exists_topgap_cut` (the top-gap selection). -/
 
 theorem forward_graded_overlap_of_topGapEnvelope [MeasureTheory.IsProbabilityMeasure μ] [NeZero d]
@@ -343,8 +346,8 @@ theorem forward_graded_overlap_of_topGapEnvelope [MeasureTheory.IsProbabilityMea
 
 /-! ## The per-step band-mass recursion at a fixed cut (engine instantiation)
 
-We instantiate `Oseledets.RuelleCofactor.SVDData.oneStep_recursion` on `chainSVD A T x`.  The fast band at time
-`t` is `hiBand A T t x c₀`; its complement is the slow band.  We supply:
+We instantiate `Oseledets.RuelleCofactor.SVDData.oneStep_recursion` on `chainSVD A T x`.  The
+fast band at time `t` is `hiBand A T t x c₀`; its complement is the slow band.  We supply:
 * slow cap `s` valid at time `t`: every slow `σ_j(t) ≤ s`;
 * fast floor `c₀^{t+1}` at time `t+1`: every fast `σ_j(t+1) ≥ c₀^{t+1}` (from the band
   definition);

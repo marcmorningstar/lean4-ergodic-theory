@@ -29,8 +29,7 @@ the growth sublevel set is therefore preserved, which is exactly equivariance.
 
 * `Oseledets.norm_clm_pos`: for invertible `M` and nonzero `v`, `0 < ‖toEuclideanCLM M v‖`.
 * `Oseledets.ae_tendsto_logNorm_fixedTime_zero`: almost everywhere, the fixed-time log-norms
-  `n⁻¹ · log ‖A t₀ (φ (n:ℝ) x)‖` and `n⁻¹ · log ‖(A t₀ (φ (n:ℝ) x))⁻¹‖`
-  tend to `0`.
+  `n⁻¹ · log ‖A t₀ (φ (n:ℝ) x)‖` and `n⁻¹ · log ‖(A t₀ (φ (n:ℝ) x))⁻¹‖` tend to `0`.
 * `Oseledets.glim_shift`: almost everywhere, the discrete-time growth `limsup` is unchanged by
   applying `toEuclideanCLM (A t₀ x)` to the test vector.
 * `Oseledets.ae_flow_equivariant`: almost everywhere, the Oseledets filtration is equivariant
@@ -65,15 +64,13 @@ theorem norm_clm_pos (M : Matrix (Fin d) (Fin d) ℝ) (hM : M.det ≠ 0)
 /-! ### S1: the fixed-time log-norm is sublinear, almost everywhere
 
 The core difficulty is integrability of a dominator for `|log ‖A t₀ y‖|`. We build, for every
-real time, an integrable function dominating *both* `log⁺ ‖A t₀ y‖` and
-`log⁺ ‖(A t₀ y)⁻¹‖`; the two-sided log-norm bound `abs_log_norm_le` then turns this
-into an integrable dominator for the absolute log-norm, and the orbital tail estimate
-finishes the squeeze. -/
+real time, an integrable function dominating *both* `log⁺ ‖A t₀ y‖` and `log⁺ ‖(A t₀ y)⁻¹‖`; the
+two-sided log-norm bound `abs_log_norm_le` then turns this into an integrable dominator for the
+absolute log-norm, and the orbital tail estimate finishes the squeeze. -/
 
-/-- The product of the norm of an invertible matrix and the norm of its inverse has
-nonnegative log: `0 ≤ log ‖M‖ + log ‖M⁻¹‖`. For `d = 0` both norms vanish and both
-logs are `0`; for `d ≥ 1` a fixed nonzero vector gives `1 ≤ ‖M‖ · ‖M⁻¹‖`, whence the
-log is nonnegative. -/
+/-- The product of the norm of an invertible matrix and the norm of its inverse has nonnegative
+log: `0 ≤ log ‖M‖ + log ‖M⁻¹‖`. For `d = 0` both norms vanish and both logs are `0`; for
+`d ≥ 1` a fixed nonzero vector gives `1 ≤ ‖M‖ · ‖M⁻¹‖`, whence the log is nonnegative. -/
 private theorem zero_le_log_norm_add_log_norm_inv (M : Matrix (Fin d) (Fin d) ℝ)
     (hM : M.det ≠ 0) :
     0 ≤ Real.log ‖M‖ + Real.log ‖M⁻¹‖ := by
@@ -91,8 +88,7 @@ private theorem zero_le_log_norm_add_log_norm_inv (M : Matrix (Fin d) (Fin d) �
     set v : EuclideanSpace ℝ (Fin d) := EuclideanSpace.single ⟨0, hd⟩ 1 with hvdef
     have hv : v ≠ 0 := by
       rw [hvdef, ne_eq, PiLp.single_eq_zero_iff]; exact one_ne_zero
-    -- `‖v‖ ≤ ‖M⁻¹‖ · ‖toEuclideanCLM M v‖`
-    -- `   ≤ ‖M⁻¹‖ · (‖M‖ · ‖v‖)`.
+    -- `‖v‖ ≤ ‖M⁻¹‖ · ‖toEuclideanCLM M v‖ ≤ ‖M⁻¹‖ · (‖M‖ · ‖v‖)`.
     have hvpos : 0 < ‖v‖ := by rwa [norm_pos_iff]
     have hlow : ‖v‖ ≤ ‖M⁻¹‖ * ‖(Matrix.toEuclideanCLM (𝕜 := ℝ) M) v‖ := by
       have hinv : (Matrix.toEuclideanCLM (𝕜 := ℝ) M⁻¹)
@@ -102,8 +98,7 @@ private theorem zero_le_log_norm_add_log_norm_inv (M : Matrix (Fin d) (Fin d) �
       calc ‖v‖
           = ‖(Matrix.toEuclideanCLM (𝕜 := ℝ) M⁻¹)
               ((Matrix.toEuclideanCLM (𝕜 := ℝ) M) v)‖ := by rw [hinv]
-        _ ≤ ‖Matrix.toEuclideanCLM (𝕜 := ℝ) M⁻¹‖ *
-              ‖(Matrix.toEuclideanCLM (𝕜 := ℝ) M) v‖ :=
+        _ ≤ ‖Matrix.toEuclideanCLM (𝕜 := ℝ) M⁻¹‖ * ‖(Matrix.toEuclideanCLM (𝕜 := ℝ) M) v‖ :=
             (Matrix.toEuclideanCLM (𝕜 := ℝ) M⁻¹).le_opNorm _
         _ = ‖M⁻¹‖ * ‖(Matrix.toEuclideanCLM (𝕜 := ℝ) M) v‖ := by
             rw [Matrix.l2_opNorm_toEuclideanCLM]
@@ -148,8 +143,7 @@ private theorem abs_log_norm_le (M : Matrix (Fin d) (Fin d) ℝ) (hM : M.det ≠
   have hsum := zero_le_log_norm_add_log_norm_inv M hM
   rw [abs_le]
   refine ⟨?_, ?_⟩
-  · -- `-(log⁺‖M‖ + log⁺‖M⁻¹‖) ≤ log ‖M‖`,
-    -- i.e. `-log ‖M‖ ≤ log⁺‖M‖ + log⁺‖M⁻¹‖`.
+  · -- `-(log⁺‖M‖ + log⁺‖M⁻¹‖) ≤ log ‖M‖`, i.e. `-log ‖M‖ ≤ log⁺‖M‖ + log⁺‖M⁻¹‖`.
     have h := Real.posLog_nonneg (x := ‖M‖)
     linarith [hposMinv, hsum]
   · -- `log ‖M‖ ≤ log⁺‖M‖ + log⁺‖M⁻¹‖`.
@@ -215,12 +209,10 @@ private theorem exists_integrable_dom_nonneg (φ : MeasurePreservingFlow μ) (A 
       calc Real.posLog ‖(A 1 y)⁻¹ * (A (ρ + n) (φ 1 y))⁻¹‖
           ≤ Real.posLog (‖(A 1 y)⁻¹‖ * ‖(A (ρ + n) (φ 1 y))⁻¹‖) :=
             Real.posLog_le_posLog (norm_nonneg _) (norm_mul_le _ _)
-        _ ≤ Real.posLog ‖(A 1 y)⁻¹‖ + Real.posLog ‖(A (ρ + n) (φ 1 y))⁻¹‖ :=
-            Real.posLog_mul
+        _ ≤ Real.posLog ‖(A 1 y)⁻¹‖ + Real.posLog ‖(A (ρ + n) (φ 1 y))⁻¹‖ := Real.posLog_mul
         _ ≤ H (φ 1 y) + (g y + g' y) := by
             have h1 := hHinv (φ 1 y)
-            have h2 : Real.posLog ‖(A 1 y)⁻¹‖ ≤ g' y :=
-              hg'b 1 (by norm_num [Set.mem_Icc]) y
+            have h2 : Real.posLog ‖(A 1 y)⁻¹‖ ≤ g' y := hg'b 1 (by norm_num [Set.mem_Icc]) y
             have h3 := hgnn y
             linarith
 where
@@ -232,8 +224,7 @@ where
 /-- **Integrable dominator for nonnegative real times.** For any real `t₀ ≥ 0` there is an
 integrable `H` dominating both `log⁺ ‖A t₀ y‖` and `log⁺ ‖(A t₀ y)⁻¹‖`. Writing
 `t₀ = (t₀ - ⌊t₀⌋₊) + ⌊t₀⌋₊` reduces this to `exists_integrable_dom_nonneg`. -/
-private theorem exists_integrable_dom_of_nonneg (φ : MeasurePreservingFlow μ)
-    (A : FlowCocycle φ d)
+private theorem exists_integrable_dom_of_nonneg (φ : MeasurePreservingFlow μ) (A : FlowCocycle φ d)
     {g g' : X → ℝ} (hg : Integrable g μ) (hg' : Integrable g' μ)
     (hgb : ∀ s ∈ Set.Icc (0 : ℝ) 1, ∀ y, Real.posLog ‖A s y‖ ≤ g y)
     (hg'b : ∀ s ∈ Set.Icc (0 : ℝ) 1, ∀ y, Real.posLog ‖(A s y)⁻¹‖ ≤ g' y)
@@ -256,9 +247,9 @@ private theorem exists_integrable_dom_of_nonneg (φ : MeasurePreservingFlow μ)
   · intro y; rw [← hsum]; exact hHinv y
 
 /-- **Integrable dominator at every real time.** For any real `t₀` there is an integrable `H`
-dominating both `log⁺ ‖A t₀ y‖` and `log⁺ ‖(A t₀ y)⁻¹‖`. For `t₀ < 0` the
-cocycle identity gives `A t₀ y = (A (-t₀) (φ t₀ y))⁻¹`, transferring the
-nonnegative-time dominator at `-t₀` along the measure-preserving map `φ t₀`. -/
+dominating both `log⁺ ‖A t₀ y‖` and `log⁺ ‖(A t₀ y)⁻¹‖`. For `t₀ < 0` the cocycle identity gives
+`A t₀ y = (A (-t₀) (φ t₀ y))⁻¹`, transferring the nonnegative-time dominator at `-t₀` along the
+measure-preserving map `φ t₀`. -/
 private theorem exists_integrable_dom (φ : MeasurePreservingFlow μ) (A : FlowCocycle φ d)
     {g g' : X → ℝ} (hg : Integrable g μ) (hg' : Integrable g' μ)
     (hgb : ∀ s ∈ Set.Icc (0 : ℝ) 1, ∀ y, Real.posLog ‖A s y‖ ≤ g y)
@@ -275,8 +266,7 @@ private theorem exists_integrable_dom (φ : MeasurePreservingFlow μ) (A : FlowC
     -- The key identity: `A t₀ y = (A (-t₀) (φ t₀ y))⁻¹`.
     have hkey : ∀ y, A t₀ y = (A (-t₀) (φ t₀ y))⁻¹ := by
       intro y
-      -- `A 0 y = A (-t₀) (φ t₀ y) · A t₀ y = 1`,
-      -- so `(A t₀ y)⁻¹ = A (-t₀) (φ t₀ y)`.
+      -- `A 0 y = A (-t₀) (φ t₀ y) · A t₀ y = 1`, so `(A t₀ y)⁻¹ = A (-t₀) (φ t₀ y)`.
       have hc := A.cocycle_apply t₀ (-t₀) y
       rw [show -t₀ + t₀ = (0 : ℝ) by ring, A.map_zero] at hc
       -- `hc : 1 = A (-t₀) (φ t₀ y) * A t₀ y`.
@@ -304,10 +294,8 @@ theorem ae_tendsto_logNorm_fixedTime_zero (φ : MeasurePreservingFlow μ) (A : F
     (hg'b : ∀ s ∈ Set.Icc (0 : ℝ) 1, ∀ y, Real.posLog ‖(A s y)⁻¹‖ ≤ g' y)
     (t₀ : ℝ) :
     ∀ᵐ x ∂μ,
-      Tendsto (fun n : ℕ => (n : ℝ)⁻¹ * Real.log ‖A t₀ (φ (n : ℝ) x)‖) atTop
-        (𝓝 0) ∧
-      Tendsto (fun n : ℕ => (n : ℝ)⁻¹ * Real.log ‖(A t₀ (φ (n : ℝ) x))⁻¹‖) atTop
-        (𝓝 0) := by
+      Tendsto (fun n : ℕ => (n : ℝ)⁻¹ * Real.log ‖A t₀ (φ (n : ℝ) x)‖) atTop (𝓝 0) ∧
+      Tendsto (fun n : ℕ => (n : ℝ)⁻¹ * Real.log ‖(A t₀ (φ (n : ℝ) x))⁻¹‖) atTop (𝓝 0) := by
   obtain ⟨H, hHint, hHfwd, hHinv⟩ := exists_integrable_dom φ A hg hg' hgb hg'b t₀
   -- The two-sided dominator `G = H + H`.
   set G : X → ℝ := fun y => H y + H y with hGdef
@@ -340,8 +328,7 @@ theorem ae_tendsto_logNorm_fixedTime_zero (φ : MeasurePreservingFlow μ) (A : F
     rw [← congrFun (φ.natCast_eq_iterate n) x]
   -- Squeeze both log-norms.
   have hbound : ∀ (B : X → ℝ), (∀ y, |Real.log (B y)| ≤ G y) →
-      ∀ n : ℕ, |(n : ℝ)⁻¹ * Real.log (B (φ (n : ℝ) x))|
-        ≤ (n : ℝ)⁻¹ * G (φ (n : ℝ) x) := by
+      ∀ n : ℕ, |(n : ℝ)⁻¹ * Real.log (B (φ (n : ℝ) x))| ≤ (n : ℝ)⁻¹ * G (φ (n : ℝ) x) := by
     intro B hB n
     calc |(n : ℝ)⁻¹ * Real.log (B (φ (n : ℝ) x))|
         = (n : ℝ)⁻¹ * |Real.log (B (φ (n : ℝ) x))| := by
@@ -358,18 +345,17 @@ theorem ae_tendsto_logNorm_fixedTime_zero (φ : MeasurePreservingFlow μ) (A : F
 
 /-! ### S2: the discrete growth `limsup` is shift-invariant under `A t₀ x`
 
-The discrete-time growth rate `n⁻¹ · log ‖cocycle … n x · u‖` is unchanged when the test
-vector is pushed through the fixed bijection `toEuclideanCLM (A t₀ x)`. We first establish a.e.
+The discrete-time growth rate `n⁻¹ · log ‖cocycle … n x · u‖` is unchanged when the test vector
+is pushed through the fixed bijection `toEuclideanCLM (A t₀ x)`. We first establish a.e.
 two-sided boundedness of this growth average (via the Furstenberg–Kesten Fekete bounds and the
 Birkhoff ergodic theorem), then conclude with the perturbation lemma
 `limsup_eq_of_sub_tendsto_zero`. -/
 
 /-- **Boundedness of the discrete growth average.** For almost every `x`, for every nonzero
-test vector `u`, the discrete-time growth average
-`n⁻¹ · log ‖cocycle (A 1 ·) (φ 1) n x · u‖`
-has bounded range (both above and below). The upper bound comes from the
-Furstenberg–Kesten Fekete bound `log ‖cocycle‖ ≤ birkhoffSum (log⁺ ‖A 1‖)`, whose
-Birkhoff average converges; the lower bound is symmetric using the inverse cocycle. -/
+test vector `u`, the discrete-time growth average `n⁻¹ · log ‖cocycle (A 1 ·) (φ 1) n x · u‖`
+has bounded range (both above and below). The upper bound comes from the Furstenberg–Kesten
+Fekete bound `log ‖cocycle‖ ≤ birkhoffSum (log⁺ ‖A 1‖)`, whose Birkhoff average converges; the
+lower bound is symmetric using the inverse cocycle. -/
 private theorem ae_bddRange_discreteGrowth [IsFiniteMeasure μ] [NeZero d]
     (φ : MeasurePreservingFlow μ) (A : FlowCocycle φ d)
     {g g' : X → ℝ} (hg : Integrable g μ) (hg' : Integrable g' μ)
@@ -377,18 +363,14 @@ private theorem ae_bddRange_discreteGrowth [IsFiniteMeasure μ] [NeZero d]
     (hg'b : ∀ s ∈ Set.Icc (0 : ℝ) 1, ∀ y, Real.posLog ‖(A s y)⁻¹‖ ≤ g' y) :
     ∀ᵐ x ∂μ, ∀ u : EuclideanSpace ℝ (Fin d), u ≠ 0 →
       BddAbove (Set.range (fun n : ℕ => (n : ℝ)⁻¹ *
-        Real.log ‖(Matrix.toEuclideanCLM (𝕜 := ℝ)
-          (cocycle (fun y => A 1 y) (φ 1) n x)) u‖)) ∧
+        Real.log ‖(Matrix.toEuclideanCLM (𝕜 := ℝ) (cocycle (fun y => A 1 y) (φ 1) n x)) u‖)) ∧
       BddBelow (Set.range (fun n : ℕ => (n : ℝ)⁻¹ *
-        Real.log ‖(Matrix.toEuclideanCLM (𝕜 := ℝ)
-          (cocycle (fun y => A 1 y) (φ 1) n x)) u‖)) := by
+        Real.log ‖(Matrix.toEuclideanCLM (𝕜 := ℝ) (cocycle (fun y => A 1 y) (φ 1) n x)) u‖)) := by
   -- Abbreviate the generator and its pointwise log⁺ controls.
   set A₁ : X → Matrix (Fin d) (Fin d) ℝ := fun y => A 1 y with hA₁def
   have hA₁det : ∀ y, (A₁ y).det ≠ 0 := fun y => A.det_ne_zero 1 y
-  have hgb₁ : ∀ y, Real.posLog ‖A₁ y‖ ≤ g y :=
-    fun y => hgb 1 (by norm_num [Set.mem_Icc]) y
-  have hg'b₁ : ∀ y, Real.posLog ‖(A₁ y)⁻¹‖ ≤ g' y :=
-    fun y => hg'b 1 (by norm_num [Set.mem_Icc]) y
+  have hgb₁ : ∀ y, Real.posLog ‖A₁ y‖ ≤ g y := fun y => hgb 1 (by norm_num [Set.mem_Icc]) y
+  have hg'b₁ : ∀ y, Real.posLog ‖(A₁ y)⁻¹‖ ≤ g' y := fun y => hg'b 1 (by norm_num [Set.mem_Icc]) y
   -- The Birkhoff averages of `g` and `g'` converge a.e.
   have hbaG := tendsto_birkhoffAverage_ae (φ.measurePreserving 1) hg
   have hbaG' := tendsto_birkhoffAverage_ae (φ.measurePreserving 1) hg'
@@ -400,12 +382,10 @@ private theorem ae_bddRange_discreteGrowth [IsFiniteMeasure μ] [NeZero d]
     (n : ℝ)⁻¹ * Real.log ‖u‖ with hLdef
   have hUtend : Tendsto U atTop (𝓝 ((μ[g | MeasurableSpace.invariants (φ 1)]) x + 0)) := by
     refine hxG.add ?_
-    simpa using
-      (tendsto_inv_atTop_zero.comp tendsto_natCast_atTop_atTop).mul_const (Real.log ‖u‖)
+    simpa using (tendsto_inv_atTop_zero.comp tendsto_natCast_atTop_atTop).mul_const (Real.log ‖u‖)
   have hLtend : Tendsto L atTop (𝓝 (-(μ[g' | MeasurableSpace.invariants (φ 1)]) x + 0)) := by
     refine (hxG'.neg).add ?_
-    simpa using
-      (tendsto_inv_atTop_zero.comp tendsto_natCast_atTop_atTop).mul_const (Real.log ‖u‖)
+    simpa using (tendsto_inv_atTop_zero.comp tendsto_natCast_atTop_atTop).mul_const (Real.log ‖u‖)
   have hUbdd : BddAbove (Set.range U) := hUtend.bddAbove_range
   have hLbdd : BddBelow (Set.range L) := hLtend.bddBelow_range
   -- The pointwise upper bound `b' n ≤ U n` and lower bound `L n ≤ b' n`.
@@ -465,8 +445,7 @@ private theorem ae_bddRange_discreteGrowth [IsFiniteMeasure μ] [NeZero d]
               map_one, ContinuousLinearMap.one_apply]
           calc ‖u‖
               = ‖(Matrix.toEuclideanCLM (𝕜 := ℝ) (cocycle A₁ (φ 1) n x)⁻¹)
-                  ((Matrix.toEuclideanCLM (𝕜 := ℝ) (cocycle A₁ (φ 1) n x)) u)‖ := by
-                rw [hid]
+                  ((Matrix.toEuclideanCLM (𝕜 := ℝ) (cocycle A₁ (φ 1) n x)) u)‖ := by rw [hid]
             _ ≤ ‖Matrix.toEuclideanCLM (𝕜 := ℝ) (cocycle A₁ (φ 1) n x)⁻¹‖
                   * ‖(Matrix.toEuclideanCLM (𝕜 := ℝ) (cocycle A₁ (φ 1) n x)) u‖ :=
                 (Matrix.toEuclideanCLM (𝕜 := ℝ) (cocycle A₁ (φ 1) n x)⁻¹).le_opNorm _
@@ -478,8 +457,8 @@ private theorem ae_bddRange_discreteGrowth [IsFiniteMeasure μ] [NeZero d]
                 * ‖(Matrix.toEuclideanCLM (𝕜 := ℝ) (cocycle A₁ (φ 1) n x)) u‖) :=
               Real.log_le_log hupos hnorm
           _ = Real.log ‖(cocycle A₁ (φ 1) n x)⁻¹‖
-                + Real.log ‖(Matrix.toEuclideanCLM (𝕜 := ℝ) (cocycle A₁ (φ 1) n x)) u‖
-              := Real.log_mul (ne_of_gt hinvpos) (ne_of_gt hcocy)
+                + Real.log ‖(Matrix.toEuclideanCLM (𝕜 := ℝ) (cocycle A₁ (φ 1) n x)) u‖ :=
+              Real.log_mul (ne_of_gt hinvpos) (ne_of_gt hcocy)
       -- `log ‖(cocycle)⁻¹‖ ≤ birkhoffSum (log⁺‖A₁⁻¹‖) ≤ birkhoffSum g'`.
       have hfekete : Real.log ‖(cocycle A₁ (φ 1) n x)⁻¹‖
           ≤ birkhoffSum (φ 1) g' n x := by
@@ -515,8 +494,7 @@ theorem glim_shift [IsFiniteMeasure μ]
           ‖Matrix.toEuclideanCLM (𝕜 := ℝ) (cocycle (fun y => A 1 y) (φ 1) n (φ t₀ x))
               ((Matrix.toEuclideanCLM (𝕜 := ℝ) (A t₀ x)) u)‖) atTop
         = limsup (fun n : ℕ => (n : ℝ)⁻¹ * Real.log
-          ‖Matrix.toEuclideanCLM (𝕜 := ℝ) (cocycle (fun y => A 1 y) (φ 1) n x) u‖)
-            atTop := by
+          ‖Matrix.toEuclideanCLM (𝕜 := ℝ) (cocycle (fun y => A 1 y) (φ 1) n x) u‖) atTop := by
   rcases Nat.eq_zero_or_pos d with hd | hd
   · -- `d = 0`: every vector is zero, both `limsup`s are of `log ‖0‖ = 0`.
     filter_upwards with x u
@@ -570,122 +548,99 @@ theorem glim_shift [IsFiniteMeasure μ]
               rw [hwdef, map_mul, ContinuousLinearMap.mul_apply]
       -- The two correction sequences tend to `0`.
       have hcdiff : Tendsto (fun n => c n - b' n) atTop (𝓝 0) := by
-        -- Squeeze `c n - b' n` between `-n⁻¹ log‖(A t₀(φ_n x))⁻¹‖`
-        -- and `n⁻¹ log‖A t₀(φ_n x)‖`.
-        have hlow : ∀ n : ℕ,
-            -((n : ℝ)⁻¹ * Real.log ‖(A t₀ (φ (n : ℝ) x))⁻¹‖) ≤ c n - b' n := by
+        -- Squeeze `c n - b' n` between `-n⁻¹ log‖(A t₀(φ_n x))⁻¹‖` and `n⁻¹ log‖A t₀(φ_n x)‖`.
+        have hlow : ∀ n : ℕ, -((n : ℝ)⁻¹ * Real.log ‖(A t₀ (φ (n : ℝ) x))⁻¹‖) ≤ c n - b' n := by
           intro n
           rcases Nat.eq_zero_or_pos n with hn | hn
           · simp [hcdef, hb'def, hn]
           · have hninv : (0 : ℝ) ≤ (n : ℝ)⁻¹ := by positivity
             have hwpos : 0 < ‖w n‖ := by rw [norm_pos_iff]; exact hwne n
-            have hcpos :
-                0 < ‖(Matrix.toEuclideanCLM (𝕜 := ℝ) (A t₀ (φ (n : ℝ) x))) (w n)‖ :=
+            have hcpos : 0 < ‖(Matrix.toEuclideanCLM (𝕜 := ℝ) (A t₀ (φ (n : ℝ) x))) (w n)‖ :=
               norm_clm_pos _ (A.det_ne_zero t₀ _) (hwne n)
             have hinvpos : 0 < ‖(A t₀ (φ (n : ℝ) x))⁻¹‖ := by
               rcases lt_or_eq_of_le (norm_nonneg ((A t₀ (φ (n : ℝ) x))⁻¹)) with h | h
               · exact h
               · exfalso
                 have hbnd : ‖w n‖ ≤ ‖(A t₀ (φ (n : ℝ) x))⁻¹‖
-                    * ‖(Matrix.toEuclideanCLM (𝕜 := ℝ) (A t₀ (φ (n : ℝ) x))) (w n)‖
-                    := by
+                    * ‖(Matrix.toEuclideanCLM (𝕜 := ℝ) (A t₀ (φ (n : ℝ) x))) (w n)‖ := by
                   have hid : (Matrix.toEuclideanCLM (𝕜 := ℝ) (A t₀ (φ (n : ℝ) x))⁻¹)
-                      ((Matrix.toEuclideanCLM (𝕜 := ℝ) (A t₀ (φ (n : ℝ) x))) (w n)) = w n
-                      := by
+                      ((Matrix.toEuclideanCLM (𝕜 := ℝ) (A t₀ (φ (n : ℝ) x))) (w n)) = w n := by
                     rw [← ContinuousLinearMap.mul_apply, ← map_mul,
                       Matrix.nonsing_inv_mul _ (Ne.isUnit (A.det_ne_zero t₀ _)),
                       map_one, ContinuousLinearMap.one_apply]
                   calc ‖w n‖
-                    _ = ‖(Matrix.toEuclideanCLM (𝕜 := ℝ) (A t₀ (φ (n : ℝ) x))⁻¹)
-                      ((Matrix.toEuclideanCLM (𝕜 := ℝ) (A t₀ (φ (n : ℝ) x))) (w n))‖
-                      := by rw [hid]
+                      = ‖(Matrix.toEuclideanCLM (𝕜 := ℝ) (A t₀ (φ (n : ℝ) x))⁻¹)
+                          ((Matrix.toEuclideanCLM (𝕜 := ℝ) (A t₀ (φ (n : ℝ) x))) (w n))‖ := by
+                        rw [hid]
                     _ ≤ ‖Matrix.toEuclideanCLM (𝕜 := ℝ) (A t₀ (φ (n : ℝ) x))⁻¹‖
-                      * ‖(Matrix.toEuclideanCLM (𝕜 := ℝ) (A t₀ (φ (n : ℝ) x))) (w n)‖
-                      :=
-                        (Matrix.toEuclideanCLM (𝕜 := ℝ)
-                          (A t₀ (φ (n : ℝ) x))⁻¹).le_opNorm _
+                          * ‖(Matrix.toEuclideanCLM (𝕜 := ℝ) (A t₀ (φ (n : ℝ) x))) (w n)‖ :=
+                        (Matrix.toEuclideanCLM (𝕜 := ℝ) (A t₀ (φ (n : ℝ) x))⁻¹).le_opNorm _
                     _ = ‖(A t₀ (φ (n : ℝ) x))⁻¹‖
-                      * ‖(Matrix.toEuclideanCLM (𝕜 := ℝ) (A t₀ (φ (n : ℝ) x))) (w n)‖
-                      := by rw [Matrix.l2_opNorm_toEuclideanCLM]
+                          * ‖(Matrix.toEuclideanCLM (𝕜 := ℝ) (A t₀ (φ (n : ℝ) x))) (w n)‖ := by
+                        rw [Matrix.l2_opNorm_toEuclideanCLM]
                 rw [← h, zero_mul] at hbnd; linarith
             -- `b n ≤ log‖(A t₀(φ_n x))⁻¹‖ + LHSlog n`.
             have hnorm : ‖w n‖ ≤ ‖(A t₀ (φ (n : ℝ) x))⁻¹‖
                 * ‖(Matrix.toEuclideanCLM (𝕜 := ℝ) (A t₀ (φ (n : ℝ) x))) (w n)‖ := by
               have hid : (Matrix.toEuclideanCLM (𝕜 := ℝ) (A t₀ (φ (n : ℝ) x))⁻¹)
-                  ((Matrix.toEuclideanCLM (𝕜 := ℝ) (A t₀ (φ (n : ℝ) x))) (w n)) = w n
-                  := by
+                  ((Matrix.toEuclideanCLM (𝕜 := ℝ) (A t₀ (φ (n : ℝ) x))) (w n)) = w n := by
                 rw [← ContinuousLinearMap.mul_apply, ← map_mul,
                   Matrix.nonsing_inv_mul _ (Ne.isUnit (A.det_ne_zero t₀ _)),
                   map_one, ContinuousLinearMap.one_apply]
               calc ‖w n‖
-                _ = ‖(Matrix.toEuclideanCLM (𝕜 := ℝ) (A t₀ (φ (n : ℝ) x))⁻¹)
-                    ((Matrix.toEuclideanCLM (𝕜 := ℝ) (A t₀ (φ (n : ℝ) x))) (w n))‖
-                  := by rw [hid]
+                  = ‖(Matrix.toEuclideanCLM (𝕜 := ℝ) (A t₀ (φ (n : ℝ) x))⁻¹)
+                      ((Matrix.toEuclideanCLM (𝕜 := ℝ) (A t₀ (φ (n : ℝ) x))) (w n))‖ := by rw [hid]
                 _ ≤ ‖Matrix.toEuclideanCLM (𝕜 := ℝ) (A t₀ (φ (n : ℝ) x))⁻¹‖
-                    * ‖(Matrix.toEuclideanCLM (𝕜 := ℝ) (A t₀ (φ (n : ℝ) x))) (w n)‖
-                  :=
-                    (Matrix.toEuclideanCLM (𝕜 := ℝ)
-                      (A t₀ (φ (n : ℝ) x))⁻¹).le_opNorm _
+                      * ‖(Matrix.toEuclideanCLM (𝕜 := ℝ) (A t₀ (φ (n : ℝ) x))) (w n)‖ :=
+                    (Matrix.toEuclideanCLM (𝕜 := ℝ) (A t₀ (φ (n : ℝ) x))⁻¹).le_opNorm _
                 _ = ‖(A t₀ (φ (n : ℝ) x))⁻¹‖
-                    * ‖(Matrix.toEuclideanCLM (𝕜 := ℝ) (A t₀ (φ (n : ℝ) x))) (w n)‖
-                  := by rw [Matrix.l2_opNorm_toEuclideanCLM]
+                      * ‖(Matrix.toEuclideanCLM (𝕜 := ℝ) (A t₀ (φ (n : ℝ) x))) (w n)‖ := by
+                    rw [Matrix.l2_opNorm_toEuclideanCLM]
             have hlogb : Real.log ‖w n‖ ≤ Real.log ‖(A t₀ (φ (n : ℝ) x))⁻¹‖
-                + Real.log
-                    ‖(Matrix.toEuclideanCLM (𝕜 := ℝ) (A t₀ (φ (n : ℝ) x))) (w n)‖
-                := by
+                + Real.log ‖(Matrix.toEuclideanCLM (𝕜 := ℝ) (A t₀ (φ (n : ℝ) x))) (w n)‖ := by
               calc Real.log ‖w n‖
-                _ ≤ Real.log (‖(A t₀ (φ (n : ℝ) x))⁻¹‖
-                    * ‖(Matrix.toEuclideanCLM (𝕜 := ℝ) (A t₀ (φ (n : ℝ) x))) (w n)‖)
-                  := Real.log_le_log hwpos hnorm
+                  ≤ Real.log (‖(A t₀ (φ (n : ℝ) x))⁻¹‖
+                      * ‖(Matrix.toEuclideanCLM (𝕜 := ℝ) (A t₀ (φ (n : ℝ) x))) (w n)‖) :=
+                    Real.log_le_log hwpos hnorm
                 _ = Real.log ‖(A t₀ (φ (n : ℝ) x))⁻¹‖
-                    + Real.log
-                        ‖(Matrix.toEuclideanCLM (𝕜 := ℝ) (A t₀ (φ (n : ℝ) x))) (w n)‖
-                  := Real.log_mul (ne_of_gt hinvpos) (ne_of_gt hcpos)
+                      + Real.log ‖(Matrix.toEuclideanCLM (𝕜 := ℝ) (A t₀ (φ (n : ℝ) x))) (w n)‖ :=
+                    Real.log_mul (ne_of_gt hinvpos) (ne_of_gt hcpos)
             -- Conclude the lower bound on `c n - b' n`.
             have hdiff : c n - b' n
                 = (n : ℝ)⁻¹ *
-                    (Real.log
-                        ‖(Matrix.toEuclideanCLM (𝕜 := ℝ) (A t₀ (φ (n : ℝ) x))) (w n)‖
+                    (Real.log ‖(Matrix.toEuclideanCLM (𝕜 := ℝ) (A t₀ (φ (n : ℝ) x))) (w n)‖
                       - Real.log ‖w n‖) := by
               simp only [hcdef, hb'def]; rw [hshift n]; simp only [hwdef]; ring
             rw [hdiff, neg_eq_neg_one_mul, ← mul_assoc, mul_comm (-1 : ℝ), mul_assoc]
             refine mul_le_mul_of_nonneg_left ?_ hninv
             rw [neg_one_mul]; linarith [hlogb]
-        have hhigh : ∀ n,
-            c n - b' n ≤ (n : ℝ)⁻¹ * Real.log ‖A t₀ (φ (n : ℝ) x)‖ := by
+        have hhigh : ∀ n, c n - b' n ≤ (n : ℝ)⁻¹ * Real.log ‖A t₀ (φ (n : ℝ) x)‖ := by
           intro n
           rcases Nat.eq_zero_or_pos n with hn | hn
           · simp [hcdef, hb'def, hn]
           · have hninv : (0 : ℝ) ≤ (n : ℝ)⁻¹ := by positivity
             have hwpos : 0 < ‖w n‖ := by rw [norm_pos_iff]; exact hwne n
-            have hcpos :
-                0 < ‖(Matrix.toEuclideanCLM (𝕜 := ℝ) (A t₀ (φ (n : ℝ) x))) (w n)‖ :=
+            have hcpos : 0 < ‖(Matrix.toEuclideanCLM (𝕜 := ℝ) (A t₀ (φ (n : ℝ) x))) (w n)‖ :=
               norm_clm_pos _ (A.det_ne_zero t₀ _) (hwne n)
             have hnorm : ‖(Matrix.toEuclideanCLM (𝕜 := ℝ) (A t₀ (φ (n : ℝ) x))) (w n)‖
                 ≤ ‖A t₀ (φ (n : ℝ) x)‖ * ‖w n‖ := by
               calc ‖(Matrix.toEuclideanCLM (𝕜 := ℝ) (A t₀ (φ (n : ℝ) x))) (w n)‖
-                _ ≤ ‖Matrix.toEuclideanCLM (𝕜 := ℝ) (A t₀ (φ (n : ℝ) x))‖
-                    * ‖w n‖
-                  := (Matrix.toEuclideanCLM (𝕜 := ℝ) (A t₀ (φ (n : ℝ) x))).le_opNorm _
-                _ = ‖A t₀ (φ (n : ℝ) x)‖ * ‖w n‖
-                  := by rw [Matrix.l2_opNorm_toEuclideanCLM]
+                  ≤ ‖Matrix.toEuclideanCLM (𝕜 := ℝ) (A t₀ (φ (n : ℝ) x))‖ * ‖w n‖ :=
+                    (Matrix.toEuclideanCLM (𝕜 := ℝ) (A t₀ (φ (n : ℝ) x))).le_opNorm _
+                _ = ‖A t₀ (φ (n : ℝ) x)‖ * ‖w n‖ := by rw [Matrix.l2_opNorm_toEuclideanCLM]
             have hApos : 0 < ‖A t₀ (φ (n : ℝ) x)‖ := by
               rcases lt_or_eq_of_le (norm_nonneg (A t₀ (φ (n : ℝ) x))) with h | h
               · exact h
               · exfalso; rw [← h, zero_mul] at hnorm; linarith [hcpos]
-            have hlogc : Real.log
-                  ‖(Matrix.toEuclideanCLM (𝕜 := ℝ) (A t₀ (φ (n : ℝ) x))) (w n)‖
+            have hlogc : Real.log ‖(Matrix.toEuclideanCLM (𝕜 := ℝ) (A t₀ (φ (n : ℝ) x))) (w n)‖
                 ≤ Real.log ‖A t₀ (φ (n : ℝ) x)‖ + Real.log ‖w n‖ := by
-              calc Real.log
-                    ‖(Matrix.toEuclideanCLM (𝕜 := ℝ) (A t₀ (φ (n : ℝ) x))) (w n)‖
-                  ≤ Real.log (‖A t₀ (φ (n : ℝ) x)‖ * ‖w n‖) :=
-                    Real.log_le_log hcpos hnorm
+              calc Real.log ‖(Matrix.toEuclideanCLM (𝕜 := ℝ) (A t₀ (φ (n : ℝ) x))) (w n)‖
+                  ≤ Real.log (‖A t₀ (φ (n : ℝ) x)‖ * ‖w n‖) := Real.log_le_log hcpos hnorm
                 _ = Real.log ‖A t₀ (φ (n : ℝ) x)‖ + Real.log ‖w n‖ :=
                     Real.log_mul (ne_of_gt hApos) (ne_of_gt hwpos)
             have hdiff : c n - b' n
                 = (n : ℝ)⁻¹ *
-                    (Real.log
-                        ‖(Matrix.toEuclideanCLM (𝕜 := ℝ) (A t₀ (φ (n : ℝ) x))) (w n)‖
+                    (Real.log ‖(Matrix.toEuclideanCLM (𝕜 := ℝ) (A t₀ (φ (n : ℝ) x))) (w n)‖
                       - Real.log ‖w n‖) := by
               simp only [hcdef, hb'def]; rw [hshift n]; simp only [hwdef]; ring
             rw [hdiff]
@@ -801,8 +756,7 @@ theorem ae_flow_equivariant [IsProbabilityMeasure μ]
             _ = limsup (fun n : ℕ => (n : ℝ)⁻¹ * Real.log
                   ‖Matrix.toEuclideanCLM (𝕜 := ℝ)
                       (cocycle (fun y => A 1 y) (φ 1) n (φ t₀ x)) v‖) atTop := by
-                rw [show (Matrix.toEuclideanCLM (𝕜 := ℝ) (A t₀ x)) (Pinv v) = v
-                      from hPPinv v]
+                rw [show (Matrix.toEuclideanCLM (𝕜 := ℝ) (A t₀ x)) (Pinv v) = v from hPPinv v]
             _ ≤ lam i' := hvle
       · simp only [ContinuousLinearMap.coe_coe]
         exact hPPinv v

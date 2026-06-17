@@ -70,7 +70,8 @@ the spectrum-constancy, measurability, and exact-growth layers:
 * `hgrowth` — **per-vector exact growth**: for a.e. `x`, on each stratum
   `vflag castSucc \ vflag succ` the normalized log-growth converges to the stratum exponent
   `specList A T x i` (the limsup is already pinned by `lambdaBar_eq_on_stratum`; this is
-  upgraded to a genuine limit via `tendsto_inv_mul_log_norm_cocycle_apply_of_bandProjector_envelope`). -/
+  upgraded to a genuine limit via
+  `tendsto_inv_mul_log_norm_cocycle_apply_of_bandProjector_envelope`). -/
 theorem oseledets_filtration_of_interfaces
     {μ : Measure X} [IsProbabilityMeasure μ] {T : X → X}
     (hT : Ergodic T μ)

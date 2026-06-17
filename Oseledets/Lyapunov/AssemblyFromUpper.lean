@@ -25,14 +25,18 @@ as far as `hupper` allows, isolating the remaining content into named residual h
   slowly, hence lies in the growth sublevel (`vslow_subset_lambdaSublevel_of_upper`).  The
   reverse inclusion is taken as the typed residual hypothesis `hslowrev`.
 
-* **`hgrowth`** via `Oseledets.tendsto_inv_mul_log_norm_cocycle_apply_of_upper_lower`.  The upper half `hub` holds
-  unconditionally on the `IsUltrametricGrowth` good set (`limsup_log_norm_cocycle_apply_le_specList_of_mem_stratum`); the
-  boundedness `hbdd` comes from the Furstenberg–Kesten layer (`Oseledets.isBoundedUnder_inv_mul_log_norm_cocycle_apply_of_mem_stratum`); the
-  lower bound `hlb` comes from the band-projector layer (`Oseledets.specList_le_liminf_inv_mul_log_norm_cocycle_apply_of_bandProjector`),
-  fed the residual band-projector convergence datum `hband`.
+* **`hgrowth`** via `Oseledets.tendsto_inv_mul_log_norm_cocycle_apply_of_upper_lower`.  The
+  upper half `hub` holds unconditionally on the `IsUltrametricGrowth` good set
+  (`limsup_log_norm_cocycle_apply_le_specList_of_mem_stratum`); the boundedness `hbdd` comes
+  from the Furstenberg–Kesten layer
+  (`Oseledets.isBoundedUnder_inv_mul_log_norm_cocycle_apply_of_mem_stratum`); the lower bound
+  `hlb` comes from the band-projector layer
+  (`Oseledets.specList_le_liminf_inv_mul_log_norm_cocycle_apply_of_bandProjector`), fed the
+  residual band-projector convergence datum `hband`.
 
-* **`hspec`** via `Oseledets.specList_eq_expEnum_of_subsets_standing`.  The two `Finset` inclusions between the
-  realized exponent set `spectrum` and the deterministic exponent set `distinctExp lam0 d`
+* **`hspec`** via `Oseledets.specList_eq_expEnum_of_subsets_standing`.  The two `Finset`
+  inclusions between the realized exponent set `spectrum` and the deterministic exponent set
+  `distinctExp lam0 d`
   are taken as the typed residuals `hub_spec` and `hlb_spec`.
 
 The residual hypotheses `hslowrev`, `hband`, `hub_spec`, `hlb_spec` are each the minimal
@@ -43,7 +47,8 @@ derivable from `hupper` alone.
 
 * `Oseledets.vslow_subset_lambdaSublevel_of_upper`: the forward slow-flag inclusion
   `vslow (exp t) ≤ lambdaSublevel t` from the spectral upper bound.
-* `Oseledets.limsup_log_norm_cocycle_apply_le_specList_of_mem_stratum`: the per-stratum `limsup` upper bound, almost everywhere.
+* `Oseledets.limsup_log_norm_cocycle_apply_le_specList_of_mem_stratum`: the per-stratum
+  `limsup` upper bound, almost everywhere.
 * `Oseledets.vslow_eq_lambdaSublevel_of_upper`: the slow-flag identification
   `vslow (exp t) = lambdaSublevel t` from the spectral upper bound and the reverse inclusion.
 * `Oseledets.oseledets_filtration_of_upper`: the Oseledets filtration theorem, assembled from
@@ -82,8 +87,9 @@ theorem vslow_subset_lambdaSublevel_of_upper
 
 /-! ## The `hgrowth` upper half from `vflag` membership
 
-The upper half `hub` of `Oseledets.tendsto_inv_mul_log_norm_cocycle_apply_of_upper_lower` is, in fact, *unconditional* given
-the `IsUltrametricGrowth` good set: a vector in the stratum `vflag i.castSucc \ vflag i.succ`
+The upper half `hub` of `Oseledets.tendsto_inv_mul_log_norm_cocycle_apply_of_upper_lower` is, in
+fact, *unconditional* given the `IsUltrametricGrowth` good set: a vector in the stratum
+`vflag i.castSucc \ vflag i.succ`
 has `lambdaBar = specList i` exactly (`lambdaBar_eq_on_stratum`), and that `lambdaBar` is the
 `limsup` (`limsup_log_norm_cocycle_eq_lambdaBar`).  So `limsup ≤ specList i` holds (with
 equality) and `hub` needs no separate analytic input. -/
@@ -91,7 +97,8 @@ equality) and `hub` needs no separate analytic input. -/
 omit [NeZero d] in
 /-- **`hub` from `vflag` membership (a.e.).**  On the `IsUltrametricGrowth` good set the
 per-stratum `limsup` equals the exact exponent `specList i`, so in particular
-`limsup ≤ specList i` — the upper half consumed by `Oseledets.tendsto_inv_mul_log_norm_cocycle_apply_of_upper_lower`. -/
+`limsup ≤ specList i` — the upper half consumed by
+`Oseledets.tendsto_inv_mul_log_norm_cocycle_apply_of_upper_lower`. -/
 theorem limsup_log_norm_cocycle_apply_le_specList_of_mem_stratum
     {μ : Measure X} [IsProbabilityMeasure μ] {T : X → X}
     (hT : Ergodic T μ)
@@ -138,12 +145,15 @@ The complete Oseledets measurable-filtration conclusion, assembled through
 deterministic exponent data `lam0` is taken from `exists_lam_tendsto_singularValue`.  The
 three a.e. interfaces are discharged as follows:
 
-* `hslowflag` — forward inclusion derived from `hupper` (`vslow_eq_lambdaSublevel_of_upper`), reverse
-  inclusion the residual `hslowrev`;
-* `hgrowth` — `hub` derived from `vflag` membership (`limsup_log_norm_cocycle_apply_le_specList_of_mem_stratum`), `hbdd` from
-  `isBoundedUnder_inv_mul_log_norm_cocycle_apply_of_mem_stratum`, `hlb` from `specList_le_liminf_inv_mul_log_norm_cocycle_apply_of_bandProjector` fed the residual band datum `hband`;
-* `hspec` — `specList_eq_expEnum_of_subsets_standing` fed the two residual `Finset` spectrum inclusions
-  `hub_spec` / `hlb_spec`.
+* `hslowflag` — forward inclusion derived from `hupper`
+  (`vslow_eq_lambdaSublevel_of_upper`), reverse inclusion the residual `hslowrev`;
+* `hgrowth` — `hub` derived from `vflag` membership
+  (`limsup_log_norm_cocycle_apply_le_specList_of_mem_stratum`), `hbdd` from
+  `isBoundedUnder_inv_mul_log_norm_cocycle_apply_of_mem_stratum`, `hlb` from
+  `specList_le_liminf_inv_mul_log_norm_cocycle_apply_of_bandProjector` fed the residual band
+  datum `hband`;
+* `hspec` — `specList_eq_expEnum_of_subsets_standing` fed the two residual `Finset` spectrum
+  inclusions `hub_spec` / `hlb_spec`.
 
 The residual hypotheses `hslowrev`, `hband`, `hub_spec`, `hlb_spec` capture exactly the
 spectral identification of the Oseledets limit operator; see the module docstring. -/
@@ -207,7 +217,8 @@ theorem oseledets_filtration_of_upper
   -- `hslowflag` from `hupper` and the reverse inclusion.
   have hslowflag := vslow_eq_lambdaSublevel_of_upper hT hA hAmeas hint hint' hupper hslowrev
   -- `hgrowth` from upper (`vflag`) + lower (band) + boundedness (Furstenberg–Kesten).
-  have hbdd := isBoundedUnder_inv_mul_log_norm_cocycle_apply_of_mem_stratum hT A hA hAmeas hint hint'
+  have hbdd :=
+    isBoundedUnder_inv_mul_log_norm_cocycle_apply_of_mem_stratum hT A hA hAmeas hint hint'
   have hub := limsup_log_norm_cocycle_apply_le_specList_of_mem_stratum hT hA hAmeas hint hint'
   have hlb := specList_le_liminf_inv_mul_log_norm_cocycle_apply_of_bandProjector A hA hband hbdd
   have hgrowth := tendsto_inv_mul_log_norm_cocycle_apply_of_upper_lower A hub hlb hbdd

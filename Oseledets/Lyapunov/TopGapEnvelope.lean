@@ -412,7 +412,8 @@ of `e_t` over `B_w ⊆ (hiBand)ᶜ`). -/
 open Oseledets.RuelleCofactor in
 /-- `fastProj t B u` lies in the span of `e t j`, `j ∈ B` (mirror of `slowProj_mem_span`). -/
 private lemma htgmulti_fastProj_mem_span {E : Type*} [NormedAddCommGroup E]
-    [InnerProductSpace ℝ E] {D : ℕ} (S : Oseledets.RuelleCofactor.SVDData E D) (t : ℕ) (B : Finset (Fin D))
+    [InnerProductSpace ℝ E] {D : ℕ} (S : Oseledets.RuelleCofactor.SVDData E D) (t : ℕ)
+    (B : Finset (Fin D))
     (u : E) :
     S.fastProj t B u
       ∈ Submodule.span ℝ (Set.range (fun j : (B : Finset (Fin D)) => S.e t (j : Fin D))) := by
@@ -450,11 +451,13 @@ private lemma htgmulti_slowProj_eq_sum {E : Type*} [NormedAddCommGroup E] [Inner
 
 open Oseledets.RuelleCofactor in
 /-- The SVDData-level multi-source one-step recursion.  Generalizes
-`Oseledets.RuelleCofactor.SVDData.oneStep_recursion` to a disjoint sub-partition `{Bw w : w ∈ Wf}` of the slow
-indices `hiTᶜ`: the fast band mass at `t+1` is bounded by the fast band mass at `t` plus a sum of
+`Oseledets.RuelleCofactor.SVDData.oneStep_recursion` to a disjoint sub-partition `{Bw w : w ∈ Wf}`
+of the slow indices `hiTᶜ`: the fast band mass at `t+1` is bounded by the fast band mass at `t` plus
+a sum of
 per-sub-band leakage sources, each with its own cap `sval w`. -/
 private lemma htgmulti_oneStep_recursion_multiSource {E : Type*} [NormedAddCommGroup E]
-    [InnerProductSpace ℝ E] {D : ℕ} (S : Oseledets.RuelleCofactor.SVDData E D) (t : ℕ) (hiT hiT1 : Finset (Fin D))
+    [InnerProductSpace ℝ E] {D : ℕ} (S : Oseledets.RuelleCofactor.SVDData E D) (t : ℕ)
+    (hiT hiT1 : Finset (Fin D))
     {W : Type*} (Wf : Finset W) (Bw : W → Finset (Fin D)) (sval : W → ℝ) (b tt : ℝ)
     (hsval : ∀ w ∈ Wf, 0 ≤ sval w) (htt : 0 < tt) (hb : 0 ≤ b)
     (hcover : hiTᶜ = Wf.biUnion Bw) (hdisj : (Wf : Set W).PairwiseDisjoint Bw)
@@ -723,7 +726,8 @@ private lemma htgstep_rho_lt_one (η w v δstar : ℝ) (h : w + 2 * η - (v - δ
 
 /-- **B6 — the inductive step.**  All windows + IH ⟹ the per-stratum envelope for `v`.  The IH is
 phrased over the finite set of distinct stratum values strictly between `lam0 a` and `v`. -/
-theorem perStratumEnvelope_step [NeZero d] {A : X → Matrix (Fin d) (Fin d) ℝ} (hA : ∀ x, (A x).det ≠ 0)
+theorem perStratumEnvelope_step [NeZero d] {A : X → Matrix (Fin d) (Fin d) ℝ}
+    (hA : ∀ x, (A x).det ≠ 0)
     (x : X) (lam0 : ℕ → ℝ) {G : ℝ} (hG : 0 < G)
     (hGgap : ∀ i j : Fin d, lam0 (i : ℕ) < lam0 (j : ℕ) → lam0 (i : ℕ) + G ≤ lam0 (j : ℕ))
     (hconv : ∀ j : ℕ, j < d → Filter.Tendsto
@@ -1119,8 +1123,8 @@ private lemma htgind_aux [NeZero d] {A : X → Matrix (Fin d) (Fin d) ℝ}
   induction M with
   | zero =>
     intro v hcard hav hvstratum
-    -- The set of intermediate strata is empty (card ≤ 0), so the IH for `perStratumEnvelope_step` is
-    -- vacuous.
+    -- The set of intermediate strata is empty (card ≤ 0), so the IH for
+    -- `perStratumEnvelope_step` is vacuous.
     refine perStratumEnvelope_step hA x lam0 hG hGgap hconv htemp a v hav hvstratum ?_
     intro w hlt hwv hex
     have hwmem : w ∈ htgind_S lam0 a v := (htgind_mem_S lam0 a v w).2 ⟨hex, hlt, hwv⟩
@@ -1411,7 +1415,8 @@ per-stratum envelopes via `perStratumEnvelope_of_lt`, and transfer via
 `topGapMassEnvelope_of_perStratum`. -/
 
 /-- The top-gap band-mass envelope `topGapMassEnvelope_ae`: almost everywhere the top-gap
-fast-band-mass envelope holds, discharging `htopgap` in `forward_graded_overlap_of_topGapEnvelope`. -/
+fast-band-mass envelope holds, discharging `htopgap` in
+`forward_graded_overlap_of_topGapEnvelope`. -/
 theorem topGapMassEnvelope_ae [MeasureTheory.IsProbabilityMeasure μ] [NeZero d]
     (hT : Ergodic T μ)
     {A : X → Matrix (Fin d) (Fin d) ℝ} (hA : ∀ x, (A x).det ≠ 0) (hAmeas : Measurable A)

@@ -44,8 +44,8 @@ the target theorem.
   Cauchy–Schwarz.
 * `limsup_inv_mul_log_norm_cocycle_apply_le`: the per-vector growth upper bound,
   conditional on per-index leakage envelopes.
-* `tendsto_inv_mul_log_norm_cocycle_apply_of_bandProjector_envelope`: the assembled per-vector exact growth
-  limit.
+* `tendsto_inv_mul_log_norm_cocycle_apply_of_bandProjector_envelope`: the assembled per-vector
+  exact growth limit.
 -/
 
 open MeasureTheory Filter Topology

@@ -12,26 +12,29 @@ import Oseledets.Lyapunov.ForwardAngle
 This file provides three independent reduction steps feeding the final assembly of
 `Oseledets.oseledets_filtration`:
 
-1. `tendsto_inv_mul_log_norm_cocycle_apply_of_upper_lower` — the per-vector exact growth interface (`hgrowth`) from the
-   per-vector upper bound (`limsup ≤ specList`) and lower bound (`specList ≤ liminf`), squeezed
-   to a genuine `Tendsto` via `tendsto_inv_mul_log_norm_cocycle_apply`.
+1. `tendsto_inv_mul_log_norm_cocycle_apply_of_upper_lower` — the per-vector exact growth interface
+   (`hgrowth`) from the per-vector upper bound (`limsup ≤ specList`) and lower bound
+   (`specList ≤ liminf`), squeezed to a genuine `Tendsto` via
+   `tendsto_inv_mul_log_norm_cocycle_apply`.
 
 2. `oseledets_filtration_of_interfaces'` — a re-pointing of the assembly from the
    only-a.e.-measurable limsup flag `vflag` onto an everywhere-measurable family (built from the
    slow spectral filtration `vslow`), transporting the a.e. structural interfaces along the a.e.
    identification `vslow = vflag`.
 
-3. `specList_eq_expEnum_of_lyapunovSpectrum_const` — the spectrum-constancy interface (`hspec`), reducing it to the
-   a.e. constancy of the (`T`-invariant) per-point Lyapunov spectrum.
+3. `specList_eq_expEnum_of_lyapunovSpectrum_const` — the spectrum-constancy interface (`hspec`),
+   reducing it to the a.e. constancy of the (`T`-invariant) per-point Lyapunov spectrum.
 
 ## Main results
 
-* `Oseledets.tendsto_inv_mul_log_norm_cocycle_apply_of_upper_lower`: the per-vector growth limit from the two one-sided bounds.
+* `Oseledets.tendsto_inv_mul_log_norm_cocycle_apply_of_upper_lower`: the per-vector growth limit
+  from the two one-sided bounds.
 * `Oseledets.vassembled_structure_ae`: the a.e. structural block of the assembled flag
   `vassembled`, stated without any measurability conclusion.
 * `Oseledets.oseledets_filtration_of_interfaces'`: the Oseledets filtration target with the
   measurability clause carried by an everywhere-measurable witness family.
-* `Oseledets.specList_eq_expEnum_of_lyapunovSpectrum_const`: the `hspec` interface from a.e. spectrum constancy.
+* `Oseledets.specList_eq_expEnum_of_lyapunovSpectrum_const`: the `hspec` interface from a.e.
+  spectrum constancy.
 -/
 
 open MeasureTheory Filter Topology
@@ -240,7 +243,8 @@ It produces the `oseledets_filtration` target with witness `V := vprime`.  The s
 is the `vassembled` block of `vassembled_structure_ae` rewritten, level by level, through `hae`.
 
 The a.e. identification `hae` is itself the substantive mathematical content (`vslow = vflag`
-a.e.); it is taken here as a cleanly-typed hypothesis and is discharged by `vprime_eq_vassembled_of_slowflag`. -/
+a.e.); it is taken here as a cleanly-typed hypothesis and is discharged by
+`vprime_eq_vassembled_of_slowflag`. -/
 
 /-- The Oseledets filtration target from the structural interfaces, with the measurability clause
 carried by an everywhere-measurable family `vprime` that agrees a.e. with the assembled flag
@@ -307,10 +311,12 @@ theorem oseledets_filtration_of_interfaces'
 limsup spectrum `lyapunovSpectrum A T x` of `lambdaBar`) coincides with the deterministic
 singular-value spectrum (`numExp`/`expEnum`, built from `distinctExp lam0 d`).
 
-`lyapunovSpectrum_equivariant_ae` provides the `T`-invariance `lyapunovSpectrum A T x = lyapunovSpectrum A T (T x)` a.e.;
-ergodicity upgrades this to a.e. *constancy* of the finite set `lyapunovSpectrum A T x`, and the spectral
-identification of `Λ` pins that constant set to `distinctExp lam0 d`.  Packaging both as the
-single hypothesis `hspecconst : ∀ᵐ x, lyapunovSpectrum A T x = distinctExp lam0 d`, the `hspec` shape is
+`lyapunovSpectrum_equivariant_ae` provides the `T`-invariance
+`lyapunovSpectrum A T x = lyapunovSpectrum A T (T x)` a.e.;
+ergodicity upgrades this to a.e. *constancy* of the finite set `lyapunovSpectrum A T x`, and the
+spectral identification of `Λ` pins that constant set to `distinctExp lam0 d`.  Packaging both as
+the single hypothesis `hspecconst : ∀ᵐ x, lyapunovSpectrum A T x = distinctExp lam0 d`, the `hspec`
+shape is
 then a pure `Finset`/`Fin`-reindexing computation: `specCard` and `numExp` are both the cardinality
 of the (now-equal) finite set, and `specList` and `expEnum` are both its descending
 `orderEmbOfFin`-enumeration, so they agree along the cardinality cast.
@@ -318,8 +324,9 @@ of the (now-equal) finite set, and `specList` and `expEnum` are both its descend
 The constancy-to-`distinctExp` step (`hspecconst`) is the ergodic content; it is taken here as a
 cleanly-typed hypothesis and is discharged by `lyapunovSpectrum_eq_distinctExp_of_lambdaBar`. -/
 
-/-- **`hspec` from a.e. spectrum constancy.**  If the per-point limsup spectrum `lyapunovSpectrum A T x`
-equals the deterministic distinct-exponent set `distinctExp lam0 d` a.e., then the `hspec` interface
+/-- **`hspec` from a.e. spectrum constancy.**  If the per-point limsup spectrum
+`lyapunovSpectrum A T x` equals the deterministic distinct-exponent set `distinctExp lam0 d` a.e.,
+then the `hspec` interface
 of `oseledets_filtration_of_interfaces` holds: a.e. the spectrum cardinality equals `numExp lam0 d`
 and the descending enumeration `specList` equals `expEnum lam0 d` along the cardinality cast. -/
 theorem specList_eq_expEnum_of_lyapunovSpectrum_const

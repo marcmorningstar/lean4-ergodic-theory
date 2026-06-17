@@ -8,8 +8,9 @@ import Oseledets.Lyapunov.CapstoneWiring
 /-!
 # The fast-index spectral envelope from the graded overlap bound
 
-This module proves `vslow_bridge_bound_of_forward_graded`, which discharges the `hbridge` hypothesis of
-`Oseledets.limsup_le_of_mem_vslow` (see `Oseledets/Lyapunov/CapstoneWiring.lean`), instantiated
+This module proves `vslow_bridge_bound_of_forward_graded`, which discharges the `hbridge`
+hypothesis of `Oseledets.limsup_le_of_mem_vslow` (see `Oseledets/Lyapunov/CapstoneWiring.lean`),
+instantiated
 at `lam := lam0`, `g := fun x e ↦ lam0 (e : ℕ)`, `b' := b'`.
 
 The proof consumes:
@@ -23,8 +24,8 @@ It produces the fast-index `specTerm` envelope outright; the reverse-bound premi
 
 ## Main results
 
-* `Oseledets.vslow_bridge_bound_of_forward_graded`: for a.e. `x`, every nonzero vector `v` of the slow
-  subspace `vslow A T (Real.exp t) x` and every fast index `j` (one with `t < lam0 j`) satisfy
+* `Oseledets.vslow_bridge_bound_of_forward_graded`: for a.e. `x`, every nonzero vector `v` of the
+  slow subspace `vslow A T (Real.exp t) x` and every fast index `j` (one with `t < lam0 j`) satisfy
   the eventual spectral-term bound `specTerm T A n x v j ≤ Real.exp (n * (2 * t + ε))`.
 
 ## References
