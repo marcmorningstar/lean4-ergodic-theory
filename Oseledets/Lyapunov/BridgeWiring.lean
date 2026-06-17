@@ -9,11 +9,11 @@ import Oseledets.Lyapunov.CapstoneWiring
 # The fast-index spectral envelope from the graded overlap bound
 
 This module proves `vslow_bridge_bound_of_forward_graded`, which discharges the `hbridge` hypothesis of
-`Oseledets.limsup_le_of_mem_Vslow` (see `Oseledets/Lyapunov/CapstoneWiring.lean`), instantiated
+`Oseledets.limsup_le_of_mem_vslow` (see `Oseledets/Lyapunov/CapstoneWiring.lean`), instantiated
 at `lam := lam0`, `g := fun x e ↦ lam0 (e : ℕ)`, `b' := b'`.
 
 The proof consumes:
-* `hslowperp` — slow orthogonality of `b'` against `Vslow`;
+* `hslowperp` — slow orthogonality of `b'` against `vslow`;
 * `hfwdN` — the `n`-scaled forward graded overlap bound;
 * `hlam0` — per-index singular-exponent convergence;
 * `hrev` — Ruelle's reverse cofactor bound.
@@ -24,7 +24,7 @@ It produces the fast-index `specTerm` envelope outright; the reverse-bound premi
 ## Main results
 
 * `Oseledets.vslow_bridge_bound_of_forward_graded`: for a.e. `x`, every nonzero vector `v` of the slow
-  subspace `Vslow A T (Real.exp t) x` and every fast index `j` (one with `t < lam0 j`) satisfy
+  subspace `vslow A T (Real.exp t) x` and every fast index `j` (one with `t < lam0 j`) satisfy
   the eventual spectral-term bound `specTerm T A n x v j ≤ Real.exp (n * (2 * t + ε))`.
 
 ## References
@@ -47,7 +47,7 @@ variable {d : ℕ} {T : X → X}
 set_option maxHeartbeats 800000 in
 -- the five-step assembly elaborates many `EuclideanSpace ℝ (Fin d)` inner products and
 -- `sortedGramEigenbasis` index casts inside nested `filter_upwards`/`calc` blocks
-/-- The `hbridge` hypothesis of `limsup_le_of_mem_Vslow`, derived from the `n`-scaled forward
+/-- The `hbridge` hypothesis of `limsup_le_of_mem_vslow`, derived from the `n`-scaled forward
 graded overlap bound, slow orthogonality, singular-exponent convergence, and Ruelle's reverse
 cofactor bound. -/
 theorem vslow_bridge_bound_of_forward_graded [MeasureTheory.IsProbabilityMeasure μ] [NeZero d]
@@ -58,7 +58,7 @@ theorem vslow_bridge_bound_of_forward_graded [MeasureTheory.IsProbabilityMeasure
         Real.log ((Matrix.toEuclideanLin (cocycle A T n x)).singularValues i))
       Filter.atTop (𝓝 (lam0 i)))
     (b' : X → OrthonormalBasis (Fin d) ℝ (EuclideanSpace ℝ (Fin d)))
-    (hslowperp : ∀ᵐ x ∂μ, ∀ t : ℝ, ∀ v ∈ Vslow A T (Real.exp t) x, ∀ e : Fin d,
+    (hslowperp : ∀ᵐ x ∂μ, ∀ t : ℝ, ∀ v ∈ vslow A T (Real.exp t) x, ∀ e : Fin d,
       t < lam0 (e : ℕ) → inner ℝ (b' x e) v = 0)
     (hfwdN : ∀ᵐ x ∂μ, ∀ δ : ℝ, 0 < δ →
       ∃ c : ℝ, 1 ≤ c ∧ ∀ᶠ n : ℕ in Filter.atTop,
@@ -70,7 +70,7 @@ theorem vslow_bridge_bound_of_forward_graded [MeasureTheory.IsProbabilityMeasure
       ∀ (g : Fin d → ℝ) (c : ℝ), 1 ≤ c →
       (∀ a b : Fin d, |S a b| ≤ c * Real.exp (-(max (g b - g a) 0))) →
       ∀ i j : Fin d, |S i j| ≤ (d - 1).factorial * c ^ (d - 1) * Real.exp (-(g i - g j))) :
-    ∀ᵐ x ∂μ, ∀ t : ℝ, ∀ v ∈ Vslow A T (Real.exp t) x, v ≠ 0 →
+    ∀ᵐ x ∂μ, ∀ t : ℝ, ∀ v ∈ vslow A T (Real.exp t) x, v ≠ 0 →
       (∃ c : ℝ, 1 ≤ c ∧ ∀ᶠ n : ℕ in Filter.atTop, ∀ i e : Fin d,
         |(inner ℝ (b' x e)
             (sortedGramEigenbasis A T n x

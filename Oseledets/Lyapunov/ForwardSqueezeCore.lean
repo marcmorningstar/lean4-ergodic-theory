@@ -50,20 +50,20 @@ theorem isCoboundedUnder_le_of_boundedUnder_ge {f : ℕ → ℝ}
 
 /-! ## The determinant exponent `hD`
 
-`Sprod A T d n x = ∏_{i<d} σᵢ(A⁽ⁿ⁾) = |det A⁽ⁿ⁾|`, so the determinant exponent is the top
+`sprod A T d n x = ∏_{i<d} σᵢ(A⁽ⁿ⁾) = |det A⁽ⁿ⁾|`, so the determinant exponent is the top
 `Γ`-limit `Γ_d`. This is the cleanest concrete field: it follows directly from the ergodic
 Kingman limit `tendsto_GammaK_of_integrableLogNorm` at `k = d`, with no frame geometry
 involved. It is exposed here as `dExponent` and `exists_dSum_tendsto_dExponent`. -/
 
 variable {μ : MeasureTheory.Measure X}
 
-/-- The det-exponent sequence `D n = (1/n) log Sprod_d` (= `(1/n) log|det A⁽ⁿ⁾|`). -/
+/-- The det-exponent sequence `D n = (1/n) log sprod_d` (= `(1/n) log|det A⁽ⁿ⁾|`). -/
 noncomputable def dExponent (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (x : X) : ℕ → ℝ :=
-  fun n => (n : ℝ)⁻¹ * Real.log (Sprod A T d n x)
+  fun n => (n : ℝ)⁻¹ * Real.log (sprod A T d n x)
 
 /-- For an ergodic `T` and an everywhere-invertible measurable cocycle generator with
-integrable log-norms, the determinant exponent `(1/n) log Sprod_d(A⁽ⁿ⁾) → Γ_d` for
-`μ`-a.e. `x` (here `Sprod_d = ∏ all σ = |det|`). This supplies the `hD` field of
+integrable log-norms, the determinant exponent `(1/n) log sprod_d(A⁽ⁿ⁾) → Γ_d` for
+`μ`-a.e. `x` (here `sprod_d = ∏ all σ = |det|`). This supplies the `hD` field of
 `SqueezeData`, with `dSum := Γ_d`. -/
 theorem exists_dSum_tendsto_dExponent [NeZero d] [IsProbabilityMeasure μ] (hT : Ergodic T μ)
     {A : X → Matrix (Fin d) (Fin d) ℝ} (hA : ∀ x, (A x).det ≠ 0) (hAmeas : Measurable A)

@@ -27,7 +27,7 @@ It records three things requested as additive extensions:
   `sumPosExp_pos_iff`, and the dual statements for `sumNegExp`): immediate consequences of
   the definitions and the sign of the filtered summands.
 * **The telescoping identity** (`gammaK_eq_sum_top_exponents`): the genuine ergodic growth
-  rate `Γ_k = lim (1/n) log Sprod_k` of the product of the top-`k` singular values equals the
+  rate `Γ_k = lim (1/n) log sprod_k` of the product of the top-`k` singular values equals the
   sum `∑_{i<k} exponents i` of the top-`k` exponents. This is the shared foundation for the
   exterior characterization (item #2) and the determinant identity (item #7).
 
@@ -38,7 +38,7 @@ It records three things requested as additive extensions:
 * `Oseledets.sumNegExp` — sum of the strictly negative exponents (with multiplicity).
 * `Oseledets.sumAllExp` — sum of all exponents (with multiplicity).
 * `Oseledets.gammaK` — the genuine ergodic growth rate `Γ_k`, the a.e.-constant limit of
-  `(1/n) log Sprod_k`, packaged as a plain real via `Classical.choose`.
+  `(1/n) log sprod_k`, packaged as a plain real via `Classical.choose`.
 
 ## Main results
 
@@ -46,7 +46,7 @@ It records three things requested as additive extensions:
   `Oseledets.sumPosExp_pos_iff` — sign/vanishing for the positive-exponent sum.
 * `Oseledets.sumNegExp_nonpos`, `Oseledets.sumNegExp_eq_zero_iff`,
   `Oseledets.sumNegExp_neg_iff` — the dual contraction statements.
-* `Oseledets.gammaK_tendsto` — `gammaK k` is the a.e. limit of `(1/n) log Sprod_k`.
+* `Oseledets.gammaK_tendsto` — `gammaK k` is the a.e. limit of `(1/n) log sprod_k`.
 * `Oseledets.gammaK_eq_sum_top_exponents` — the telescoping identity
   `Γ_k = ∑_{i<k} exponents i`.
 -/
@@ -174,14 +174,14 @@ variable [IsProbabilityMeasure μ] (hT : Ergodic T μ)
     (hint : IntegrableLogNorm A μ) (hint' : IntegrableLogNorm (fun x => (A x)⁻¹) μ)
 
 /-- The genuine ergodic growth rate `Γ_k`, the `μ`-a.e.-constant limit of
-`(1/n) log Sprod_k` (the product of the top-`k` singular values), packaged as a plain real
+`(1/n) log sprod_k` (the product of the top-`k` singular values), packaged as a plain real
 via `Classical.choose` of `tendsto_GammaK_of_integrableLogNorm`. Defined for `k ≤ d`. -/
 noncomputable def gammaK {k : ℕ} (hk : k ≤ d) : ℝ :=
   Classical.choose (tendsto_GammaK_of_integrableLogNorm hT hA hAmeas hint hint' hk)
 
-/-- The defining a.e. limit of `gammaK`: `(1/n) log Sprod_k → Γ_k` for `μ`-a.e. `x`. -/
+/-- The defining a.e. limit of `gammaK`: `(1/n) log sprod_k → Γ_k` for `μ`-a.e. `x`. -/
 theorem gammaK_tendsto {k : ℕ} (hk : k ≤ d) :
-    ∀ᵐ x ∂μ, Tendsto (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (Sprod A T k n x)) atTop
+    ∀ᵐ x ∂μ, Tendsto (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (sprod A T k n x)) atTop
       (𝓝 (gammaK hT hA hAmeas hint hint' hk)) :=
   Classical.choose_spec (tendsto_GammaK_of_integrableLogNorm hT hA hAmeas hint hint' hk)
 
@@ -189,7 +189,7 @@ theorem gammaK_tendsto {k : ℕ} (hk : k ≤ d) :
 top-`k` singular values equals the sum of the top-`k` Lyapunov exponents (with multiplicity):
 `Γ_k = ∑_{i<k} exponents i`. The top-`k` indices are realized as `Fin.castLE hk : Fin k → Fin d`.
 
-Proof: `(1/n) log Sprod_k = ∑_{i<k} (1/n) log σᵢ` (since `Sprod_k = ∏_{i<k} σᵢ`, by
+Proof: `(1/n) log sprod_k = ∑_{i<k} (1/n) log σᵢ` (since `sprod_k = ∏_{i<k} σᵢ`, by
 `Real.log_prod` on the positive singular values), each term converges to `exponents i` by
 `exponents_tendsto_log_singularValue`, the finite sum of convergents converges to the sum of
 the limits (`tendsto_finset_sum`), and the limit is identified with `Γ_k` by uniqueness of
@@ -197,9 +197,9 @@ limits against `gammaK_tendsto`. -/
 theorem gammaK_eq_sum_top_exponents {k : ℕ} (hk : k ≤ d) :
     gammaK hT hA hAmeas hint hint' hk
       = ∑ i : Fin k, exponents hT hA hAmeas hint hint' (Fin.castLE hk i) := by
-  -- a.e., `(1/n) log Sprod_k → ∑_{i<k} exponents i`.
+  -- a.e., `(1/n) log sprod_k → ∑_{i<k} exponents i`.
   have hsum : ∀ᵐ x ∂μ, Tendsto
-      (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (Sprod A T k n x)) atTop
+      (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (sprod A T k n x)) atTop
       (𝓝 (∑ i : Fin k, exponents hT hA hAmeas hint hint' (Fin.castLE hk i))) := by
     -- the per-index σ-limits, gathered over the finite index set `Fin k`
     have hσ : ∀ᵐ x ∂μ, ∀ i : Fin k, Tendsto
@@ -210,12 +210,12 @@ theorem gammaK_eq_sum_top_exponents {k : ℕ} (hk : k ≤ d) :
       intro i
       exact exponents_tendsto_log_singularValue hT hA hAmeas hint hint' (Fin.castLE hk i)
     filter_upwards [hσ] with x hx
-    -- rewrite `(1/n) log Sprod_k` as a finite sum of `(1/n) log σᵢ`
-    have hrw : ∀ n : ℕ, (n : ℝ)⁻¹ * Real.log (Sprod A T k n x)
+    -- rewrite `(1/n) log sprod_k` as a finite sum of `(1/n) log σᵢ`
+    have hrw : ∀ n : ℕ, (n : ℝ)⁻¹ * Real.log (sprod A T k n x)
         = ∑ i : Fin k, (n : ℝ)⁻¹ *
             Real.log ((Matrix.toEuclideanLin (cocycle A T n x)).singularValues (i : ℕ)) := by
       intro n
-      rw [Sprod, Real.log_prod (fun i hi => ne_of_gt
+      rw [sprod, Real.log_prod (fun i hi => ne_of_gt
           (singularValues_cocycle_pos hA n x (lt_of_lt_of_le (Finset.mem_range.mp hi) hk))),
         Finset.mul_sum, Finset.sum_range fun i =>
           (n : ℝ)⁻¹ * Real.log ((Matrix.toEuclideanLin (cocycle A T n x)).singularValues i)]

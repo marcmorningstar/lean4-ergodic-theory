@@ -41,11 +41,11 @@ theorem oseledets_filtration_of_upper'
     (hA : ∀ x, (A x).det ≠ 0) (hAmeas : Measurable A)
     (hint : IntegrableLogNorm A μ) (hint' : IntegrableLogNorm (fun x => (A x)⁻¹) μ)
     -- The spectral upper bound: vectors of the slow subspace grow at most at the cut rate.
-    (hupper : ∀ᵐ x ∂μ, ∀ t : ℝ, ∀ v ∈ Vslow A T (Real.exp t) x, v ≠ 0 →
+    (hupper : ∀ᵐ x ∂μ, ∀ t : ℝ, ∀ v ∈ vslow A T (Real.exp t) x, v ≠ 0 →
       Filter.limsup (fun n : ℕ => (n : ℝ)⁻¹ *
         Real.log ‖Matrix.toEuclideanLin (cocycle A T n x) v‖) Filter.atTop ≤ t)
     -- The reverse slow-flag inclusion: slow growth implies membership in the slow subspace.
-    (hslowrev : ∀ᵐ x ∂μ, ∀ t : ℝ, lambdaSublevel A T x t ≤ Vslow A T (Real.exp t) x)
+    (hslowrev : ∀ᵐ x ∂μ, ∀ t : ℝ, lambdaSublevel A T x t ≤ vslow A T (Real.exp t) x)
     -- Spectrum upper inclusion: every realized exponent is a deterministic one.
     (hub_spec : ∀ lam0 : ℕ → ℝ,
       (∀ i : ℕ, i < d → ∀ᵐ x ∂μ, Tendsto
@@ -90,7 +90,7 @@ theorem oseledets_filtration_of_upper'
     (hub_spec lam0 hlam0) (hlb_spec lam0 hlam0)
   -- `hslowflag` from `hupper` and the reverse inclusion.
   have hslowflag := vslow_eq_lambdaSublevel_of_upper hT hA hAmeas hint hint' hupper hslowrev
-  -- `hgrowth` from the upper bound (`Vflag`), the lower bound (via `hident`), and the
+  -- `hgrowth` from the upper bound (`vflag`), the lower bound (via `hident`), and the
   -- Furstenberg–Kesten boundedness.
   have hbdd := isBoundedUnder_inv_mul_log_norm_cocycle_apply_of_mem_stratum hT A hA hAmeas hint hint'
   have hub := limsup_log_norm_cocycle_apply_le_specList_of_mem_stratum hT hA hAmeas hint hint'

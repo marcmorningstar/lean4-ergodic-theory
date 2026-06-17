@@ -38,10 +38,10 @@ resolved here:
 * `measurable_lambdaHat`, `lambdaHat_isSelfAdjoint` — sanitization is measurable and self-adjoint.
 * `slowProjector_isSelfAdjoint`, `slowProjector_mul_self` — the indicator-CFC is, for every `x`, a
   self-adjoint idempotent (a genuine orthogonal projector).
-* `Vslow` — the spectral sublevel filtration `t ↦ x ↦ range (toEuclideanCLM (slowProjector t x))`.
-* `measurableSubspace_Vslow_of_measurable_slowProjector` — the bridge application: `Vslow t` is a
+* `vslow` — the spectral sublevel filtration `t ↦ x ↦ range (toEuclideanCLM (slowProjector t x))`.
+* `measurableSubspace_vslow_of_measurable_slowProjector` — the bridge application: `vslow t` is a
   `MeasurableSubspace` once `x ↦ slowProjector t x` is measurable.
-* `measurableSubspace_Vslow` — measurability of the filtration, given measurability of the
+* `measurableSubspace_vslow` — measurability of the filtration, given measurability of the
   indicator-CFC family (`measurable_slowProjector`).
 
 ## On the indicator-CFC measurability
@@ -174,31 +174,31 @@ theorem slowProjector_mul_self (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X →
 subspaces of the slow band projector.  By construction `slowProjector A T t x` is, for every `x`, a
 self-adjoint idempotent matrix, so `range (toEuclideanCLM (slowProjector …))` is exactly the kind of
 family the projector/range bridge consumes. -/
-noncomputable def Vslow (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (t : ℝ) (x : X) :
+noncomputable def vslow (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (t : ℝ) (x : X) :
     Submodule ℝ (EuclideanSpace ℝ (Fin d)) :=
   LinearMap.range (Matrix.toEuclideanCLM (𝕜 := ℝ) (slowProjector A T t x)).toLinearMap
 
 /-- **The bridge application (reduced to the one measurability goal).**  Given measurability of the
-indicator-CFC family `x ↦ slowProjector A T t x`, the spectral filtration `Vslow A T t` is a
+indicator-CFC family `x ↦ slowProjector A T t x`, the spectral filtration `vslow A T t` is a
 `MeasurableSubspace`.  The two algebraic hypotheses of the bridge
 (`measurableSubspace_range_of_measurable`) — self-adjointness and idempotence *everywhere* — are the
 discharged `slowProjector_isSelfAdjoint` and `slowProjector_mul_self`. -/
-theorem measurableSubspace_Vslow_of_measurable_slowProjector [MeasurableSpace X]
+theorem measurableSubspace_vslow_of_measurable_slowProjector [MeasurableSpace X]
     (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (t : ℝ)
     (hP : Measurable (fun x ↦ slowProjector A T t x)) :
-    MeasurableSubspace (fun x ↦ Vslow A T t x) :=
+    MeasurableSubspace (fun x ↦ vslow A T t x) :=
   measurableSubspace_range_of_measurable (fun x ↦ slowProjector A T t x) hP
     (fun x ↦ slowProjector_isSelfAdjoint A T t x)
     (fun x ↦ slowProjector_mul_self A T t x)
 
 /-- **Measurability of the slow spectral filtration.**  Under the single isolated measurability
-hypothesis on the indicator-CFC family, `Vslow A T t` is a `MeasurableSubspace`: the
+hypothesis on the indicator-CFC family, `vslow A T t` is a `MeasurableSubspace`: the
 sanitization, the everywhere self-adjointness and idempotence of the slow projector, and the
 projector/range bridge reduce the measurability of the filtration to exactly this hypothesis. -/
-theorem measurableSubspace_Vslow [MeasurableSpace X]
+theorem measurableSubspace_vslow [MeasurableSpace X]
     (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (t : ℝ)
     (measurable_slowProjector : Measurable (fun x ↦ slowProjector A T t x)) :
-    MeasurableSubspace (fun x ↦ Vslow A T t x) :=
-  measurableSubspace_Vslow_of_measurable_slowProjector A T t measurable_slowProjector
+    MeasurableSubspace (fun x ↦ vslow A T t x) :=
+  measurableSubspace_vslow_of_measurable_slowProjector A T t measurable_slowProjector
 
 end Oseledets

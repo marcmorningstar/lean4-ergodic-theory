@@ -17,7 +17,7 @@ This module discharges three residuals of the MET final composer
 
 All three are derived from two hypotheses with fixed shapes: `hident` (band-projector
 convergence to the indicator CFC of `lambdaHat`) and `hslowflag`
-(`Vslow (exp t) = lambdaSublevel t`).
+(`vslow (exp t) = lambdaSublevel t`).
 -/
 
 open MeasureTheory Filter Topology Matrix
@@ -94,15 +94,15 @@ theorem slowProjector_eq_of_gap
       Set.indicator_of_notMem (by simp [Set.mem_Iic]; linarith)]
 
 omit [MeasurableSpace X] [NeZero d] in
-/-- `Vslow` inherits local constancy from `slowProjector`. -/
-theorem Vslow_eq_of_gap
+/-- `vslow` inherits local constancy from `slowProjector`. -/
+theorem vslow_eq_of_gap
     {A : X → Matrix (Fin d) (Fin d) ℝ} {T : X → X} {x : X} {t₁ t₂ : ℝ}
     (hspec : _root_.spectrum ℝ (lambdaHat A T x)
       = Set.range (fun i : Fin d => Real.exp (lamSing A T x (i : ℕ))))
     (ht : t₁ ≤ t₂)
     (hgap : ∀ j : Fin d, lamSing A T x (j : ℕ) ≤ t₁ ∨ t₂ < lamSing A T x (j : ℕ)) :
-    Vslow A T (Real.exp t₁) x = Vslow A T (Real.exp t₂) x := by
-  unfold Vslow
+    vslow A T (Real.exp t₁) x = vslow A T (Real.exp t₂) x := by
+  unfold vslow
   rw [slowProjector_eq_of_gap hspec ht hgap]
 
 /-! ## Nested slow projectors and the difference (band) projector -/
@@ -342,7 +342,7 @@ theorem hub_spec_of_slowflag
     {μ : Measure X} [IsProbabilityMeasure μ] {T : X → X} (hT : Ergodic T μ)
     {A : X → Matrix (Fin d) (Fin d) ℝ} (hA : ∀ x, (A x).det ≠ 0) (hAmeas : Measurable A)
     (hint : IntegrableLogNorm A μ) (hint' : IntegrableLogNorm (fun x => (A x)⁻¹) μ)
-    (hslowflag : ∀ᵐ x ∂μ, ∀ t : ℝ, Vslow A T (Real.exp t) x = lambdaSublevel A T x t)
+    (hslowflag : ∀ᵐ x ∂μ, ∀ t : ℝ, vslow A T (Real.exp t) x = lambdaSublevel A T x t)
     (lam0 : ℕ → ℝ)
     (hlam0 : ∀ i : ℕ, i < d → ∀ᵐ x ∂μ, Filter.Tendsto
       (fun n : ℕ => (n : ℝ)⁻¹ *
@@ -360,13 +360,13 @@ theorem hub_spec_of_slowflag
     by_contra hcon
     push Not at hcon
     obtain ⟨t', ht'lt, hgap⟩ := exists_gap_below (s := s) hcon
-    -- `Vslow (exp t') = Vslow (exp s)`.
-    have hVeq : Vslow A T (Real.exp t') x = Vslow A T (Real.exp s) x :=
-      Vslow_eq_of_gap hspec ht'lt.le hgap
-    -- `v ∈ Vslow (exp s)` since `lambdaBar v = s ≤ s`.
-    have hmem_s : v ∈ Vslow A T (Real.exp s) x := by
+    -- `vslow (exp t') = vslow (exp s)`.
+    have hVeq : vslow A T (Real.exp t') x = vslow A T (Real.exp s) x :=
+      vslow_eq_of_gap hspec ht'lt.le hgap
+    -- `v ∈ vslow (exp s)` since `lambdaBar v = s ≤ s`.
+    have hmem_s : v ∈ vslow A T (Real.exp s) x := by
       rw [hflag s, mem_lambdaSublevel hx]; exact Or.inr le_rfl
-    -- transport to `Vslow (exp t') = lambdaSublevel t'`, giving `lambdaBar v ≤ t'`.
+    -- transport to `vslow (exp t') = lambdaSublevel t'`, giving `lambdaBar v ≤ t'`.
     rw [← hVeq, hflag t', mem_lambdaSublevel hx] at hmem_s
     rcases hmem_s with h0 | hle
     · exact hv h0
@@ -384,7 +384,7 @@ theorem hlb_spec_of_slowflag
     {μ : Measure X} [IsProbabilityMeasure μ] {T : X → X} (hT : Ergodic T μ)
     {A : X → Matrix (Fin d) (Fin d) ℝ} (hA : ∀ x, (A x).det ≠ 0) (hAmeas : Measurable A)
     (hint : IntegrableLogNorm A μ) (hint' : IntegrableLogNorm (fun x => (A x)⁻¹) μ)
-    (hslowflag : ∀ᵐ x ∂μ, ∀ t : ℝ, Vslow A T (Real.exp t) x = lambdaSublevel A T x t)
+    (hslowflag : ∀ᵐ x ∂μ, ∀ t : ℝ, vslow A T (Real.exp t) x = lambdaSublevel A T x t)
     (lam0 : ℕ → ℝ)
     (hlam0 : ∀ i : ℕ, i < d → ∀ᵐ x ∂μ, Filter.Tendsto
       (fun n : ℕ => (n : ℝ)⁻¹ *
@@ -455,12 +455,12 @@ theorem hlb_spec_of_slowflag
     rw [Matrix.mul_sub, hQsidem, hQsQt]
   have hQtD : Qt * (Qs - Qt) = 0 := by
     rw [Matrix.mul_sub, hQtQs, hQtidem, sub_self]
-  -- `v ∈ Vslow (exp s)`.
-  have hmem_s : v ∈ Vslow A T (Real.exp s) x := by
-    rw [Vslow, mem_range_toEuclideanCLM_iff hQsidem, hvdef, ← toEuclideanLin_mul_apply, hQsD]
-  -- `v ∉ Vslow (exp t')`: `Qt v = Qt D w = 0 ≠ v`.
-  have hnmem_t : v ∉ Vslow A T (Real.exp t') x := by
-    rw [Vslow, mem_range_toEuclideanCLM_iff hQtidem, hvdef, ← toEuclideanLin_mul_apply, hQtD,
+  -- `v ∈ vslow (exp s)`.
+  have hmem_s : v ∈ vslow A T (Real.exp s) x := by
+    rw [vslow, mem_range_toEuclideanCLM_iff hQsidem, hvdef, ← toEuclideanLin_mul_apply, hQsD]
+  -- `v ∉ vslow (exp t')`: `Qt v = Qt D w = 0 ≠ v`.
+  have hnmem_t : v ∉ vslow A T (Real.exp t') x := by
+    rw [vslow, mem_range_toEuclideanCLM_iff hQtidem, hvdef, ← toEuclideanLin_mul_apply, hQtD,
       map_zero]
     exact fun h => hvne h.symm
   -- Translate through `hslowflag`: `lambdaBar v ≤ s` and `¬ (lambdaBar v ≤ t')`.
@@ -486,9 +486,9 @@ theorem hlb_spec_of_slowflag
       by_contra hcon
       push Not at hcon
       obtain ⟨u', hu'lt, hgapu⟩ := exists_gap_below (s := lambdaBar A T x v) hcon
-      have hVeq : Vslow A T (Real.exp u') x = Vslow A T (Real.exp (lambdaBar A T x v)) x :=
-        Vslow_eq_of_gap hspec hu'lt.le hgapu
-      have hmem_b : v ∈ Vslow A T (Real.exp (lambdaBar A T x v)) x := by
+      have hVeq : vslow A T (Real.exp u') x = vslow A T (Real.exp (lambdaBar A T x v)) x :=
+        vslow_eq_of_gap hspec hu'lt.le hgapu
+      have hmem_b : v ∈ vslow A T (Real.exp (lambdaBar A T x v)) x := by
         rw [hflag (lambdaBar A T x v), mem_lambdaSublevel hx]; exact Or.inr le_rfl
       rw [← hVeq, hflag u', mem_lambdaSublevel hx] at hmem_b
       rcases hmem_b with h0 | hble
@@ -503,11 +503,11 @@ theorem hlb_spec_of_slowflag
 
 /-! ## Per-stratum liminf lower bound -/
 
-/-- **Per-stratum liminf lower bound (`hlb`).**  On each stratum `Vflag i.castSucc \ Vflag i.succ`,
+/-- **Per-stratum liminf lower bound (`hlb`).**  On each stratum `vflag i.castSucc \ vflag i.succ`,
 the cocycle grows at least at rate `specList A T x i`.  The argument sweeps thresholds
 `c = exp (specList i − ε')` strictly below the stratum eigenvalue up to it: for each such `c`
 (not an eigenvalue), `1 - slowProjector c = cfc (indicator (Ioi c)) lambdaHat` has nonzero
-action on `v` (else `v ∈ Vslow c`, contradicting `lambdaBar v = specList i > log c`), and
+action on `v` (else `v ∈ vslow c`, contradicting `lambdaBar v = specList i > log c`), and
 `hident` supplies the band-projector convergence feeding `log_le_liminf_log_cocycle_apply`. -/
 theorem specList_le_liminf_inv_mul_log_norm_cocycle_apply_of_slowflag
     {μ : Measure X} [IsProbabilityMeasure μ] {T : X → X} (hT : Ergodic T μ)
@@ -517,10 +517,10 @@ theorem specList_le_liminf_inv_mul_log_norm_cocycle_apply_of_slowflag
       (∀ i : Fin d, Real.exp (lamSing A T x (i : ℕ)) ≠ c) →
       Filter.Tendsto (fun n => bandProjector A T (Set.indicator (Set.Ioi c) 1) n x)
         Filter.atTop (𝓝 (cfc (Set.indicator (Set.Ioi c) (1 : ℝ → ℝ)) (lambdaHat A T x))))
-    (hslowflag : ∀ᵐ x ∂μ, ∀ t : ℝ, Vslow A T (Real.exp t) x = lambdaSublevel A T x t) :
+    (hslowflag : ∀ᵐ x ∂μ, ∀ t : ℝ, vslow A T (Real.exp t) x = lambdaSublevel A T x t) :
     ∀ᵐ x ∂μ, ∀ i : Fin (specCard A T x),
-      ∀ v ∈ (Vflag A T x i.castSucc : Set (EuclideanSpace ℝ (Fin d))),
-        v ∉ Vflag A T x i.succ →
+      ∀ v ∈ (vflag A T x i.castSucc : Set (EuclideanSpace ℝ (Fin d))),
+        v ∉ vflag A T x i.succ →
         specList A T x i ≤ Filter.liminf (fun n : ℕ => (n : ℝ)⁻¹ *
           Real.log ‖Matrix.toEuclideanLin (cocycle A T n x) v‖) Filter.atTop := by
   filter_upwards [isUltrametricGrowth_lambdaBar hT hA hAmeas hint hint',
@@ -565,16 +565,16 @@ theorem specList_le_liminf_inv_mul_log_norm_cocycle_apply_of_slowflag
     cfc (Set.indicator (Set.Ioi c) (1 : ℝ → ℝ)) (lambdaHat A T x) with hP
   have hPeq : P = (1 : Matrix (Fin d) (Fin d) ℝ) - slowProjector A T c x :=
     (one_sub_slowProjector).symm
-  -- `v ∉ Vslow c`: else `lambdaBar v ≤ r' < sstar`, contradiction.
-  have hvnotslow : v ∉ Vslow A T c x := by
+  -- `v ∉ vslow c`: else `lambdaBar v ≤ r' < sstar`, contradiction.
+  have hvnotslow : v ∉ vslow A T c x := by
     rw [hc, hflag r', mem_lambdaSublevel hx]
     push Not
     exact ⟨hvne, by rw [hbar]; exact hr'lt⟩
-  -- `toEuclideanLin P v ≠ 0`: `P v = v - Qs v`; if `0` then `Qs v = v`, i.e. `v ∈ Vslow c`.
+  -- `toEuclideanLin P v ≠ 0`: `P v = v - Qs v`; if `0` then `Qs v = v`, i.e. `v ∈ vslow c`.
   have hPv : Matrix.toEuclideanLin P v ≠ 0 := by
     intro h0
     apply hvnotslow
-    rw [Vslow, mem_range_toEuclideanCLM_iff (slowProjector_mul_self A T c x)]
+    rw [vslow, mem_range_toEuclideanCLM_iff (slowProjector_mul_self A T c x)]
     -- `P = 1 - Qs`, `toEuclideanLin P v = v - toEuclideanLin Qs v = 0 ⟹ toEuclideanLin Qs v = v`.
     have hmapsub : Matrix.toEuclideanLin ((1 : Matrix (Fin d) (Fin d) ℝ) - slowProjector A T c x)
         = Matrix.toEuclideanLin 1 - Matrix.toEuclideanLin (slowProjector A T c x) :=

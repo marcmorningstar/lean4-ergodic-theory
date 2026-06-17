@@ -19,17 +19,17 @@ records the **regularity** of the exponents as functions of the generator `A`.
 
 This is the genuinely subtle requested extension. The honest summary is:
 
-* **The Fekete infimum representation** `Γ_k = ⨅ n, (∫ log Sprod_k(n+1))/(n+1)`
+* **The Fekete infimum representation** `Γ_k = ⨅ n, (∫ log sprod_k(n+1))/(n+1)`
   (`GammaK_eq_iInf`). The normalized integral sequence is the average of a *subadditive*
   cocycle (`isSubadditiveCocycle_logSprod` integrated over the measure-preserving base), so by
   Fekete's lemma it converges to the **infimum** of its values. The ergodic a.e.-constant limit
   `gammaK` coincides with this infimum; the non-trivial direction of that coincidence is a
-  two-sided Fatou argument (`gammaK_eq_GammaKInf`).
+  two-sided Fatou argument (`gammaK_eq_gammaKInf`).
 
 * **Per-`n` integral continuity under a uniform log-integrable envelope** (regime 1,
   `tendsto_integral_logSprod_of_dominated`). If a family of generators `Aₘ → A` converges
   entrywise a.e. with `‖Aₘ‖, ‖Aₘ⁻¹‖` dominated by *fixed* `L¹`-log functions, then by dominated
-  convergence `∫ log Sprod_k(Aₘ, n) → ∫ log Sprod_k(A, n)` for each fixed `n`. Pointwise
+  convergence `∫ log sprod_k(Aₘ, n) → ∫ log sprod_k(A, n)` for each fixed `n`. Pointwise
   generator convergence *alone is insufficient*: the dominated-convergence theorem needs a fixed
   integrable envelope, which is exactly what the uniform `L¹`-log hypothesis supplies.
 
@@ -60,11 +60,11 @@ This is the genuinely subtle requested extension. The honest summary is:
 
 ## Main definitions / results
 
-* `Oseledets.GammaKInf` — the Fekete infimum `⨅ n, (∫ log Sprod_k(n+1))/(n+1)`.
+* `Oseledets.gammaKInf` — the Fekete infimum `⨅ n, (∫ log sprod_k(n+1))/(n+1)`.
 * `Oseledets.integral_logSprod_subadditive` — the integral sequence is subadditive.
 * `Oseledets.tendsto_integral_logSprod` — Fekete: the normalized integral sequence converges to
-  `GammaKInf`.
-* `Oseledets.gammaK_eq_GammaKInf`, `Oseledets.GammaK_eq_iInf` — the ergodic constant is the
+  `gammaKInf`.
+* `Oseledets.gammaK_eq_gammaKInf`, `Oseledets.GammaK_eq_iInf` — the ergodic constant is the
   Fekete infimum.
 * `Oseledets.tendsto_integral_logSprod_of_dominated` — per-`n` integral continuity under a fixed
   log-integrable envelope (regime 1).
@@ -86,7 +86,7 @@ variable {μ : Measure X} {T : X → X}
 
 If `h n ≥ 0` (a.e.) is integrable, `h n → H` a.e. with `H` integrable, and the *integral*
 sequence converges to `b`, then `∫ H ≤ b`. This is Fatou's lemma in the convenient convergent
-form; it powers the non-trivial direction of `gammaK_eq_GammaKInf`. -/
+form; it powers the non-trivial direction of `gammaK_eq_gammaKInf`. -/
 
 omit [NeZero d] in
 private theorem integral_le_of_nonneg_tendsto {h : ℕ → X → ℝ} {H : X → ℝ} {b : ℝ}
@@ -126,56 +126,56 @@ private theorem integral_comp_iterate_logSprod {A : X → Matrix (Fin d) (Fin d)
     (hA : ∀ x, (A x).det ≠ 0) (hAmeas : Measurable A) (hT : MeasurePreserving T μ μ)
     (hTmeas : Measurable T) (hint : IntegrableLogNorm A μ)
     (hint' : IntegrableLogNorm (fun x => (A x)⁻¹) μ) {k : ℕ} (hk : k ≤ d) (m n : ℕ) :
-    ∫ x, Real.log (Sprod A T k n (T^[m] x)) ∂μ = ∫ x, Real.log (Sprod A T k n x) ∂μ := by
-  have hg : Integrable (fun x => Real.log (Sprod A T k n x)) μ :=
+    ∫ x, Real.log (sprod A T k n (T^[m] x)) ∂μ = ∫ x, Real.log (sprod A T k n x) ∂μ := by
+  have hg : Integrable (fun x => Real.log (sprod A T k n x)) μ :=
     integrable_logSprod hT hA hAmeas hTmeas hint hint' hk n
   have hmp : MeasurePreserving (T^[m]) μ μ := hT.iterate m
-  have haesm : AEStronglyMeasurable (fun x => Real.log (Sprod A T k n x))
+  have haesm : AEStronglyMeasurable (fun x => Real.log (sprod A T k n x))
       (Measure.map (T^[m]) μ) := by
     rw [hmp.map_eq]; exact hg.aestronglyMeasurable
   have hmap := integral_map (μ := μ) (φ := T^[m]) hmp.aemeasurable
-    (f := fun x => Real.log (Sprod A T k n x)) haesm
+    (f := fun x => Real.log (sprod A T k n x)) haesm
   rw [hmp.map_eq] at hmap
   exact hmap.symm
 
-/-- **Subadditivity of the integral sequence.** The sequence `aₙ = ∫ log Sprod_k(n)` is
+/-- **Subadditivity of the integral sequence.** The sequence `aₙ = ∫ log sprod_k(n)` is
 subadditive (`a (m+n) ≤ a m + a n`): integrate the subadditive-cocycle inequality
 (`isSubadditiveCocycle_logSprod`) over the measure-preserving base. This is the Fekete input. -/
 theorem integral_logSprod_subadditive {A : X → Matrix (Fin d) (Fin d) ℝ}
     (hA : ∀ x, (A x).det ≠ 0) (hAmeas : Measurable A) (hT : MeasurePreserving T μ μ)
     (hTmeas : Measurable T) (hint : IntegrableLogNorm A μ)
     (hint' : IntegrableLogNorm (fun x => (A x)⁻¹) μ) {k : ℕ} (hk : k ≤ d) :
-    Subadditive (fun n => ∫ x, Real.log (Sprod A T k n x) ∂μ) := by
+    Subadditive (fun n => ∫ x, Real.log (sprod A T k n x) ∂μ) := by
   intro m n
   simp only
   have hsub := (isSubadditiveCocycle_logSprod (T := T) A k
-    (fun j y => Sprod_pos hA hk j y)).apply_add_le
-  have hgm : Integrable (fun x => Real.log (Sprod A T k m x)) μ :=
+    (fun j y => sprod_pos hA hk j y)).apply_add_le
+  have hgm : Integrable (fun x => Real.log (sprod A T k m x)) μ :=
     integrable_logSprod hT hA hAmeas hTmeas hint hint' hk m
-  have hgn : Integrable (fun x => Real.log (Sprod A T k n x)) μ :=
+  have hgn : Integrable (fun x => Real.log (sprod A T k n x)) μ :=
     integrable_logSprod hT hA hAmeas hTmeas hint hint' hk n
-  have hgmn : Integrable (fun x => Real.log (Sprod A T k (m + n) x)) μ :=
+  have hgmn : Integrable (fun x => Real.log (sprod A T k (m + n) x)) μ :=
     integrable_logSprod hT hA hAmeas hTmeas hint hint' hk (m + n)
-  have hcomp : Integrable (fun x => Real.log (Sprod A T k n (T^[m] x))) μ :=
+  have hcomp : Integrable (fun x => Real.log (sprod A T k n (T^[m] x))) μ :=
     (hT.iterate m).integrable_comp_of_integrable hgn
-  calc ∫ x, Real.log (Sprod A T k (m + n) x) ∂μ
-      ≤ ∫ x, (Real.log (Sprod A T k m x) + Real.log (Sprod A T k n (T^[m] x))) ∂μ :=
+  calc ∫ x, Real.log (sprod A T k (m + n) x) ∂μ
+      ≤ ∫ x, (Real.log (sprod A T k m x) + Real.log (sprod A T k n (T^[m] x))) ∂μ :=
         integral_mono hgmn (hgm.add hcomp) (fun x => hsub m n x)
-    _ = (∫ x, Real.log (Sprod A T k m x) ∂μ)
-          + ∫ x, Real.log (Sprod A T k n (T^[m] x)) ∂μ := integral_add hgm hcomp
-    _ = (∫ x, Real.log (Sprod A T k m x) ∂μ)
-          + ∫ x, Real.log (Sprod A T k n x) ∂μ := by
+    _ = (∫ x, Real.log (sprod A T k m x) ∂μ)
+          + ∫ x, Real.log (sprod A T k n (T^[m] x)) ∂μ := integral_add hgm hcomp
+    _ = (∫ x, Real.log (sprod A T k m x) ∂μ)
+          + ∫ x, Real.log (sprod A T k n x) ∂μ := by
         rw [integral_comp_iterate_logSprod hA hAmeas hT hTmeas hint hint' hk m n]
 
-/-- **The Fekete infimum** `Γ_k = ⨅ n, (∫ log Sprod_k(n+1))/(n+1)`. By Fekete's lemma the
+/-- **The Fekete infimum** `Γ_k = ⨅ n, (∫ log sprod_k(n+1))/(n+1)`. By Fekete's lemma the
 normalized integral sequence of a subadditive sequence decreases to its infimum; this packages
 that infimum as a plain real. (It is identified with the ergodic constant `gammaK` in
-`gammaK_eq_GammaKInf`.) -/
-noncomputable def GammaKInf {A : X → Matrix (Fin d) (Fin d) ℝ} {k : ℕ} (_hk : k ≤ d) : ℝ :=
-  ⨅ n : ℕ, (∫ x, Real.log (Sprod A T k (n + 1) x) ∂μ) / (n + 1)
+`gammaK_eq_gammaKInf`.) -/
+noncomputable def gammaKInf {A : X → Matrix (Fin d) (Fin d) ℝ} {k : ℕ} (_hk : k ≤ d) : ℝ :=
+  ⨅ n : ℕ, (∫ x, Real.log (sprod A T k (n + 1) x) ∂μ) / (n + 1)
 
 /-- The range of the normalized shifted integral sequence equals the image of `Ici 1` under
-`u · / ·`, i.e. `GammaKInf` is the `sInf` over `n ≥ 1` of `(∫ log Sprod_k(n))/n`. -/
+`u · / ·`, i.e. `gammaKInf` is the `sInf` over `n ≥ 1` of `(∫ log sprod_k(n))/n`. -/
 private theorem range_div_succ_eq {u : ℕ → ℝ} :
     Set.range (fun n : ℕ => u (n + 1) / (n + 1))
       = (fun n : ℕ => u n / n) '' Set.Ici 1 := by
@@ -187,29 +187,29 @@ private theorem range_div_succ_eq {u : ℕ → ℝ} :
     obtain ⟨n, rfl⟩ := Nat.exists_eq_add_of_lt (Nat.lt_of_lt_of_le Nat.zero_lt_one hm)
     exact ⟨n, by push_cast; ring_nf⟩
 
-/-- `GammaKInf` is the `Subadditive.lim` of the integral sequence. Both are `sInf` of the same
+/-- `gammaKInf` is the `Subadditive.lim` of the integral sequence. Both are `sInf` of the same
 set (the image of `Ici 1` under `u · / ·`); `range_div_succ_eq` reconciles the `⨅`-over-`ℕ`
 shifted indexing with the `Subadditive.lim` `Ici 1` indexing. -/
-theorem GammaKInf_eq_lim {A : X → Matrix (Fin d) (Fin d) ℝ}
+theorem gammaKInf_eq_lim {A : X → Matrix (Fin d) (Fin d) ℝ}
     (hA : ∀ x, (A x).det ≠ 0) (hAmeas : Measurable A) (hint : IntegrableLogNorm A μ)
     (hint' : IntegrableLogNorm (fun x => (A x)⁻¹) μ) (hT : MeasurePreserving T μ μ)
     (hTmeas : Measurable T) {k : ℕ} (hk : k ≤ d) :
-    GammaKInf (T := T) (μ := μ) (A := A) hk
+    gammaKInf (T := T) (μ := μ) (A := A) hk
       = (integral_logSprod_subadditive hA hAmeas hT hTmeas hint hint' hk).lim := by
-  rw [GammaKInf, Subadditive.lim, iInf, ← range_div_succ_eq
-    (u := fun n => ∫ x, Real.log (Sprod A T k n x) ∂μ)]
+  rw [gammaKInf, Subadditive.lim, iInf, ← range_div_succ_eq
+    (u := fun n => ∫ x, Real.log (sprod A T k n x) ∂μ)]
 
-/-- **Fekete's lemma.** The normalized integral sequence `(∫ log Sprod_k(n+1))/(n+1)` converges
-to the Fekete infimum `GammaKInf`. -/
+/-- **Fekete's lemma.** The normalized integral sequence `(∫ log sprod_k(n+1))/(n+1)` converges
+to the Fekete infimum `gammaKInf`. -/
 theorem tendsto_integral_logSprod {A : X → Matrix (Fin d) (Fin d) ℝ}
     (hA : ∀ x, (A x).det ≠ 0) (hAmeas : Measurable A) (hint : IntegrableLogNorm A μ)
     (hint' : IntegrableLogNorm (fun x => (A x)⁻¹) μ) (hT : MeasurePreserving T μ μ)
     (hTmeas : Measurable T) {k : ℕ} (hk : k ≤ d) :
-    Tendsto (fun n : ℕ => (∫ x, Real.log (Sprod A T k (n + 1) x) ∂μ) / (n + 1)) atTop
-      (𝓝 (GammaKInf (T := T) (μ := μ) (A := A) hk)) := by
-  set u : ℕ → ℝ := fun n => ∫ x, Real.log (Sprod A T k n x) ∂μ with hudef
+    Tendsto (fun n : ℕ => (∫ x, Real.log (sprod A T k (n + 1) x) ∂μ) / (n + 1)) atTop
+      (𝓝 (gammaKInf (T := T) (μ := μ) (A := A) hk)) := by
+  set u : ℕ → ℝ := fun n => ∫ x, Real.log (sprod A T k n x) ∂μ with hudef
   have hsa : Subadditive u := integral_logSprod_subadditive hA hAmeas hT hTmeas hint hint' hk
-  have hbdd : BddBelow (Set.range fun n : ℕ => (∫ x, Real.log (Sprod A T k (n + 1) x) ∂μ)
+  have hbdd : BddBelow (Set.range fun n : ℕ => (∫ x, Real.log (sprod A T k (n + 1) x) ∂μ)
       / (n + 1)) := bddBelow_logSprod hT hA hAmeas hTmeas hint hint' hk
   have hbdd' : BddBelow (Set.range fun n : ℕ => u n / n) := by
     obtain ⟨lb, hlb⟩ := hbdd
@@ -218,7 +218,7 @@ theorem tendsto_integral_logSprod {A : X → Matrix (Fin d) (Fin d) ℝ}
     rcases n with _ | m
     · simp only [Nat.cast_zero, _root_.div_zero]; exact min_le_right lb 0
     · have hmem : u (m + 1) / ((m : ℝ) + 1)
-          ∈ Set.range fun n : ℕ => (∫ x, Real.log (Sprod A T k (n + 1) x) ∂μ) / (n + 1) :=
+          ∈ Set.range fun n : ℕ => (∫ x, Real.log (sprod A T k (n + 1) x) ∂μ) / (n + 1) :=
         ⟨m, by simp only [hudef]⟩
       have heq : (fun n : ℕ => u n / n) (m + 1) = u (m + 1) / ((m : ℝ) + 1) := by
         push_cast; ring
@@ -226,9 +226,9 @@ theorem tendsto_integral_logSprod {A : X → Matrix (Fin d) (Fin d) ℝ}
       exact le_trans (min_le_left lb 0) (hlb hmem)
   have hlim := hsa.tendsto_lim hbdd'
   rw [← tendsto_add_atTop_iff_nat (f := fun n : ℕ => u n / n) 1] at hlim
-  rw [GammaKInf_eq_lim hA hAmeas hint hint' hT hTmeas hk]
+  rw [gammaKInf_eq_lim hA hAmeas hint hint' hT hTmeas hk]
   refine hlim.congr (fun n => ?_)
-  show u (n + 1) / ((n + 1 : ℕ) : ℝ) = (∫ x, Real.log (Sprod A T k (n + 1) x) ∂μ) / ((n : ℝ) + 1)
+  show u (n + 1) / ((n + 1 : ℕ) : ℝ) = (∫ x, Real.log (sprod A T k (n + 1) x) ∂μ) / ((n : ℝ) + 1)
   simp only [hudef, Nat.cast_add, Nat.cast_one]
 
 end Fekete
@@ -253,37 +253,37 @@ private theorem integral_birkhoffAverage_succ (hmp : MeasurePreserving T μ μ) 
   push_cast
   field_simp
 
-/-- **The crux: the ergodic constant is the Fekete infimum.** `gammaK = GammaKInf`. The
-inequality `gammaK ≤ GammaKInf` is a Fatou estimate on `f_n − L_n ≥ 0` where
+/-- **The crux: the ergodic constant is the Fekete infimum.** `gammaK = gammaKInf`. The
+inequality `gammaK ≤ gammaKInf` is a Fatou estimate on `f_n − L_n ≥ 0` where
 `L_n = −k·birkhoffAverage(log⁺‖A⁻¹‖)` converges a.e. (Birkhoff) to a constant; the reverse
-`GammaKInf ≤ gammaK` is the symmetric Fatou estimate on `U_n − f_n ≥ 0` with
-`U_n = k·birkhoffAverage(log⁺‖A‖)`. The integral sequence converges to `GammaKInf` by Fekete
+`gammaKInf ≤ gammaK` is the symmetric Fatou estimate on `U_n − f_n ≥ 0` with
+`U_n = k·birkhoffAverage(log⁺‖A‖)`. The integral sequence converges to `gammaKInf` by Fekete
 (`tendsto_integral_logSprod`), the integrands converge a.e. to `gammaK` (`gammaK_tendsto`), and
 the dominating-Birkhoff integrals are constant by measure preservation. -/
-theorem gammaK_eq_GammaKInf {k : ℕ} (hk : k ≤ d) :
+theorem gammaK_eq_gammaKInf {k : ℕ} (hk : k ≤ d) :
     gammaK hT hA hAmeas hint hint' hk
-      = GammaKInf (T := T) (μ := μ) (A := A) hk := by
+      = gammaKInf (T := T) (μ := μ) (A := A) hk := by
   have hmp : MeasurePreserving T μ μ := hT.toMeasurePreserving
   have hTmeas : Measurable T := hmp.measurable
   set c := gammaK hT hA hAmeas hint hint' hk with hcdef
-  set G := GammaKInf (T := T) (μ := μ) (A := A) hk with hGdef
-  -- normalized integrand `f_n x = log Sprod_k(n+1, x)/(n+1)`.
-  set f : ℕ → X → ℝ := fun n x => Real.log (Sprod A T k (n + 1) x) / (n + 1) with hfdef
+  set G := gammaKInf (T := T) (μ := μ) (A := A) hk with hGdef
+  -- normalized integrand `f_n x = log sprod_k(n+1, x)/(n+1)`.
+  set f : ℕ → X → ℝ := fun n x => Real.log (sprod A T k (n + 1) x) / (n + 1) with hfdef
   -- a.e. `f_n → c`.
   have hfconv : ∀ᵐ x ∂μ, Tendsto (fun n => f n x) atTop (𝓝 c) := by
     filter_upwards [gammaK_tendsto hT hA hAmeas hint hint' hk] with x hx
-    rw [← tendsto_add_atTop_iff_nat (f := fun n : ℕ => (n : ℝ)⁻¹ * Real.log (Sprod A T k n x)) 1]
+    rw [← tendsto_add_atTop_iff_nat (f := fun n : ℕ => (n : ℝ)⁻¹ * Real.log (sprod A T k n x)) 1]
       at hx
     refine hx.congr (fun n => ?_)
     rw [hfdef]
     push_cast
     rw [div_eq_inv_mul]
-  -- `∫ f_n = (∫ log Sprod_k(n+1))/(n+1)`.
+  -- `∫ f_n = (∫ log sprod_k(n+1))/(n+1)`.
   have hint_f : ∀ n, Integrable (f n) μ := by
     intro n
     exact (integrable_logSprod hmp hA hAmeas hTmeas hint hint' hk (n + 1)).div_const _
   have hf_integral : ∀ n, (∫ x, f n x ∂μ)
-      = (∫ x, Real.log (Sprod A T k (n + 1) x) ∂μ) / (n + 1) := by
+      = (∫ x, Real.log (sprod A T k (n + 1) x) ∂μ) / (n + 1) := by
     intro n
     rw [hfdef]
     exact integral_div _ _
@@ -337,12 +337,12 @@ theorem gammaK_eq_GammaKInf {k : ℕ} (hk : k ≤ d) :
     intro n x
     have hcast : (((n + 1 : ℕ)) : ℝ) = (n : ℝ) + 1 := by push_cast; ring
     have hpos : (0 : ℝ) < (n : ℝ) + 1 := by positivity
-    -- `log Sprod_k(n+1) ≥ -k·log‖(A⁽ⁿ⁺¹⁾)⁻¹‖ ≥ -k·birkhoffSum(log⁺‖A⁻¹‖)(n+1)`.
+    -- `log sprod_k(n+1) ≥ -k·log‖(A⁽ⁿ⁺¹⁾)⁻¹‖ ≥ -k·birkhoffSum(log⁺‖A⁻¹‖)(n+1)`.
     have hlb := neg_le_logSprod (T := T) hA hk (n + 1) x
     have hbk := logNorm_inv_cocycle_le_birkhoffSum (T := T) hA (n + 1) x
     have hknn : (0 : ℝ) ≤ (k : ℝ) := Nat.cast_nonneg k
     have hstep : - ((k : ℝ) * birkhoffSum T (fun y => Real.posLog ‖(A y)⁻¹‖) (n + 1) x)
-        ≤ Real.log (Sprod A T k (n + 1) x) := by
+        ≤ Real.log (sprod A T k (n + 1) x) := by
       have : (k : ℝ) * Real.log ‖(cocycle A T (n + 1) x)⁻¹‖
           ≤ (k : ℝ) * birkhoffSum T (fun y => Real.posLog ‖(A y)⁻¹‖) (n + 1) x :=
         mul_le_mul_of_nonneg_left hbk hknn
@@ -361,7 +361,7 @@ theorem gammaK_eq_GammaKInf {k : ℕ} (hk : k ≤ d) :
     have hub := logSprod_le (T := T) hA hk (n + 1) x
     have hbk := logNorm_cocycle_le_birkhoffSum (T := T) hA (n + 1) x
     have hknn : (0 : ℝ) ≤ (k : ℝ) := Nat.cast_nonneg k
-    have hstep : Real.log (Sprod A T k (n + 1) x)
+    have hstep : Real.log (sprod A T k (n + 1) x)
         ≤ (k : ℝ) * birkhoffSum T (fun y => Real.posLog ‖A y‖) (n + 1) x := by
       have : (k : ℝ) * Real.log ‖cocycle A T (n + 1) x‖
           ≤ (k : ℝ) * birkhoffSum T (fun y => Real.posLog ‖A y‖) (n + 1) x :=
@@ -425,12 +425,12 @@ theorem gammaK_eq_GammaKInf {k : ℕ} (hk : k ≤ d) :
 
 /-- **The Fekete infimum representation of `Γ_k`** (item #4 foundation). The ergodic growth
 rate equals the infimum, over `n`, of the normalized integrals:
-`Γ_k = ⨅ n, (∫ log Sprod_k(n+1))/(n+1)`. This is the representation that makes `Γ_k` an
+`Γ_k = ⨅ n, (∫ log sprod_k(n+1))/(n+1)`. This is the representation that makes `Γ_k` an
 infimum of functions *continuous* in the generator, hence upper semicontinuous. -/
 theorem GammaK_eq_iInf {k : ℕ} (hk : k ≤ d) :
     gammaK hT hA hAmeas hint hint' hk
-      = ⨅ n : ℕ, (∫ x, Real.log (Sprod A T k (n + 1) x) ∂μ) / (n + 1) :=
-  gammaK_eq_GammaKInf hT hA hAmeas hint hint' hk
+      = ⨅ n : ℕ, (∫ x, Real.log (sprod A T k (n + 1) x) ∂μ) / (n + 1) :=
+  gammaK_eq_gammaKInf hT hA hAmeas hint hint' hk
 
 end Crux
 
@@ -444,22 +444,22 @@ variable {B : ℕ → X → Matrix (Fin d) (Fin d) ℝ}
 omit [NeZero d] in
 /-- **Per-`n` integral continuity (dominated convergence, regime 1).** Suppose a sequence of
 generators `B m → A` is such that, for a *fixed* iterate count `n` and `μ`-a.e. `x`, the
-integrand `log Sprod_k(B m, n, x) → log Sprod_k(A, n, x)` converges, and is dominated by a
-*fixed* integrable function `bound`. Then `∫ log Sprod_k(B m, n) → ∫ log Sprod_k(A, n)`.
+integrand `log sprod_k(B m, n, x) → log sprod_k(A, n, x)` converges, and is dominated by a
+*fixed* integrable function `bound`. Then `∫ log sprod_k(B m, n) → ∫ log sprod_k(A, n)`.
 
 The a.e. integrand convergence is supplied, e.g., by entrywise a.e. convergence `B m → A`
-through the continuity of the singular-value product `Sprod` in the matrix entries; the fixed
+through the continuity of the singular-value product `sprod` in the matrix entries; the fixed
 `bound` (e.g. `k·(log⁺‖·‖ + log⁺‖·⁻¹‖)` for a uniform envelope) is the mandatory `L¹`-log
 domination. **Pointwise generator convergence alone is insufficient**: the dominated-convergence
 theorem requires a fixed integrable envelope. -/
 theorem tendsto_integral_logSprod_of_dominated {k n : ℕ} {bound : X → ℝ}
-    (hmeas : ∀ m, AEStronglyMeasurable (fun x => Real.log (Sprod (B m) T k n x)) μ)
+    (hmeas : ∀ m, AEStronglyMeasurable (fun x => Real.log (sprod (B m) T k n x)) μ)
     (hbound_int : Integrable bound μ)
-    (hbound : ∀ m, ∀ᵐ x ∂μ, ‖Real.log (Sprod (B m) T k n x)‖ ≤ bound x)
-    (hlim : ∀ᵐ x ∂μ, Tendsto (fun m => Real.log (Sprod (B m) T k n x)) atTop
-      (𝓝 (Real.log (Sprod A T k n x)))) :
-    Tendsto (fun m => ∫ x, Real.log (Sprod (B m) T k n x) ∂μ) atTop
-      (𝓝 (∫ x, Real.log (Sprod A T k n x) ∂μ)) :=
+    (hbound : ∀ m, ∀ᵐ x ∂μ, ‖Real.log (sprod (B m) T k n x)‖ ≤ bound x)
+    (hlim : ∀ᵐ x ∂μ, Tendsto (fun m => Real.log (sprod (B m) T k n x)) atTop
+      (𝓝 (Real.log (sprod A T k n x)))) :
+    Tendsto (fun m => ∫ x, Real.log (sprod (B m) T k n x) ∂μ) atTop
+      (𝓝 (∫ x, Real.log (sprod A T k n x) ∂μ)) :=
   tendsto_integral_of_dominated_convergence bound hmeas hbound_int hbound hlim
 
 end PerNContinuity
@@ -491,8 +491,8 @@ theorem GammaK_upperSemicontinuous (hT : Ergodic T μ) [l.IsCountablyGenerated] 
     (hk : k ≤ d)
     (hcobdd : IsCoboundedUnder (· ≤ ·) l
       (fun i => gammaK hT (hB i).1 (hB i).2.1 (hB i).2.2.1 (hB i).2.2.2 hk))
-    (hcont : ∀ n : ℕ, Tendsto (fun i => ∫ x, Real.log (Sprod (B i) T k (n + 1) x) ∂μ) l
-      (𝓝 (∫ x, Real.log (Sprod A T k (n + 1) x) ∂μ))) :
+    (hcont : ∀ n : ℕ, Tendsto (fun i => ∫ x, Real.log (sprod (B i) T k (n + 1) x) ∂μ) l
+      (𝓝 (∫ x, Real.log (sprod A T k (n + 1) x) ∂μ))) :
     limsup (fun i => gammaK hT (hB i).1 (hB i).2.1 (hB i).2.2.1 (hB i).2.2.2 hk) l
       ≤ gammaK hT hA hAmeas hint hint' hk := by
   have hmp : MeasurePreserving T μ μ := hT.toMeasurePreserving
@@ -501,19 +501,19 @@ theorem GammaK_upperSemicontinuous (hT : Ergodic T μ) [l.IsCountablyGenerated] 
   rw [GammaK_eq_iInf hT hA hAmeas hint hint' hk]
   refine le_ciInf (fun n => ?_)
   -- `Γ_k(B i) ≤ a_n(B i)` for each `i` (infimum lower bound), then take `limsup`.
-  set a : ι → ℝ := fun i => (∫ x, Real.log (Sprod (B i) T k (n + 1) x) ∂μ) / (n + 1) with hadef
+  set a : ι → ℝ := fun i => (∫ x, Real.log (sprod (B i) T k (n + 1) x) ∂μ) / (n + 1) with hadef
   have hle : ∀ i, gammaK hT (hB i).1 (hB i).2.1 (hB i).2.2.1 (hB i).2.2.2 hk ≤ a i := by
     intro i
     rw [GammaK_eq_iInf hT (hB i).1 (hB i).2.1 (hB i).2.2.1 (hB i).2.2.2 hk]
     exact ciInf_le (bddBelow_logSprod hmp (hB i).1 (hB i).2.1 hTmeas
       (hB i).2.2.1 (hB i).2.2.2 hk) n
   -- `a i → a_n(A)`, so `limsup a = a_n(A)`.
-  have haconv : Tendsto a l (𝓝 ((∫ x, Real.log (Sprod A T k (n + 1) x) ∂μ) / (n + 1))) :=
+  have haconv : Tendsto a l (𝓝 ((∫ x, Real.log (sprod A T k (n + 1) x) ∂μ) / (n + 1))) :=
     (hcont n).div_const _
   have hgbdd : IsBoundedUnder (· ≤ ·) l a := haconv.isBoundedUnder_le
   calc limsup (fun i => gammaK hT (hB i).1 (hB i).2.1 (hB i).2.2.1 (hB i).2.2.2 hk) l
       ≤ limsup a l := limsup_le_limsup (Filter.Eventually.of_forall hle) hcobdd hgbdd
-    _ = (∫ x, Real.log (Sprod A T k (n + 1) x) ∂μ) / (n + 1) := haconv.limsup_eq
+    _ = (∫ x, Real.log (sprod A T k (n + 1) x) ∂μ) / (n + 1) := haconv.limsup_eq
 
 /-- `gammaK` at `k = 1` is the top Lyapunov exponent `topExponent = exponents 0`.
 (Local copy with this argument order; the public form is `Oseledets.gammaK_one_eq_topExponent`
@@ -532,8 +532,8 @@ private theorem gammaK_one_eq_topExponent (hT : Ergodic T μ) :
 theorem topExponent_upperSemicontinuous (hT : Ergodic T μ) [l.IsCountablyGenerated] [l.NeBot]
     (hcobdd : IsCoboundedUnder (· ≤ ·) l
       (fun i => topExponent hT (hB i).1 (hB i).2.1 (hB i).2.2.1 (hB i).2.2.2))
-    (hcont : ∀ n : ℕ, Tendsto (fun i => ∫ x, Real.log (Sprod (B i) T 1 (n + 1) x) ∂μ) l
-      (𝓝 (∫ x, Real.log (Sprod A T 1 (n + 1) x) ∂μ))) :
+    (hcont : ∀ n : ℕ, Tendsto (fun i => ∫ x, Real.log (sprod (B i) T 1 (n + 1) x) ∂μ) l
+      (𝓝 (∫ x, Real.log (sprod A T 1 (n + 1) x) ∂μ))) :
     limsup (fun i => topExponent hT (hB i).1 (hB i).2.1 (hB i).2.2.1 (hB i).2.2.2) l
       ≤ topExponent hT hA hAmeas hint hint' := by
   have h1 : (1 : ℕ) ≤ d := Nat.one_le_iff_ne_zero.mpr (NeZero.ne d)
@@ -612,8 +612,8 @@ theorem botExp_lowerSemicontinuous (hT : Ergodic T μ) [l.IsCountablyGenerated] 
     (hwbelow : IsBoundedUnder (· ≥ ·) l
       (fun i => gammaK hT (hB i).1 (hB i).2.1 (hB i).2.2.1 (hB i).2.2.2 (Nat.sub_le d 1)))
     (hcont : ∀ n : ℕ, Tendsto
-      (fun i => ∫ x, Real.log (Sprod (B i) T (d - 1) (n + 1) x) ∂μ) l
-      (𝓝 (∫ x, Real.log (Sprod A T (d - 1) (n + 1) x) ∂μ)))
+      (fun i => ∫ x, Real.log (sprod (B i) T (d - 1) (n + 1) x) ∂μ) l
+      (𝓝 (∫ x, Real.log (sprod A T (d - 1) (n + 1) x) ∂μ)))
     (hdet : Tendsto (fun i => ∫ x, Real.log |(B i x).det| ∂μ) l
       (𝓝 (∫ x, Real.log |(A x).det| ∂μ))) :
     botExp hT hA hAmeas hint hint'
@@ -648,7 +648,7 @@ theorem botExp_lowerSemicontinuous (hT : Ergodic T μ) [l.IsCountablyGenerated] 
     have hTmeas : Measurable T := hmp.measurable
     -- `w i ≤ a_0(B i)`, and `a_0(B i) → a_0(A)` (the `n = 0` per-`n` continuity).
     have hle0 : ∀ i, w i
-        ≤ (∫ x, Real.log (Sprod (B i) T (d - 1) (0 + 1) x) ∂μ) / ((0 : ℕ) + 1) := by
+        ≤ (∫ x, Real.log (sprod (B i) T (d - 1) (0 + 1) x) ∂μ) / ((0 : ℕ) + 1) := by
       intro i
       simp only [hwdef]
       rw [GammaK_eq_iInf hT (hB i).1 (hB i).2.1 (hB i).2.2.1 (hB i).2.2.2 (Nat.sub_le d 1)]
@@ -699,18 +699,18 @@ end BotLSC
 
 The second per-`n` continuity regime replaces the *fixed integrable envelope* of regime 1
 (`tendsto_integral_logSprod_of_dominated`) by the honest `L¹`-log control hypothesis of **uniform
-integrability** of the integrand family `log Sprod_k(B m, n, ·)`, together with `μ`-a.e.
+integrability** of the integrand family `log sprod_k(B m, n, ·)`, together with `μ`-a.e.
 convergence of the *generators* `B m → A`. The latter is purely analytic: it propagates through
 the cocycle (a finite matrix product / orbit composition), the Gram matrix, its sorted
 eigenvalues (Weyl perturbation, `tendsto_eigenvalues₀`), the singular values
-(`gram_eigenvalues₀_eq_sq_singularValues`), and finally `Sprod = ∏ σ` and `Real.log`. This is the
-a.e. convergence of `log Sprod` in `ae_tendsto_logSprod_of_ae_tendsto_generator`. The integral
+(`gram_eigenvalues₀_eq_sq_singularValues`), and finally `sprod = ∏ σ` and `Real.log`. This is the
+a.e. convergence of `log sprod` in `ae_tendsto_logSprod_of_ae_tendsto_generator`. The integral
 continuity is then Vitali's convergence theorem (`tendsto_Lp_finite_of_tendsto_ae` +
 `tendsto_integral_of_L1'`), packaged in `tendsto_integral_logSprod_of_unifIntegrable` and combined
 with the a.e. generator convergence in `tendsto_integral_logSprod_of_ae_unifIntegrable`.
 
 **Honest caveat (mandatory).** Uniform integrability is an *explicit hypothesis*, not something
-derived from pure `L¹`-log convergence of the generators: `log Sprod` is **not** `L¹`-continuous in
+derived from pure `L¹`-log convergence of the generators: `log sprod` is **not** `L¹`-continuous in
 `posLog‖·‖`, so pure `L¹`-log convergence of the generators does **not** imply integral continuity.
 Uniform integrability is the correct `L¹`-log control that, together with a.e. convergence, makes
 the Vitali theorem applicable. Note also that the a.e. *generator*-convergence helper genuinely
@@ -761,9 +761,9 @@ private theorem ae_tendsto_cocycle_of_ae_tendsto_generator
   filter_upwards [horb] with x hx
   exact tendsto_cocycle_of_tendsto_orbit hx n
 
-/-- **A.e. convergence of `log Sprod` from a.e. generator convergence.** If the
+/-- **A.e. convergence of `log sprod` from a.e. generator convergence.** If the
 generators converge `μ`-a.e. `B m → A`, then for each fixed iterate count `n` and `k ≤ d`,
-`μ`-a.e. the integrand converges `log Sprod_k(B m, n, x) → log Sprod_k(A, n, x)`.
+`μ`-a.e. the integrand converges `log sprod_k(B m, n, x) → log sprod_k(A, n, x)`.
 
 This is the analytic core of regime 2. The chain is: a.e. `B m → A` propagates to the cocycle
 (`ae_tendsto_cocycle_of_ae_tendsto_generator`); the Gram matrix `Qₙ = cocycleᵀ · cocycle`
@@ -771,17 +771,17 @@ converges (continuity of transpose and matrix multiplication); its sorted eigenv
 (Weyl perturbation, `tendsto_eigenvalues₀`); the squared singular values equal the Gram
 eigenvalues (`gram_eigenvalues₀_eq_sq_singularValues`), so each `σᵢ(B m)² → σᵢ(A)²`, hence
 `σᵢ(B m) → σᵢ(A)` (`Real.sqrt` continuity, `σᵢ ≥ 0`); the finite product
-`Sprod = ∏_{i<k} σᵢ` converges (`tendsto_finsetProd`); and `Real.log` is continuous at the strictly
-positive limit `Sprod_k(A, n, x) > 0` (`Sprod_pos`).
+`sprod = ∏_{i<k} σᵢ` converges (`tendsto_finsetProd`); and `Real.log` is continuous at the strictly
+positive limit `sprod_k(A, n, x) > 0` (`sprod_pos`).
 
-The measure-preserving hypothesis `hT` is genuinely required: `log Sprod_k(·, n, x)` samples the
+The measure-preserving hypothesis `hT` is genuinely required: `log sprod_k(·, n, x)` samples the
 generator along the finite orbit `x, Tx, …, T^{n-1}x`, so an a.e. statement at `x` propagates to
 its orbit only through quasi-measure-preservation of `T`. -/
 theorem ae_tendsto_logSprod_of_ae_tendsto_generator (hA : ∀ x, (A x).det ≠ 0) {k : ℕ}
     (hk : k ≤ d) {n : ℕ} (hT : MeasurePreserving T μ μ)
     (hconv : ∀ᵐ x ∂μ, Tendsto (fun m => B m x) atTop (𝓝 (A x))) :
-    ∀ᵐ x ∂μ, Tendsto (fun m => Real.log (Sprod (B m) T k n x)) atTop
-      (𝓝 (Real.log (Sprod A T k n x))) := by
+    ∀ᵐ x ∂μ, Tendsto (fun m => Real.log (sprod (B m) T k n x)) atTop
+      (𝓝 (Real.log (sprod A T k n x))) := by
   filter_upwards [ae_tendsto_cocycle_of_ae_tendsto_generator hT hconv n] with x hcoc
   -- The Gram matrix converges (transpose and matrix multiplication are continuous).
   have htr : Tendsto (fun m => Matrix.transpose (cocycle (B m) T n x)) atTop
@@ -808,36 +808,36 @@ theorem ae_tendsto_logSprod_of_ae_tendsto_generator (hA : ∀ x, (A x).det ≠ 0
     rwa [Real.sqrt_sq hAnn,
       funext (fun m => Real.sqrt_sq
         ((Matrix.toEuclideanLin (cocycle (B m) T n x)).singularValues_nonneg i))] at hsqrt
-  -- The finite product `Sprod = ∏_{i<k} σᵢ` converges.
-  have hprod : Tendsto (fun m => Sprod (B m) T k n x) atTop (𝓝 (Sprod A T k n x)) := by
-    simp only [Sprod]
+  -- The finite product `sprod = ∏_{i<k} σᵢ` converges.
+  have hprod : Tendsto (fun m => sprod (B m) T k n x) atTop (𝓝 (sprod A T k n x)) := by
+    simp only [sprod]
     exact tendsto_finsetProd (Finset.range k)
       (fun i hi => hsq i (lt_of_lt_of_le (Finset.mem_range.mp hi) hk))
-  -- `Real.log` is continuous at the strictly positive limit `Sprod_k(A, n, x) > 0`.
-  exact hprod.log (ne_of_gt (Sprod_pos hA hk n x))
+  -- `Real.log` is continuous at the strictly positive limit `sprod_k(A, n, x) > 0`.
+  exact hprod.log (ne_of_gt (sprod_pos hA hk n x))
 
 omit [NeZero d] in
 /-- **Per-`n` integral continuity via uniform integrability (Vitali, regime 2).**
-For a fixed iterate count `n` and `k ≤ d`, if the integrand family `log Sprod_k(B m, n, ·)` is
+For a fixed iterate count `n` and `k ≤ d`, if the integrand family `log sprod_k(B m, n, ·)` is
 uniformly integrable (`hui`), `μ`-a.e.-strongly-measurable (`hBmeas`), and converges `μ`-a.e. to
-`log Sprod_k(A, n, ·)` (`hlim`, with the limit `L¹`, `hAmemLp`), then the integrals converge:
-`∫ log Sprod_k(B m, n) → ∫ log Sprod_k(A, n)`.
+`log sprod_k(A, n, ·)` (`hlim`, with the limit `L¹`, `hAmemLp`), then the integrals converge:
+`∫ log sprod_k(B m, n) → ∫ log sprod_k(A, n)`.
 
 This is Vitali's convergence theorem: a.e. convergence with uniform integrability yields
 `L¹`-convergence (`tendsto_Lp_finite_of_tendsto_ae`), which gives integral convergence
 (`tendsto_integral_of_L1'`). Uniform integrability is the honest `L¹`-log control replacing the
 fixed envelope of regime 1; it is **not** derivable from pure `L¹`-log convergence of the
-generators (`log Sprod` is not `L¹`-continuous in `posLog‖·‖`) and is kept as a hypothesis. -/
+generators (`log sprod` is not `L¹`-continuous in `posLog‖·‖`) and is kept as a hypothesis. -/
 theorem tendsto_integral_logSprod_of_unifIntegrable [IsFiniteMeasure μ] {k n : ℕ}
-    (hBmeas : ∀ m, AEStronglyMeasurable (fun x => Real.log (Sprod (B m) T k n x)) μ)
-    (hAmemLp : MemLp (fun x => Real.log (Sprod A T k n x)) 1 μ)
-    (hui : UnifIntegrable (fun m x => Real.log (Sprod (B m) T k n x)) 1 μ)
-    (hlim : ∀ᵐ x ∂μ, Tendsto (fun m => Real.log (Sprod (B m) T k n x)) atTop
-      (𝓝 (Real.log (Sprod A T k n x)))) :
-    Tendsto (fun m => ∫ x, Real.log (Sprod (B m) T k n x) ∂μ) atTop
-      (𝓝 (∫ x, Real.log (Sprod A T k n x) ∂μ)) := by
-  set f : ℕ → X → ℝ := fun m x => Real.log (Sprod (B m) T k n x) with hfdef
-  set g : X → ℝ := fun x => Real.log (Sprod A T k n x) with hgdef
+    (hBmeas : ∀ m, AEStronglyMeasurable (fun x => Real.log (sprod (B m) T k n x)) μ)
+    (hAmemLp : MemLp (fun x => Real.log (sprod A T k n x)) 1 μ)
+    (hui : UnifIntegrable (fun m x => Real.log (sprod (B m) T k n x)) 1 μ)
+    (hlim : ∀ᵐ x ∂μ, Tendsto (fun m => Real.log (sprod (B m) T k n x)) atTop
+      (𝓝 (Real.log (sprod A T k n x)))) :
+    Tendsto (fun m => ∫ x, Real.log (sprod (B m) T k n x) ∂μ) atTop
+      (𝓝 (∫ x, Real.log (sprod A T k n x) ∂μ)) := by
+  set f : ℕ → X → ℝ := fun m x => Real.log (sprod (B m) T k n x) with hfdef
+  set g : X → ℝ := fun x => Real.log (sprod A T k n x) with hgdef
   -- Vitali: a.e. convergence + uniform integrability ⟹ `L¹`-convergence.
   have hL1 : Tendsto (fun m => eLpNorm (f m - g) 1 μ) atTop (𝓝 0) :=
     MeasureTheory.tendsto_Lp_finite_of_tendsto_ae (le_refl 1) one_ne_top hBmeas hAmemLp hui hlim
@@ -875,11 +875,11 @@ from pure `L¹`-log convergence of the generators. -/
 theorem tendsto_integral_logSprod_of_ae_unifIntegrable [IsFiniteMeasure μ]
     (hA : ∀ x, (A x).det ≠ 0) {k : ℕ} (hk : k ≤ d) {n : ℕ} (hT : MeasurePreserving T μ μ)
     (hconv : ∀ᵐ x ∂μ, Tendsto (fun m => B m x) atTop (𝓝 (A x)))
-    (hBmeas : ∀ m, AEStronglyMeasurable (fun x => Real.log (Sprod (B m) T k n x)) μ)
-    (hAmemLp : MemLp (fun x => Real.log (Sprod A T k n x)) 1 μ)
-    (hui : UnifIntegrable (fun m x => Real.log (Sprod (B m) T k n x)) 1 μ) :
-    Tendsto (fun m => ∫ x, Real.log (Sprod (B m) T k n x) ∂μ) atTop
-      (𝓝 (∫ x, Real.log (Sprod A T k n x) ∂μ)) :=
+    (hBmeas : ∀ m, AEStronglyMeasurable (fun x => Real.log (sprod (B m) T k n x)) μ)
+    (hAmemLp : MemLp (fun x => Real.log (sprod A T k n x)) 1 μ)
+    (hui : UnifIntegrable (fun m x => Real.log (sprod (B m) T k n x)) 1 μ) :
+    Tendsto (fun m => ∫ x, Real.log (sprod (B m) T k n x) ∂μ) atTop
+      (𝓝 (∫ x, Real.log (sprod A T k n x) ∂μ)) :=
   tendsto_integral_logSprod_of_unifIntegrable hBmeas hAmemLp hui
     (ae_tendsto_logSprod_of_ae_tendsto_generator hA hk hT hconv)
 
@@ -902,9 +902,9 @@ theorem GammaK_upperSemicontinuous_of_ae_unifIntegrable [IsProbabilityMeasure μ
     (hcobdd : IsCoboundedUnder (· ≤ ·) atTop
       (fun m => gammaK hT (hB m).1 (hB m).2.1 (hB m).2.2.1 (hB m).2.2.2 hk))
     (hconv : ∀ᵐ x ∂μ, Tendsto (fun m => B m x) atTop (𝓝 (A x)))
-    (hBmeas : ∀ n m, AEStronglyMeasurable (fun x => Real.log (Sprod (B m) T k (n + 1) x)) μ)
-    (hAmemLp : ∀ n, MemLp (fun x => Real.log (Sprod A T k (n + 1) x)) 1 μ)
-    (hui : ∀ n, UnifIntegrable (fun m x => Real.log (Sprod (B m) T k (n + 1) x)) 1 μ) :
+    (hBmeas : ∀ n m, AEStronglyMeasurable (fun x => Real.log (sprod (B m) T k (n + 1) x)) μ)
+    (hAmemLp : ∀ n, MemLp (fun x => Real.log (sprod A T k (n + 1) x)) 1 μ)
+    (hui : ∀ n, UnifIntegrable (fun m x => Real.log (sprod (B m) T k (n + 1) x)) 1 μ) :
     limsup (fun m => gammaK hT (hB m).1 (hB m).2.1 (hB m).2.2.1 (hB m).2.2.2 hk) atTop
       ≤ gammaK hT hA hAmeas hint hint' hk :=
   GammaK_upperSemicontinuous hB hA hAmeas hint hint' hT hk hcobdd

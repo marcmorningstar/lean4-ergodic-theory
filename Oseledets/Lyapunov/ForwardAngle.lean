@@ -26,7 +26,7 @@ instead goes through the sharp Gram-eigenvector cross bound
 `|⟪uⱼ(n), v⟫| ≤ ‖A⁽ⁿ⁾ v‖ / σⱼ(n)`. The required slow-growth input
 `limsup (1/n) log ‖A⁽ⁿ⁾ v‖ ≤ λᵢ` is not an output of the spectral split it feeds: it is the
 inequality `lambdaBar A T x v ≤ λᵢ`, the defining property of membership in the limsup flag
-`Oseledets.Vflag`, which is established strictly upstream of the overlap split. No circularity
+`Oseledets.vflag`, which is established strictly upstream of the overlap split. No circularity
 arises.
 
 ## Main results
@@ -253,7 +253,7 @@ The slow-growth `limsup` hypothesis of `overlap_limsup_le_of_slow_growth` is, up
 (`lambdaBar_eq_limsup_growthSeq` in `Oseledets/Lyapunov/GrowthFunction.lean`). The connector
 below restates the overlap bound with the filtration's native slow-vector hypothesis
 `lambdaBar A T x v ≤ λᵢ`, making explicit that the slow growth is supplied by
-`Oseledets/Lyapunov/Filtration.lean` (`lambdaBar_eq_on_stratum` / `mem_Vflag`), strictly
+`Oseledets/Lyapunov/Filtration.lean` (`lambdaBar_eq_on_stratum` / `mem_vflag`), strictly
 upstream of the overlap split — not by the spectral split it feeds. -/
 
 omit [MeasurableSpace X] in

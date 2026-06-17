@@ -12,7 +12,7 @@ import Oseledets.Lyapunov.ForwardLowerWiring
 
 This file assembles the Oseledets filtration theorem `oseledets_filtration_of_upper` from a
 single analytic input `hupper` — the per-vector spectral upper bound: every nonzero vector of
-the slow space `Vslow A T (Real.exp t) x` has upper growth exponent at most `t` — together
+the slow space `vslow A T (Real.exp t) x` has upper growth exponent at most `t` — together
 with a minimized set of precisely typed residual hypotheses capturing the spectral
 identification of the Oseledets limit operator.
 
@@ -20,8 +20,8 @@ The assembly proceeds through `Oseledets.oseledets_filtration_of_slowflag`, whic
 three almost-everywhere interfaces: `hspec`, `hslowflag`, and `hgrowth`.  Each is discharged
 as far as `hupper` allows, isolating the remaining content into named residual hypotheses:
 
-* **`hslowflag`** (`Vslow (exp t) = lambdaSublevel t`).  The forward inclusion
-  `Vslow (exp t) ≤ lambdaSublevel t` is derived from `hupper`: a vector in the slow space grows
+* **`hslowflag`** (`vslow (exp t) = lambdaSublevel t`).  The forward inclusion
+  `vslow (exp t) ≤ lambdaSublevel t` is derived from `hupper`: a vector in the slow space grows
   slowly, hence lies in the growth sublevel (`vslow_subset_lambdaSublevel_of_upper`).  The
   reverse inclusion is taken as the typed residual hypothesis `hslowrev`.
 
@@ -42,10 +42,10 @@ derivable from `hupper` alone.
 ## Main results
 
 * `Oseledets.vslow_subset_lambdaSublevel_of_upper`: the forward slow-flag inclusion
-  `Vslow (exp t) ≤ lambdaSublevel t` from the spectral upper bound.
+  `vslow (exp t) ≤ lambdaSublevel t` from the spectral upper bound.
 * `Oseledets.limsup_log_norm_cocycle_apply_le_specList_of_mem_stratum`: the per-stratum `limsup` upper bound, almost everywhere.
 * `Oseledets.vslow_eq_lambdaSublevel_of_upper`: the slow-flag identification
-  `Vslow (exp t) = lambdaSublevel t` from the spectral upper bound and the reverse inclusion.
+  `vslow (exp t) = lambdaSublevel t` from the spectral upper bound and the reverse inclusion.
 * `Oseledets.oseledets_filtration_of_upper`: the Oseledets filtration theorem, assembled from
   the spectral upper bound and the residual spectral-identification hypotheses.
 -/
@@ -60,7 +60,7 @@ variable {X : Type*} [MeasurableSpace X] {d : ℕ} [NeZero d]
 /-! ## Forward inclusion of `hslowflag` from `hupper` -/
 
 omit [MeasurableSpace X] [NeZero d] in
-/-- **`Vslow (exp t) ⊆ lambdaSublevel t` from `hupper`.**  A nonzero vector in the Λ-slow band
+/-- **`vslow (exp t) ⊆ lambdaSublevel t` from `hupper`.**  A nonzero vector in the Λ-slow band
 at level `e^t` has, by `hupper`, `limsup (1/n) log‖A⁽ⁿ⁾ v‖ ≤ t`; that `limsup` *is*
 `lambdaBar A T x v` (`limsup_log_norm_cocycle_eq_lambdaBar`), so `lambdaBar A T x v ≤ t`, i.e.
 `v ∈ lambdaSublevel t`.  The zero vector lies in every submodule.  Requires only the
@@ -68,10 +68,10 @@ at level `e^t` has, by `hupper`, `limsup (1/n) log‖A⁽ⁿ⁾ v‖ ≤ t`; tha
 theorem vslow_subset_lambdaSublevel_of_upper
     {A : X → Matrix (Fin d) (Fin d) ℝ} {T : X → X} {x : X}
     (hx : IsUltrametricGrowth (lambdaBar A T x))
-    (hupperx : ∀ t : ℝ, ∀ v ∈ Vslow A T (Real.exp t) x, v ≠ 0 →
+    (hupperx : ∀ t : ℝ, ∀ v ∈ vslow A T (Real.exp t) x, v ≠ 0 →
       limsup (fun n : ℕ => (n : ℝ)⁻¹ *
         Real.log ‖Matrix.toEuclideanLin (cocycle A T n x) v‖) atTop ≤ t) :
-    ∀ t : ℝ, Vslow A T (Real.exp t) x ≤ lambdaSublevel A T x t := by
+    ∀ t : ℝ, vslow A T (Real.exp t) x ≤ lambdaSublevel A T x t := by
   intro t v hv
   rw [mem_lambdaSublevel hx]
   by_cases hv0 : v = 0
@@ -80,16 +80,16 @@ theorem vslow_subset_lambdaSublevel_of_upper
     have := hupperx t v hv hv0
     rwa [limsup_log_norm_cocycle_eq_lambdaBar] at this
 
-/-! ## The `hgrowth` upper half from `Vflag` membership
+/-! ## The `hgrowth` upper half from `vflag` membership
 
 The upper half `hub` of `Oseledets.tendsto_inv_mul_log_norm_cocycle_apply_of_upper_lower` is, in fact, *unconditional* given
-the `IsUltrametricGrowth` good set: a vector in the stratum `Vflag i.castSucc \ Vflag i.succ`
+the `IsUltrametricGrowth` good set: a vector in the stratum `vflag i.castSucc \ vflag i.succ`
 has `lambdaBar = specList i` exactly (`lambdaBar_eq_on_stratum`), and that `lambdaBar` is the
 `limsup` (`limsup_log_norm_cocycle_eq_lambdaBar`).  So `limsup ≤ specList i` holds (with
 equality) and `hub` needs no separate analytic input. -/
 
 omit [NeZero d] in
-/-- **`hub` from `Vflag` membership (a.e.).**  On the `IsUltrametricGrowth` good set the
+/-- **`hub` from `vflag` membership (a.e.).**  On the `IsUltrametricGrowth` good set the
 per-stratum `limsup` equals the exact exponent `specList i`, so in particular
 `limsup ≤ specList i` — the upper half consumed by `Oseledets.tendsto_inv_mul_log_norm_cocycle_apply_of_upper_lower`. -/
 theorem limsup_log_norm_cocycle_apply_le_specList_of_mem_stratum
@@ -98,8 +98,8 @@ theorem limsup_log_norm_cocycle_apply_le_specList_of_mem_stratum
     {A : X → Matrix (Fin d) (Fin d) ℝ} (hA : ∀ x, (A x).det ≠ 0) (hAmeas : Measurable A)
     (hint : IntegrableLogNorm A μ) (hint' : IntegrableLogNorm (fun x => (A x)⁻¹) μ) :
     ∀ᵐ x ∂μ, ∀ i : Fin (specCard A T x),
-      ∀ v ∈ (Vflag A T x i.castSucc : Set (EuclideanSpace ℝ (Fin d))),
-        v ∉ Vflag A T x i.succ →
+      ∀ v ∈ (vflag A T x i.castSucc : Set (EuclideanSpace ℝ (Fin d))),
+        v ∉ vflag A T x i.succ →
         limsup (fun n : ℕ => (n : ℝ)⁻¹ *
           Real.log ‖Matrix.toEuclideanLin (cocycle A T n x) v‖) atTop ≤ specList A T x i := by
   filter_upwards [isUltrametricGrowth_lambdaBar hT hA hAmeas hint hint'] with x hx i v hv hvnot
@@ -110,20 +110,20 @@ theorem limsup_log_norm_cocycle_apply_le_specList_of_mem_stratum
 
 omit [NeZero d] in
 /-- **`hslowflag` from `hupper` and the reverse inclusion.**  Combines the forward inclusion
-`Vslow (exp t) ⊆ lambdaSublevel t` (derived from `hupper` via
+`vslow (exp t) ⊆ lambdaSublevel t` (derived from `hupper` via
 `vslow_subset_lambdaSublevel_of_upper`) with the reverse inclusion `hslowrev`
-(`lambdaSublevel t ⊆ Vslow (exp t)`) into the per-point identification
-`Vslow (exp t) = lambdaSublevel t` consumed by `oseledets_filtration_of_slowflag`. -/
+(`lambdaSublevel t ⊆ vslow (exp t)`) into the per-point identification
+`vslow (exp t) = lambdaSublevel t` consumed by `oseledets_filtration_of_slowflag`. -/
 theorem vslow_eq_lambdaSublevel_of_upper
     {μ : Measure X} [IsProbabilityMeasure μ] {T : X → X}
     (hT : Ergodic T μ)
     {A : X → Matrix (Fin d) (Fin d) ℝ} (hA : ∀ x, (A x).det ≠ 0) (hAmeas : Measurable A)
     (hint : IntegrableLogNorm A μ) (hint' : IntegrableLogNorm (fun x => (A x)⁻¹) μ)
-    (hupper : ∀ᵐ x ∂μ, ∀ t : ℝ, ∀ v ∈ Vslow A T (Real.exp t) x, v ≠ 0 →
+    (hupper : ∀ᵐ x ∂μ, ∀ t : ℝ, ∀ v ∈ vslow A T (Real.exp t) x, v ≠ 0 →
       limsup (fun n : ℕ => (n : ℝ)⁻¹ *
         Real.log ‖Matrix.toEuclideanLin (cocycle A T n x) v‖) atTop ≤ t)
-    (hslowrev : ∀ᵐ x ∂μ, ∀ t : ℝ, lambdaSublevel A T x t ≤ Vslow A T (Real.exp t) x) :
-    ∀ᵐ x ∂μ, ∀ t : ℝ, Vslow A T (Real.exp t) x = lambdaSublevel A T x t := by
+    (hslowrev : ∀ᵐ x ∂μ, ∀ t : ℝ, lambdaSublevel A T x t ≤ vslow A T (Real.exp t) x) :
+    ∀ᵐ x ∂μ, ∀ t : ℝ, vslow A T (Real.exp t) x = lambdaSublevel A T x t := by
   filter_upwards [isUltrametricGrowth_lambdaBar hT hA hAmeas hint hint', hupper, hslowrev]
     with x hx hupperx hrevx
   intro t
@@ -140,7 +140,7 @@ three a.e. interfaces are discharged as follows:
 
 * `hslowflag` — forward inclusion derived from `hupper` (`vslow_eq_lambdaSublevel_of_upper`), reverse
   inclusion the residual `hslowrev`;
-* `hgrowth` — `hub` derived from `Vflag` membership (`limsup_log_norm_cocycle_apply_le_specList_of_mem_stratum`), `hbdd` from
+* `hgrowth` — `hub` derived from `vflag` membership (`limsup_log_norm_cocycle_apply_le_specList_of_mem_stratum`), `hbdd` from
   `isBoundedUnder_inv_mul_log_norm_cocycle_apply_of_mem_stratum`, `hlb` from `specList_le_liminf_inv_mul_log_norm_cocycle_apply_of_bandProjector` fed the residual band datum `hband`;
 * `hspec` — `specList_eq_expEnum_of_subsets_standing` fed the two residual `Finset` spectrum inclusions
   `hub_spec` / `hlb_spec`.
@@ -154,11 +154,11 @@ theorem oseledets_filtration_of_upper
     (hA : ∀ x, (A x).det ≠ 0) (hAmeas : Measurable A)
     (hint : IntegrableLogNorm A μ) (hint' : IntegrableLogNorm (fun x => (A x)⁻¹) μ)
     -- The per-vector spectral upper bound.
-    (hupper : ∀ᵐ x ∂μ, ∀ t : ℝ, ∀ v ∈ Vslow A T (Real.exp t) x, v ≠ 0 →
+    (hupper : ∀ᵐ x ∂μ, ∀ t : ℝ, ∀ v ∈ vslow A T (Real.exp t) x, v ≠ 0 →
       Filter.limsup (fun n : ℕ => (n : ℝ)⁻¹ *
         Real.log ‖Matrix.toEuclideanLin (cocycle A T n x) v‖) Filter.atTop ≤ t)
     -- Residual 1: the reverse slow-flag inclusion (slow growth implies slow-space membership).
-    (hslowrev : ∀ᵐ x ∂μ, ∀ t : ℝ, lambdaSublevel A T x t ≤ Vslow A T (Real.exp t) x)
+    (hslowrev : ∀ᵐ x ∂μ, ∀ t : ℝ, lambdaSublevel A T x t ≤ vslow A T (Real.exp t) x)
     -- Residual 2: spectrum upper Finset inclusion (every realized exponent is deterministic).
     (hub_spec : ∀ lam0 : ℕ → ℝ,
       (∀ i : ℕ, i < d → ∀ᵐ x ∂μ, Tendsto
@@ -175,8 +175,8 @@ theorem oseledets_filtration_of_upper
       ∀ᵐ x ∂μ, distinctExp lam0 d ⊆ spectrum A T x)
     -- Residual 4: the band-projector convergence datum feeding the liminf lower bound.
     (hband : ∀ᵐ x ∂μ, ∀ i : Fin (specCard A T x),
-      ∀ v ∈ (Vflag A T x i.castSucc : Set (EuclideanSpace ℝ (Fin d))),
-        v ∉ Vflag A T x i.succ →
+      ∀ v ∈ (vflag A T x i.castSucc : Set (EuclideanSpace ℝ (Fin d))),
+        v ∉ vflag A T x i.succ →
         ∃ P : Matrix (Fin d) (Fin d) ℝ,
           Tendsto (fun n => bandProjector A T
             (Set.indicator (Set.Ioi (Real.exp (specList A T x i))) 1) n x) atTop (𝓝 P) ∧
@@ -206,7 +206,7 @@ theorem oseledets_filtration_of_upper
     (hub_spec lam0 hlam0) (hlb_spec lam0 hlam0)
   -- `hslowflag` from `hupper` and the reverse inclusion.
   have hslowflag := vslow_eq_lambdaSublevel_of_upper hT hA hAmeas hint hint' hupper hslowrev
-  -- `hgrowth` from upper (`Vflag`) + lower (band) + boundedness (Furstenberg–Kesten).
+  -- `hgrowth` from upper (`vflag`) + lower (band) + boundedness (Furstenberg–Kesten).
   have hbdd := isBoundedUnder_inv_mul_log_norm_cocycle_apply_of_mem_stratum hT A hA hAmeas hint hint'
   have hub := limsup_log_norm_cocycle_apply_le_specList_of_mem_stratum hT hA hAmeas hint hint'
   have hlb := specList_le_liminf_inv_mul_log_norm_cocycle_apply_of_bandProjector A hA hband hbdd

@@ -19,7 +19,7 @@ For a.e. `x` the function `lambdaBar A T x` is an `IsUltrametricGrowth` function
 the spectrum **descending** as `λ₀ > λ₁ > ⋯ > λ_{k-1}` (`specList`), the sublevel sets
 `{v | v = 0 ∨ lambdaBar A T x v ≤ λᵢ}` form a strictly decreasing flag
 
-`⊤ = Vflag x 0 ⊋ Vflag x 1 ⊋ ⋯ ⊋ Vflag x k = ⊥`
+`⊤ = vflag x 0 ⊋ vflag x 1 ⊋ ⋯ ⊋ vflag x k = ⊥`
 
 along which the cocycle grows at exactly the rate `λᵢ` on each stratum.
 
@@ -30,11 +30,11 @@ hypothesis `hx : IsUltrametricGrowth (lambdaBar A T x)`.
 ## Main results
 
 * `spectrum`, `specCard`, `specList` — the finite, descending limsup spectrum;
-* `Vflag` — the limsup flag, indexed by `Fin (specCard A T x + 1)`;
-* `Vflag_zero` / `Vflag_last` — the extremal levels are `⊤` / `⊥`;
-* `Vflag_strictAnti` — strict decrease between consecutive levels;
+* `vflag` — the limsup flag, indexed by `Fin (specCard A T x + 1)`;
+* `vflag_zero` / `vflag_last` — the extremal levels are `⊤` / `⊥`;
+* `vflag_strictAnti` — strict decrease between consecutive levels;
 * `lambdaBar_eq_on_stratum` — on each stratum `lambdaBar` equals the exact exponent `λᵢ`;
-* `spectrum_equivariant_ae` / `Vflag_equivariant` — `A`-equivariance of the spectrum and the
+* `spectrum_equivariant_ae` / `vflag_equivariant` — `A`-equivariance of the spectrum and the
   flag, a.e. in `x`.
 -/
 
@@ -118,40 +118,40 @@ theorem mem_lambdaSublevel {A : X → Matrix (Fin d) (Fin d) ℝ} {x : X}
 /-- The **limsup flag** at `x`, indexed by `Fin (specCard A T x + 1)`. Interior levels are
 sublevel sets of `lambdaBar A T x` at the spectrum values; the last level (index `specCard`)
 is `⊥`. With the descending enumeration `specList`, level `j` (for `j < specCard`) is the
-sublevel at exponent `λ_j`, so `Vflag x 0 = ⊤` and `Vflag x (last) = ⊥`. -/
-noncomputable def Vflag (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (x : X)
+sublevel at exponent `λ_j`, so `vflag x 0 = ⊤` and `vflag x (last) = ⊥`. -/
+noncomputable def vflag (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (x : X)
     (j : Fin (specCard A T x + 1)) : Submodule ℝ (EuclideanSpace ℝ (Fin d)) :=
   if h : (j : ℕ) < specCard A T x then lambdaSublevel A T x (specList A T x ⟨j, h⟩) else ⊥
 
-/-- On the interior, `Vflag` is a sublevel set at the corresponding spectrum value. -/
-theorem Vflag_of_lt {A : X → Matrix (Fin d) (Fin d) ℝ} {x : X}
+/-- On the interior, `vflag` is a sublevel set at the corresponding spectrum value. -/
+theorem vflag_of_lt {A : X → Matrix (Fin d) (Fin d) ℝ} {x : X}
     {j : Fin (specCard A T x + 1)} (h : (j : ℕ) < specCard A T x) :
-    Vflag A T x j = lambdaSublevel A T x (specList A T x ⟨j, h⟩) := by
-  rw [Vflag, dif_pos h]
+    vflag A T x j = lambdaSublevel A T x (specList A T x ⟨j, h⟩) := by
+  rw [vflag, dif_pos h]
 
 /-- **Unified membership criterion** for a flag level (under the `IsUltrametricGrowth`
 hypothesis), for a nonzero vector. -/
-theorem mem_Vflag {A : X → Matrix (Fin d) (Fin d) ℝ} {x : X}
+theorem mem_vflag {A : X → Matrix (Fin d) (Fin d) ℝ} {x : X}
     (hx : IsUltrametricGrowth (lambdaBar A T x)) {j : Fin (specCard A T x + 1)}
     {v : EuclideanSpace ℝ (Fin d)} (hv : v ≠ 0) :
-    v ∈ Vflag A T x j ↔
+    v ∈ vflag A T x j ↔
       ∃ h : (j : ℕ) < specCard A T x, lambdaBar A T x v ≤ specList A T x ⟨j, h⟩ := by
   by_cases h : (j : ℕ) < specCard A T x
-  · rw [Vflag_of_lt h, mem_lambdaSublevel hx]
+  · rw [vflag_of_lt h, mem_lambdaSublevel hx]
     constructor
     · rintro (rfl | hle)
       · exact absurd rfl hv
       · exact ⟨h, hle⟩
     · rintro ⟨_, hle⟩; exact Or.inr hle
-  · rw [Vflag, dif_neg h]
+  · rw [vflag, dif_neg h]
     simp only [Submodule.mem_bot, hv, false_iff, not_exists]
     exact fun h' => absurd h' h
 
 /-! ### Extremal levels -/
 
 /-- The top level of the flag is everything. -/
-theorem Vflag_zero {A : X → Matrix (Fin d) (Fin d) ℝ} {x : X}
-    (hx : IsUltrametricGrowth (lambdaBar A T x)) : Vflag A T x 0 = ⊤ := by
+theorem vflag_zero {A : X → Matrix (Fin d) (Fin d) ℝ} {x : X}
+    (hx : IsUltrametricGrowth (lambdaBar A T x)) : vflag A T x 0 = ⊤ := by
   rw [eq_top_iff]
   intro v _
   by_cases hv : v = 0
@@ -161,7 +161,7 @@ theorem Vflag_zero {A : X → Matrix (Fin d) (Fin d) ℝ} {x : X}
     have hmem : lambdaBar A T x v ∈ spectrum A T x := lambdaBar_mem_spectrum hx hv
     have hpos : 0 < specCard A T x := Finset.card_pos.mpr ⟨_, hmem⟩
     have h0 : ((0 : Fin (specCard A T x + 1)) : ℕ) < specCard A T x := by simpa using hpos
-    rw [mem_Vflag hx hv]
+    rw [mem_vflag hx hv]
     refine ⟨h0, ?_⟩
     -- `specList ⟨0,_⟩` is the maximum of the spectrum.
     have hpos' : 0 < (spectrum A T x).card := hpos
@@ -173,9 +173,9 @@ theorem Vflag_zero {A : X → Matrix (Fin d) (Fin d) ℝ} {x : X}
     exact Finset.le_max' _ _ hmem
 
 /-- The bottom level of the flag is trivial. -/
-theorem Vflag_last (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (x : X) :
-    Vflag A T x (Fin.last (specCard A T x)) = ⊥ := by
-  rw [Vflag, dif_neg]
+theorem vflag_last (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (x : X) :
+    vflag A T x (Fin.last (specCard A T x)) = ⊥ := by
+  rw [vflag, dif_neg]
   simp
 
 /-! ### Strict decrease and stratum exactness -/
@@ -199,9 +199,9 @@ private theorem succ_lt_specList {A : X → Matrix (Fin d) (Fin d) ℝ} {x : X}
   exact this
 
 /-- Strict decrease of the flag. -/
-theorem Vflag_strictAnti {A : X → Matrix (Fin d) (Fin d) ℝ} {x : X}
+theorem vflag_strictAnti {A : X → Matrix (Fin d) (Fin d) ℝ} {x : X}
     (hx : IsUltrametricGrowth (lambdaBar A T x)) (i : Fin (specCard A T x)) :
-    Vflag A T x i.succ < Vflag A T x i.castSucc := by
+    vflag A T x i.succ < vflag A T x i.castSucc := by
   -- The `castSucc` level is the sublevel at `specList i`.
   have hcastval : ((i.castSucc : Fin (specCard A T x + 1)) : ℕ) = (i : ℕ) := rfl
   have hcastlt : ((i.castSucc : Fin (specCard A T x + 1)) : ℕ) < specCard A T x := i.2
@@ -210,7 +210,7 @@ theorem Vflag_strictAnti {A : X → Matrix (Fin d) (Fin d) ℝ} {x : X}
     intro v hvmem
     by_cases hv : v = 0
     · simp [hv]
-    · rw [mem_Vflag hx hv] at hvmem ⊢
+    · rw [mem_vflag hx hv] at hvmem ⊢
       obtain ⟨hsucc, hle⟩ := hvmem
       refine ⟨hcastlt, ?_⟩
       -- `specList (succ) < specList i`, and the index `⟨i.castSucc⟩ = i`.
@@ -222,15 +222,15 @@ theorem Vflag_strictAnti {A : X → Matrix (Fin d) (Fin d) ℝ} {x : X}
   · -- `≠`: a witness `w` lies in `castSucc` but not in `succ`.
     intro heq
     obtain ⟨w, hw, hwval⟩ := exists_witness hx i
-    have hwcast : w ∈ Vflag A T x i.castSucc := by
-      rw [mem_Vflag hx hw]
+    have hwcast : w ∈ vflag A T x i.castSucc := by
+      rw [mem_vflag hx hw]
       refine ⟨hcastlt, ?_⟩
       have hid :
           (⟨(i.castSucc : Fin (specCard A T x + 1)), hcastlt⟩ : Fin (specCard A T x)) = i :=
         Fin.ext rfl
       rw [hid, hwval]
-    have hwsucc : w ∈ Vflag A T x i.succ := heq ▸ hwcast
-    rw [mem_Vflag hx hw] at hwsucc
+    have hwsucc : w ∈ vflag A T x i.succ := heq ▸ hwcast
+    rw [mem_vflag hx hw] at hwsucc
     obtain ⟨hsucc, hle⟩ := hwsucc
     rw [hwval] at hle
     exact absurd hle (not_le.mpr (succ_lt_specList i hsucc))
@@ -238,15 +238,15 @@ theorem Vflag_strictAnti {A : X → Matrix (Fin d) (Fin d) ℝ} {x : X}
 /-- On the stratum between consecutive levels, `lambdaBar` equals the exact exponent `λᵢ`. -/
 theorem lambdaBar_eq_on_stratum {A : X → Matrix (Fin d) (Fin d) ℝ} {x : X}
     (hx : IsUltrametricGrowth (lambdaBar A T x)) (i : Fin (specCard A T x))
-    {v : EuclideanSpace ℝ (Fin d)} (hmem : v ∈ Vflag A T x i.castSucc)
-    (hnot : v ∉ Vflag A T x i.succ) :
+    {v : EuclideanSpace ℝ (Fin d)} (hmem : v ∈ vflag A T x i.castSucc)
+    (hnot : v ∉ vflag A T x i.succ) :
     lambdaBar A T x v = specList A T x i := by
   have hcastlt : ((i.castSucc : Fin (specCard A T x + 1)) : ℕ) < specCard A T x := i.2
   -- `v ≠ 0` since `0` is in every level.
   have hv : v ≠ 0 := by
     rintro rfl; exact hnot (Submodule.zero_mem _)
   -- Upper bound `lambdaBar v ≤ specList i` from `castSucc` membership.
-  rw [mem_Vflag hx hv] at hmem
+  rw [mem_vflag hx hv] at hmem
   obtain ⟨_, hle⟩ := hmem
   have hid : (⟨(i.castSucc : Fin (specCard A T x + 1)), hcastlt⟩ : Fin (specCard A T x)) = i :=
     Fin.ext rfl
@@ -256,8 +256,8 @@ theorem lambdaBar_eq_on_stratum {A : X → Matrix (Fin d) (Fin d) ℝ} {x : X}
   rw [← hj] at hle ⊢
   -- `specList j ≤ specList i ⟹ i ≤ j`.
   have hij : i ≤ j := (specList_strictAnti A T x).le_iff_ge.mp hle
-  -- From `v ∉ Vflag (succ)` and `v ≠ 0`, no interior successor bound holds.
-  rw [mem_Vflag hx hv, not_exists] at hnot
+  -- From `v ∉ vflag (succ)` and `v ≠ 0`, no interior successor bound holds.
+  rw [mem_vflag hx hv, not_exists] at hnot
   -- Goal: `specList j = specList i`, i.e. `j = i` by injectivity.
   congr 1
   refine le_antisymm ?_ hij
@@ -366,7 +366,7 @@ level at `x` onto the corresponding level at `T x` (the indices transport via th
 equality `spectrum A T x = spectrum A T (T x)`, which makes
 `specCard A T x = specCard A T (T x)` and `specList A T x = specList A T (T x)` after that
 rewrite). -/
-theorem Vflag_equivariant
+theorem vflag_equivariant
     [IsProbabilityMeasure μ] (hT : Ergodic T μ)
     {A : X → Matrix (Fin d) (Fin d) ℝ} (hA : ∀ x, (A x).det ≠ 0) (hAmeas : Measurable A)
     (hint : IntegrableLogNorm A μ) (hint' : IntegrableLogNorm (fun x => (A x)⁻¹) μ) :

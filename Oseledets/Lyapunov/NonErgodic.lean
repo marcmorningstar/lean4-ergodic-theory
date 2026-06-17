@@ -15,14 +15,14 @@ theory (`Oseledets.tendsto_GammaK`, `Oseledets.exists_lam_tendsto_singularValue`
 `λᵢ = Γ_{i+1} − Γ_i` are almost-everywhere **constants**. Without ergodicity these limits
 still exist almost everywhere, but they are now `T`-**invariant measurable functions**
 rather than constants. (Heuristically the limit is the conditional expectation
-`μ[log Sprod_k(·, 1) | invariants T]`; the theorems below prove only its existence,
+`μ[log sprod_k(·, 1) | invariants T]`; the theorems below prove only its existence,
 `T`-invariance, and integrability — not that identification.)
 
 The whole development is a *mechanical re-derivation* swapping the ergodic Kingman theorem
 (`Oseledets.tendsto_kingman_ergodic`) for the non-ergodic one (`Oseledets.tendsto_kingman`):
 the latter produces a `T`-invariant integrable limit `G` instead of a constant `c`. Every
-integrability / positivity / subadditivity fact about `log Sprod_k` that the ergodic proof
-discharged (`integrable_logSprod`, `bddBelow_logSprod`, `Sprod_pos`,
+integrability / positivity / subadditivity fact about `log sprod_k` that the ergodic proof
+discharged (`integrable_logSprod`, `bddBelow_logSprod`, `sprod_pos`,
 `isSubadditiveCocycle_logSprod`) is reused verbatim — only the `Ergodic` hypothesis is
 dropped in favour of bare `MeasurePreserving`. The pointwise telescoping that turns the
 `Γ_k` limits into per-`σ` exponents (`tendsto_log_singularValue`) is unchanged.
@@ -35,7 +35,7 @@ is trivial (so each invariant function is a.e. constant): see
 ## Main results
 
 * `Oseledets.tendsto_GammaK_nonergodic` — the partial-sum limit `Γ_k` as a `T`-invariant
-  integrable function `G : X → ℝ`, with `(1/n) log Sprod_k → G` almost everywhere.
+  integrable function `G : X → ℝ`, with `(1/n) log sprod_k → G` almost everywhere.
 * `Oseledets.exists_exponents_nonergodic` — the full Lyapunov spectrum as a family of
   `T`-invariant integrable functions `lam : ℕ → X → ℝ`, each the a.e. limit of
   `(1/n) log σᵢ(A⁽ⁿ⁾)`.
@@ -56,7 +56,7 @@ variable [IsFiniteMeasure μ] [NeZero d]
 
 /-- **The non-ergodic partial-sum limit `Γ_k`.** For a measure-preserving `T`, an
 everywhere-invertible measurable cocycle generator with `log⁺‖A‖, log⁺‖A⁻¹‖ ∈ L¹`, and
-`k ≤ d`, the normalized `log Sprod_k` converges `μ`-a.e. to a `T`-invariant integrable
+`k ≤ d`, the normalized `log sprod_k` converges `μ`-a.e. to a `T`-invariant integrable
 function `G` (no ergodicity assumed). This is the
 non-ergodic analogue of `tendsto_GammaK_of_integrableLogNorm`: the constant `Γ_k` is
 replaced by the invariant function `G`. -/
@@ -65,14 +65,14 @@ theorem tendsto_GammaK_nonergodic (hmp : MeasurePreserving T μ μ)
     (hint : IntegrableLogNorm A μ) (hint' : IntegrableLogNorm (fun x => (A x)⁻¹) μ)
     {k : ℕ} (hk : k ≤ d) :
     ∃ G : X → ℝ, (G ∘ T =ᵐ[μ] G) ∧ Integrable G μ ∧
-      ∀ᵐ x ∂μ, Tendsto (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (Sprod A T k n x))
+      ∀ᵐ x ∂μ, Tendsto (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (sprod A T k n x))
         atTop (𝓝 (G x)) := by
   classical
   have hTmeas : Measurable T := hmp.measurable
-  -- The non-ergodic Kingman theorem applied to the subadditive cocycle `log Sprod_k`,
+  -- The non-ergodic Kingman theorem applied to the subadditive cocycle `log sprod_k`,
   -- reusing the same integrability / bounded-below / positivity facts as the ergodic case.
   obtain ⟨G, hGinv, hGint, hGconv⟩ := tendsto_kingman hmp
-    (isSubadditiveCocycle_logSprod A k (fun j y => Sprod_pos hA hk j y))
+    (isSubadditiveCocycle_logSprod A k (fun j y => sprod_pos hA hk j y))
     (fun n => integrable_logSprod hmp hA hAmeas hTmeas hint hint' hk n)
     (bddBelow_logSprod hmp hA hAmeas hTmeas hint hint' hk)
   exact ⟨G, hGinv, hGint, hGconv⟩
@@ -99,7 +99,7 @@ theorem exists_exponents_nonergodic (hmp : MeasurePreserving T μ μ)
   -- The non-ergodic partial-sum functions `G_k`, for `0 ≤ k ≤ d`, packaged for ALL `k` by
   -- using the genuine limit when `k ≤ d` and the constant `0` otherwise.
   have hG : ∀ k : ℕ, ∃ G : X → ℝ, (k ≤ d → (G ∘ T =ᵐ[μ] G) ∧ Integrable G μ ∧
-      ∀ᵐ x ∂μ, Tendsto (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (Sprod A T k n x))
+      ∀ᵐ x ∂μ, Tendsto (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (sprod A T k n x))
         atTop (𝓝 (G x))) ∧ (d < k → G = 0) := by
     intro k
     by_cases hk : k ≤ d

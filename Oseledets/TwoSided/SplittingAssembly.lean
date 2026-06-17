@@ -131,27 +131,27 @@ private theorem flag_iSupIndep_and_iSup {k : ℕ} (V : Fin (k + 1) → α) (E : 
     rw [iSup_of_empty]
     rw [show (0 : Fin 1) = Fin.last 0 from rfl, hbot]
   | succ k ih =>
-    set V' : Fin (k + 1) → α := fun j => V j.succ with hV'
+    set vprime : Fin (k + 1) → α := fun j => V j.succ with hV'
     set E' : Fin k → α := fun j => E j.succ with hE'
-    have hbot' : V' (Fin.last k) = ⊥ := by
+    have hbot' : vprime (Fin.last k) = ⊥ := by
       rw [hV']; simp only
       rw [show (Fin.last k).succ = Fin.last (k + 1) from rfl, hbot]
-    have hsup' : ∀ i : Fin k, V' i.castSucc = E' i ⊔ V' i.succ := by
+    have hsup' : ∀ i : Fin k, vprime i.castSucc = E' i ⊔ vprime i.succ := by
       intro i
       rw [hV', hE']; simp only
       rw [show (i.castSucc).succ = (i.succ).castSucc from rfl]
       exact hsup i.succ
-    have hdis' : ∀ i : Fin k, E' i ⊓ V' i.succ = ⊥ := fun i => by
+    have hdis' : ∀ i : Fin k, E' i ⊓ vprime i.succ = ⊥ := fun i => by
       rw [hE', hV']; simp only; exact hdis i.succ
-    obtain ⟨hindep', hsupeq'⟩ := ih V' E' hbot' hsup' hdis'
+    obtain ⟨hindep', hsupeq'⟩ := ih vprime E' hbot' hsup' hdis'
     refine ⟨iSupIndep_cons E hindep' ?_, ?_⟩
     · rw [show (⨆ i : Fin k, E i.succ) = ⨆ i : Fin k, E' i from rfl, hsupeq',
-        show V' 0 = V (Fin.succ 0) from rfl, disjoint_iff]
+        show vprime 0 = V (Fin.succ 0) from rfl, disjoint_iff]
       have := hdis 0
       rwa [show (0 : Fin (k + 1)).succ = Fin.succ 0 from rfl] at this
     · rw [iSup_fin_succ,
         show (⨆ i : Fin k, E i.succ) = ⨆ i : Fin k, E' i from rfl, hsupeq',
-        show V' 0 = V (Fin.succ 0) from rfl]
+        show vprime 0 = V (Fin.succ 0) from rfl]
       have := hsup 0
       rw [show (0 : Fin (k + 1)).castSucc = 0 from rfl] at this
       rw [← this]
@@ -276,7 +276,7 @@ theorem crux_succ_backward
     rw [hlast, hWlast, inf_bot_eq]
 
 /-- The intersection-splitting subspace at forward level `i` (per-point). -/
-noncomputable def EsplitAt (i : Fin (numExp lam0 d)) :
+noncomputable def esplitAt (i : Fin (numExp lam0 d)) :
     Submodule ℝ (EuclideanSpace ℝ (Fin d)) :=
   Vx i.castSucc ⊓ Wx (sidx hrefl i).castSucc
 
@@ -306,8 +306,8 @@ theorem sup_eq_top
   rw [← hsuccsup]
   exact sup_le_sup_right (hVanti (Fin.castSucc_le_succ i)) _
 
-/-- `finrank (EsplitAt i) = #{j | lam0 j ≤ λᵢ} − #{j | lam0 j < λᵢ}`. -/
-theorem finrank_EsplitAt
+/-- `finrank (esplitAt i) = #{j | lam0 j ≤ λᵢ} − #{j | lam0 j < λᵢ}`. -/
+theorem finrank_esplitAt
     (hVdim : ∀ i : Fin (numExp lam0 d),
       Module.finrank ℝ (Vx i.castSucc)
         = ((Finset.range d).filter (fun j => lam0 j ≤ expEnum lam0 d i)).card)
@@ -318,7 +318,7 @@ theorem finrank_EsplitAt
     (hcrux : ∀ (i' : Fin (numExp lam0 d)) (s : Fin (numExp mu0 d)),
       expEnum lam0 d i' + expEnum mu0 d s < 0 → Vx i'.castSucc ⊓ Wx s.castSucc = ⊥)
     (i : Fin (numExp lam0 d)) :
-    Module.finrank ℝ (EsplitAt (Vx := Vx) (Wx := Wx) hrefl i)
+    Module.finrank ℝ (esplitAt (Vx := Vx) (Wx := Wx) hrefl i)
       = ((Finset.range d).filter (fun j => lam0 j ≤ expEnum lam0 d i)).card
         - ((Finset.range d).filter (fun j => lam0 j < expEnum lam0 d i)).card := by
   have hgr := Submodule.finrank_sup_add_finrank_inf_eq (Vx i.castSucc) (Wx (sidx hrefl i).castSucc)
@@ -327,24 +327,24 @@ theorem finrank_EsplitAt
   have hcnt : ((Finset.range d).filter (fun j => lam0 j < expEnum lam0 d i)).card ≤ d := by
     calc _ ≤ (Finset.range d).card := Finset.card_filter_le _ _
       _ = d := Finset.card_range d
-  have hE : EsplitAt (Vx := Vx) (Wx := Wx) hrefl i
+  have hE : esplitAt (Vx := Vx) (Wx := Wx) hrefl i
       = Vx i.castSucc ⊓ Wx (sidx hrefl i).castSucc := rfl
   rw [hE]
   omega
 
-/-- `EsplitAt i ⊓ Vx i.succ = ⊥`. -/
-theorem EsplitAt_inf_Vsucc
+/-- `esplitAt i ⊓ Vx i.succ = ⊥`. -/
+theorem esplitAt_inf_Vsucc
     (hVlast : Vx (Fin.last (numExp lam0 d)) = ⊥)
     (hcrux : ∀ (i' : Fin (numExp lam0 d)) (s : Fin (numExp mu0 d)),
       expEnum lam0 d i' + expEnum mu0 d s < 0 → Vx i'.castSucc ⊓ Wx s.castSucc = ⊥)
     (i : Fin (numExp lam0 d)) :
-    EsplitAt (Vx := Vx) (Wx := Wx) hrefl i ⊓ Vx i.succ = ⊥ := by
+    esplitAt (Vx := Vx) (Wx := Wx) hrefl i ⊓ Vx i.succ = ⊥ := by
   rw [eq_bot_iff, ← crux_succ hrefl hVlast hcrux i]
-  simp only [EsplitAt]
+  simp only [esplitAt]
   exact le_inf (le_trans inf_le_right le_rfl) (le_trans inf_le_left inf_le_right)
 
-/-- The telescoping identity `Vx i.castSucc = EsplitAt i ⊔ Vx i.succ`. -/
-theorem Vcast_eq_EsplitAt_sup_Vsucc
+/-- The telescoping identity `Vx i.castSucc = esplitAt i ⊔ Vx i.succ`. -/
+theorem Vcast_eq_esplitAt_sup_Vsucc
     (hVdim : ∀ i : Fin (numExp lam0 d),
       Module.finrank ℝ (Vx i.castSucc)
         = ((Finset.range d).filter (fun j => lam0 j ≤ expEnum lam0 d i)).card)
@@ -355,24 +355,24 @@ theorem Vcast_eq_EsplitAt_sup_Vsucc
     (hcrux : ∀ (i' : Fin (numExp lam0 d)) (s : Fin (numExp mu0 d)),
       expEnum lam0 d i' + expEnum mu0 d s < 0 → Vx i'.castSucc ⊓ Wx s.castSucc = ⊥)
     (i : Fin (numExp lam0 d)) :
-    Vx i.castSucc = EsplitAt (Vx := Vx) (Wx := Wx) hrefl i ⊔ Vx i.succ := by
-  have hle : EsplitAt (Vx := Vx) (Wx := Wx) hrefl i ⊔ Vx i.succ ≤ Vx i.castSucc := by
+    Vx i.castSucc = esplitAt (Vx := Vx) (Wx := Wx) hrefl i ⊔ Vx i.succ := by
+  have hle : esplitAt (Vx := Vx) (Wx := Wx) hrefl i ⊔ Vx i.succ ≤ Vx i.castSucc := by
     refine sup_le ?_ (hVanti (Fin.castSucc_le_succ i))
-    simp only [EsplitAt]; exact inf_le_left
+    simp only [esplitAt]; exact inf_le_left
   symm
   apply Submodule.eq_of_le_of_finrank_eq hle
   have hgr := Submodule.finrank_sup_add_finrank_inf_eq
-    (EsplitAt (Vx := Vx) (Wx := Wx) hrefl i) (Vx i.succ)
-  rw [EsplitAt_inf_Vsucc hrefl hVlast hcrux i, finrank_bot, add_zero,
-    finrank_EsplitAt hrefl hVdim hWdim hVanti hVlast hcrux i,
+    (esplitAt (Vx := Vx) (Wx := Wx) hrefl i) (Vx i.succ)
+  rw [esplitAt_inf_Vsucc hrefl hVlast hcrux i, finrank_bot, add_zero,
+    finrank_esplitAt hrefl hVdim hWdim hVanti hVlast hcrux i,
     finrank_Vsucc hVdim hVlast i] at hgr
   have hcntlt : ((Finset.range d).filter (fun j => lam0 j < expEnum lam0 d i)).card
       ≤ ((Finset.range d).filter (fun j => lam0 j ≤ expEnum lam0 d i)).card :=
     Finset.card_le_card (Finset.monotone_filter_right _ fun j _ hj => le_of_lt hj)
   rw [hgr, hVdim i]; omega
 
-/-- The split subspace is nonzero: `1 ≤ finrank (EsplitAt i)`. -/
-theorem one_le_finrank_EsplitAt
+/-- The split subspace is nonzero: `1 ≤ finrank (esplitAt i)`. -/
+theorem one_le_finrank_esplitAt
     (hVdim : ∀ i : Fin (numExp lam0 d),
       Module.finrank ℝ (Vx i.castSucc)
         = ((Finset.range d).filter (fun j => lam0 j ≤ expEnum lam0 d i)).card)
@@ -383,8 +383,8 @@ theorem one_le_finrank_EsplitAt
     (hcrux : ∀ (i' : Fin (numExp lam0 d)) (s : Fin (numExp mu0 d)),
       expEnum lam0 d i' + expEnum mu0 d s < 0 → Vx i'.castSucc ⊓ Wx s.castSucc = ⊥)
     (i : Fin (numExp lam0 d)) :
-    1 ≤ Module.finrank ℝ (EsplitAt (Vx := Vx) (Wx := Wx) hrefl i) := by
-  rw [finrank_EsplitAt hrefl hVdim hWdim hVanti hVlast hcrux i]
+    1 ≤ Module.finrank ℝ (esplitAt (Vx := Vx) (Wx := Wx) hrefl i) := by
+  rw [finrank_esplitAt hrefl hVdim hWdim hVanti hVlast hcrux i]
   obtain ⟨j, hjd, hjeq⟩ := expEnum_eq_lam lam0 d i
   have hmemle : j ∈ (Finset.range d).filter (fun j => lam0 j ≤ expEnum lam0 d i) := by
     rw [Finset.mem_filter, Finset.mem_range]; exact ⟨hjd, le_of_eq hjeq.symm⟩
@@ -520,27 +520,27 @@ theorem oseledets_splitting_pos
         = ((Finset.range d).filter (fun j => mu0 j ≤ expEnum mu0 d s)).card := _hWd
   have hcruxx : ∀ (i' : Fin (numExp lam0 d)) (s : Fin (numExp mu0 d)),
       expEnum lam0 d i' + expEnum mu0 d s < 0 → Vx i'.castSucc ⊓ Wx s.castSucc = ⊥ := hcx
-  -- The split subspace at the point is `EsplitAt`.
+  -- The split subspace at the point is `esplitAt`.
   have hEeq : ∀ i : Fin (numExp lam0 d),
-      V i.castSucc x ⊓ W (sidx hrefl i).castSucc x = EsplitAt (Vx := Vx) (Wx := Wx) hrefl i := by
+      V i.castSucc x ⊓ W (sidx hrefl i).castSucc x = esplitAt (Vx := Vx) (Wx := Wx) hrefl i := by
     intro i; rfl
   refine ⟨?_, ?_, ?_, ?_⟩
   · -- IsInternal via the telescoping-flag lattice lemma.
     rw [DirectSum.isInternal_submodule_iff_iSupIndep_and_iSup_eq_top]
-    obtain ⟨hindep, hsupeq⟩ := flag_iSupIndep_and_iSup Vx (fun i => EsplitAt hrefl i)
+    obtain ⟨hindep, hsupeq⟩ := flag_iSupIndep_and_iSup Vx (fun i => esplitAt hrefl i)
       hVlast'
-      (fun i => Vcast_eq_EsplitAt_sup_Vsucc hrefl hVdimx hWdimx hVanti hVlast' hcruxx i)
-      (fun i => EsplitAt_inf_Vsucc hrefl hVlast' hcruxx i)
+      (fun i => Vcast_eq_esplitAt_sup_Vsucc hrefl hVdimx hWdimx hVanti hVlast' hcruxx i)
+      (fun i => esplitAt_inf_Vsucc hrefl hVlast' hcruxx i)
     constructor
     · simpa only [hEeq] using hindep
     · rw [show (fun i => V i.castSucc x ⊓ W (sidx hrefl i).castSucc x)
-          = fun i => EsplitAt (Vx := Vx) (Wx := Wx) hrefl i from funext hEeq, hsupeq]
+          = fun i => esplitAt (Vx := Vx) (Wx := Wx) hrefl i from funext hEeq, hsupeq]
       exact hV0
   · -- Each split subspace is nonzero.
     intro i
     rw [hEeq i]
     exact Submodule.one_le_finrank_iff.mp
-      (one_le_finrank_EsplitAt hrefl hVdimx hWdimx hVanti hVlast' hcruxx i)
+      (one_le_finrank_esplitAt hrefl hVdimx hWdimx hVanti hVlast' hcruxx i)
   · -- Equivariance: `map (A x) (E i x) = E i (T x)`.
     intro i
     have hinj : Function.Injective ⇑(Matrix.toEuclideanCLM (𝕜 := ℝ) (A x)).toLinearMap := by
@@ -575,9 +575,9 @@ theorem oseledets_splitting_pos
     -- forward stratum: `v ∉ V i.succ x`
     have hvVnot : v ∉ V i.succ x := by
       intro hmem
-      have : v ∈ EsplitAt (Vx := Vx) (Wx := Wx) hrefl i ⊓ Vx i.succ :=
+      have : v ∈ esplitAt (Vx := Vx) (Wx := Wx) hrefl i ⊓ Vx i.succ :=
         Submodule.mem_inf.mpr ⟨hv, hmem⟩
-      rw [EsplitAt_inf_Vsucc hrefl hVlast' hcruxx i, Submodule.mem_bot] at this
+      rw [esplitAt_inf_Vsucc hrefl hVlast' hcruxx i, Submodule.mem_bot] at this
       exact hv0 this
     -- backward stratum: `v ∉ W (sidx i).succ x`
     have hvWnot : v ∉ W (sidx hrefl i).succ x := by

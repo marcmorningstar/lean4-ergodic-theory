@@ -33,13 +33,13 @@ cocycle and fed to Kingman's ergodic theorem (`tendsto_kingman_ergodic`).
 ## Main definitions
 
 * `Oseledets.gram` — the Gram matrix `Qₙ = (A⁽ⁿ⁾)ᵀ A⁽ⁿ⁾` of the cocycle iterate.
-* `Oseledets.Sprod` — the product of the top-`k` singular values of `toEuclideanLin (A⁽ⁿ⁾)`.
+* `Oseledets.sprod` — the product of the top-`k` singular values of `toEuclideanLin (A⁽ⁿ⁾)`.
 
 ## Main results
 
 * `LinearMap.singularValues_le_opNorm` / `Oseledets.sigma_le_opNorm` (**infra M-1**) —
   `σᵢ(f) ≤ ‖f‖` and `σᵢ(toEuclideanLin M) ≤ ‖M‖`.
-* `Oseledets.Sprod_submul`, `Oseledets.logSprod_subadditive`,
+* `Oseledets.sprod_submul`, `Oseledets.logSprod_subadditive`,
   `Oseledets.isSubadditiveCocycle_logSprod` (**L1**).
 * `Oseledets.integrable_logSprod`, `Oseledets.bddBelow_logSprod` (**L3**).
 * `Oseledets.tendsto_GammaK` (**L4**) — the genuine ergodic `Γ_k` limit.
@@ -123,7 +123,7 @@ def gram (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (n : ℕ) (x : X) 
   (cocycle A T n x)ᵀ * cocycle A T n x
 
 /-- The **top-`k` singular value product** of the cocycle iterate, as a Euclidean linear map. -/
-def Sprod (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (k n : ℕ) (x : X) : ℝ :=
+def sprod (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (k n : ℕ) (x : X) : ℝ :=
   ∏ i ∈ Finset.range k,
     (Matrix.toEuclideanLin (cocycle A T n x)).singularValues i
 
@@ -134,48 +134,48 @@ private theorem toEuclideanLin_mul (M N : Matrix (Fin d) (Fin d) ℝ) :
   ext v i
   simp only [Matrix.toLpLin_apply, LinearMap.comp_apply, Matrix.mulVec_mulVec]
 
-/-! ## L1: subadditivity of `log Sprod` -/
+/-! ## L1: subadditivity of `log sprod` -/
 
 set_option linter.unusedSectionVars false in
-/-- **L1 — submultiplicativity of `Sprod`.** `∏σ(A⁽ᵐ⁺ⁿ⁾) ≤ ∏σ(A⁽ᵐ⁾∘Tⁿ) · ∏σ(A⁽ⁿ⁾)`. -/
-theorem Sprod_submul (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (k m n : ℕ) (x : X) :
-    Sprod A T k (m + n) x ≤ Sprod A T k m (T^[n] x) * Sprod A T k n x := by
-  unfold Sprod
+/-- **L1 — submultiplicativity of `sprod`.** `∏σ(A⁽ᵐ⁺ⁿ⁾) ≤ ∏σ(A⁽ᵐ⁾∘Tⁿ) · ∏σ(A⁽ⁿ⁾)`. -/
+theorem sprod_submul (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (k m n : ℕ) (x : X) :
+    sprod A T k (m + n) x ≤ sprod A T k m (T^[n] x) * sprod A T k n x := by
+  unfold sprod
   rw [cocycle_add, toEuclideanLin_mul]
   exact ExteriorNorm.prod_singularValues_comp_le k (Matrix.toEuclideanLin (cocycle A T n x))
     (Matrix.toEuclideanLin (cocycle A T m (T^[n] x)))
 
-/-- **L1 — subadditivity of `log Sprod`** in the plain (`T^[n]`-shifted) split, provided each
-`Sprod` is positive (true for an invertible cocycle and `k ≤ d`). -/
+/-- **L1 — subadditivity of `log sprod`** in the plain (`T^[n]`-shifted) split, provided each
+`sprod` is positive (true for an invertible cocycle and `k ≤ d`). -/
 theorem logSprod_subadditive (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (k m n : ℕ) (x : X)
-    (hpos : ∀ (j : ℕ) (y : X), 0 < Sprod A T k j y) :
-    Real.log (Sprod A T k (m + n) x)
-      ≤ Real.log (Sprod A T k m (T^[n] x)) + Real.log (Sprod A T k n x) := by
-  have hsub := Sprod_submul A T k m n x
-  calc Real.log (Sprod A T k (m + n) x)
-      ≤ Real.log (Sprod A T k m (T^[n] x) * Sprod A T k n x) :=
+    (hpos : ∀ (j : ℕ) (y : X), 0 < sprod A T k j y) :
+    Real.log (sprod A T k (m + n) x)
+      ≤ Real.log (sprod A T k m (T^[n] x)) + Real.log (sprod A T k n x) := by
+  have hsub := sprod_submul A T k m n x
+  calc Real.log (sprod A T k (m + n) x)
+      ≤ Real.log (sprod A T k m (T^[n] x) * sprod A T k n x) :=
         Real.log_le_log (hpos (m + n) x) hsub
-    _ = Real.log (Sprod A T k m (T^[n] x)) + Real.log (Sprod A T k n x) :=
+    _ = Real.log (sprod A T k m (T^[n] x)) + Real.log (sprod A T k n x) :=
         Real.log_mul (ne_of_gt (hpos m (T^[n] x))) (ne_of_gt (hpos n x))
 
 set_option linter.unusedSectionVars false in
-/-- **L1 — Kingman index convention.** `log Sprod` is a subadditive cocycle in Kingman's sense
+/-- **L1 — Kingman index convention.** `log sprod` is a subadditive cocycle in Kingman's sense
 `g(m+n,x) ≤ g(m,x) + g(n,T^[m]x)`, obtained from the symmetric cocycle split. -/
 theorem isSubadditiveCocycle_logSprod {T : X → X} (A : X → Matrix (Fin d) (Fin d) ℝ) (k : ℕ)
-    (hpos : ∀ (j : ℕ) (y : X), 0 < Sprod A T k j y) :
-    IsSubadditiveCocycle T (fun n x => Real.log (Sprod A T k n x)) := by
+    (hpos : ∀ (j : ℕ) (y : X), 0 < sprod A T k j y) :
+    IsSubadditiveCocycle T (fun n x => Real.log (sprod A T k n x)) := by
   refine ⟨fun m n x => ?_⟩
   -- Use the symmetric split `cocycle (m+n) x = cocycle n (T^[m] x) * cocycle m x`.
   have hcoc : cocycle A T (m + n) x = cocycle A T n (T^[m] x) * cocycle A T m x := by
     rw [show m + n = n + m by ring, cocycle_add]
-  have hsub : Sprod A T k (m + n) x ≤ Sprod A T k n (T^[m] x) * Sprod A T k m x := by
-    unfold Sprod; rw [hcoc, toEuclideanLin_mul]
+  have hsub : sprod A T k (m + n) x ≤ sprod A T k n (T^[m] x) * sprod A T k m x := by
+    unfold sprod; rw [hcoc, toEuclideanLin_mul]
     exact ExteriorNorm.prod_singularValues_comp_le k (Matrix.toEuclideanLin (cocycle A T m x))
       (Matrix.toEuclideanLin (cocycle A T n (T^[m] x)))
-  calc Real.log (Sprod A T k (m + n) x)
-      ≤ Real.log (Sprod A T k n (T^[m] x) * Sprod A T k m x) :=
+  calc Real.log (sprod A T k (m + n) x)
+      ≤ Real.log (sprod A T k n (T^[m] x) * sprod A T k m x) :=
         Real.log_le_log (hpos (m + n) x) hsub
-    _ = Real.log (Sprod A T k m x) + Real.log (Sprod A T k n (T^[m] x)) := by
+    _ = Real.log (sprod A T k m x) + Real.log (sprod A T k n (T^[m] x)) := by
         rw [Real.log_mul (ne_of_gt (hpos n (T^[m] x))) (ne_of_gt (hpos m x))]; ring
 
 /-! ## Infra M-1 (matrix form) and singular-value sandwich bounds -/
@@ -224,7 +224,7 @@ theorem inv_opNorm_inv_le_sigma {M : Matrix (Fin d) (Fin d) ℝ} (hM : M.det ≠
   rw [hσ, inv_le_iff_one_le_mul₀ hinvpos]
   linarith [hbound]
 
-/-! ## Positivity of `Sprod` (the Kingman `hpos` proviso, for `k ≤ d`) -/
+/-! ## Positivity of `sprod` (the Kingman `hpos` proviso, for `k ≤ d`) -/
 
 /-- `toEuclideanLin M` is injective when `M` is invertible (`det M ≠ 0`). -/
 theorem injective_toEuclideanLin {M : Matrix (Fin d) (Fin d) ℝ} (hM : M.det ≠ 0) :
@@ -250,27 +250,27 @@ theorem singularValues_cocycle_pos {A : X → Matrix (Fin d) (Fin d) ℝ} {T : X
     (cocycle A T n x)).injective_iff_forall_lt_finrank_singularValues_pos.mp hinj
   exact hpos i (by rw [hfin]; exact hi)
 
-/-- **`hpos` for `k ≤ d`.** `Sprod A T k n x > 0` for an invertible cocycle and `k ≤ d`. -/
-theorem Sprod_pos {A : X → Matrix (Fin d) (Fin d) ℝ} {T : X → X}
+/-- **`hpos` for `k ≤ d`.** `sprod A T k n x > 0` for an invertible cocycle and `k ≤ d`. -/
+theorem sprod_pos {A : X → Matrix (Fin d) (Fin d) ℝ} {T : X → X}
     (hA : ∀ x, (A x).det ≠ 0) {k : ℕ} (hk : k ≤ d) (n : ℕ) (x : X) :
-    0 < Sprod A T k n x :=
+    0 < sprod A T k n x :=
   Finset.prod_pos fun _i hi =>
     singularValues_cocycle_pos hA n x (lt_of_lt_of_le (Finset.mem_range.mp hi) hk)
 
-/-! ## L3: integrability and bounded-below of `log Sprod`
+/-! ## L3: integrability and bounded-below of `log sprod`
 
-The sandwich `−k·log‖(A⁽ⁿ⁾)⁻¹‖ ≤ log Sprod ≤ k·log‖A⁽ⁿ⁾‖` (from M-1 and its inverse
-companion) dominates `log Sprod` by integrable functions, reusing the Furstenberg–Kesten
+The sandwich `−k·log‖(A⁽ⁿ⁾)⁻¹‖ ≤ log sprod ≤ k·log‖A⁽ⁿ⁾‖` (from M-1 and its inverse
+companion) dominates `log sprod` by integrable functions, reusing the Furstenberg–Kesten
 integrability plumbing. -/
 
 variable [NeZero d]
 
 set_option linter.unusedSectionVars false in
-/-- **Upper Fekete bound.** `log Sprod_k ≤ k · log‖A⁽ⁿ⁾‖`. -/
+/-- **Upper Fekete bound.** `log sprod_k ≤ k · log‖A⁽ⁿ⁾‖`. -/
 theorem logSprod_le {A : X → Matrix (Fin d) (Fin d) ℝ} {T : X → X}
     (hA : ∀ x, (A x).det ≠ 0) {k : ℕ} (hk : k ≤ d) (n : ℕ) (x : X) :
-    Real.log (Sprod A T k n x) ≤ (k : ℝ) * Real.log ‖cocycle A T n x‖ := by
-  rw [Sprod, Real.log_prod (fun i hi =>
+    Real.log (sprod A T k n x) ≤ (k : ℝ) * Real.log ‖cocycle A T n x‖ := by
+  rw [sprod, Real.log_prod (fun i hi =>
     ne_of_gt (singularValues_cocycle_pos hA n x (lt_of_lt_of_le (Finset.mem_range.mp hi) hk)))]
   have hbnd : ∀ i ∈ Finset.range k,
       Real.log ((Matrix.toEuclideanLin (cocycle A T n x)).singularValues i)
@@ -285,11 +285,11 @@ theorem logSprod_le {A : X → Matrix (Fin d) (Fin d) ℝ} {T : X → X}
     _ = (k : ℝ) * Real.log ‖cocycle A T n x‖ := by
         rw [Finset.sum_const, Finset.card_range, nsmul_eq_mul]
 
-/-- **Lower Fekete bound.** `−k · log‖(A⁽ⁿ⁾)⁻¹‖ ≤ log Sprod_k`. -/
+/-- **Lower Fekete bound.** `−k · log‖(A⁽ⁿ⁾)⁻¹‖ ≤ log sprod_k`. -/
 theorem neg_le_logSprod {A : X → Matrix (Fin d) (Fin d) ℝ} {T : X → X}
     (hA : ∀ x, (A x).det ≠ 0) {k : ℕ} (hk : k ≤ d) (n : ℕ) (x : X) :
-    - ((k : ℝ) * Real.log ‖(cocycle A T n x)⁻¹‖) ≤ Real.log (Sprod A T k n x) := by
-  rw [Sprod, Real.log_prod (fun i hi =>
+    - ((k : ℝ) * Real.log ‖(cocycle A T n x)⁻¹‖) ≤ Real.log (sprod A T k n x) := by
+  rw [sprod, Real.log_prod (fun i hi =>
     ne_of_gt (singularValues_cocycle_pos hA n x (lt_of_lt_of_le (Finset.mem_range.mp hi) hk)))]
   have hdet : (cocycle A T n x).det ≠ 0 := det_cocycle_ne_zero hA n x
   have hbnd : ∀ i ∈ Finset.range k,
@@ -324,21 +324,21 @@ theorem measurable_det_comp {k : ℕ} {N : X → Matrix (Fin k) (Fin k) ℝ}
   exact Finset.measurable_prod _ fun i _ => hentry _ _
 
 set_option linter.unusedSectionVars false in
-/-- Measurability of `x ↦ Sprod A T k n x`. By the **compound-matrix bridge**
+/-- Measurability of `x ↦ sprod A T k n x`. By the **compound-matrix bridge**
 `ExteriorNorm.prod_singularValues_eq_l2_opNorm_compound`, the product of the top-`k` singular
 values equals the L2 operator norm of the `k`-th **compound matrix** `C_k(A⁽ⁿ⁾ x)`, whose entries
 are the `k × k` minors of `A⁽ⁿ⁾ x`. Each minor is the determinant of a submatrix of the
 (measurable) cocycle iterate, hence measurable; the matrix-valued map is then measurable
 entrywise, and the (continuous) L2 operator norm preserves measurability. No exterior-power /
 linear-map continuity is needed. -/
-theorem measurable_Sprod {A : X → Matrix (Fin d) (Fin d) ℝ} {T : X → X}
+theorem measurable_sprod {A : X → Matrix (Fin d) (Fin d) ℝ} {T : X → X}
     (hAmeas : Measurable A) (hTmeas : Measurable T) (k n : ℕ) :
-    Measurable (fun x => Sprod A T k n x) := by
-  -- `Sprod = ‖compoundMatrix k (cocycle A T n x)‖`.
-  have heq : (fun x => Sprod A T k n x)
+    Measurable (fun x => sprod A T k n x) := by
+  -- `sprod = ‖compoundMatrix k (cocycle A T n x)‖`.
+  have heq : (fun x => sprod A T k n x)
       = fun x => ‖ExteriorNorm.compoundMatrix k (cocycle A T n x)‖ := by
     funext x
-    rw [Sprod, ExteriorNorm.prod_singularValues_eq_l2_opNorm_compound]
+    rw [sprod, ExteriorNorm.prod_singularValues_eq_l2_opNorm_compound]
   rw [heq]
   -- The L2 operator norm is measurable on the entrywise σ-algebra; reduce to the compound matrix.
   refine measurable_l2_opNorm.comp ?_
@@ -352,47 +352,47 @@ theorem measurable_Sprod {A : X → Matrix (Fin d) (Fin d) ℝ} {T : X → X}
   simp only [Matrix.submatrix_apply]
   exact (measurable_pi_apply _).comp ((measurable_pi_apply _).comp hcoc)
 
-/-- **L3 — integrability of `log Sprod`.** Each level `gₙ = log Sprod_k` is integrable, dominated
+/-- **L3 — integrability of `log sprod`.** Each level `gₙ = log sprod_k` is integrable, dominated
 by the two (integrable) Furstenberg–Kesten log-norm cocycles. -/
 theorem integrable_logSprod (hT : MeasurePreserving T μ μ) [IsFiniteMeasure μ]
     {A : X → Matrix (Fin d) (Fin d) ℝ} (hA : ∀ x, (A x).det ≠ 0) (hAmeas : Measurable A)
     (hTmeas : Measurable T) (hint : IntegrableLogNorm A μ)
     (hint' : IntegrableLogNorm (fun x => (A x)⁻¹) μ) {k : ℕ} (hk : k ≤ d) (n : ℕ) :
-    Integrable (fun x => Real.log (Sprod A T k n x)) μ := by
+    Integrable (fun x => Real.log (sprod A T k n x)) μ := by
   -- The dominating bounds (FK integrability), scaled by `k`.
   have hU : Integrable (fun x => (k : ℝ) * Real.log ‖cocycle A T n x‖) μ :=
     (integrable_logNorm_cocycle hT hA hAmeas hTmeas hint hint' n).const_mul _
   have hL : Integrable (fun x => - ((k : ℝ) * Real.log ‖(cocycle A T n x)⁻¹‖)) μ :=
     ((integrable_logNorm_inv_cocycle hT hA hAmeas hTmeas hint hint' n).const_mul _).neg
-  -- Measurability of `log Sprod` (from measurability of `Sprod`).
-  have hmeas : AEStronglyMeasurable (fun x => Real.log (Sprod A T k n x)) μ :=
-    (Real.measurable_log.comp (measurable_Sprod hAmeas hTmeas k n)).aestronglyMeasurable
+  -- Measurability of `log sprod` (from measurability of `sprod`).
+  have hmeas : AEStronglyMeasurable (fun x => Real.log (sprod A T k n x)) μ :=
+    (Real.measurable_log.comp (measurable_sprod hAmeas hTmeas k n)).aestronglyMeasurable
   exact integrable_of_le_of_le hmeas
     (Filter.Eventually.of_forall fun x => neg_le_logSprod hA hk n x)
     (Filter.Eventually.of_forall fun x => logSprod_le hA hk n x) hL hU
 
-/-- **L3 — bounded-below proviso (Fekete lower bound).** The normalized integrals of `log Sprod`
+/-- **L3 — bounded-below proviso (Fekete lower bound).** The normalized integrals of `log sprod`
 are bounded below by `−k · ∫ log⁺‖A⁻¹‖`, keeping the Kingman limit finite. -/
 theorem bddBelow_logSprod (hT : MeasurePreserving T μ μ) [IsFiniteMeasure μ]
     {A : X → Matrix (Fin d) (Fin d) ℝ} (hA : ∀ x, (A x).det ≠ 0) (hAmeas : Measurable A)
     (hTmeas : Measurable T) (hint : IntegrableLogNorm A μ)
     (hint' : IntegrableLogNorm (fun x => (A x)⁻¹) μ) {k : ℕ} (hk : k ≤ d) :
     BddBelow (Set.range fun n : ℕ =>
-      (∫ x, Real.log (Sprod A T k (n + 1) x) ∂μ) / (n + 1)) := by
+      (∫ x, Real.log (sprod A T k (n + 1) x) ∂μ) / (n + 1)) := by
   refine ⟨- ((k : ℝ) * ∫ x, Real.posLog ‖(A x)⁻¹‖ ∂μ), ?_⟩
   rintro _ ⟨n, rfl⟩
   have hpos : (0 : ℝ) < (n : ℝ) + 1 := by positivity
   rw [le_div_iff₀ hpos]
-  -- lower bound on the integral of `log Sprod`.
+  -- lower bound on the integral of `log sprod`.
   have hlb : ∀ x, - ((k : ℝ) * birkhoffSum T (fun y => Real.posLog ‖(A y)⁻¹‖) (n + 1) x)
-      ≤ Real.log (Sprod A T k (n + 1) x) := by
+      ≤ Real.log (sprod A T k (n + 1) x) := by
     intro x
     refine le_trans ?_ (neg_le_logSprod hA hk (n + 1) x)
     have hub := logNorm_inv_cocycle_le_birkhoffSum (T := T) hA (n + 1) x
     have hknn : (0 : ℝ) ≤ (k : ℝ) := Nat.cast_nonneg k
     nlinarith [hub, hknn]
   have hmono : - ((k : ℝ) * ∫ x, birkhoffSum T (fun y => Real.posLog ‖(A y)⁻¹‖) (n + 1) x ∂μ)
-      ≤ ∫ x, Real.log (Sprod A T k (n + 1) x) ∂μ := by
+      ≤ ∫ x, Real.log (sprod A T k (n + 1) x) ∂μ := by
     rw [← integral_const_mul, ← integral_neg]
     exact integral_mono (((integrable_birkhoffSum hT hint' (n + 1)).const_mul _).neg)
       (integrable_logSprod hT hA hAmeas hTmeas hint hint' hk (n + 1)) hlb
@@ -430,60 +430,60 @@ set_option linter.unusedSectionVars false in
 /-- **L4 — the genuine ergodic `Γ_k` limit** (spike form). Under ergodicity, with the
 Furstenberg–Kesten-style integrability (`hint`) and bounded-below (`hbdd`) provisos and the
 positivity proviso (`hpos`, valid for `k ≤ d` on an invertible cocycle), the normalized
-`log Sprod_k` converges `μ`-a.e. to a constant `Γ_k`. -/
+`log sprod_k` converges `μ`-a.e. to a constant `Γ_k`. -/
 theorem tendsto_GammaK [IsProbabilityMeasure μ] (hT : Ergodic T μ)
     (A : X → Matrix (Fin d) (Fin d) ℝ) (k : ℕ)
-    (hpos : ∀ (j : ℕ) (y : X), 0 < Sprod A T k j y)
-    (hint : ∀ n, Integrable (fun x => Real.log (Sprod A T k n x)) μ)
+    (hpos : ∀ (j : ℕ) (y : X), 0 < sprod A T k j y)
+    (hint : ∀ n, Integrable (fun x => Real.log (sprod A T k n x)) μ)
     (hbdd : BddBelow (Set.range fun n : ℕ =>
-      (∫ x, Real.log (Sprod A T k (n + 1) x) ∂μ) / (n + 1))) :
+      (∫ x, Real.log (sprod A T k (n + 1) x) ∂μ) / (n + 1))) :
     ∃ Γk : ℝ, ∀ᵐ x ∂μ,
-      Tendsto (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (Sprod A T k n x)) atTop (𝓝 Γk) :=
-  tendsto_kingman_ergodic hT (g := fun n x => Real.log (Sprod A T k n x))
+      Tendsto (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (sprod A T k n x)) atTop (𝓝 Γk) :=
+  tendsto_kingman_ergodic hT (g := fun n x => Real.log (sprod A T k n x))
     (isSubadditiveCocycle_logSprod A k hpos) hint hbdd
 
 /-- **L4 — the genuine ergodic `Γ_k` limit** (with the L3 provisos discharged). For an ergodic
 measure-preserving `T`, an everywhere-invertible measurable cocycle generator with
-`log⁺‖A‖, log⁺‖A⁻¹‖ ∈ L¹`, and `k ≤ d`, the normalized `log Sprod_k` converges `μ`-a.e. to a
+`log⁺‖A‖, log⁺‖A⁻¹‖ ∈ L¹`, and `k ≤ d`, the normalized `log sprod_k` converges `μ`-a.e. to a
 constant `Γ_k`. -/
 theorem tendsto_GammaK_of_integrableLogNorm [IsProbabilityMeasure μ] (hT : Ergodic T μ)
     {A : X → Matrix (Fin d) (Fin d) ℝ} (hA : ∀ x, (A x).det ≠ 0) (hAmeas : Measurable A)
     (hint : IntegrableLogNorm A μ) (hint' : IntegrableLogNorm (fun x => (A x)⁻¹) μ)
     {k : ℕ} (hk : k ≤ d) :
     ∃ Γk : ℝ, ∀ᵐ x ∂μ,
-      Tendsto (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (Sprod A T k n x)) atTop (𝓝 Γk) := by
+      Tendsto (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (sprod A T k n x)) atTop (𝓝 Γk) := by
   have hmp : MeasurePreserving T μ μ := hT.toMeasurePreserving
   have hTmeas : Measurable T := hmp.measurable
-  exact tendsto_GammaK hT A k (fun j y => Sprod_pos hA hk j y)
+  exact tendsto_GammaK hT A k (fun j y => sprod_pos hA hk j y)
     (fun n => integrable_logSprod hmp hA hAmeas hTmeas hint hint' hk n)
     (bddBelow_logSprod hmp hA hAmeas hTmeas hint hint' hk)
 
 /-! ## L5: the per-singular-value exponents -/
 
 set_option linter.unusedSectionVars false in
-/-- **L5 — per-`σ` exponent.** Differencing the `Γ_k` limits: if `(1/n) log Sprod_{i+1} → a` and
-`(1/n) log Sprod_i → b` for `μ`-a.e. `x` and the singular values are positive (`k ≤ d`), then the
+/-- **L5 — per-`σ` exponent.** Differencing the `Γ_k` limits: if `(1/n) log sprod_{i+1} → a` and
+`(1/n) log sprod_i → b` for `μ`-a.e. `x` and the singular values are positive (`k ≤ d`), then the
 normalized log of the `i`-th singular value converges to `a − b` (the `i`-th Lyapunov exponent
 `λᵢ = Γ_{i+1} − Γ_i`). -/
 theorem tendsto_log_singularValue {A : X → Matrix (Fin d) (Fin d) ℝ}
     (hA : ∀ x, (A x).det ≠ 0) {i : ℕ} (hi : i < d) {a b : ℝ} {x : X}
-    (ha : Tendsto (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (Sprod A T (i + 1) n x)) atTop (𝓝 a))
-    (hb : Tendsto (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (Sprod A T i n x)) atTop (𝓝 b)) :
+    (ha : Tendsto (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (sprod A T (i + 1) n x)) atTop (𝓝 a))
+    (hb : Tendsto (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (sprod A T i n x)) atTop (𝓝 b)) :
     Tendsto
       (fun n : ℕ => (n : ℝ)⁻¹ *
         Real.log ((Matrix.toEuclideanLin (cocycle A T n x)).singularValues i))
       atTop (𝓝 (a - b)) := by
-  -- `log Sprod_{i+1} − log Sprod_i = log σᵢ` (the telescoping factor at index `i`).
+  -- `log sprod_{i+1} − log sprod_i = log σᵢ` (the telescoping factor at index `i`).
   have hsplit : ∀ n : ℕ,
       (n : ℝ)⁻¹ * Real.log ((Matrix.toEuclideanLin (cocycle A T n x)).singularValues i)
-        = (n : ℝ)⁻¹ * Real.log (Sprod A T (i + 1) n x)
-          - (n : ℝ)⁻¹ * Real.log (Sprod A T i n x) := by
+        = (n : ℝ)⁻¹ * Real.log (sprod A T (i + 1) n x)
+          - (n : ℝ)⁻¹ * Real.log (sprod A T i n x) := by
     intro n
-    have hSi1 : Sprod A T (i + 1) n x
-        = Sprod A T i n x
+    have hSi1 : sprod A T (i + 1) n x
+        = sprod A T i n x
           * (Matrix.toEuclideanLin (cocycle A T n x)).singularValues i := by
-      rw [Sprod, Sprod, Finset.prod_range_succ]
-    have hSi_pos : 0 < Sprod A T i n x := Sprod_pos hA (le_of_lt hi) n x
+      rw [sprod, sprod, Finset.prod_range_succ]
+    have hSi_pos : 0 < sprod A T i n x := sprod_pos hA (le_of_lt hi) n x
     have hσ_pos : 0 < (Matrix.toEuclideanLin (cocycle A T n x)).singularValues i :=
       singularValues_cocycle_pos hA n x hi
     rw [hSi1, Real.log_mul (ne_of_gt hSi_pos) (ne_of_gt hσ_pos)]
@@ -735,7 +735,7 @@ a single matrix `Λ x`. -/
 finite-dimensional matrix metric) to a single matrix `Λ x`. This is the existence statement of the
 Oseledets limit; it is proved jointly with its eigen-data conclusions downstream (the hard
 gapped-projection-Cauchy estimate, L7c). -/
-def L7_statement (μ : Measure X) (T : X → X) (A : X → Matrix (Fin d) (Fin d) ℝ) : Prop :=
+def oseledetsLimitExists (μ : Measure X) (T : X → X) (A : X → Matrix (Fin d) (Fin d) ℝ) : Prop :=
   ∃ Λ : X → Matrix (Fin d) (Fin d) ℝ,
     ∀ᵐ x ∂μ, Tendsto (fun n : ℕ => qpow A T n x) atTop (𝓝 (Λ x))
 
@@ -2962,7 +2962,7 @@ Two facts combine:
   function `h`, and on the spectrum `h` reproduces the right exponential);
 * `Λₙ x → Λ x` because each band projector converges a.e. (`tendsto_bandProjector_of_gap` at the
   genuine gaps; the non-gap terms have coefficient `0`).
-Hence `qpow A T n x → Λ x` a.e., discharging `L7_statement`. -/
+Hence `qpow A T n x → Λ x` a.e., discharging `oseledetsLimitExists`. -/
 
 /-- **Telescoping of the exponential increments.** For any `f : ℕ → ℝ` and `j < d`,
 `f (d-1) + ∑_{k ∈ Ico (j+1) d} (f (k-1) − f k) = f j`. The Abel-summation identity behind the block
@@ -3139,7 +3139,7 @@ theorem exists_lam_tendsto_singularValue [IsProbabilityMeasure μ] (hT : Ergodic
   classical
   -- The Γ_k constants for 0 ≤ k ≤ d (and 0 for k > d).
   have hΓ : ∀ k : ℕ, k ≤ d → ∃ Γk : ℝ, ∀ᵐ x ∂μ,
-      Tendsto (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (Sprod A T k n x)) atTop (𝓝 Γk) :=
+      Tendsto (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (sprod A T k n x)) atTop (𝓝 Γk) :=
     fun k hk => tendsto_GammaK_of_integrableLogNorm hT hA hAmeas hint hint' hk
   choose! Γ hΓspec using hΓ
   set lam : ℕ → ℝ := fun i => Γ (i + 1) - Γ i with hlamdef
@@ -3242,7 +3242,7 @@ theorem ae_forall_tendsto_block_term [IsProbabilityMeasure μ] (hT : Ergodic T �
     simp only [hcoef, zero_smul]
     exact tendsto_const_nhds
 
-/-- **L7 — the Oseledets limit exists.** Discharges `L7_statement`: for `μ`-a.e. `x`, the candidate
+/-- **L7 — the Oseledets limit exists.** Discharges `oseledetsLimitExists`: for `μ`-a.e. `x`, the candidate
 matrices `qpow A T n x = (Qₙ)^{1/(2n)}` converge in the matrix metric to a single matrix `Λ x`.
 
 The proof combines the four banked ingredients. The eigenvalues `μⱼ,ₙ = σⱼ^{1/n}` converge to the
@@ -3257,7 +3257,7 @@ converges; `Λ` is read off pointwise by `Classical.choice`. -/
 theorem tendsto_qpow [IsProbabilityMeasure μ] (hT : Ergodic T μ)
     {A : X → Matrix (Fin d) (Fin d) ℝ} (hA : ∀ x, (A x).det ≠ 0) (hAmeas : Measurable A)
     (hint : IntegrableLogNorm A μ) (hint' : IntegrableLogNorm (fun x => (A x)⁻¹) μ) :
-    L7_statement μ T A := by
+    oseledetsLimitExists μ T A := by
   classical
   obtain ⟨lam, hanti, hσ⟩ :=
     exists_lam_tendsto_singularValue hT hA hAmeas hint hint'
@@ -3406,11 +3406,11 @@ theorem tendsto_qpow [IsProbabilityMeasure μ] (hT : Ergodic T μ)
 
 /-! ## L8: a named, measurable Oseledets limit `Λ`
 
-The existence statement `L7_statement` (`tendsto_qpow`) only asserts an a.e.-existing limit via
+The existence statement `oseledetsLimitExists` (`tendsto_qpow`) only asserts an a.e.-existing limit via
 `Classical.choice`. Here we pin a **concrete, measurable** representative `oseledetsLimit A T`,
 defined entrywise as the real `limUnder` of the (measurable) matrix entries of `qpow A T n x`. On
 the a.e.-full convergence set this entrywise limit equals the matrix limit, so `oseledetsLimit`
-discharges `L7_statement` while being genuinely (not merely a.e.) measurable. -/
+discharges `oseledetsLimitExists` while being genuinely (not merely a.e.) measurable. -/
 
 variable [NeZero d]
 

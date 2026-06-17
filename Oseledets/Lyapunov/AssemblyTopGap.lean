@@ -97,7 +97,7 @@ theorem oseledets_filtration_of_topgap
         Matrix.toEuclideanLin (lambdaHat A T x) (b' x e)
           = Real.exp (lamSing A T x (e : ℕ)) • b' x e :=
       limitEigenbasis_eigenpair_exp hT hA hAmeas hint hint'
-    have hslowperp : ∀ᵐ x ∂μ, ∀ t : ℝ, ∀ v ∈ Vslow A T (Real.exp t) x, ∀ e : Fin d,
+    have hslowperp : ∀ᵐ x ∂μ, ∀ t : ℝ, ∀ v ∈ vslow A T (Real.exp t) x, ∀ e : Fin d,
         t < lam0 (e : ℕ) → inner ℝ (b' x e) v = 0 :=
       inner_limitEigenbasis_eq_zero_of_slow hT hA hAmeas hint hint' lam0 hlam0
     -- the spectral-identification band-projector datum.
@@ -122,7 +122,7 @@ theorem oseledets_filtration_of_topgap
     -- the trivial discharge of the forward graded-overlap hypothesis (no analytic content):
     -- pick `c := exp M` with `M` the finite max of `lam0 e - lam0 a` over pairs (and `≥ 0`);
     -- then `c · exp(-(max (g e - g a) 0)) ≥ exp 0 = 1 ≥ |⟪b' e, u_a(n)⟫|`.
-    have hfwd : ∀ᵐ x ∂μ, ∀ t : ℝ, ∀ v ∈ Vslow A T (Real.exp t) x, v ≠ 0 →
+    have hfwd : ∀ᵐ x ∂μ, ∀ t : ℝ, ∀ v ∈ vslow A T (Real.exp t) x, v ≠ 0 →
         ∃ c : ℝ, 1 ≤ c ∧ ∀ᶠ n : ℕ in atTop,
           ∀ a e : Fin d, |(inner ℝ (b' x e)
               (sortedGramEigenbasis A T n x ⟨a, lt_of_lt_of_eq a.2 (Fintype.card_fin d).symm⟩) : ℝ)|
@@ -158,12 +158,12 @@ theorem oseledets_filtration_of_topgap
         exact max_le (hMpair a e) hMnn
       linarith
     -- the per-vector spectral upper bound on the limit slow space.
-    have hupper := limsup_le_of_mem_Vslow hT hTmeas hA hAmeas hint hint' hrev
+    have hupper := limsup_le_of_mem_vslow hT hTmeas hA hAmeas hint hint' hrev
       lam0 hlam0 b' g hfwd hbridge
     -- the spectrum-identification residuals.
-    have hslowrev : ∀ᵐ x ∂μ, ∀ t : ℝ, lambdaSublevel A T x t ≤ Vslow A T (Real.exp t) x :=
-      ae_lambdaSublevel_le_Vslow hT hA hAmeas hint hint'
-    have hslowflag : ∀ᵐ x ∂μ, ∀ t : ℝ, Vslow A T (Real.exp t) x = lambdaSublevel A T x t :=
+    have hslowrev : ∀ᵐ x ∂μ, ∀ t : ℝ, lambdaSublevel A T x t ≤ vslow A T (Real.exp t) x :=
+      ae_lambdaSublevel_le_vslow hT hA hAmeas hint hint'
+    have hslowflag : ∀ᵐ x ∂μ, ∀ t : ℝ, vslow A T (Real.exp t) x = lambdaSublevel A T x t :=
       vslow_eq_lambdaSublevel_of_upper hT hA hAmeas hint hint' hupper hslowrev
     have hub_spec : ∀ lam0' : ℕ → ℝ,
         (∀ i : ℕ, i < d → ∀ᵐ x ∂μ, Tendsto

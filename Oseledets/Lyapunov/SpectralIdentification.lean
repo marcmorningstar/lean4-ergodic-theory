@@ -16,7 +16,7 @@ Main results:
    continuous) function is continuous under matrix limits of Hermitian matrices.
 2. `ae_tendsto_bandProjector_cfc_indicator` — a.e., the band projector limit at a non-eigenvalue
    threshold `c` is the Λ-spectral projector `cfc 𝟙_{(c,∞)} (lambdaHat …)`.
-3. `ae_lambdaSublevel_le_Vslow` — the reverse slow-flag inclusion `lambdaSublevel t ⊆ Vslow (e^t)`.
+3. `ae_lambdaSublevel_le_vslow` — the reverse slow-flag inclusion `lambdaSublevel t ⊆ vslow (e^t)`.
 
 The first result rests on a Frobenius / Hilbert–Schmidt Lipschitz estimate for the functional
 calculus; the second uses a continuous Lipschitz clamp surrogate for the indicator of `(c, ∞)` to
@@ -355,13 +355,13 @@ theorem ae_tendsto_bandProjector_cfc_indicator
 /-! ## The reverse slow-flag inclusion -/
 
 /-- A.e., for every `t`, the `lambdaBar`-sublevel at `t` is contained in the
-Λ-slow space `Vslow (e^t)`.  This is the inclusion consumed by
+Λ-slow space `vslow (e^t)`.  This is the inclusion consumed by
 `Oseledets.oseledets_filtration_of_upper`. -/
-theorem ae_lambdaSublevel_le_Vslow
+theorem ae_lambdaSublevel_le_vslow
     {μ : Measure X} [IsProbabilityMeasure μ] {T : X → X} (hT : Ergodic T μ)
     {A : X → Matrix (Fin d) (Fin d) ℝ} (hA : ∀ x, (A x).det ≠ 0) (hAmeas : Measurable A)
     (hint : IntegrableLogNorm A μ) (hint' : IntegrableLogNorm (fun x => (A x)⁻¹) μ) :
-    ∀ᵐ x ∂μ, ∀ t : ℝ, lambdaSublevel A T x t ≤ Vslow A T (Real.exp t) x := by
+    ∀ᵐ x ∂μ, ∀ t : ℝ, lambdaSublevel A T x t ≤ vslow A T (Real.exp t) x := by
   filter_upwards [isUltrametricGrowth_lambdaBar hT hA hAmeas hint hint',
     spectrum_lambdaHat_eq_ae hT hA hAmeas hint hint',
     ae_tendsto_bandProjector_cfc_indicator hT hA hAmeas hint hint',
@@ -376,10 +376,10 @@ theorem ae_lambdaSublevel_le_Vslow
     rcases (mem_lambdaSublevel hx t v).mp hv with h | h
     · exact absurd h hv0
     · exact h
-  -- Suppose for contradiction `v ∉ Vslow (exp t)`.
+  -- Suppose for contradiction `v ∉ vslow (exp t)`.
   by_contra hvnot
   -- Some eigenvalue `exp (lamSing j) > exp t`, else `slowProjector (exp t) = 1` and
-  -- `Vslow = ⊤ ∋ v`.
+  -- `vslow = ⊤ ∋ v`.
   have hexists : ∃ j : Fin d, Real.exp t < Real.exp (lamSing A T x (j : ℕ)) := by
     by_contra hno
     push Not at hno
@@ -395,8 +395,8 @@ theorem ae_lambdaSublevel_le_Vslow
       rintro _ ⟨j, rfl⟩
       have hle : Real.exp (lamSing A T x (j : ℕ)) ≤ Real.exp t := hno j
       rw [Set.indicator_of_mem (Set.mem_Iic.mpr hle), Pi.one_apply]
-    -- `Vslow (exp t) = range (toEuclideanCLM 1) = ⊤ ∋ v`.
-    rw [Vslow, mem_range_toEuclideanCLM_iff (by rw [hQ1, one_mul] : _ * _ = _), hQ1]
+    -- `vslow (exp t) = range (toEuclideanCLM 1) = ⊤ ∋ v`.
+    rw [vslow, mem_range_toEuclideanCLM_iff (by rw [hQ1, one_mul] : _ * _ = _), hQ1]
     rw [show Matrix.toEuclideanLin (1 : Matrix (Fin d) (Fin d) ℝ) v = v from by
       rw [← Matrix.coe_toEuclideanCLM_eq_toEuclideanLin (𝕜 := ℝ)]; simp]
   -- `e* := min over the (finite, nonempty) set of eigenvalues `> exp t``.
@@ -449,11 +449,11 @@ theorem ae_lambdaSublevel_le_Vslow
     cfc (Set.indicator (Set.Ioi c) (1 : ℝ → ℝ)) (lambdaHat A T x) with hP
   have hPeq : P = (1 : Matrix (Fin d) (Fin d) ℝ) - slowProjector A T (Real.exp t) x := by
     rw [hP, ← one_sub_slowProjector, hQeq]
-  -- `toEuclideanLin P v ≠ 0` (else `v ∈ range (slowProjector (exp t)) = Vslow (exp t)`).
+  -- `toEuclideanLin P v ≠ 0` (else `v ∈ range (slowProjector (exp t)) = vslow (exp t)`).
   have hPv : Matrix.toEuclideanLin P v ≠ 0 := by
     intro h0
     apply hvnot
-    rw [Vslow, mem_range_toEuclideanCLM_iff (slowProjector_mul_self A T (Real.exp t) x)]
+    rw [vslow, mem_range_toEuclideanCLM_iff (slowProjector_mul_self A T (Real.exp t) x)]
     have hmapsub : Matrix.toEuclideanLin
           ((1 : Matrix (Fin d) (Fin d) ℝ) - slowProjector A T (Real.exp t) x)
         = Matrix.toEuclideanLin 1 - Matrix.toEuclideanLin (slowProjector A T (Real.exp t) x) :=

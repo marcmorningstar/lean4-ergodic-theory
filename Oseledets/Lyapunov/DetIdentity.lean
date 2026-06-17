@@ -23,23 +23,23 @@ multiplicity) equals the **integral of `log|det|` of the generator**:
 The proof is the standard composition:
 
 1. **Volume = product of all singular values.** The product of *all* `d` singular values of
-   a matrix equals the absolute value of its determinant: `Sprod A T d n x = |det(A⁽ⁿ⁾)|`.
+   a matrix equals the absolute value of its determinant: `sprod A T d n x = |det(A⁽ⁿ⁾)|`.
    This is proved via the squared-singular-value/Gram-eigenvalue bridge
    (`sq_singularValues_eq_gram_eigenvalue`) and `det = ∏ eigenvalues` for the symmetric Gram
-   operator (`LinearMap.IsSymmetric.det_eq_prod_eigenvalues`): `Sprod_d² = det(MᵀM) =
-   (det M)²`, hence `Sprod_d = |det M|`.
+   operator (`LinearMap.IsSymmetric.det_eq_prod_eigenvalues`): `sprod_d² = det(MᵀM) =
+   (det M)²`, hence `sprod_d = |det M|`.
 2. **`log|det|` is an additive (Birkhoff) cocycle.** Because `det` is multiplicative
    (`Matrix.det_mul`), `log|det(A⁽ⁿ⁾)| = ∑_{k<n} log|det(A(Tᵏx))|`, i.e. the *exact* Birkhoff
    sum of `log|det A|` (the equality analogue of the submultiplicative log-norm sandwich).
 3. **Birkhoff ergodic theorem.** `(1/n) log|det(A⁽ⁿ⁾)| → ∫ log|det A|` `μ`-a.e., using that
-   `log|det A|` is integrable (it equals `log Sprod_d` at `n = 1`, integrable by
+   `log|det A|` is integrable (it equals `log sprod_d` at `n = 1`, integrable by
    `integrable_logSprod`).
 4. **Telescoping at `k = d`.** The same normalized quantity also converges to `Γ_d = ∑ i,
    exponents i` (`gammaK_eq_sum_top_exponents`). Uniqueness of limits gives the identity.
 
 ## Main definitions / results
 
-* `Oseledets.Sprod_d_eq_abs_det` — product of all singular values = `|det|`.
+* `Oseledets.sprod_d_eq_abs_det` — product of all singular values = `|det|`.
 * `Oseledets.integrable_log_abs_det` — `log|det A| ∈ L¹(μ)`.
 * `Oseledets.log_abs_det_cocycle_eq_birkhoffSum` — `log|det(A⁽ⁿ⁾)|` is the Birkhoff sum of
   `log|det A|`.
@@ -73,18 +73,18 @@ omit [MeasurableSpace X] in
 The product of *all* `d` singular values of the cocycle iterate equals the absolute value of
 its determinant. Proof: square it, use `σᵢ² = eigenvalue_i(MᵀM)`
 (`sq_singularValues_eq_gram_eigenvalue`) and `det = ∏ eigenvalues` for the symmetric Gram
-operator, giving `Sprod_d² = det(MᵀM) = (det M)²`; then take the (nonnegative) square root.
+operator, giving `sprod_d² = det(MᵀM) = (det M)²`; then take the (nonnegative) square root.
 No invertibility is required: the identity holds for every matrix (both sides are
 nonnegative and have equal squares). -/
-theorem Sprod_d_eq_abs_det {A : X → Matrix (Fin d) (Fin d) ℝ}
+theorem sprod_d_eq_abs_det {A : X → Matrix (Fin d) (Fin d) ℝ}
     (n : ℕ) (x : X) :
-    Sprod A T d n x = |(cocycle A T n x).det| := by
+    sprod A T d n x = |(cocycle A T n x).det| := by
   set M := cocycle A T n x with hM
   have hfin : Module.finrank ℝ (EuclideanSpace ℝ (Fin d)) = d := finrank_euclideanSpace_fin
-  -- `Sprod_d²` over `range d` rewritten as a `Fin d` product of squared singular values.
-  have hsq : (Sprod A T d n x) ^ 2
+  -- `sprod_d²` over `range d` rewritten as a `Fin d` product of squared singular values.
+  have hsq : (sprod A T d n x) ^ 2
       = ∏ i : Fin d, (Matrix.toEuclideanLin M).singularValues (i : ℕ) ^ 2 := by
-    rw [Sprod, ← Finset.prod_pow]
+    rw [sprod, ← Finset.prod_pow]
     rw [Finset.prod_range fun i =>
       (Matrix.toEuclideanLin M).singularValues i ^ 2]
   -- Each squared singular value is the corresponding Gram eigenvalue.
@@ -104,13 +104,13 @@ theorem Sprod_d_eq_abs_det {A : X → Matrix (Fin d) (Fin d) ℝ}
         ((Matrix.toEuclideanLin M).adjoint ∘ₗ (Matrix.toEuclideanLin M))
       = (M.det) ^ 2 := by
     rw [adjoint_comp_self_eq_gram, det_toEuclideanLin, Matrix.det_mul, Matrix.det_transpose, sq]
-  -- Assemble: `Sprod_d² = (det M)²`.
-  have hkey : (Sprod A T d n x) ^ 2 = (M.det) ^ 2 := by
+  -- Assemble: `sprod_d² = (det M)²`.
+  have hkey : (sprod A T d n x) ^ 2 = (M.det) ^ 2 := by
     rw [hsq, heig, hdet, hgram]
-  -- `Sprod_d ≥ 0`, so take the square root.
-  have hnn : 0 ≤ Sprod A T d n x :=
+  -- `sprod_d ≥ 0`, so take the square root.
+  have hnn : 0 ≤ sprod A T d n x :=
     Finset.prod_nonneg (fun i _ => (Matrix.toEuclideanLin M).singularValues_nonneg i)
-  have habs : |Sprod A T d n x| = |M.det| := by
+  have habs : |sprod A T d n x| = |M.det| := by
     rw [← Real.sqrt_sq_eq_abs, ← Real.sqrt_sq_eq_abs, hkey]
   rwa [abs_of_nonneg hnn] at habs
 
@@ -137,18 +137,18 @@ theorem log_abs_det_cocycle_eq_birkhoffSum {A : X → Matrix (Fin d) (Fin d) ℝ
 /-! ## Step 3: integrability of `log|det A|` -/
 
 /-- **`log|det A| ∈ L¹(μ)`.** Identifying `|det A|` with the product of all singular values of
-`A` (`Sprod A T d 1 = |det(A⁽¹⁾)| = |det A|`), integrability follows from the integrability of
-`log Sprod_d` (`integrable_logSprod` at `k = d`, `n = 1`), which is dominated by the two
+`A` (`sprod A T d 1 = |det(A⁽¹⁾)| = |det A|`), integrability follows from the integrability of
+`log sprod_d` (`integrable_logSprod` at `k = d`, `n = 1`), which is dominated by the two
 Furstenberg–Kesten log-norm cocycles `d·(log⁺‖A‖ + log⁺‖A⁻¹‖)`. -/
 theorem integrable_log_abs_det (hT : MeasurePreserving T μ μ) [IsFiniteMeasure μ]
     {A : X → Matrix (Fin d) (Fin d) ℝ} (hA : ∀ x, (A x).det ≠ 0) (hAmeas : Measurable A)
     (hint : IntegrableLogNorm A μ) (hint' : IntegrableLogNorm (fun x => (A x)⁻¹) μ) :
     Integrable (fun x => Real.log |(A x).det|) μ := by
   have hTmeas : Measurable T := hT.measurable
-  have heq : (fun x => Real.log (Sprod A T d 1 x))
+  have heq : (fun x => Real.log (sprod A T d 1 x))
       = fun x => Real.log |(A x).det| := by
     funext x
-    rw [Sprod_d_eq_abs_det 1 x, cocycle_one]
+    rw [sprod_d_eq_abs_det 1 x, cocycle_one]
   rw [← heq]
   exact integrable_logSprod hT hA hAmeas hTmeas hint hint' (le_refl d) 1
 
@@ -171,18 +171,18 @@ private theorem gammaK_d_eq_sumAllExp :
 determinant of the cocycle iterate converges to the sum of all Lyapunov exponents:
 `(1/n) log|det(A⁽ⁿ⁾)| → ∑ i, exponents i`. Two ingredients: the Birkhoff a.e. limit of the
 additive cocycle `log|det A|` (which is `∫ log|det A|`) and the telescoping growth rate
-`Γ_d = ∑ i, exponents i` (`gammaK`), tied together via `Sprod_d = |det|`. This route
+`Γ_d = ∑ i, exponents i` (`gammaK`), tied together via `sprod_d = |det|`. This route
 identifies the *limit* as the exponent sum; the *value* `∫ log|det A|` is recorded in
 `sumAllExp_eq_integral_log_abs_det`. -/
 theorem tendsto_log_abs_det_cocycle :
     ∀ᵐ x ∂μ, Tendsto (fun n : ℕ => (n : ℝ)⁻¹ * Real.log |(cocycle A T n x).det|) atTop
       (𝓝 (sumAllExp hT hA hAmeas hint hint')) := by
-  -- The normalized `log|det(A⁽ⁿ⁾)|` equals the normalized `log Sprod_d`.
+  -- The normalized `log|det(A⁽ⁿ⁾)|` equals the normalized `log sprod_d`.
   have hrw : ∀ x, (fun n : ℕ => (n : ℝ)⁻¹ * Real.log |(cocycle A T n x).det|)
-      = fun n : ℕ => (n : ℝ)⁻¹ * Real.log (Sprod A T d n x) := by
+      = fun n : ℕ => (n : ℝ)⁻¹ * Real.log (sprod A T d n x) := by
     intro x
     funext n
-    rw [Sprod_d_eq_abs_det n x]
+    rw [sprod_d_eq_abs_det n x]
   filter_upwards [gammaK_tendsto hT hA hAmeas hint hint' (le_refl d)] with x hx
   rw [hrw x, ← gammaK_d_eq_sumAllExp hT hA hAmeas hint hint']
   exact hx

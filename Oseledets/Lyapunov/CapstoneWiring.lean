@@ -17,9 +17,9 @@ import Oseledets.Cocycle.Basic
 This file combines the deterministic reverse-side overlap transfer of Ruelle
 (`Oseledets/Lyapunov/RuelleCore.lean`, `Oseledets/Lyapunov/RuelleReverse.lean`) with the
 almost-everywhere cocycle infrastructure (`OseledetsLimit.lean`, `Forward.lean`, `ForwardV.lean`)
-into the per-vector spectral upper bound for a vector in the limit slow space `Vslow`:
+into the per-vector spectral upper bound for a vector in the limit slow space `vslow`:
 
-  `∀ᵐ x, ∀ t, ∀ v ∈ Vslow A T (exp t) x, v ≠ 0 →`
+  `∀ᵐ x, ∀ t, ∀ v ∈ vslow A T (exp t) x, v ≠ 0 →`
   `      limsup (1/n) log ‖A⁽ⁿ⁾ v‖ ≤ t`.
 
 ## Main results
@@ -30,11 +30,11 @@ into the per-vector spectral upper bound for a vector in the limit slow space `V
 * `Oseledets.reverse_graded_overlap_bound`: for orthonormal bases `b, b'`, forward graded decay
   of the change-of-basis entries together with Ruelle's cofactor bound yields the
   transposed-graded reverse decay.
-* `Oseledets.limsup_le_of_mem_Vslow`: the per-vector spectral upper bound itself.
+* `Oseledets.limsup_le_of_mem_vslow`: the per-vector spectral upper bound itself.
 
 ## Strategy
 
-The terminal theorem `limsup_le_of_mem_Vslow` is proved by assembly:
+The terminal theorem `limsup_le_of_mem_vslow` is proved by assembly:
 
 1. The two side conditions of the envelope criterion
    `Oseledets.limsup_inv_mul_log_norm_cocycle_apply_le` are discharged outright:
@@ -210,7 +210,7 @@ open Oseledets.RuelleCofactor in
 /-- **Per-vector spectral upper bound on the limit slow space.**
 
 For `μ`-a.e. `x`, every threshold `t`, and every nonzero `v` in the limit slow space
-`Vslow A T (exp t) x`, the cocycle growth obeys `limsup (1/n) log ‖A⁽ⁿ⁾ v‖ ≤ t`.
+`vslow A T (exp t) x`, the cocycle growth obeys `limsup (1/n) log ‖A⁽ⁿ⁾ v‖ ≤ t`.
 
 The proof feeds the envelope criterion `limsup_inv_mul_log_norm_cocycle_apply_le` the
 per-index `specTerm` envelopes: slow indices (`lam j ≤ t`) from `specTerm_envelope_slow`
@@ -229,7 +229,7 @@ The hypothesis `hrev` is consumed by `reverse_graded_overlap_bound`, which turns
 graded decay `hfwd` into the reverse graded decay that `hbridge` requires.  Positivity and
 the cobounded side condition are discharged by `cocycle_apply_ne_zero` and
 `isBoundedUnder_log_norm_cocycle_apply`. -/
-theorem limsup_le_of_mem_Vslow
+theorem limsup_le_of_mem_vslow
     [MeasureTheory.IsProbabilityMeasure μ] [NeZero d]
     (hT : Ergodic T μ) (_hTmeas : Measurable T)
     {A : X → Matrix (Fin d) (Fin d) ℝ}
@@ -249,14 +249,14 @@ theorem limsup_le_of_mem_Vslow
     (b' : X → OrthonormalBasis (Fin d) ℝ (EuclideanSpace ℝ (Fin d)))
     (g : X → Fin d → ℝ)
     -- `hfwd`: the forward graded overlap bound (Ruelle Lemma 1.4 forward chain).
-    (hfwd : ∀ᵐ x ∂μ, ∀ t : ℝ, ∀ v ∈ Vslow A T (Real.exp t) x, v ≠ 0 →
+    (hfwd : ∀ᵐ x ∂μ, ∀ t : ℝ, ∀ v ∈ vslow A T (Real.exp t) x, v ≠ 0 →
       ∃ c : ℝ, 1 ≤ c ∧ ∀ᶠ n : ℕ in atTop,
         ∀ a e : Fin d, |(inner ℝ (b' x e)
             (sortedGramEigenbasis A T n x
               ⟨a, lt_of_lt_of_eq a.2 (Fintype.card_fin d).symm⟩) : ℝ)|
           ≤ c * Real.exp (-(max (g x e - g x a) 0)))
     -- `hbridge`: the band-limit bridge from reverse graded entries to the fast envelope.
-    (hbridge : ∀ᵐ x ∂μ, ∀ t : ℝ, ∀ v ∈ Vslow A T (Real.exp t) x, v ≠ 0 →
+    (hbridge : ∀ᵐ x ∂μ, ∀ t : ℝ, ∀ v ∈ vslow A T (Real.exp t) x, v ≠ 0 →
       (∃ c : ℝ, 1 ≤ c ∧ ∀ᶠ n : ℕ in atTop, ∀ i e : Fin d,
         |(inner ℝ (b' x e)
             (sortedGramEigenbasis A T n x
@@ -265,7 +265,7 @@ theorem limsup_le_of_mem_Vslow
         ∀ j : Fin (Fintype.card (Fin d)), t < lam (j : ℕ) → ∀ ε > 0,
           ∀ᶠ n : ℕ in atTop,
           specTerm T A n x v j ≤ Real.exp ((n : ℝ) * (2 * t + ε))) :
-    ∀ᵐ x ∂μ, ∀ t : ℝ, ∀ v ∈ Vslow A T (Real.exp t) x, v ≠ 0 →
+    ∀ᵐ x ∂μ, ∀ t : ℝ, ∀ v ∈ vslow A T (Real.exp t) x, v ≠ 0 →
       Filter.limsup (fun n : ℕ => (n : ℝ)⁻¹ *
         Real.log ‖Matrix.toEuclideanLin (cocycle A T n x) v‖) Filter.atTop ≤ t := by
   have hcard : Fintype.card (Fin d) = d := Fintype.card_fin d

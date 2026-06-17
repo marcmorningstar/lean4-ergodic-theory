@@ -13,8 +13,8 @@ import Oseledets.Cocycle.FurstenbergKesten
 
 For an ergodic cocycle `A⁽ⁿ⁾ = cocycle A T n` of invertible matrices over `(X, μ, T)`, this
 file controls the normalized log-growth sequence `n ↦ (1/n) log‖A⁽ⁿ⁾ v‖` of a vector `v`
-lying on a stratum of the Oseledets flag (`v ∈ Vflag A T x i.castSucc`,
-`v ∉ Vflag A T x i.succ`).
+lying on a stratum of the Oseledets flag (`v ∈ vflag A T x i.castSucc`,
+`v ∉ vflag A T x i.succ`).
 Together with the per-vector limsup upper bound, the results here are the inputs of
 `Oseledets.tendsto_inv_mul_log_norm_cocycle_apply_of_upper_lower` (in `Oseledets.Lyapunov.FiltrationAssemblyBridge`), which
 upgrades them to the exact growth limit `specList A T x i` on each stratum.
@@ -165,22 +165,22 @@ theorem isBoundedUnder_log_norm_cocycle_apply {T : X → X}
 /-- **Two-sided boundedness from Furstenberg–Kesten.**  The two-sided `IsBoundedUnder`
 side-conditions of `tendsto_inv_mul_log_norm_cocycle_apply_of_upper_lower` hold almost everywhere for every stratum vector.
 On each stratum the vector is nonzero (`0` lies in every flag level, so
-`v ∉ Vflag i.succ ⟹ v ≠ 0`), and the log-growth sequence is squeezed between the two
+`v ∉ vflag i.succ ⟹ v ≠ 0`), and the log-growth sequence is squeezed between the two
 convergent Furstenberg–Kesten envelopes. -/
 theorem isBoundedUnder_inv_mul_log_norm_cocycle_apply_of_mem_stratum {μ : Measure X} [IsProbabilityMeasure μ] {T : X → X}
     (hT : Ergodic T μ)
     (A : X → Matrix (Fin d) (Fin d) ℝ) (hA : ∀ x, (A x).det ≠ 0) (hAmeas : Measurable A)
     (hint : IntegrableLogNorm A μ) (hint' : IntegrableLogNorm (fun x => (A x)⁻¹) μ) :
     ∀ᵐ x ∂μ, ∀ i : Fin (specCard A T x),
-      ∀ v ∈ (Vflag A T x i.castSucc : Set (EuclideanSpace ℝ (Fin d))),
-        v ∉ Vflag A T x i.succ →
+      ∀ v ∈ (vflag A T x i.castSucc : Set (EuclideanSpace ℝ (Fin d))),
+        v ∉ vflag A T x i.succ →
         (IsBoundedUnder (· ≤ ·) atTop (fun n : ℕ => (n : ℝ)⁻¹ *
           Real.log ‖Matrix.toEuclideanLin (cocycle A T n x) v‖)) ∧
         (IsBoundedUnder (· ≥ ·) atTop (fun n : ℕ => (n : ℝ)⁻¹ *
           Real.log ‖Matrix.toEuclideanLin (cocycle A T n x) v‖)) := by
   filter_upwards [isBoundedUnder_log_norm_cocycle_apply hT A hA hAmeas hint hint']
     with x hx i v _ hvnot
-  -- `0 ∈ Vflag i.succ` (submodules contain `0`), so `v ∉ Vflag i.succ ⟹ v ≠ 0`.
+  -- `0 ∈ vflag i.succ` (submodules contain `0`), so `v ∉ vflag i.succ ⟹ v ≠ 0`.
   have hv : v ≠ 0 := fun h => hvnot (h ▸ Submodule.zero_mem _)
   exact hx v hv
 
@@ -194,10 +194,10 @@ remaining `IsCoboundedUnder (· ≥ ·)` side-condition is exactly the lower bou
 furnished by `isBoundedUnder_inv_mul_log_norm_cocycle_apply_of_mem_stratum` (a bounded-below sequence is cobounded-below).
 
 The band-projector convergence datum (`hP`, `hPv`) is the spectral-band identification of
-`Vflag` membership — `v ∉ Vflag i.succ` says `v` has a nonzero component in the band at level
+`vflag` membership — `v ∉ vflag i.succ` says `v` has a nonzero component in the band at level
 `≥ specList i`, i.e. `P v ≠ 0` for the limit projector at threshold `e^{specList i}`.  That
 identification is taken here as the minimal cleanly-typed hypothesis `hband`; any
-`Vflag`-to-band lemma of this shape discharges `hband` directly. -/
+`vflag`-to-band lemma of this shape discharges `hband` directly. -/
 
 /-- **Liminf lower bound from band-projector convergence.**  Given, a.e. and per stratum-vector,
 the band projector convergence datum at threshold `e^{specList i}` (`hband`) and the lower
@@ -210,22 +210,22 @@ using that `atTop` is `NeBot`). -/
 theorem specList_le_liminf_inv_mul_log_norm_cocycle_apply_of_bandProjector [NeZero d] {μ : Measure X} {T : X → X}
     (A : X → Matrix (Fin d) (Fin d) ℝ) (hA : ∀ x, (A x).det ≠ 0)
     (hband : ∀ᵐ x ∂μ, ∀ i : Fin (specCard A T x),
-      ∀ v ∈ (Vflag A T x i.castSucc : Set (EuclideanSpace ℝ (Fin d))),
-        v ∉ Vflag A T x i.succ →
+      ∀ v ∈ (vflag A T x i.castSucc : Set (EuclideanSpace ℝ (Fin d))),
+        v ∉ vflag A T x i.succ →
         ∃ P : Matrix (Fin d) (Fin d) ℝ,
           Tendsto (fun n => bandProjector A T
             (Set.indicator (Set.Ioi (Real.exp (specList A T x i))) 1) n x) atTop (𝓝 P) ∧
           Matrix.toEuclideanLin P v ≠ 0)
     (hbdd : ∀ᵐ x ∂μ, ∀ i : Fin (specCard A T x),
-      ∀ v ∈ (Vflag A T x i.castSucc : Set (EuclideanSpace ℝ (Fin d))),
-        v ∉ Vflag A T x i.succ →
+      ∀ v ∈ (vflag A T x i.castSucc : Set (EuclideanSpace ℝ (Fin d))),
+        v ∉ vflag A T x i.succ →
         (IsBoundedUnder (· ≤ ·) atTop (fun n : ℕ => (n : ℝ)⁻¹ *
           Real.log ‖Matrix.toEuclideanLin (cocycle A T n x) v‖)) ∧
         (IsBoundedUnder (· ≥ ·) atTop (fun n : ℕ => (n : ℝ)⁻¹ *
           Real.log ‖Matrix.toEuclideanLin (cocycle A T n x) v‖))) :
     ∀ᵐ x ∂μ, ∀ i : Fin (specCard A T x),
-      ∀ v ∈ (Vflag A T x i.castSucc : Set (EuclideanSpace ℝ (Fin d))),
-        v ∉ Vflag A T x i.succ →
+      ∀ v ∈ (vflag A T x i.castSucc : Set (EuclideanSpace ℝ (Fin d))),
+        v ∉ vflag A T x i.succ →
         specList A T x i ≤ liminf (fun n : ℕ => (n : ℝ)⁻¹ *
           Real.log ‖Matrix.toEuclideanLin (cocycle A T n x) v‖) atTop := by
   filter_upwards [hband, hbdd] with x hbandx hbddx i v hv hvnot
@@ -250,20 +250,20 @@ theorem tendsto_inv_mul_log_norm_cocycle_apply_of_bandProjector [NeZero d] {μ :
     (A : X → Matrix (Fin d) (Fin d) ℝ) (hA : ∀ x, (A x).det ≠ 0) (hAmeas : Measurable A)
     (hint : IntegrableLogNorm A μ) (hint' : IntegrableLogNorm (fun x => (A x)⁻¹) μ)
     (hub : ∀ᵐ x ∂μ, ∀ i : Fin (specCard A T x),
-      ∀ v ∈ (Vflag A T x i.castSucc : Set (EuclideanSpace ℝ (Fin d))),
-        v ∉ Vflag A T x i.succ →
+      ∀ v ∈ (vflag A T x i.castSucc : Set (EuclideanSpace ℝ (Fin d))),
+        v ∉ vflag A T x i.succ →
         limsup (fun n : ℕ => (n : ℝ)⁻¹ *
           Real.log ‖Matrix.toEuclideanLin (cocycle A T n x) v‖) atTop ≤ specList A T x i)
     (hband : ∀ᵐ x ∂μ, ∀ i : Fin (specCard A T x),
-      ∀ v ∈ (Vflag A T x i.castSucc : Set (EuclideanSpace ℝ (Fin d))),
-        v ∉ Vflag A T x i.succ →
+      ∀ v ∈ (vflag A T x i.castSucc : Set (EuclideanSpace ℝ (Fin d))),
+        v ∉ vflag A T x i.succ →
         ∃ P : Matrix (Fin d) (Fin d) ℝ,
           Tendsto (fun n => bandProjector A T
             (Set.indicator (Set.Ioi (Real.exp (specList A T x i))) 1) n x) atTop (𝓝 P) ∧
           Matrix.toEuclideanLin P v ≠ 0) :
     ∀ᵐ x ∂μ, ∀ i : Fin (specCard A T x),
-      ∀ v ∈ (Vflag A T x i.castSucc : Set (EuclideanSpace ℝ (Fin d))),
-        v ∉ Vflag A T x i.succ →
+      ∀ v ∈ (vflag A T x i.castSucc : Set (EuclideanSpace ℝ (Fin d))),
+        v ∉ vflag A T x i.succ →
         Tendsto
           (fun n : ℕ => (n : ℝ)⁻¹ *
             Real.log ‖Matrix.toEuclideanCLM (𝕜 := ℝ) (cocycle A T n x) v‖)

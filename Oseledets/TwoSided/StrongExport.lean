@@ -21,12 +21,12 @@ filtration level is given by the forward dimension formula
 `finrank (V i.castSucc x) = #{j < d | lam0 j ≤ expEnum lam0 d i}`.
 
 The proof is a re-run of the committed one-sided composition with the concrete witness
-`V := V' A T lam0`: it discharges the top-gap fast-band-mass envelope, builds the
+`V := vprime A T lam0`: it discharges the top-gap fast-band-mass envelope, builds the
 spectral, slow-flag and growth interfaces exactly as `oseledets_filtration_of_topgap`
 and `oseledets_filtration_of_upper'` do, and reads the structural block off
-`vassembled_structure_ae` transported through `hae_of_slowflag`.  The dimension clause is
-supplied by `ae_finrank_Vslow` (Phase P1), using that on the interior `V' A T lam0`
-reduces definitionally to `Vslow` at the deterministic cutoff `expEnum lam0 d i`.
+`vassembled_structure_ae` transported through `vprime_eq_vassembled_of_slowflag`.  The dimension clause is
+supplied by `ae_finrank_vslow` (Phase P1), using that on the interior `vprime A T lam0`
+reduces definitionally to `vslow` at the deterministic cutoff `expEnum lam0 d i`.
 
 ## Main results
 
@@ -101,7 +101,7 @@ theorem oseledets_filtration_dims
       Matrix.toEuclideanLin (lambdaHat A T x) (b' x e)
         = Real.exp (lamSing A T x (e : ℕ)) • b' x e :=
     limitEigenbasis_eigenpair_exp hT hA hAmeas hint hint'
-  have hslowperp : ∀ᵐ x ∂μ, ∀ t : ℝ, ∀ v ∈ Vslow A T (Real.exp t) x, ∀ e : Fin d,
+  have hslowperp : ∀ᵐ x ∂μ, ∀ t : ℝ, ∀ v ∈ vslow A T (Real.exp t) x, ∀ e : Fin d,
       t < lam0 (e : ℕ) → inner ℝ (b' x e) v = 0 :=
     inner_limitEigenbasis_eq_zero_of_slow hT hA hAmeas hint hint' lam0 hlam0
   -- The spectral-identification band-projector datum.
@@ -123,7 +123,7 @@ theorem oseledets_filtration_dims
   -- The grading `g x e := lam0 e`.
   set g : X → Fin d → ℝ := fun _ e => lam0 (e : ℕ) with hgdef
   -- The trivial discharge of the forward graded-overlap hypothesis.
-  have hfwd : ∀ᵐ x ∂μ, ∀ t : ℝ, ∀ v ∈ Vslow A T (Real.exp t) x, v ≠ 0 →
+  have hfwd : ∀ᵐ x ∂μ, ∀ t : ℝ, ∀ v ∈ vslow A T (Real.exp t) x, v ≠ 0 →
       ∃ c : ℝ, 1 ≤ c ∧ ∀ᶠ n : ℕ in atTop,
         ∀ a e : Fin d, |(inner ℝ (b' x e)
             (sortedGramEigenbasis A T n x ⟨a, lt_of_lt_of_eq a.2 (Fintype.card_fin d).symm⟩) : ℝ)|
@@ -156,12 +156,12 @@ theorem oseledets_filtration_dims
       exact max_le (hMpair a e) hMnn
     linarith
   -- The per-vector spectral upper bound on the limit slow space.
-  have hupper := limsup_le_of_mem_Vslow hT hTmeas hA hAmeas hint hint' hrev
+  have hupper := limsup_le_of_mem_vslow hT hTmeas hA hAmeas hint hint' hrev
     lam0 hlam0 b' g hfwd hbridge
   -- The reverse slow-flag inclusion and the slow flag identification.
-  have hslowrev : ∀ᵐ x ∂μ, ∀ t : ℝ, lambdaSublevel A T x t ≤ Vslow A T (Real.exp t) x :=
-    ae_lambdaSublevel_le_Vslow hT hA hAmeas hint hint'
-  have hslowflag : ∀ᵐ x ∂μ, ∀ t : ℝ, Vslow A T (Real.exp t) x = lambdaSublevel A T x t :=
+  have hslowrev : ∀ᵐ x ∂μ, ∀ t : ℝ, lambdaSublevel A T x t ≤ vslow A T (Real.exp t) x :=
+    ae_lambdaSublevel_le_vslow hT hA hAmeas hint hint'
+  have hslowflag : ∀ᵐ x ∂μ, ∀ t : ℝ, vslow A T (Real.exp t) x = lambdaSublevel A T x t :=
     vslow_eq_lambdaSublevel_of_upper hT hA hAmeas hint hint' hupper hslowrev
   -- The spectrum-identification residuals and the `hspec` interface.
   have hub_spec : ∀ᵐ x ∂μ, spectrum A T x ⊆ distinctExp lam0 d :=
@@ -174,15 +174,15 @@ theorem oseledets_filtration_dims
   have hub := limsup_log_norm_cocycle_apply_le_specList_of_mem_stratum hT hA hAmeas hint hint'
   have hlb := specList_le_liminf_inv_mul_log_norm_cocycle_apply_of_slowflag hT hA hAmeas hint hint' hident hslowflag
   have hgrowth := tendsto_inv_mul_log_norm_cocycle_apply_of_upper_lower A hub hlb hbdd
-  -- The structural a.e. block on `Vassembled` and its transport through `hae`.
+  -- The structural a.e. block on `vassembled` and its transport through `hae`.
   have hstruct := vassembled_structure_ae hT A hA hAmeas hint hint' lam0 hspec hgrowth
-  have hae := hae_of_slowflag A lam0 hspec hslowflag
+  have hae := vprime_eq_vassembled_of_slowflag A lam0 hspec hslowflag
   have haeT := hT.toMeasurePreserving.quasiMeasurePreserving.ae hae
   -- The a.e. forward dimension formula (Phase P1).
-  have hdims := ae_finrank_Vslow hT hA hAmeas hint hint' lam0 hlam0
-  -- Assemble the strong export with the concrete witness `V := V' A T lam0`.
-  refine ⟨lam0, hmono, hlam0, V' A T lam0,
-    hmeas'_V' A T hAmeas hTmeas lam0, ?_⟩
+  have hdims := ae_finrank_vslow hT hA hAmeas hint hint' lam0 hlam0
+  -- Assemble the strong export with the concrete witness `V := vprime A T lam0`.
+  refine ⟨lam0, hmono, hlam0, vprime A T lam0,
+    measurableSubspace_vprime A T hAmeas hTmeas lam0, ?_⟩
   filter_upwards [hstruct, hae, haeT, hdims] with x hsx haex haeTx hdimx
   obtain ⟨h0, hlast, hstrict, hmap, hgrow⟩ := hsx
   refine ⟨?_, ?_, ?_, ?_, ?_, ?_⟩
@@ -194,16 +194,16 @@ theorem oseledets_filtration_dims
     rw [haex i.castSucc] at hv
     rw [haex i.succ] at hvnot
     exact hgrow i v hv hvnot
-  · -- The dimension clause: on the interior, `V' i.castSucc` is `Vslow` at `expEnum lam0 d i`.
+  · -- The dimension clause: on the interior, `vprime i.castSucc` is `vslow` at `expEnum lam0 d i`.
     intro i
-    have hVeq : V' A T lam0 i.castSucc x
-        = Vslow A T (Real.exp (expEnum lam0 d i)) x := by
+    have hVeq : vprime A T lam0 i.castSucc x
+        = vslow A T (Real.exp (expEnum lam0 d i)) x := by
       have hlt : (i.castSucc : ℕ) < numExp lam0 d := by
         simp only [Fin.val_castSucc]; exact i.isLt
       have hcut : slowCutoff lam0 d i.castSucc = expEnum lam0 d i := by
         rw [slowCutoff, dif_pos hlt]
         exact congrArg (expEnum lam0 d) (Fin.ext (by simp))
-      unfold V'
+      unfold vprime
       rw [if_pos hlt, hcut]
     rw [hVeq, hdimx (expEnum lam0 d i)]
 

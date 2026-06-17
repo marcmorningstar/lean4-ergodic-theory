@@ -20,7 +20,7 @@ consistently with `Matrix.IsHermitian.eigenvalues₀`.
   `eigenvalues₀ ⟨e, …⟩`.
 * `limitEigenbasis_eigenpair_exp` — a.e. the eigenvalue is `Real.exp (lamSing A T x e)`.
 * `inner_limitEigenbasis_eq_zero_of_slow` — a.e., a sorted eigenvector is orthogonal to the
-  slow subspace `Vslow A T (exp t) x` whenever its exponent strictly exceeds `t`.
+  slow subspace `vslow A T (exp t) x` whenever its exponent strictly exceeds `t`.
 * `abs_inner_le_one_bases` — the trivial Cauchy–Schwarz bound for orthonormal bases.
 -/
 
@@ -129,9 +129,9 @@ theorem abs_inner_le_one_bases
 
 /-- **Slow orthogonality.**  A.e., a sorted limit eigenvector `limitEigenbasis A T x e` whose
 exponent `lam0 e` strictly exceeds the cutoff `t` is orthogonal to every vector in the slow subspace
-`Vslow A T (exp t) x`.
+`vslow A T (exp t) x`.
 
-Route: `v ∈ Vslow` means `slowProjector` fixes `v`; self-adjointness moves the projector onto the
+Route: `v ∈ vslow` means `slowProjector` fixes `v`; self-adjointness moves the projector onto the
 eigenvector, where the indicator-CFC `slowProjector` annihilates it (its eigenvalue `exp (lam0 e)`
 exceeds `exp t`, outside `Iic (exp t)`). -/
 theorem inner_limitEigenbasis_eq_zero_of_slow [MeasureTheory.IsProbabilityMeasure μ] [NeZero d]
@@ -143,14 +143,14 @@ theorem inner_limitEigenbasis_eq_zero_of_slow [MeasureTheory.IsProbabilityMeasur
       (fun n : ℕ => (n : ℝ)⁻¹ *
         Real.log ((Matrix.toEuclideanLin (cocycle A T n x)).singularValues i))
       Filter.atTop (𝓝 (lam0 i))) :
-    ∀ᵐ x ∂μ, ∀ t : ℝ, ∀ v ∈ Vslow A T (Real.exp t) x, ∀ e : Fin d,
+    ∀ᵐ x ∂μ, ∀ t : ℝ, ∀ v ∈ vslow A T (Real.exp t) x, ∀ e : Fin d,
       t < lam0 (e : ℕ) → inner ℝ (limitEigenbasis A T x e) v = 0 := by
   filter_upwards [limitEigenbasis_eigenpair_exp hT hA hAmeas hint hint',
     ae_lamSing_eq_lam0 lam0 hlam0] with x hpair hlameq
   intro t v hv e het
-  -- `v ∈ Vslow` ⟺ `slowProjector` fixes `v` (idempotency bridge).
+  -- `v ∈ vslow` ⟺ `slowProjector` fixes `v` (idempotency bridge).
   have hPv : Matrix.toEuclideanLin (slowProjector A T (Real.exp t) x) v = v := by
-    rw [Vslow, mem_range_toEuclideanCLM_iff (slowProjector_mul_self A T (Real.exp t) x)] at hv
+    rw [vslow, mem_range_toEuclideanCLM_iff (slowProjector_mul_self A T (Real.exp t) x)] at hv
     exact hv
   set b := limitEigenbasis A T x e with hb
   -- Move the self-adjoint projector from `v` onto the eigenvector `b`.

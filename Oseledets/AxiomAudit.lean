@@ -199,9 +199,9 @@ informational dump (it produces no output on success).
 
 -- Regularity in the generator: Fekete inf + USC/LSC (item 4).
 
-/-- info: 'Oseledets.gammaK_eq_GammaKInf' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'Oseledets.gammaK_eq_gammaKInf' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.gammaK_eq_GammaKInf
+#print axioms Oseledets.gammaK_eq_gammaKInf
 
 /-- info: 'Oseledets.GammaK_eq_iInf' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
@@ -281,9 +281,9 @@ informational dump (it produces no output on success).
 
 -- Two-sided splitting, P1 (forward dimension formula) and P7 (intersection measurability).
 
-/-- info: 'Oseledets.ae_finrank_Vslow' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'Oseledets.ae_finrank_vslow' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.ae_finrank_Vslow
+#print axioms Oseledets.ae_finrank_vslow
 
 /-- info: 'Oseledets.MeasurableSubspace.inf' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in

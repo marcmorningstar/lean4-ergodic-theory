@@ -28,9 +28,9 @@ Feeding it to `tendsto_kingman_ergodic` produces an a.e.-constant **forward top 
 `∀ᵐ x, limsup (fun n => (1/n) log‖A⁽ⁿ⁾(x)‖) ≤ λ₁⁺`.
 
 The same `log⁺`-of-a-non-negative-subadditive-quantity argument applies to the top-`k`
-singular-value product `Sprod` (whose submultiplicativity `Sprod_submul` *also* needs no
+singular-value product `sprod` (whose submultiplicativity `sprod_submul` *also* needs no
 invertibility), giving an a.e.-constant top-`k` volume value `Γ_k⁺` with the matching
-upper bound `limsup (1/n) log Sprod_k ≤ Γ_k⁺`.
+upper bound `limsup (1/n) log sprod_k ≤ Γ_k⁺`.
 
 ## Scope and caveats (read carefully)
 
@@ -39,7 +39,7 @@ upper bound `limsup (1/n) log Sprod_k ≤ Γ_k⁺`.
   directions, so `(1/n) log‖A⁽ⁿ⁾‖` need not converge, and the *true* limit may live in
   `[-∞, ∞)`. We bound the `limsup` from above by the *forward* top value `λ₁⁺`, which is the
   `log⁺` (not `log`) Furstenberg–Kesten constant.
-* `λ₁⁺` and `Γ_k⁺` are the limits of the **positive parts** `log⁺‖A⁽ⁿ⁾‖`, `log⁺ Sprod_k`. They
+* `λ₁⁺` and `Γ_k⁺` are the limits of the **positive parts** `log⁺‖A⁽ⁿ⁾‖`, `log⁺ sprod_k`. They
   coincide with the usual exponents whenever the latter are `≥ 0`; when the cocycle is
   asymptotically contracting they are pinned at `0` and the bound `limsup log-growth ≤ λ₁⁺`
   remains correct (the true growth is then `≤ 0`).
@@ -60,7 +60,7 @@ upper bound `limsup (1/n) log Sprod_k ≤ Γ_k⁺`.
   `limsup (1/n) log‖A⁽ⁿ⁾‖ ≤ λ₁⁺`.
 * `Oseledets.isSubadditiveCocycle_posLogSprod`, `Oseledets.integrable_posLogSprod`,
   `Oseledets.tendsto_top_posLogSprod`, `Oseledets.limsup_logSprod_le_top` — the analogous
-  top-`k` volume statements via `Sprod_submul`.
+  top-`k` volume statements via `sprod_submul`.
 -/
 
 open MeasureTheory Filter Topology
@@ -85,7 +85,7 @@ private theorem measurable_posLog : Measurable Real.posLog :=
 `EReal` (a complete linear order) makes the `limsup` total and the boundedness side-conditions
 automatic, so the bound is unconditional even when `a` tends to `−∞` (the genuinely singular
 case, where the true growth rate lives in `[−∞, ∞)`). Packaged for both the norm and the
-`Sprod` upper bounds. -/
+`sprod` upper bounds. -/
 private theorem ereal_limsup_le_of_tendsto_dom {a b : ℕ → ℝ} {lam : ℝ}
     (hb : Tendsto b atTop (𝓝 lam)) (hab : ∀ n, a n ≤ b n) :
     Filter.limsup (fun n => ((a n : EReal))) atTop ≤ (lam : EReal) := by
@@ -218,48 +218,48 @@ theorem limsup_logNorm_le_top [IsProbabilityMeasure μ] (hT : Ergodic T μ)
   · simp [hn]
   · exact mul_le_mul_of_nonneg_left (log_le_posLog _) (by positivity)
 
-/-! ### Top-`k` volume upper bound via `Sprod` (still no invertibility)
+/-! ### Top-`k` volume upper bound via `sprod` (still no invertibility)
 
-`Sprod A T k n x = ∏_{i<k} σᵢ(A⁽ⁿ⁾)` is the top-`k` singular-value product (the `k`-volume
-growth). Its submultiplicativity `Sprod_submul` holds with **no invertibility**, and
-`Sprod ≥ 0` always, so the same `log⁺`-of-a-non-negative-subadditive-quantity construction
+`sprod A T k n x = ∏_{i<k} σᵢ(A⁽ⁿ⁾)` is the top-`k` singular-value product (the `k`-volume
+growth). Its submultiplicativity `sprod_submul` holds with **no invertibility**, and
+`sprod ≥ 0` always, so the same `log⁺`-of-a-non-negative-subadditive-quantity construction
 gives an a.e.-constant forward top-`k` volume value `Γ_k⁺` and the matching upper bound. -/
 
 omit [MeasurableSpace X] in
-/-- `0 ≤ Sprod A T k n x` (a product of non-negative singular values), with no invertibility. -/
-theorem Sprod_nonneg (A : X → Matrix (Fin d) (Fin d) ℝ) (k n : ℕ) (x : X) :
-    0 ≤ Sprod A T k n x :=
+/-- `0 ≤ sprod A T k n x` (a product of non-negative singular values), with no invertibility. -/
+theorem sprod_nonneg (A : X → Matrix (Fin d) (Fin d) ℝ) (k n : ℕ) (x : X) :
+    0 ≤ sprod A T k n x :=
   Finset.prod_nonneg fun _ _ =>
     (Matrix.toEuclideanLin (cocycle A T n x)).singularValues_nonneg _
 
-/-- **`log⁺ Sprod_k` is a subadditive cocycle with NO invertibility.** From `Sprod_submul`
+/-- **`log⁺ sprod_k` is a subadditive cocycle with NO invertibility.** From `sprod_submul`
 (submultiplicativity of the top-`k` singular-value product, which needs no `det ≠ 0`) and
 `Real.posLog_mul`, with the symmetric Kingman split. -/
 theorem isSubadditiveCocycle_posLogSprod (A : X → Matrix (Fin d) (Fin d) ℝ) (k : ℕ) :
-    IsSubadditiveCocycle T (fun n x => Real.posLog (Sprod A T k n x)) := by
+    IsSubadditiveCocycle T (fun n x => Real.posLog (sprod A T k n x)) := by
   refine ⟨fun m n x => ?_⟩
-  -- symmetric submultiplicative split `Sprod (m+n) x ≤ Sprod n (T^[m] x) * Sprod m x`.
-  have hsub : Sprod A T k (m + n) x ≤ Sprod A T k n (T^[m] x) * Sprod A T k m x := by
-    have := Sprod_submul A T k n m x
+  -- symmetric submultiplicative split `sprod (m+n) x ≤ sprod n (T^[m] x) * sprod m x`.
+  have hsub : sprod A T k (m + n) x ≤ sprod A T k n (T^[m] x) * sprod A T k m x := by
+    have := sprod_submul A T k n m x
     rwa [show n + m = m + n by ring] at this
-  have hmono : Real.posLog (Sprod A T k (m + n) x)
-      ≤ Real.posLog (Sprod A T k n (T^[m] x) * Sprod A T k m x) :=
-    Real.posLog_le_posLog (Sprod_nonneg A k (m + n) x) hsub
-  calc Real.posLog (Sprod A T k (m + n) x)
-      ≤ Real.posLog (Sprod A T k n (T^[m] x) * Sprod A T k m x) := hmono
-    _ ≤ Real.posLog (Sprod A T k n (T^[m] x)) + Real.posLog (Sprod A T k m x) := Real.posLog_mul
-    _ = Real.posLog (Sprod A T k m x) + Real.posLog (Sprod A T k n (T^[m] x)) := by ring
+  have hmono : Real.posLog (sprod A T k (m + n) x)
+      ≤ Real.posLog (sprod A T k n (T^[m] x) * sprod A T k m x) :=
+    Real.posLog_le_posLog (sprod_nonneg A k (m + n) x) hsub
+  calc Real.posLog (sprod A T k (m + n) x)
+      ≤ Real.posLog (sprod A T k n (T^[m] x) * sprod A T k m x) := hmono
+    _ ≤ Real.posLog (sprod A T k n (T^[m] x)) + Real.posLog (sprod A T k m x) := Real.posLog_mul
+    _ = Real.posLog (sprod A T k m x) + Real.posLog (sprod A T k n (T^[m] x)) := by ring
 
 omit [MeasurableSpace X] in
-/-- Birkhoff-sum upper bound for `log⁺ Sprod_k`: `log⁺ Sprod_k(n) ≤ k · birkhoffSum (log⁺‖A‖) n`.
-Each singular value is `≤ ‖A⁽ⁿ⁾‖`, so `Sprod_k ≤ ‖A⁽ⁿ⁾‖^k`, and `log⁺` is monotone with
+/-- Birkhoff-sum upper bound for `log⁺ sprod_k`: `log⁺ sprod_k(n) ≤ k · birkhoffSum (log⁺‖A‖) n`.
+Each singular value is `≤ ‖A⁽ⁿ⁾‖`, so `sprod_k ≤ ‖A⁽ⁿ⁾‖^k`, and `log⁺` is monotone with
 `log⁺ (t^k) = k · log⁺ t`. -/
 theorem posLogSprod_le_birkhoffSum (A : X → Matrix (Fin d) (Fin d) ℝ) (k n : ℕ) (x : X) :
-    Real.posLog (Sprod A T k n x)
+    Real.posLog (sprod A T k n x)
       ≤ (k : ℝ) * birkhoffSum T (fun y => Real.posLog ‖A y‖) n x := by
-  -- `Sprod_k ≤ ‖A⁽ⁿ⁾‖^k`.
-  have hle : Sprod A T k n x ≤ ‖cocycle A T n x‖ ^ k := by
-    rw [Sprod]
+  -- `sprod_k ≤ ‖A⁽ⁿ⁾‖^k`.
+  have hle : sprod A T k n x ≤ ‖cocycle A T n x‖ ^ k := by
+    rw [sprod]
     calc ∏ i ∈ Finset.range k,
           (Matrix.toEuclideanLin (cocycle A T n x)).singularValues i
         ≤ ∏ _i ∈ Finset.range k, ‖cocycle A T n x‖ :=
@@ -267,33 +267,33 @@ theorem posLogSprod_le_birkhoffSum (A : X → Matrix (Fin d) (Fin d) ℝ) (k n :
             (fun i _ => (Matrix.toEuclideanLin (cocycle A T n x)).singularValues_nonneg i)
             (fun i _ => sigma_le_opNorm _ i)
       _ = ‖cocycle A T n x‖ ^ k := by rw [Finset.prod_const, Finset.card_range]
-  -- `log⁺ Sprod_k ≤ log⁺ (‖A⁽ⁿ⁾‖^k) = k · log⁺‖A⁽ⁿ⁾‖`.
-  calc Real.posLog (Sprod A T k n x)
+  -- `log⁺ sprod_k ≤ log⁺ (‖A⁽ⁿ⁾‖^k) = k · log⁺‖A⁽ⁿ⁾‖`.
+  calc Real.posLog (sprod A T k n x)
       ≤ Real.posLog (‖cocycle A T n x‖ ^ k) :=
-        Real.posLog_le_posLog (Sprod_nonneg A k n x) hle
+        Real.posLog_le_posLog (sprod_nonneg A k n x) hle
     _ = (k : ℝ) * Real.posLog ‖cocycle A T n x‖ := Real.posLog_pow k _
     _ ≤ (k : ℝ) * birkhoffSum T (fun y => Real.posLog ‖A y‖) n x :=
         mul_le_mul_of_nonneg_left (posLogNorm_cocycle_le_birkhoffSum A n x) (Nat.cast_nonneg k)
 
-/-- **Integrability of each level `log⁺ Sprod_k`** from the forward hypothesis alone:
-`0 ≤ log⁺ Sprod_k ≤ k · birkhoffSum (log⁺‖A‖) n`. No invertibility, no inverse integrability. -/
+/-- **Integrability of each level `log⁺ sprod_k`** from the forward hypothesis alone:
+`0 ≤ log⁺ sprod_k ≤ k · birkhoffSum (log⁺‖A‖) n`. No invertibility, no inverse integrability. -/
 theorem integrable_posLogSprod [NeZero d] (hT : MeasurePreserving T μ μ)
     {A : X → Matrix (Fin d) (Fin d) ℝ} (hAmeas : Measurable A) (hTmeas : Measurable T)
     (hint : IntegrableLogNorm A μ) (k n : ℕ) :
-    Integrable (fun x => Real.posLog (Sprod A T k n x)) μ := by
+    Integrable (fun x => Real.posLog (sprod A T k n x)) μ := by
   have hB_int : Integrable
       (fun x => (k : ℝ) * birkhoffSum T (fun y => Real.posLog ‖A y‖) n x) μ :=
     (integrable_birkhoffSum hT hint n).const_mul _
-  have hmeas : AEStronglyMeasurable (fun x => Real.posLog (Sprod A T k n x)) μ :=
-    (measurable_posLog.comp (measurable_Sprod hAmeas hTmeas k n)).aestronglyMeasurable
+  have hmeas : AEStronglyMeasurable (fun x => Real.posLog (sprod A T k n x)) μ :=
+    (measurable_posLog.comp (measurable_sprod hAmeas hTmeas k n)).aestronglyMeasurable
   refine Integrable.mono' hB_int hmeas (Filter.Eventually.of_forall fun x => ?_)
   rw [Real.norm_eq_abs, abs_of_nonneg Real.posLog_nonneg]
   exact posLogSprod_le_birkhoffSum A k n x
 
-/-- **Bounded-below proviso for free** (`log⁺ Sprod_k ≥ 0`). -/
+/-- **Bounded-below proviso for free** (`log⁺ sprod_k ≥ 0`). -/
 theorem bddBelow_posLogSprod (A : X → Matrix (Fin d) (Fin d) ℝ) (k : ℕ) :
     BddBelow (Set.range fun n : ℕ =>
-      (∫ x, Real.posLog (Sprod A T k (n + 1) x) ∂μ) / (n + 1)) := by
+      (∫ x, Real.posLog (sprod A T k (n + 1) x) ∂μ) / (n + 1)) := by
   refine ⟨0, ?_⟩
   rintro _ ⟨n, rfl⟩
   have hpos : (0 : ℝ) < (n : ℝ) + 1 := by positivity
@@ -301,13 +301,13 @@ theorem bddBelow_posLogSprod (A : X → Matrix (Fin d) (Fin d) ℝ) (k : ℕ) :
 
 /-- **The forward top-`k` volume value `Γ_k⁺`.** For an ergodic measure-preserving `T` and a
 possibly-singular measurable generator with `log⁺‖A‖ ∈ L¹`, the normalized positive-part log
-volumes `(1/n) log⁺ Sprod_k(x)` converge `μ`-a.e. to a constant `Γ_k⁺`, using only the forward
+volumes `(1/n) log⁺ sprod_k(x)` converge `μ`-a.e. to a constant `Γ_k⁺`, using only the forward
 integrability. -/
 theorem tendsto_top_posLogSprod [IsProbabilityMeasure μ] [NeZero d] (hT : Ergodic T μ)
     {A : X → Matrix (Fin d) (Fin d) ℝ} (hAmeas : Measurable A) (hint : IntegrableLogNorm A μ)
     (k : ℕ) :
     ∃ gam : ℝ, ∀ᵐ x ∂μ,
-      Tendsto (fun n : ℕ => (n : ℝ)⁻¹ * Real.posLog (Sprod A T k n x)) atTop (𝓝 gam) := by
+      Tendsto (fun n : ℕ => (n : ℝ)⁻¹ * Real.posLog (sprod A T k n x)) atTop (𝓝 gam) := by
   have hmp : MeasurePreserving T μ μ := hT.toMeasurePreserving
   have hTmeas : Measurable T := hmp.measurable
   exact tendsto_kingman_ergodic hT (isSubadditiveCocycle_posLogSprod A k)
@@ -318,18 +318,18 @@ theorem tendsto_top_posLogSprod [IsProbabilityMeasure μ] [NeZero d] (hT : Ergod
 a possibly-singular measurable generator with `log⁺‖A‖ ∈ L¹` (no invertibility, no inverse
 integrability), there is a constant `Γ_k⁺` such that for `μ`-a.e. `x`
 
-`limsup (fun n => ((1/n) log Sprod_k(x) : EReal)) ≤ Γ_k⁺`,
+`limsup (fun n => ((1/n) log sprod_k(x) : EReal)) ≤ Γ_k⁺`,
 
 i.e. the top-`k` volume growth rate is bounded above by the forward top-`k` value. The `limsup`
 is taken in `EReal` so the bound is unconditional even when the volume collapses
-(`Sprod_k → 0`, growth `→ −∞`). One-sided UPPER bound only. Carries `[NeZero d]` (the `d = 0`
+(`sprod_k → 0`, growth `→ −∞`). One-sided UPPER bound only. Carries `[NeZero d]` (the `d = 0`
 algebra is trivial). -/
 theorem limsup_logSprod_le_top [IsProbabilityMeasure μ] [NeZero d] (hT : Ergodic T μ)
     {A : X → Matrix (Fin d) (Fin d) ℝ} (hAmeas : Measurable A) (hint : IntegrableLogNorm A μ)
     (k : ℕ) :
     ∃ gam : ℝ, ∀ᵐ x ∂μ,
       Filter.limsup
-        (fun n : ℕ => (((n : ℝ)⁻¹ * Real.log (Sprod A T k n x) : ℝ) : EReal)) atTop
+        (fun n : ℕ => (((n : ℝ)⁻¹ * Real.log (sprod A T k n x) : ℝ) : EReal)) atTop
         ≤ (gam : EReal) := by
   obtain ⟨gam, hgam⟩ := tendsto_top_posLogSprod hT hAmeas hint k
   refine ⟨gam, ?_⟩
@@ -464,17 +464,17 @@ theorem limsup_logNorm_eq_top_of_pos [IsProbabilityMeasure μ] (hT : Ergodic T �
             (fun n : ℕ => (((n : ℝ)⁻¹ * Real.log ‖cocycle A T n x‖ : ℝ) : EReal)) atTop :=
           (Filter.limsup_congr hev_eq).symm
 
-/-! ### Top-`k` analogues: `EReal`-limit packaging and exact `limsup` of `log Sprod_k` -/
+/-! ### Top-`k` analogues: `EReal`-limit packaging and exact `limsup` of `log sprod_k` -/
 
-/-- **`EReal`-valued limit of the normalized `log⁺ Sprod_k`.** Top-`k` mirror of
+/-- **`EReal`-valued limit of the normalized `log⁺ sprod_k`.** Top-`k` mirror of
 `tendsto_top_posLogNorm_ereal`: lifts the genuine `ℝ`-limit `tendsto_top_posLogSprod` through
-`continuous_coe_real_ereal`, so `((1/n) log⁺ Sprod_k(x) : EReal)` converges `μ`-a.e. to
+`continuous_coe_real_ereal`, so `((1/n) log⁺ sprod_k(x) : EReal)` converges `μ`-a.e. to
 `(Γ_k⁺ : EReal)`. -/
 theorem tendsto_top_posLogSprod_ereal [IsProbabilityMeasure μ] [NeZero d] (hT : Ergodic T μ)
     {A : X → Matrix (Fin d) (Fin d) ℝ} (hAmeas : Measurable A) (hint : IntegrableLogNorm A μ)
     (k : ℕ) :
     ∃ gam : ℝ, ∀ᵐ x ∂μ,
-      Tendsto (fun n : ℕ => (((n : ℝ)⁻¹ * Real.posLog (Sprod A T k n x) : ℝ) : EReal)) atTop
+      Tendsto (fun n : ℕ => (((n : ℝ)⁻¹ * Real.posLog (sprod A T k n x) : ℝ) : EReal)) atTop
         (𝓝 (gam : EReal)) := by
   obtain ⟨gam, hgam⟩ := tendsto_top_posLogSprod hT hAmeas hint k
   refine ⟨gam, ?_⟩
@@ -485,35 +485,35 @@ theorem tendsto_top_posLogSprod_ereal [IsProbabilityMeasure μ] [NeZero d] (hT :
 log-volume growth when it is positive.** Top-`k` mirror of `limsup_logNorm_eq_top_of_pos`. For
 an ergodic measure-preserving `T` and a possibly-singular measurable generator with
 `log⁺‖A‖ ∈ L¹`, there is a constant `Γ_k⁺` that is the `μ`-a.e. limit of the normalized
-positive-part log-volumes `(1/n) log⁺ Sprod_k` (this pins `Γ_k⁺` to the genuine top-`k` value),
+positive-part log-volumes `(1/n) log⁺ sprod_k` (this pins `Γ_k⁺` to the genuine top-`k` value),
 and such that, **whenever `Γ_k⁺ > 0`**, for `μ`-a.e. `x`
 
-`limsup (fun n => ((1/n) log Sprod_k(x) : EReal)) = Γ_k⁺`.
+`limsup (fun n => ((1/n) log sprod_k(x) : EReal)) = Γ_k⁺`.
 
 This sharpens `limsup_logSprod_le_top` from `≤` to `=`. The `≤` half reuses the body of
-`limsup_logSprod_le_top`; the `≥` half uses that on the a.e. set where `(1/n) log⁺ Sprod_k →
-Γ_k⁺ > 0`, the sequence is eventually positive, forcing `log⁺ Sprod_k > 0`, hence `log Sprod_k > 0`
-and `log⁺ Sprod_k = log Sprod_k` (`posLog_eq_log_of_log_nonneg`); the two `EReal` sequences are
+`limsup_logSprod_le_top`; the `≥` half uses that on the a.e. set where `(1/n) log⁺ sprod_k →
+Γ_k⁺ > 0`, the sequence is eventually positive, forcing `log⁺ sprod_k > 0`, hence `log sprod_k > 0`
+and `log⁺ sprod_k = log sprod_k` (`posLog_eq_log_of_log_nonneg`); the two `EReal` sequences are
 eventually equal so their `limsup`s agree (`Filter.limsup_congr`). The positivity hypothesis is
 essential (the contracting case `Γ_k⁺ = 0` breaks the equality). Carries `[NeZero d]`. -/
 theorem limsup_logSprod_eq_top_of_pos [IsProbabilityMeasure μ] [NeZero d] (hT : Ergodic T μ)
     {A : X → Matrix (Fin d) (Fin d) ℝ} (hAmeas : Measurable A) (hint : IntegrableLogNorm A μ)
     (k : ℕ) :
     ∃ gam : ℝ,
-      (∀ᵐ x ∂μ, Tendsto (fun n : ℕ => (n : ℝ)⁻¹ * Real.posLog (Sprod A T k n x)) atTop
+      (∀ᵐ x ∂μ, Tendsto (fun n : ℕ => (n : ℝ)⁻¹ * Real.posLog (sprod A T k n x)) atTop
         (𝓝 gam)) ∧
       (0 < gam → ∀ᵐ x ∂μ,
         Filter.limsup
-          (fun n : ℕ => (((n : ℝ)⁻¹ * Real.log (Sprod A T k n x) : ℝ) : EReal)) atTop
+          (fun n : ℕ => (((n : ℝ)⁻¹ * Real.log (sprod A T k n x) : ℝ) : EReal)) atTop
           = (gam : EReal)) := by
   obtain ⟨gam, hgam⟩ := tendsto_top_posLogSprod hT hAmeas hint k
   refine ⟨gam, hgam, fun hpos => ?_⟩
   filter_upwards [hgam] with x hx
-  have hxE : Tendsto (fun n : ℕ => (((n : ℝ)⁻¹ * Real.posLog (Sprod A T k n x) : ℝ) : EReal))
+  have hxE : Tendsto (fun n : ℕ => (((n : ℝ)⁻¹ * Real.posLog (sprod A T k n x) : ℝ) : EReal))
       atTop (𝓝 (gam : EReal)) := (continuous_coe_real_ereal.tendsto _).comp hx
   have hgamLimsup :
       Filter.limsup
-        (fun n : ℕ => (((n : ℝ)⁻¹ * Real.posLog (Sprod A T k n x) : ℝ) : EReal)) atTop
+        (fun n : ℕ => (((n : ℝ)⁻¹ * Real.posLog (sprod A T k n x) : ℝ) : EReal)) atTop
         = (gam : EReal) := hxE.limsup_eq
   refine le_antisymm ?_ ?_
   · -- `≤`: `limsup (log) ≤ limsup (log⁺) = gam` (body of `limsup_logSprod_le_top`).
@@ -525,28 +525,28 @@ theorem limsup_logSprod_eq_top_of_pos [IsProbabilityMeasure μ] [NeZero d] (hT :
     · exact mul_le_mul_of_nonneg_left (log_le_posLog _) (by positivity)
   · -- `≥`: the two `EReal` sequences are eventually equal, so their `limsup`s agree `= gam`.
     have hev_pos : ∀ᶠ n : ℕ in atTop,
-        0 < (n : ℝ)⁻¹ * Real.posLog (Sprod A T k n x) :=
+        0 < (n : ℝ)⁻¹ * Real.posLog (sprod A T k n x) :=
       hx.eventually (eventually_gt_nhds hpos)
     have hev_eq : ∀ᶠ n : ℕ in atTop,
-        (((n : ℝ)⁻¹ * Real.log (Sprod A T k n x) : ℝ) : EReal)
-          = (((n : ℝ)⁻¹ * Real.posLog (Sprod A T k n x) : ℝ) : EReal) := by
+        (((n : ℝ)⁻¹ * Real.log (sprod A T k n x) : ℝ) : EReal)
+          = (((n : ℝ)⁻¹ * Real.posLog (sprod A T k n x) : ℝ) : EReal) := by
       filter_upwards [hev_pos, eventually_gt_atTop 0] with n hn _
       have hninv : (0 : ℝ) < (n : ℝ)⁻¹ := by positivity
-      have hposLog_pos : 0 < Real.posLog (Sprod A T k n x) :=
+      have hposLog_pos : 0 < Real.posLog (sprod A T k n x) :=
         (mul_pos_iff_of_pos_left hninv).1 hn
-      have hlog_pos : 0 < Real.log (Sprod A T k n x) := by
+      have hlog_pos : 0 < Real.log (sprod A T k n x) := by
         rw [Real.posLog_def] at hposLog_pos
-        rcases max_cases (0 : ℝ) (Real.log (Sprod A T k n x)) with ⟨he, _⟩ | ⟨he, _⟩
+        rcases max_cases (0 : ℝ) (Real.log (sprod A T k n x)) with ⟨he, _⟩ | ⟨he, _⟩
         · rw [he] at hposLog_pos; exact absurd hposLog_pos (lt_irrefl 0)
         · rwa [he] at hposLog_pos
       rw [posLog_eq_log_of_log_nonneg hlog_pos.le]
     refine le_of_eq ?_
     calc (gam : EReal)
         = Filter.limsup
-            (fun n : ℕ => (((n : ℝ)⁻¹ * Real.posLog (Sprod A T k n x) : ℝ) : EReal)) atTop :=
+            (fun n : ℕ => (((n : ℝ)⁻¹ * Real.posLog (sprod A T k n x) : ℝ) : EReal)) atTop :=
           hgamLimsup.symm
       _ = Filter.limsup
-            (fun n : ℕ => (((n : ℝ)⁻¹ * Real.log (Sprod A T k n x) : ℝ) : EReal)) atTop :=
+            (fun n : ℕ => (((n : ℝ)⁻¹ * Real.log (sprod A T k n x) : ℝ) : EReal)) atTop :=
           (Filter.limsup_congr hev_eq).symm
 
 end Oseledets

@@ -27,7 +27,7 @@ exponents. Three layers:
   The operator norm `‖compoundMatrix k (cocycle A T n x)‖` is exactly the product of the
   top-`k` singular values (`ExteriorNorm.prod_singularValues_eq_l2_opNorm_compound`), i.e. the
   norm of the largest `k × k` minor block — the `k`-dimensional volume growth rate. We take
-  the *scalar* route (rewriting through `Sprod`), which avoids re-establishing
+  the *scalar* route (rewriting through `sprod`), which avoids re-establishing
   Furstenberg–Kesten integrability for the compound generator.
 * **The positive-exponent sum as a maximal partial sum.** Since the partial sums
   `Γ_k = ∑_{i<k} exponents i` are partial sums of the antitone sequence `exponents`, they are
@@ -60,7 +60,7 @@ applies verbatim.
 
 The Furstenberg–Kesten-on-the-compound-generator route (feeding `extGen k A` to the top-exponent
 FK theorem) is **not** used and **not** required: it would demand its own integrability bound
-`log⁺‖C_k(A)‖ ≤ k · log⁺‖A‖ + C`. The scalar route through `Sprod` is far cheaper and is what we
+`log⁺‖C_k(A)‖ ≤ k · log⁺‖A‖ + C`. The scalar route through `sprod` is far cheaper and is what we
 use here. The cocycle structure (`cocycle_extGen_eq_compound`) is nonetheless proved, since it is
 the conceptual content of "the wedge of the cocycle is a cocycle".
 -/
@@ -116,7 +116,7 @@ product of the top-`k` singular values (`ExteriorNorm.prod_singularValues_eq_l2_
 i.e. the largest `k × k` minor growth / `k`-dimensional volume growth; its growth rate is the
 partial sum `Γ_k` of the top-`k` Lyapunov exponents.
 
-We rewrite `‖C_k(cocycle A T n x)‖ = Sprod_k` and apply `gammaK_tendsto` (the scalar route),
+We rewrite `‖C_k(cocycle A T n x)‖ = sprod_k` and apply `gammaK_tendsto` (the scalar route),
 avoiding any Furstenberg–Kesten integrability bound for the compound generator. -/
 theorem tendsto_log_opNorm_compound_cocycle {k : ℕ} (hk : k ≤ d) :
     ∀ᵐ x ∂μ, Tendsto
@@ -125,7 +125,7 @@ theorem tendsto_log_opNorm_compound_cocycle {k : ℕ} (hk : k ≤ d) :
       (𝓝 (gammaK hT hA hAmeas hint hint' hk)) := by
   filter_upwards [gammaK_tendsto hT hA hAmeas hint hint' hk] with x hx
   refine hx.congr (fun n => ?_)
-  rw [Sprod, ExteriorNorm.prod_singularValues_eq_l2_opNorm_compound]
+  rw [sprod, ExteriorNorm.prod_singularValues_eq_l2_opNorm_compound]
 
 /-- **`Γ_1` is the top Lyapunov exponent.** The first partial sum `Γ_1 = ∑_{i<1} exponents i`
 equals `exponents 0 = topExponent`. -/

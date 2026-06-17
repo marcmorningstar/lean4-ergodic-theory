@@ -12,10 +12,10 @@ import Oseledets.Lyapunov.OseledetsLimit
 
 This module is the first, purely additive plumbing step of the two-sided Oseledets
 splitting (phase P1).  It records the
-*forward dimension formula* for the slow spectral filtration `Vslow` of the sanitized
+*forward dimension formula* for the slow spectral filtration `vslow` of the sanitized
 Oseledets limit operator: almost everywhere,
 
-`finrank (Vslow A T (exp t) x) = #{j < d | lam0 j ≤ t}`.
+`finrank (vslow A T (exp t) x) = #{j < d | lam0 j ≤ t}`.
 
 ## Main results
 
@@ -25,7 +25,7 @@ Oseledets limit operator: almost everywhere,
 * `finrank_range_of_orthonormal_diag` — the rank of a self-adjoint idempotent matrix that
   is diagonal in an orthonormal basis with `0/1` eigenvalues equals the number of
   unit eigenvalues.
-* `ae_finrank_Vslow` — the validated a.e. dimension formula for `Vslow`.
+* `ae_finrank_vslow` — the validated a.e. dimension formula for `vslow`.
 
 The eigenvector CFC lemma generalises the repo's `toEuclideanLin_cfc_fix_eigenvector`
 (which only handles the unit-eigenvalue case); the rank lemma mirrors the
@@ -180,12 +180,12 @@ theorem finrank_range_of_orthonormal_diag {d : ℕ}
   ext j
   simp
 
-/-! ### The a.e. dimension formula for `Vslow` -/
+/-! ### The a.e. dimension formula for `vslow` -/
 
 /-- **A.e. forward dimension formula.**  Almost everywhere, the dimension of the slow spectral
-filtration `Vslow A T (exp t) x` at threshold `t` is the number of indices `j < d` whose
+filtration `vslow A T (exp t) x` at threshold `t` is the number of indices `j < d` whose
 deterministic exponent `lam0 j` does not exceed `t`. -/
-theorem ae_finrank_Vslow {X : Type*} [MeasurableSpace X] {μ : Measure X}
+theorem ae_finrank_vslow {X : Type*} [MeasurableSpace X] {μ : Measure X}
     [IsProbabilityMeasure μ] {T : X → X} {d : ℕ} [NeZero d] (hT : Ergodic T μ)
     {A : X → Matrix (Fin d) (Fin d) ℝ} (hA : ∀ x, (A x).det ≠ 0) (hAmeas : Measurable A)
     (hint : IntegrableLogNorm A μ) (hint' : IntegrableLogNorm (fun x => (A x)⁻¹) μ)
@@ -195,7 +195,7 @@ theorem ae_finrank_Vslow {X : Type*} [MeasurableSpace X] {μ : Measure X}
         Real.log ((Matrix.toEuclideanLin (cocycle A T n x)).singularValues i))
       Filter.atTop (𝓝 (lam0 i))) :
     ∀ᵐ x ∂μ, ∀ t : ℝ,
-      Module.finrank ℝ (Vslow A T (Real.exp t) x)
+      Module.finrank ℝ (vslow A T (Real.exp t) x)
         = ((Finset.range d).filter (fun j => lam0 j ≤ t)).card := by
   classical
   filter_upwards [limitEigenbasis_eigenpair_exp hT hA hAmeas hint hint',
@@ -240,7 +240,7 @@ theorem ae_finrank_Vslow {X : Type*} [MeasurableSpace X] {μ : Measure X}
       have hmem : Real.exp (lamSing A T x (e : ℕ)) ∈ Set.Iic (Real.exp t) := by
         simp only [Set.mem_Iic]; exact Real.exp_le_exp.mpr h
       rw [Set.indicator_of_mem hmem]; rfl
-  rw [Vslow, ← hQ,
+  rw [vslow, ← hQ,
     finrank_range_of_orthonormal_diag b Q (slowProjector_mul_self A T (Real.exp t) x) ε hdiag h01]
   -- Convert the `Fin d` count to a `range d` count.
   rw [← Finset.card_image_of_injective _ (Fin.val_injective)]
