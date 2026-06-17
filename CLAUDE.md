@@ -49,11 +49,11 @@ at container creation); incremental `lake build` is all that is ever needed.
 
 **Mathlib-rebuild guard.** If Mathlib's oleans are ever absent (a fresh checkout, or — more
 insidiously — a git worktree created without the prebuilt `.lake` cache or its symlink), any
-`lake build`/`lake serve` recompiles Mathlib *from source* (hours). The `leancheck` harness
-(`docs/leancheck-README.md`) detects this and **aborts with a loud warning** rather than start the
-rebuild silently; override only by choice with `LEANCHECK_ALLOW_MATHLIB_REBUILD=1`. A direct
-`lake build` is *not* guarded — run `leancheck --check-mathlib` first if unsure whether the cache
-is in place.
+`lake build`/`lake serve` recompiles Mathlib *from source* (hours). Warm per-edit Lean feedback is
+provided by the external **`leancheck` Claude plugin** (`github.com/marcmorningstar/leancheck`),
+whose `lake serve` daemon **aborts with a loud warning** rather than start such a rebuild (override
+only by choice with `LEANCHECK_ALLOW_MATHLIB_REBUILD=1`). A direct `lake build` is *not* guarded and
+is the authoritative gate — make sure the Mathlib cache is in place before building.
 
 ## Conventions
 

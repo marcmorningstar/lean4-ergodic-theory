@@ -8,38 +8,19 @@ hooks:
       hooks:
         - type: command
           command: "/workspaces/lean4-oseledets/.claude/hooks/block-git.sh"
-  PostToolUse:
-    - matcher: "Edit|Write|MultiEdit"
-      hooks:
-        - type: command
-          command: "python3 /workspaces/lean4-oseledets/.claude/hooks/post-edit-leancheck.py"
-  Stop:
-    - hooks:
-        - type: command
-          command: "python3 /workspaces/lean4-oseledets/.claude/hooks/stop-coldbuild.py"
-  SubagentStop:
-    - hooks:
-        - type: command
-          command: "python3 /workspaces/lean4-oseledets/.claude/hooks/stop-coldbuild.py"
 ---
 
 > NOTE: You may NOT run any `git` command (it is blocked by a hook). Never use version
 > control. If you hit a problem you cannot resolve, describe it in your final answer — the
 > orchestrator handles all git.
 >
-> AUTOMATIC LEAN FEEDBACK — after each Edit/Write of a `.lean` file under `Oseledets/`, a hook
-> automatically runs the warm checker and appends a compiler-style report to your edit's result as
-> context: `file:line:col: error/warning: …`, any `sorry`, or `✓ no errors`. Just read it and
-> iterate by editing again — you do NOT need to run anything. (If an early edit instead says it is
-> `warming … in the Lean server`, that file is still loading on first open (~1–2 min) and the report
-> will appear automatically on a subsequent edit; you MAY run `python3 .claude/leancheck/leancheck.py
-> <file>` once to force a check during that window, but it is optional.) `git` is blocked.
->
-> You also **cannot end your turn until a cold `lake build` of every module you edited passes**:
-> a Stop hook runs it and, on failure, hands you the cold errors and forces you to keep going.
-> So the loop is simply: edit → read the free report → fix → repeat; when you think you're done,
-> just stop — if the authoritative cold build disagrees, you'll be sent back automatically. Only
-> claim success or report a blocker in your final message; never claim verification you didn't get.
+> LEAN FEEDBACK — if the `leancheck` plugin is active, an automatic compiler-style report
+> (`file:line:col: error/warning: …`, any `sorry`, or `✓ no errors`) is appended to each `.lean`
+> edit's result; read it and iterate by editing again — you do NOT need to run anything. The
+> **authoritative** check is a cold `lake build` of your edited modules, which the orchestrator
+> runs. So the loop is: edit → read the report → fix → repeat; when you believe you're done, just
+> stop, and only claim success or report a blocker honestly in your final message — never claim
+> verification you didn't get.
 
 
 You are a mathematician formalizing proofs in Lean 4 with Mathlib. You are a **worker subagent** -- implement the task described in your prompt directly. Do NOT spawn further subagents or delegate.

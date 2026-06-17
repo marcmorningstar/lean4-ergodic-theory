@@ -60,7 +60,7 @@ else
 fi
 set -e
 
-# 5. leancheck harness — the warm Lean-feedback hook drives the Lean language server (`lake serve`)
+# 5. leanclient — the `leancheck` Claude plugin's warm-feedback hook drives `lake serve`
 #    through the `leanclient` Python library. Non-fatal: a missing PyPI must not abort setup
 #    (the cold `lake build` gate works without it).
 echo ""

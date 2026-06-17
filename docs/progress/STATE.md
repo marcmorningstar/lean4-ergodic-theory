@@ -70,5 +70,5 @@ Cocycle newest-factor-left; scoped L2 operator norm `Matrix.Norms.L2Operator`; v
 
 `lake build` (incremental, whole-library; the efficient inner loop and the authoritative QA gate
 together with `AxiomAudit`). **Never `lake exe cache get` in this devcontainer** — the cache host
-is DNS-blocked; the Mathlib cache is already present. See `docs/leancheck-README.md` for the
-warm-REPL iteration accelerator.
+is DNS-blocked; the Mathlib cache is already present. Warm per-edit feedback is provided by the
+external `leancheck` Claude plugin (`github.com/marcmorningstar/leancheck`).
