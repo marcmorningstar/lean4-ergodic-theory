@@ -34,6 +34,7 @@ import Oseledets.Continuous.Suspension
 import Oseledets.Continuous.SuspensionMeasure
 import Oseledets.Continuous.SuspensionSpace
 import Oseledets.Continuous.SuspensionFlow
+import Oseledets.Continuous.SuspensionFlowMP
 import Oseledets.Smooth.DerivativeCocycle
 import Oseledets.Examples.Elementary
 import Oseledets.Entropy.Partition
@@ -602,3 +603,13 @@ info: 'Oseledets.Entropy.MeasurePartition.sum_toReal_measure_eq_one' depends on 
 /-- info: 'Oseledets.measurable_suspensionFlowMap' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms Oseledets.measurable_suspensionFlowMap
+
+-- Issue #5 (flow measure-preservation): the suspension flow is a measure-preserving flow.
+
+/-- info: 'Oseledets.measurePreserving_suspensionFlowMap' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.measurePreserving_suspensionFlowMap
+
+/-- info: 'Oseledets.suspensionFlow' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.suspensionFlow

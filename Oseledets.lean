@@ -71,6 +71,7 @@ import Oseledets.Continuous.Suspension
 import Oseledets.Continuous.SuspensionMeasure
 import Oseledets.Continuous.SuspensionSpace
 import Oseledets.Continuous.SuspensionFlow
+import Oseledets.Continuous.SuspensionFlowMP
 import Oseledets.Smooth.DerivativeCocycle
 import Oseledets.Examples.Elementary
 import Oseledets.Entropy.Partition
