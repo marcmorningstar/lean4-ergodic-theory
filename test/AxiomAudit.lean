@@ -33,6 +33,7 @@ import Oseledets.Continuous.MultiplicativeErgodicFlow
 import Oseledets.Continuous.Suspension
 import Oseledets.Continuous.SuspensionMeasure
 import Oseledets.Continuous.SuspensionSpace
+import Oseledets.Continuous.SuspensionFlow
 import Oseledets.Smooth.DerivativeCocycle
 import Oseledets.Examples.Elementary
 import Oseledets.Entropy.Partition
@@ -583,3 +584,21 @@ info: 'Oseledets.Entropy.MeasurePartition.sum_toReal_measure_eq_one' depends on 
 /-- info: 'Oseledets.isProbabilityMeasure_suspensionMeasure' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms Oseledets.isProbabilityMeasure_suspensionMeasure
+
+-- Issue #5 (flow layer): the suspension flow ζ_t (descent of the vertical translation) on Xᵗ.
+
+/-- info: 'Oseledets.measurePreserving_translate' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.measurePreserving_translate
+
+/-- info: 'Oseledets.suspensionFlowMap_zero' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.suspensionFlowMap_zero
+
+/-- info: 'Oseledets.suspensionFlowMap_add' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.suspensionFlowMap_add
+
+/-- info: 'Oseledets.measurable_suspensionFlowMap' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.measurable_suspensionFlowMap
