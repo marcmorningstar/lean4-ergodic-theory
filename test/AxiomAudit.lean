@@ -18,6 +18,7 @@ import Oseledets.Lyapunov.Extensions.SingularExponent
 import Oseledets.Lyapunov.Extensions.SingularExponentBounds
 import Oseledets.Lyapunov.Extensions.SingularExponentTop
 import Oseledets.Lyapunov.Extensions.SingularDet
+import Oseledets.Lyapunov.Extensions.SingularDetGrowth
 import Oseledets.Lyapunov.Extensions.ConstantCocycle
 import Oseledets.TwoSided.Invertible
 import Oseledets.TwoSided.SpectralRank
@@ -385,6 +386,16 @@ informational dump (it produces no output on success).
 /-- info: 'Oseledets.forwardSingularExponent_full_eq' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms Oseledets.forwardSingularExponent_full_eq
+
+-- Issue #6 (γ_d det-growth tie): a.e. γ_d = ↑Γ_d⁺, and the genuine log⁺|det| growth when positive.
+
+/-- info: 'Oseledets.ae_forwardSingularExponent_full_eq_coe' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.ae_forwardSingularExponent_full_eq_coe
+
+/-- info: 'Oseledets.ae_forwardSingularExponent_full_eq_det_growth' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.ae_forwardSingularExponent_full_eq_det_growth
 
 -- Two-sided splitting, Phase 0 (backward generator / cocycle infrastructure).
 
