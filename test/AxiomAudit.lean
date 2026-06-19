@@ -39,6 +39,7 @@ import Oseledets.Continuous.SuspensionSpace
 import Oseledets.Continuous.SuspensionFlow
 import Oseledets.Continuous.SuspensionFlowMP
 import Oseledets.Continuous.ReturnTimeExponent
+import Oseledets.Continuous.ReturnTimeTopExponent
 import Oseledets.Smooth.DerivativeCocycle
 import Oseledets.Examples.Elementary
 import Oseledets.Entropy.Partition
@@ -770,3 +771,11 @@ info: 'Oseledets.Entropy.MeasurePartition.sum_toReal_measure_eq_one' depends on 
 /-- info: 'Oseledets.returnTime_tendsto_exponent' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms Oseledets.returnTime_tendsto_exponent
+
+-- Issue #5 (top-exponent transfer): the MET top exponent transfers as λ_top / ∫τ.
+
+/-- info: 'Oseledets.IsOseledetsFiltration.returnTime_tendsto_topExponent' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.IsOseledetsFiltration.returnTime_tendsto_topExponent
