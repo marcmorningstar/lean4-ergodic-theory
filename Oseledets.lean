@@ -83,6 +83,7 @@ import Oseledets.Entropy.Subadditive
 import Oseledets.Entropy.Subadditive2
 import Oseledets.Entropy.Fekete
 import Oseledets.Entropy.KSEntropy
+import Oseledets.Entropy.KSEntropyBounds
 
 /-!
 # Oseledets

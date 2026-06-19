@@ -46,6 +46,7 @@ import Oseledets.Entropy.Subadditive
 import Oseledets.Entropy.Subadditive2
 import Oseledets.Entropy.Fekete
 import Oseledets.Entropy.KSEntropy
+import Oseledets.Entropy.KSEntropyBounds
 
 /-!
 # Axiom audit
@@ -664,6 +665,24 @@ info: 'Oseledets.Entropy.MeasurePartition.sum_toReal_measure_eq_one' depends on 
 /-- info: 'Oseledets.Entropy.tendsto_ksEntropySeq' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms Oseledets.Entropy.tendsto_ksEntropySeq
+
+-- Issue #4 (KS entropy bounds): h(α,T) ≥ 0 and h(α,T) ≤ H(α).
+
+/-- info: 'Oseledets.Entropy.ksEntropySeq_one' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.Entropy.ksEntropySeq_one
+
+/-- info: 'Oseledets.Entropy.ksEntropySeq_le_nsmul' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.Entropy.ksEntropySeq_le_nsmul
+
+/-- info: 'Oseledets.Entropy.ksEntropyPartition_nonneg' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.Entropy.ksEntropyPartition_nonneg
+
+/-- info: 'Oseledets.Entropy.ksEntropyPartition_le_entropy' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.Entropy.ksEntropyPartition_le_entropy
 
 -- Issue #5 (quotient layer): the suspension space and its invariant probability measure.
 
