@@ -51,6 +51,7 @@ import Oseledets.Lyapunov.Extensions.Restriction
 import Oseledets.Lyapunov.Extensions.NonErgodic
 import Oseledets.Lyapunov.Extensions.Regularity
 import Oseledets.Lyapunov.Extensions.Singular
+import Oseledets.Lyapunov.Extensions.SingularExponent
 import Oseledets.Lyapunov.Extensions.ConstantCocycle
 import Oseledets.TwoSided.Invertible
 import Oseledets.TwoSided.SpectralRank
@@ -79,6 +80,7 @@ import Oseledets.Entropy.Join
 import Oseledets.Entropy.Subadditive
 import Oseledets.Entropy.Subadditive2
 import Oseledets.Entropy.Fekete
+import Oseledets.Entropy.KSEntropy
 
 /-!
 # Oseledets

@@ -14,6 +14,7 @@ import Oseledets.Lyapunov.Extensions.Restriction
 import Oseledets.Lyapunov.Extensions.NonErgodic
 import Oseledets.Lyapunov.Extensions.Regularity
 import Oseledets.Lyapunov.Extensions.Singular
+import Oseledets.Lyapunov.Extensions.SingularExponent
 import Oseledets.Lyapunov.Extensions.ConstantCocycle
 import Oseledets.TwoSided.Invertible
 import Oseledets.TwoSided.SpectralRank
@@ -42,6 +43,7 @@ import Oseledets.Entropy.Join
 import Oseledets.Entropy.Subadditive
 import Oseledets.Entropy.Subadditive2
 import Oseledets.Entropy.Fekete
+import Oseledets.Entropy.KSEntropy
 
 /-!
 # Axiom audit
@@ -309,6 +311,32 @@ informational dump (it produces no output on success).
 /-- info: 'Oseledets.limsup_logSprod_eq_top_of_pos' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms Oseledets.limsup_logSprod_eq_top_of_pos
+
+-- Singular: the EReal-valued forward singular exponent γ_k (item 9B, invertibility-free).
+
+/-- info: 'Oseledets.measurable_forwardSingularExponent' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.measurable_forwardSingularExponent
+
+/-- info: 'Oseledets.forwardSingularExponent_nonneg' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.forwardSingularExponent_nonneg
+
+/-- info: 'Oseledets.forwardSingularExponent_zero' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.forwardSingularExponent_zero
+
+/-- info: 'Oseledets.ae_forwardSingularExponent_eq_coe' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.ae_forwardSingularExponent_eq_coe
+
+/-- info: 'Oseledets.ae_forwardSingularExponent_lt_top' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.ae_forwardSingularExponent_lt_top
+
+/-- info: 'Oseledets.ae_forwardSingularExponent_ne_bot' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.ae_forwardSingularExponent_ne_bot
 
 -- Two-sided splitting, Phase 0 (backward generator / cocycle infrastructure).
 
@@ -601,6 +629,29 @@ info: 'Oseledets.Entropy.MeasurePartition.sum_toReal_measure_eq_one' depends on 
 /-- info: 'Oseledets.Entropy.entropySeq_le_nsmul' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms Oseledets.Entropy.entropySeq_le_nsmul
+
+-- Issue #4 (Fekete limit): the flat Fin-indexed KS join, its subadditive entropy sequence, and
+-- the Kolmogorov–Sinai entropy as the Fekete limit.
+
+/-- info: 'Oseledets.Entropy.ksJoin' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.Entropy.ksJoin
+
+/-- info: 'Oseledets.Entropy.ksEntropySeq' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.Entropy.ksEntropySeq
+
+/-- info: 'Oseledets.Entropy.ksEntropySeq_subadditive' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.Entropy.ksEntropySeq_subadditive
+
+/-- info: 'Oseledets.Entropy.ksEntropyPartition' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.Entropy.ksEntropyPartition
+
+/-- info: 'Oseledets.Entropy.tendsto_ksEntropySeq' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.Entropy.tendsto_ksEntropySeq
 
 -- Issue #5 (quotient layer): the suspension space and its invariant probability measure.
 
