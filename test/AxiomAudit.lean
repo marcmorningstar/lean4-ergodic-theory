@@ -17,6 +17,7 @@ import Oseledets.Lyapunov.Extensions.Singular
 import Oseledets.Lyapunov.Extensions.SingularExponent
 import Oseledets.Lyapunov.Extensions.SingularExponentBounds
 import Oseledets.Lyapunov.Extensions.SingularExponentTop
+import Oseledets.Lyapunov.Extensions.SingularDet
 import Oseledets.Lyapunov.Extensions.ConstantCocycle
 import Oseledets.TwoSided.Invertible
 import Oseledets.TwoSided.SpectralRank
@@ -370,6 +371,20 @@ informational dump (it produces no output on success).
 /-- info: 'Oseledets.ae_forwardSingularExponent_one_eq_top' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms Oseledets.ae_forwardSingularExponent_one_eq_top
+
+-- Issue #6 (top cumulative exponent): the full singular product is |det|, hence γ_d via log⁺|det|.
+
+/-- info: 'Oseledets.prod_singularValues_eq_abs_det' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.prod_singularValues_eq_abs_det
+
+/-- info: 'Oseledets.sprod_full_eq_abs_det' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.sprod_full_eq_abs_det
+
+/-- info: 'Oseledets.forwardSingularExponent_full_eq' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.forwardSingularExponent_full_eq
 
 -- Two-sided splitting, Phase 0 (backward generator / cocycle infrastructure).
 
