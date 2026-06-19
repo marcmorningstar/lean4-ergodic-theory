@@ -37,6 +37,7 @@ import Oseledets.Continuous.SuspensionMeasure
 import Oseledets.Continuous.SuspensionSpace
 import Oseledets.Continuous.SuspensionFlow
 import Oseledets.Continuous.SuspensionFlowMP
+import Oseledets.Continuous.ReturnTimeExponent
 import Oseledets.Smooth.DerivativeCocycle
 import Oseledets.Examples.Elementary
 import Oseledets.Entropy.Partition
@@ -709,3 +710,25 @@ info: 'Oseledets.Entropy.MeasurePartition.sum_toReal_measure_eq_one' depends on 
 /-- info: 'Oseledets.suspensionFlow' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms Oseledets.suspensionFlow
+
+-- Issue #5 (transfer core): the return-time exponent log‖A⁽ⁿ⁾‖ / τ⁽ⁿ⁾ → λ / ∫τ.
+
+/-- info: 'Oseledets.tendsto_div_of_tendsto_div' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.tendsto_div_of_tendsto_div
+
+/-- info: 'Oseledets.roofSum_natCast_eq_birkhoffSum' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.roofSum_natCast_eq_birkhoffSum
+
+/-- info: 'Oseledets.tendsto_roofAverage_ae' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.tendsto_roofAverage_ae
+
+/-- info: 'Oseledets.integral_roof_pos' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.integral_roof_pos
+
+/-- info: 'Oseledets.returnTime_tendsto_exponent' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.returnTime_tendsto_exponent
