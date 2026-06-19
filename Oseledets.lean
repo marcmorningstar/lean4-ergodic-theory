@@ -52,6 +52,7 @@ import Oseledets.Lyapunov.Extensions.NonErgodic
 import Oseledets.Lyapunov.Extensions.Regularity
 import Oseledets.Lyapunov.Extensions.Singular
 import Oseledets.Lyapunov.Extensions.SingularExponent
+import Oseledets.Lyapunov.Extensions.SingularExponentBounds
 import Oseledets.Lyapunov.Extensions.ConstantCocycle
 import Oseledets.TwoSided.Invertible
 import Oseledets.TwoSided.SpectralRank

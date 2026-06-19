@@ -15,6 +15,7 @@ import Oseledets.Lyapunov.Extensions.NonErgodic
 import Oseledets.Lyapunov.Extensions.Regularity
 import Oseledets.Lyapunov.Extensions.Singular
 import Oseledets.Lyapunov.Extensions.SingularExponent
+import Oseledets.Lyapunov.Extensions.SingularExponentBounds
 import Oseledets.Lyapunov.Extensions.ConstantCocycle
 import Oseledets.TwoSided.Invertible
 import Oseledets.TwoSided.SpectralRank
@@ -337,6 +338,16 @@ informational dump (it produces no output on success).
 /-- info: 'Oseledets.ae_forwardSingularExponent_ne_bot' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms Oseledets.ae_forwardSingularExponent_ne_bot
+
+-- Issue #6 (EReal exponent tie-in): the cumulative exponent γ_k is bounded by k · γ_1.
+
+/-- info: 'Oseledets.forwardPosLogNormLimsup' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.forwardPosLogNormLimsup
+
+/-- info: 'Oseledets.forwardSingularExponent_le_nsmul' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.forwardSingularExponent_le_nsmul
 
 -- Two-sided splitting, Phase 0 (backward generator / cocycle infrastructure).
 
