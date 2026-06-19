@@ -16,6 +16,7 @@ import Oseledets.Lyapunov.Extensions.Regularity
 import Oseledets.Lyapunov.Extensions.Singular
 import Oseledets.Lyapunov.Extensions.SingularExponent
 import Oseledets.Lyapunov.Extensions.SingularExponentBounds
+import Oseledets.Lyapunov.Extensions.SingularExponentTop
 import Oseledets.Lyapunov.Extensions.ConstantCocycle
 import Oseledets.TwoSided.Invertible
 import Oseledets.TwoSided.SpectralRank
@@ -350,6 +351,24 @@ informational dump (it produces no output on success).
 /-- info: 'Oseledets.forwardSingularExponent_le_nsmul' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms Oseledets.forwardSingularExponent_le_nsmul
+
+-- Issue #6 (EReal exponent tie-in): top singular value = L2 opNorm, hence γ_1 = top exponent.
+
+/-- info: 'Oseledets.top_singularValue_eq_opNorm' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.top_singularValue_eq_opNorm
+
+/-- info: 'Oseledets.sprod_one_eq_opNorm' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.sprod_one_eq_opNorm
+
+/-- info: 'Oseledets.forwardSingularExponent_one_eq' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.forwardSingularExponent_one_eq
+
+/-- info: 'Oseledets.ae_forwardSingularExponent_one_eq_top' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.ae_forwardSingularExponent_one_eq_top
 
 -- Two-sided splitting, Phase 0 (backward generator / cocycle infrastructure).
 
