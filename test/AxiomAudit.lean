@@ -41,6 +41,7 @@ import Oseledets.Continuous.SuspensionFlow
 import Oseledets.Continuous.SuspensionFlowMP
 import Oseledets.Continuous.ReturnTimeExponent
 import Oseledets.Continuous.ReturnTimeTopExponent
+import Oseledets.Continuous.SuspensionCocycle
 import Oseledets.Smooth.DerivativeCocycle
 import Oseledets.Examples.Elementary
 import Oseledets.Entropy.Partition
@@ -794,3 +795,21 @@ info: 'Oseledets.Entropy.MeasurePartition.sum_toReal_measure_eq_one' depends on 
  Quot.sound] -/
 #guard_msgs in
 #print axioms Oseledets.IsOseledetsFiltration.returnTime_tendsto_topExponent
+
+-- Issue #5 (flow cocycle core): the return-indexed suspension cocycle and its multiplicativity.
+
+/-- info: 'Oseledets.suspensionCocycleReturn_add' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.suspensionCocycleReturn_add
+
+/-- info: 'Oseledets.measurable_suspensionCocycleReturn' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.measurable_suspensionCocycleReturn
+
+/-- info: 'Oseledets.returnTime_add' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.returnTime_add
+
+/-- info: 'Oseledets.suspensionCocycleReturn_returnTime' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.suspensionCocycleReturn_returnTime
