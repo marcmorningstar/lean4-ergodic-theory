@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - main
-      # TEMPORARY (remove before merge): lets the full blueprint+docs pipeline run
-      # as a dry-run on the setup branch. Deploy stays gated to `main` below.
-      - reservoir-blueprint
   pull_request:
     branches:
       - main
