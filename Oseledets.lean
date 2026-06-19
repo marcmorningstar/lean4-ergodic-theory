@@ -51,6 +51,7 @@ import Oseledets.Lyapunov.Extensions.Restriction
 import Oseledets.Lyapunov.Extensions.NonErgodic
 import Oseledets.Lyapunov.Extensions.Regularity
 import Oseledets.Lyapunov.Extensions.Singular
+import Oseledets.Lyapunov.Extensions.ConstantCocycle
 import Oseledets.TwoSided.Invertible
 import Oseledets.TwoSided.SpectralRank
 import Oseledets.TwoSided.MeasurableInf
@@ -66,6 +67,14 @@ import Oseledets.Continuous.Reduction
 import Oseledets.Continuous.BetweenTimes
 import Oseledets.Continuous.Equivariance
 import Oseledets.Continuous.MultiplicativeErgodicFlow
+import Oseledets.Continuous.Suspension
+import Oseledets.Continuous.SuspensionMeasure
+import Oseledets.Continuous.SuspensionSpace
+import Oseledets.Smooth.DerivativeCocycle
+import Oseledets.Examples.Elementary
+import Oseledets.Entropy.Partition
+import Oseledets.Entropy.Join
+import Oseledets.Entropy.Subadditive
 
 /-!
 # Oseledets

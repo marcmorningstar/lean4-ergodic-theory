@@ -14,6 +14,7 @@ import Oseledets.Lyapunov.Extensions.Restriction
 import Oseledets.Lyapunov.Extensions.NonErgodic
 import Oseledets.Lyapunov.Extensions.Regularity
 import Oseledets.Lyapunov.Extensions.Singular
+import Oseledets.Lyapunov.Extensions.ConstantCocycle
 import Oseledets.TwoSided.Invertible
 import Oseledets.TwoSided.SpectralRank
 import Oseledets.TwoSided.MeasurableInf
@@ -29,6 +30,14 @@ import Oseledets.Continuous.Reduction
 import Oseledets.Continuous.BetweenTimes
 import Oseledets.Continuous.Equivariance
 import Oseledets.Continuous.MultiplicativeErgodicFlow
+import Oseledets.Continuous.Suspension
+import Oseledets.Continuous.SuspensionMeasure
+import Oseledets.Continuous.SuspensionSpace
+import Oseledets.Smooth.DerivativeCocycle
+import Oseledets.Examples.Elementary
+import Oseledets.Entropy.Partition
+import Oseledets.Entropy.Join
+import Oseledets.Entropy.Subadditive
 
 /-!
 # Axiom audit
@@ -436,3 +445,141 @@ informational dump (it produces no output on success).
 /-- info: 'Oseledets.oseledets_flow' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms Oseledets.oseledets_flow
+
+-- Issue #1: constant-cocycle Lyapunov exponents (specialization to a constant generator `A ≡ M`).
+
+/-- info: 'Oseledets.cocycle_const' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.cocycle_const
+
+/-- info: 'Oseledets.qpow_const' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.qpow_const
+
+/-- info: 'Oseledets.oseledetsLimit_const' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.oseledetsLimit_const
+
+/--
+info: 'Oseledets.exp_exponents_const_eq_eigenvalues₀_absMatrix' depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs in
+#print axioms Oseledets.exp_exponents_const_eq_eigenvalues₀_absMatrix
+
+/-- info: 'Oseledets.exponents_const' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.exponents_const
+
+-- Issue #2: derivative (tangent) cocycle of a differentiable self-map.
+
+/-- info: 'Oseledets.chainRule_cocycle' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.chainRule_cocycle
+
+/--
+info: 'Oseledets.oseledets_filtration_derivativeCocycle' depends on axioms: [propext, Classical.choice, Quot.sound]
+-/
+#guard_msgs in
+#print axioms Oseledets.oseledets_filtration_derivativeCocycle
+
+-- Issue #3: concrete worked examples (doubling map, irrational rotation, Arnold cat-map matrix).
+
+/-- info: 'Oseledets.doublingMap_topExponent_eq_log_two' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.doublingMap_topExponent_eq_log_two
+
+/-- info: 'Oseledets.irrationalRotation_exponents_eq_zero' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.irrationalRotation_exponents_eq_zero
+
+/-- info: 'Oseledets.catMapMatrix_exponents' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.catMapMatrix_exponents
+
+/-- info: 'Oseledets.catMapMatrix_exponents_sum_eq_zero' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.catMapMatrix_exponents_sum_eq_zero
+
+-- Issue #4 (foundation): Shannon entropy of a finite measurable partition (toward KS entropy).
+
+/-- info: 'Oseledets.Entropy.entropy_nonneg' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.Entropy.entropy_nonneg
+
+/-- info: 'Oseledets.Entropy.entropy_le_log_card' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.Entropy.entropy_le_log_card
+
+/--
+info: 'Oseledets.Entropy.MeasurePartition.sum_toReal_measure_eq_one' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+-/
+#guard_msgs in
+#print axioms Oseledets.Entropy.MeasurePartition.sum_toReal_measure_eq_one
+
+/-- info: 'Oseledets.Entropy.entropy_le_log_card_partition' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.Entropy.entropy_le_log_card_partition
+
+/-- info: 'Oseledets.Entropy.chainRule' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.Entropy.chainRule
+
+/-- info: 'Oseledets.isAddFundamentalDomain_suspensionDomain' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.isAddFundamentalDomain_suspensionDomain
+
+/-- info: 'Oseledets.suspension_exists_unique_act_mem' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.suspension_exists_unique_act_mem
+
+/-- info: 'Oseledets.exists_unique_lt_of_strictMono' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.exists_unique_lt_of_strictMono
+
+/-- info: 'Oseledets.roofSum_add_one' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.roofSum_add_one
+
+-- Issue #5 (measure layer): the suspension invariant-measure foundation.
+
+/-- info: 'Oseledets.measurePreserving_shear' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.measurePreserving_shear
+
+/-- info: 'Oseledets.measurePreserving_suspensionGen' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.measurePreserving_suspensionGen
+
+/-- info: 'Oseledets.measure_suspensionDomain' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.measure_suspensionDomain
+
+-- Issue #4 (entropy layer): T-invariance of partition entropy (toward the Fekete h(α,T) limit).
+
+/-- info: 'Oseledets.Entropy.entropy_comp_preimage' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.Entropy.entropy_comp_preimage
+
+-- Issue #5 (quotient layer): the suspension space and its invariant probability measure.
+
+/-- info: 'Oseledets.measurable_suspensionMk' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.measurable_suspensionMk
+
+/-- info: 'Oseledets.suspensionMeasure₀_univ_eq_measure_box' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.suspensionMeasure₀_univ_eq_measure_box
+
+/-- info: 'Oseledets.suspensionMeasure_univ' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.suspensionMeasure_univ
+
+/-- info: 'Oseledets.isProbabilityMeasure_suspensionMeasure' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.isProbabilityMeasure_suspensionMeasure
