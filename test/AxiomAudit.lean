@@ -47,6 +47,7 @@ import Oseledets.Continuous.ReturnTimeTopExponent
 import Oseledets.Continuous.SuspensionCocycle
 import Oseledets.Continuous.SuspensionLapCount
 import Oseledets.Continuous.SuspensionFlowCocycle
+import Oseledets.Continuous.SuspensionFlowCocycleMul
 import Oseledets.Smooth.DerivativeCocycle
 import Oseledets.Examples.Elementary
 import Oseledets.Entropy.Partition
@@ -909,3 +910,13 @@ info: 'Oseledets.Entropy.MeasurePartition.sum_toReal_measure_eq_one' depends on 
 /-- info: 'Oseledets.flowCocycleSection_zero' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms Oseledets.flowCocycleSection_zero
+
+-- Issue #5 (flow cocycle multiplicativity): the base-cocycle identity at return times.
+
+/-- info: 'Oseledets.flowCocycleSection_returnTime_add' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.flowCocycleSection_returnTime_add
+
+/-- info: 'Oseledets.flowCocycleSection_returnTime_succ' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.flowCocycleSection_returnTime_succ
