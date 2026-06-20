@@ -30,6 +30,8 @@ import Oseledets.Lyapunov.Extensions.SingularRankMeasurable2
 import Oseledets.Lyapunov.Extensions.SingularRankMinor
 import Oseledets.Lyapunov.Extensions.SingularDimMeasurable
 import Oseledets.Lyapunov.Extensions.SingularKernelMeasurableGraph
+import Oseledets.Lyapunov.Extensions.SingularKernelProjector
+import Oseledets.Lyapunov.Extensions.SingularEventualKernelProjector
 import Oseledets.Lyapunov.Extensions.ConstantCocycle
 import Oseledets.TwoSided.Invertible
 import Oseledets.TwoSided.SpectralRank
@@ -587,6 +589,28 @@ informational dump (it produces no output on success).
 /-- info: 'Oseledets.measurableSet_mem_eventualKer' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms Oseledets.measurableSet_mem_eventualKer
+
+-- Issue #6 (singular kernel projector): Euclidean Gram spectral projector onto the cocycle kernel.
+
+/-- info: 'Oseledets.orthProjMatrix_cocycleKerEuclid_eq_spectralProjector' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.orthProjMatrix_cocycleKerEuclid_eq_spectralProjector
+
+/-- info: 'Oseledets.measurable_orthProjMatrix_cocycleKer' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.measurable_orthProjMatrix_cocycleKer
+
+-- Issue #6 (singular eventual-kernel projector): limit projector onto the eventual kernel.
+
+/-- info: 'Oseledets.measurable_orthProjMatrix_eventualKer' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.measurable_orthProjMatrix_eventualKer
+
+/-- info: 'Oseledets.measurableSubspace_eventualKer' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.measurableSubspace_eventualKer
 
 -- Two-sided splitting, Phase 0 (backward generator / cocycle infrastructure).
 

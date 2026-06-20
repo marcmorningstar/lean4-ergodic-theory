@@ -67,6 +67,8 @@ import Oseledets.Lyapunov.Extensions.SingularRankMeasurable2
 import Oseledets.Lyapunov.Extensions.SingularRankMinor
 import Oseledets.Lyapunov.Extensions.SingularDimMeasurable
 import Oseledets.Lyapunov.Extensions.SingularKernelMeasurableGraph
+import Oseledets.Lyapunov.Extensions.SingularKernelProjector
+import Oseledets.Lyapunov.Extensions.SingularEventualKernelProjector
 import Oseledets.Lyapunov.Extensions.ConstantCocycle
 import Oseledets.TwoSided.Invertible
 import Oseledets.TwoSided.SpectralRank
