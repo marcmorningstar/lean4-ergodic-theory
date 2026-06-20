@@ -45,6 +45,7 @@ import Oseledets.Continuous.ReturnTimeExponent
 import Oseledets.Continuous.ReturnTimeTopExponent
 import Oseledets.Continuous.SuspensionCocycle
 import Oseledets.Continuous.SuspensionLapCount
+import Oseledets.Continuous.SuspensionFlowCocycle
 import Oseledets.Smooth.DerivativeCocycle
 import Oseledets.Examples.Elementary
 import Oseledets.Entropy.Partition
@@ -849,3 +850,21 @@ info: 'Oseledets.Entropy.MeasurePartition.sum_toReal_measure_eq_one' depends on 
 /-- info: 'Oseledets.lapCount_lt_returnTime_succ' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms Oseledets.lapCount_lt_returnTime_succ
+
+-- Issue #5 (flow cocycle on the section): Ψ_t = A^(lapCount t) and the return identity.
+
+/-- info: 'Oseledets.flowCocycleSection' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.flowCocycleSection
+
+/-- info: 'Oseledets.lapCount_returnTime_eq' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.lapCount_returnTime_eq
+
+/-- info: 'Oseledets.flowCocycleSection_returnTime' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.flowCocycleSection_returnTime
+
+/-- info: 'Oseledets.flowCocycleSection_zero' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.flowCocycleSection_zero
