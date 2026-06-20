@@ -66,6 +66,7 @@ import Oseledets.Continuous.SuspensionFullTimeExponent
 import Oseledets.Continuous.SuspensionBddRoofExponent
 import Oseledets.Continuous.SuspensionMeasureTransfer
 import Oseledets.Continuous.SuspensionDisintegration
+import Oseledets.Continuous.SuspensionGrowthDescent
 import Oseledets.Smooth.DerivativeCocycle
 import Oseledets.Examples.Elementary
 import Oseledets.Entropy.Partition
@@ -1187,3 +1188,21 @@ info: 'Oseledets.Entropy.MeasurePartition.sum_toReal_measure_eq_one' depends on 
 /-- info: 'Oseledets.ae_suspensionMeasure_section_exponent_set' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms Oseledets.ae_suspensionMeasure_section_exponent_set
+
+-- Issue #5 (suspension growth-rate descent): orbit re-basing + two-sided bounded op-norm discrepancy.
+
+/-- info: 'Oseledets.coverCocycle_suspensionAct_rebasing' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.coverCocycle_suspensionAct_rebasing
+
+/-- info: 'Oseledets.coverCocycle_suspensionAct_opNorm_le' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.coverCocycle_suspensionAct_opNorm_le
+
+/-- info: 'Oseledets.coverCocycle_suspensionAct_rebasing_inv' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.coverCocycle_suspensionAct_rebasing_inv
+
+/-- info: 'Oseledets.coverCocycle_suspensionAct_opNorm_ge' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.coverCocycle_suspensionAct_opNorm_ge
