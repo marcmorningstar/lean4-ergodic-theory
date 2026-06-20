@@ -125,6 +125,7 @@ import Oseledets.Entropy.KSEntropySystem
 import Oseledets.Entropy.KSEntropyProps
 import Oseledets.Entropy.KSEntropyJoin
 import Oseledets.Entropy.KSEntropyMono
+import Oseledets.Entropy.MargulisRuelleAbstract
 
 /-!
 # Oseledets
