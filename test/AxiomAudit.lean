@@ -59,6 +59,7 @@ import Oseledets.Continuous.SuspensionCoverFlow
 import Oseledets.Continuous.SuspensionDescent
 import Oseledets.Continuous.SuspensionNlap
 import Oseledets.Continuous.SuspensionFlowExponent
+import Oseledets.Continuous.SuspensionBetweenReturns
 import Oseledets.Smooth.DerivativeCocycle
 import Oseledets.Examples.Elementary
 import Oseledets.Entropy.Partition
@@ -1086,3 +1087,9 @@ info: 'Oseledets.Entropy.MeasurePartition.sum_toReal_measure_eq_one' depends on 
  Quot.sound] -/
 #guard_msgs in
 #print axioms Oseledets.IsOseledetsFiltration.coverCocycle_returnTime_tendsto_topExponent
+
+-- Issue #5 (special-flow structure): the flow cocycle is constant = A^(n) between returns.
+
+/-- info: 'Oseledets.coverCocycle_const_between_returns' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.coverCocycle_const_between_returns
