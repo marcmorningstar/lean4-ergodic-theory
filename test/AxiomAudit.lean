@@ -49,6 +49,7 @@ import Oseledets.Continuous.SuspensionCocycle
 import Oseledets.Continuous.SuspensionLapCount
 import Oseledets.Continuous.SuspensionFlowCocycle
 import Oseledets.Continuous.SuspensionFlowCocycleMul
+import Oseledets.Continuous.SuspensionCoverCocycle
 import Oseledets.Smooth.DerivativeCocycle
 import Oseledets.Examples.Elementary
 import Oseledets.Entropy.Partition
@@ -946,3 +947,17 @@ info: 'Oseledets.Entropy.MeasurePartition.sum_toReal_measure_eq_one' depends on 
 /-- info: 'Oseledets.flowCocycleSection_returnTime_succ' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms Oseledets.flowCocycleSection_returnTime_succ
+
+-- Issue #5 (cover extension): lapCount monotone + the off-section lap-count additivity.
+
+/-- info: 'Oseledets.lapCount_mono' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.lapCount_mono
+
+/-- info: 'Oseledets.lapCount_unique' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.lapCount_unique
+
+/-- info: 'Oseledets.lapCount_returnTime_add' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.lapCount_returnTime_add
