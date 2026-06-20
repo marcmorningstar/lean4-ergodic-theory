@@ -58,6 +58,7 @@ import Oseledets.Entropy.KSEntropy
 import Oseledets.Entropy.KSEntropyBounds
 import Oseledets.Entropy.KSEntropySystem
 import Oseledets.Entropy.KSEntropyProps
+import Oseledets.Entropy.KSEntropyJoin
 
 /-!
 # Axiom audit
@@ -764,6 +765,20 @@ info: 'Oseledets.Entropy.MeasurePartition.sum_toReal_measure_eq_one' depends on 
 /-- info: 'Oseledets.Entropy.ksEntropyPartition_le_ksEntropySeq_div' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms Oseledets.Entropy.ksEntropyPartition_le_ksEntropySeq_div
+
+-- Issue #4 (dynamical subadditivity): h(α∨β,T) ≤ h(α,T) + h(β,T).
+
+/-- info: 'Oseledets.Entropy.joinPartition' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.Entropy.joinPartition
+
+/-- info: 'Oseledets.Entropy.ksEntropySeq_join_le' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.Entropy.ksEntropySeq_join_le
+
+/-- info: 'Oseledets.Entropy.ksEntropyPartition_join_le' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.Entropy.ksEntropyPartition_join_le
 
 -- Issue #5 (quotient layer): the suspension space and its invariant probability measure.
 
