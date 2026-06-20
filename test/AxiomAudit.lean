@@ -53,6 +53,7 @@ import Oseledets.Continuous.SuspensionFlowCocycle
 import Oseledets.Continuous.SuspensionFlowCocycleMul
 import Oseledets.Continuous.SuspensionCoverCocycle
 import Oseledets.Continuous.SuspensionCoverFlow
+import Oseledets.Continuous.SuspensionDescent
 import Oseledets.Smooth.DerivativeCocycle
 import Oseledets.Examples.Elementary
 import Oseledets.Entropy.Partition
@@ -1014,3 +1015,13 @@ info: 'Oseledets.Entropy.MeasurePartition.sum_toReal_measure_eq_one' depends on 
 /-- info: 'Oseledets.coverCocycle_section_returnTime' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms Oseledets.coverCocycle_section_returnTime
+
+-- Issue #5 (descent): the one-lap height reduction and its operator-norm bound.
+
+/-- info: 'Oseledets.coverCocycle_one_lap' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.coverCocycle_one_lap
+
+/-- info: 'Oseledets.coverCocycle_one_lap_opNorm_le' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.coverCocycle_one_lap_opNorm_le
