@@ -32,6 +32,8 @@ import Oseledets.Lyapunov.Extensions.SingularDimMeasurable
 import Oseledets.Lyapunov.Extensions.SingularKernelMeasurableGraph
 import Oseledets.Lyapunov.Extensions.SingularKernelProjector
 import Oseledets.Lyapunov.Extensions.SingularEventualKernelProjector
+import Oseledets.Lyapunov.Extensions.SingularSublevelProjector
+import Oseledets.Lyapunov.Extensions.SingularSublevelEventual
 import Oseledets.Lyapunov.Extensions.ConstantCocycle
 import Oseledets.TwoSided.Invertible
 import Oseledets.TwoSided.SpectralRank
@@ -611,6 +613,21 @@ informational dump (it produces no output on success).
 /-- info: 'Oseledets.measurableSubspace_eventualKer' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms Oseledets.measurableSubspace_eventualKer
+
+-- Issue #6 (sublevel slow-space stratum): the per-step, per-threshold Gram sublevel spectral
+-- subspace (the threshold-`t` generalization of the kernel stratum), and its measurability.
+
+/-- info: 'Oseledets.cocycleSublevelEuclid' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.cocycleSublevelEuclid
+
+/-- info: 'Oseledets.measurableSubspace_cocycleSublevelEuclid' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.measurableSubspace_cocycleSublevelEuclid
+
+/-- info: 'Oseledets.measurableSubspace_cocycleSublevel' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.measurableSubspace_cocycleSublevel
 
 -- Two-sided splitting, Phase 0 (backward generator / cocycle infrastructure).
 
