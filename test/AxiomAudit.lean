@@ -22,6 +22,7 @@ import Oseledets.Lyapunov.Extensions.SingularDetGrowth
 import Oseledets.Lyapunov.Extensions.SingularExponentGenLog
 import Oseledets.Lyapunov.Extensions.SingularKernelStratum
 import Oseledets.Lyapunov.Extensions.SingularRank
+import Oseledets.Lyapunov.Extensions.SingularKernelSubmodule
 import Oseledets.Lyapunov.Extensions.ConstantCocycle
 import Oseledets.TwoSided.Invertible
 import Oseledets.TwoSided.SpectralRank
@@ -442,6 +443,20 @@ informational dump (it produces no output on success).
 /-- info: 'Oseledets.cocycleRank_add_le_min' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms Oseledets.cocycleRank_add_le_min
+
+-- Issue #6 (filtration flag): the cocycle kernel submodule grows monotonically along the orbit.
+
+/-- info: 'Oseledets.cocycleKer' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.cocycleKer
+
+/-- info: 'Oseledets.cocycleKer_le_add' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.cocycleKer_le_add
+
+/-- info: 'Oseledets.finrank_cocycleKer' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.finrank_cocycleKer
 
 -- Two-sided splitting, Phase 0 (backward generator / cocycle infrastructure).
 
