@@ -28,6 +28,7 @@ import Oseledets.Lyapunov.Extensions.SingularKernelEquivariant
 import Oseledets.Lyapunov.Extensions.SingularRankMeasurable
 import Oseledets.Lyapunov.Extensions.SingularRankMeasurable2
 import Oseledets.Lyapunov.Extensions.SingularRankMinor
+import Oseledets.Lyapunov.Extensions.SingularDimMeasurable
 import Oseledets.Lyapunov.Extensions.ConstantCocycle
 import Oseledets.TwoSided.Invertible
 import Oseledets.TwoSided.SpectralRank
@@ -542,6 +543,20 @@ informational dump (it produces no output on success).
 /-- info: 'Oseledets.measurable_cocycleRank' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms Oseledets.measurable_cocycleRank
+
+-- Issue #6 (measurable dimension data — CLOSED): eventual rank + eventual-kernel dimension measurable.
+
+/-- info: 'Oseledets.measurable_eventualRank' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.measurable_eventualRank
+
+/-- info: 'Oseledets.eventualKerDim' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.eventualKerDim
+
+/-- info: 'Oseledets.measurable_eventualKerDim' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.measurable_eventualKerDim
 
 -- Two-sided splitting, Phase 0 (backward generator / cocycle infrastructure).
 
