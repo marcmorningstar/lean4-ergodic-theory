@@ -65,6 +65,7 @@ import Oseledets.Continuous.SuspensionBetweenReturns
 import Oseledets.Continuous.SuspensionFullTimeExponent
 import Oseledets.Continuous.SuspensionBddRoofExponent
 import Oseledets.Continuous.SuspensionMeasureTransfer
+import Oseledets.Continuous.SuspensionDisintegration
 import Oseledets.Smooth.DerivativeCocycle
 import Oseledets.Examples.Elementary
 import Oseledets.Entropy.Partition
@@ -1164,3 +1165,25 @@ info: 'Oseledets.Entropy.MeasurePartition.sum_toReal_measure_eq_one' depends on 
 /-- info: 'Oseledets.coverCocycle_tendsto_exponent_section' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms Oseledets.coverCocycle_tendsto_exponent_section
+
+-- Issue #5 (suspension disintegration): base-a.e. → μ̂-a.e. transfer to the suspension measure.
+
+/-- info: 'Oseledets.suspensionMeasure_ae_iff' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.suspensionMeasure_ae_iff
+
+/-- info: 'Oseledets.ae_suspensionMeasure_of_ae_restrict' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.ae_suspensionMeasure_of_ae_restrict
+
+/-- info: 'Oseledets.ae_restrict_suspensionDomain_of_ae_base' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.ae_restrict_suspensionDomain_of_ae_base
+
+/-- info: 'Oseledets.ae_suspensionMeasure_of_ae_base' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.ae_suspensionMeasure_of_ae_base
+
+/-- info: 'Oseledets.ae_suspensionMeasure_section_exponent_set' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.ae_suspensionMeasure_section_exponent_set
