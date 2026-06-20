@@ -41,8 +41,7 @@ specialization of the singular-value layer in the `EReal` track.
   Publ. Math. IHÉS **50** (1979), 27–58.
 -/
 
-open Module InnerProductSpace MeasureTheory Filter Topology
-open scoped Matrix.Norms.L2Operator
+open MeasureTheory Filter Topology
 
 namespace Oseledets
 
