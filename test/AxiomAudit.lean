@@ -64,6 +64,7 @@ import Oseledets.Continuous.SuspensionFlowExponent
 import Oseledets.Continuous.SuspensionBetweenReturns
 import Oseledets.Continuous.SuspensionFullTimeExponent
 import Oseledets.Continuous.SuspensionBddRoofExponent
+import Oseledets.Continuous.SuspensionMeasureTransfer
 import Oseledets.Smooth.DerivativeCocycle
 import Oseledets.Examples.Elementary
 import Oseledets.Entropy.Partition
@@ -1149,3 +1150,17 @@ info: 'Oseledets.Entropy.MeasurePartition.sum_toReal_measure_eq_one' depends on 
 /-- info: 'Oseledets.coverCocycle_tendsto_exponent_of_bddRoof' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms Oseledets.coverCocycle_tendsto_exponent_of_bddRoof
+
+-- Issue #5 (suspension bridge): the cross-section embedding + gluing + section-image exponent.
+
+/-- info: 'Oseledets.suspensionMk_roof_eq_section_base' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.suspensionMk_roof_eq_section_base
+
+/-- info: 'Oseledets.measurable_suspensionSection' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.measurable_suspensionSection
+
+/-- info: 'Oseledets.coverCocycle_tendsto_exponent_section' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.coverCocycle_tendsto_exponent_section
