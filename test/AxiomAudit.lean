@@ -24,6 +24,7 @@ import Oseledets.Lyapunov.Extensions.SingularKernelStratum
 import Oseledets.Lyapunov.Extensions.SingularRank
 import Oseledets.Lyapunov.Extensions.SingularKernelSubmodule
 import Oseledets.Lyapunov.Extensions.SingularEventualKernel
+import Oseledets.Lyapunov.Extensions.SingularKernelEquivariant
 import Oseledets.Lyapunov.Extensions.ConstantCocycle
 import Oseledets.TwoSided.Invertible
 import Oseledets.TwoSided.SpectralRank
@@ -485,6 +486,16 @@ informational dump (it produces no output on success).
 /-- info: 'Oseledets.finrank_eventualKer_le' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms Oseledets.finrank_eventualKer_le
+
+-- Issue #6 (filtration flag equivariance): A_x maps the eventual kernel forward along T.
+
+/-- info: 'Oseledets.mapsTo_cocycleKer' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.mapsTo_cocycleKer
+
+/-- info: 'Oseledets.eventualKer_equivariant' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.eventualKer_equivariant
 
 -- Two-sided splitting, Phase 0 (backward generator / cocycle infrastructure).
 
