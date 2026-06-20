@@ -19,6 +19,7 @@ import Oseledets.Lyapunov.Extensions.SingularExponentBounds
 import Oseledets.Lyapunov.Extensions.SingularExponentTop
 import Oseledets.Lyapunov.Extensions.SingularDet
 import Oseledets.Lyapunov.Extensions.SingularDetGrowth
+import Oseledets.Lyapunov.Extensions.SingularExponentGenLog
 import Oseledets.Lyapunov.Extensions.ConstantCocycle
 import Oseledets.TwoSided.Invertible
 import Oseledets.TwoSided.SpectralRank
@@ -397,6 +398,20 @@ informational dump (it produces no output on success).
 /-- info: 'Oseledets.ae_forwardSingularExponent_full_eq_det_growth' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms Oseledets.ae_forwardSingularExponent_full_eq_det_growth
+
+-- Issue #6 (genuine-log EReal exponent): the kernel/volume-collapse −∞ stratum hook (Quas/Raghunathan).
+
+/-- info: 'Oseledets.measurable_forwardSingularExponentLog' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.measurable_forwardSingularExponentLog
+
+/-- info: 'Oseledets.forwardSingularExponentLog_le' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.forwardSingularExponentLog_le
+
+/-- info: 'Oseledets.forwardSingularExponentLog_eq_bot_of_tendsto' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.forwardSingularExponentLog_eq_bot_of_tendsto
 
 -- Two-sided splitting, Phase 0 (backward generator / cocycle infrastructure).
 
