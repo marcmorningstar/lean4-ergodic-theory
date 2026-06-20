@@ -63,6 +63,7 @@ import Oseledets.Continuous.SuspensionNlap
 import Oseledets.Continuous.SuspensionFlowExponent
 import Oseledets.Continuous.SuspensionBetweenReturns
 import Oseledets.Continuous.SuspensionFullTimeExponent
+import Oseledets.Continuous.SuspensionBddRoofExponent
 import Oseledets.Smooth.DerivativeCocycle
 import Oseledets.Examples.Elementary
 import Oseledets.Entropy.Partition
@@ -1134,3 +1135,17 @@ info: 'Oseledets.Entropy.MeasurePartition.sum_toReal_measure_eq_one' depends on 
 /-- info: 'Oseledets.log_coverCocycle_div_eq_lapCount' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms Oseledets.log_coverCocycle_div_eq_lapCount
+
+-- Issue #5 (HEADLINE closure): full-time special-flow exponent = λ_base/∫τ under a bounded roof.
+
+/-- info: 'Oseledets.lapCount_tendsto_atTop' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.lapCount_tendsto_atTop
+
+/-- info: 'Oseledets.lapCount_returnTime_div_tendsto_one' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.lapCount_returnTime_div_tendsto_one
+
+/-- info: 'Oseledets.coverCocycle_tendsto_exponent_of_bddRoof' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.coverCocycle_tendsto_exponent_of_bddRoof

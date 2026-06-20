@@ -100,6 +100,7 @@ import Oseledets.Continuous.SuspensionNlap
 import Oseledets.Continuous.SuspensionFlowExponent
 import Oseledets.Continuous.SuspensionBetweenReturns
 import Oseledets.Continuous.SuspensionFullTimeExponent
+import Oseledets.Continuous.SuspensionBddRoofExponent
 import Oseledets.Smooth.DerivativeCocycle
 import Oseledets.Examples.Elementary
 import Oseledets.Entropy.Partition
