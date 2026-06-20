@@ -58,6 +58,7 @@ import Oseledets.Lyapunov.Extensions.SingularDet
 import Oseledets.Lyapunov.Extensions.SingularDetGrowth
 import Oseledets.Lyapunov.Extensions.SingularExponentGenLog
 import Oseledets.Lyapunov.Extensions.SingularKernelStratum
+import Oseledets.Lyapunov.Extensions.SingularRank
 import Oseledets.Lyapunov.Extensions.ConstantCocycle
 import Oseledets.TwoSided.Invertible
 import Oseledets.TwoSided.SpectralRank

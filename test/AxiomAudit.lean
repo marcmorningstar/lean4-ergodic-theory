@@ -21,6 +21,7 @@ import Oseledets.Lyapunov.Extensions.SingularDet
 import Oseledets.Lyapunov.Extensions.SingularDetGrowth
 import Oseledets.Lyapunov.Extensions.SingularExponentGenLog
 import Oseledets.Lyapunov.Extensions.SingularKernelStratum
+import Oseledets.Lyapunov.Extensions.SingularRank
 import Oseledets.Lyapunov.Extensions.ConstantCocycle
 import Oseledets.TwoSided.Invertible
 import Oseledets.TwoSided.SpectralRank
@@ -425,6 +426,20 @@ informational dump (it produces no output on success).
 /-- info: 'Oseledets.measurableSet_finiteSingularExponent' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms Oseledets.measurableSet_finiteSingularExponent
+
+-- Issue #6 (rank filtration data): the cocycle rank and its non-increasing rank-drop.
+
+/-- info: 'Oseledets.cocycleRank' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.cocycleRank
+
+/-- info: 'Oseledets.cocycleRank_le' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.cocycleRank_le
+
+/-- info: 'Oseledets.cocycleRank_add_le_min' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.cocycleRank_add_le_min
 
 -- Two-sided splitting, Phase 0 (backward generator / cocycle infrastructure).
 
