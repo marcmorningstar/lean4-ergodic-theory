@@ -80,6 +80,7 @@ import Oseledets.Continuous.SuspensionFlowMP
 import Oseledets.Continuous.ReturnTimeExponent
 import Oseledets.Continuous.ReturnTimeTopExponent
 import Oseledets.Continuous.SuspensionCocycle
+import Oseledets.Continuous.SuspensionLapCount
 import Oseledets.Smooth.DerivativeCocycle
 import Oseledets.Examples.Elementary
 import Oseledets.Entropy.Partition

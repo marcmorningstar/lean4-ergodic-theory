@@ -43,6 +43,7 @@ import Oseledets.Continuous.SuspensionFlowMP
 import Oseledets.Continuous.ReturnTimeExponent
 import Oseledets.Continuous.ReturnTimeTopExponent
 import Oseledets.Continuous.SuspensionCocycle
+import Oseledets.Continuous.SuspensionLapCount
 import Oseledets.Smooth.DerivativeCocycle
 import Oseledets.Examples.Elementary
 import Oseledets.Entropy.Partition
@@ -839,3 +840,21 @@ info: 'Oseledets.Entropy.MeasurePartition.sum_toReal_measure_eq_one' depends on 
 /-- info: 'Oseledets.suspensionCocycleReturn_returnTime' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms Oseledets.suspensionCocycleReturn_returnTime
+
+-- Issue #5 (special-flow lap counter): return times diverge, and the first-passage lap count N(t,x).
+
+/-- info: 'Oseledets.returnTime_strictMono' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.returnTime_strictMono
+
+/-- info: 'Oseledets.returnTime_tendsto_atTop' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.returnTime_tendsto_atTop
+
+/-- info: 'Oseledets.lapCount_returnTime_le' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.lapCount_returnTime_le
+
+/-- info: 'Oseledets.lapCount_lt_returnTime_succ' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.lapCount_lt_returnTime_succ
