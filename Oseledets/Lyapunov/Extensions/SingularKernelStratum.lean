@@ -83,6 +83,7 @@ multiplicative ergodic theorem (filtration form). -/
 def singularKernelSet (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (k : ℕ) : Set X :=
   {x | forwardSingularExponentLog A T k x = ⊥}
 
+omit [MeasurableSpace X] in
 /-- **Membership in the kernel stratum** is, definitionally, the collapse of the genuine-`log`
 top-`k`-volume exponent to `⊥`. -/
 theorem mem_singularKernelSet {A : X → Matrix (Fin d) (Fin d) ℝ} {T : X → X} {k : ℕ} {x : X} :
