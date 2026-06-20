@@ -98,6 +98,7 @@ import Oseledets.Entropy.KSEntropyBounds
 import Oseledets.Entropy.KSEntropySystem
 import Oseledets.Entropy.KSEntropyProps
 import Oseledets.Entropy.KSEntropyJoin
+import Oseledets.Entropy.KSEntropyMono
 
 /-!
 # Oseledets

@@ -61,6 +61,7 @@ import Oseledets.Entropy.KSEntropyBounds
 import Oseledets.Entropy.KSEntropySystem
 import Oseledets.Entropy.KSEntropyProps
 import Oseledets.Entropy.KSEntropyJoin
+import Oseledets.Entropy.KSEntropyMono
 
 /-!
 # Axiom audit
@@ -795,6 +796,16 @@ info: 'Oseledets.Entropy.MeasurePartition.sum_toReal_measure_eq_one' depends on 
 /-- info: 'Oseledets.Entropy.ksEntropyPartition_join_le' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms Oseledets.Entropy.ksEntropyPartition_join_le
+
+-- Issue #4 (entropy refinement-monotonicity): h(α,T) ≤ h(α∨β,T).
+
+/-- info: 'Oseledets.Entropy.entropy_le_entropy_join' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.Entropy.entropy_le_entropy_join
+
+/-- info: 'Oseledets.Entropy.ksEntropyPartition_le_join' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.Entropy.ksEntropyPartition_le_join
 
 -- Issue #5 (quotient layer): the suspension space and its invariant probability measure.
 
