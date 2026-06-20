@@ -68,6 +68,9 @@ import Oseledets.Continuous.SuspensionBddRoofExponent
 import Oseledets.Continuous.SuspensionMeasureTransfer
 import Oseledets.Continuous.SuspensionDisintegration
 import Oseledets.Continuous.SuspensionGrowthDescent
+import Oseledets.Continuous.SuspensionExponentDescent
+import Oseledets.Continuous.SuspensionSpaceExponent
+import Oseledets.Continuous.SuspensionSpaceExponentValue
 import Oseledets.Smooth.DerivativeCocycle
 import Oseledets.Examples.Elementary
 import Oseledets.Entropy.Partition
@@ -1229,3 +1232,41 @@ info: 'Oseledets.Entropy.MeasurePartition.sum_toReal_measure_eq_one' depends on 
 /-- info: 'Oseledets.coverCocycle_suspensionAct_opNorm_ge' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms Oseledets.coverCocycle_suspensionAct_opNorm_ge
+
+-- Issue #5 (exponent descent): orbit re-basing has bounded log-norm discrepancy ⟹ same exponent.
+
+/-- info: 'Oseledets.norm_pos_of_isUnit_det' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.norm_pos_of_isUnit_det
+
+/-- info: 'Oseledets.coverCocycle_suspensionAct_log_discrepancy' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.coverCocycle_suspensionAct_log_discrepancy
+
+/-- info: 'Oseledets.coverCocycle_suspensionAct_tendsto_exponent' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.coverCocycle_suspensionAct_tendsto_exponent
+
+-- Issue #5 (flow exponent on the space): the well-defined suspension-space flow exponent predicate.
+
+/-- info: 'Oseledets.HasFlowExponent' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.HasFlowExponent
+
+/-- info: 'Oseledets.tendsto_exponent_iff_of_suspensionAct' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.tendsto_exponent_iff_of_suspensionAct
+
+/-- info: 'Oseledets.hasFlowExponent_of_suspensionAct' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.hasFlowExponent_of_suspensionAct
+
+-- Issue #5 (flow exponent value): the section flow exponent + the μ̂-a.e. flow-exponent statement.
+
+/-- info: 'Oseledets.tendsto_coverCocycle_exponent_of_section' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.tendsto_coverCocycle_exponent_of_section
+
+/-- info: 'Oseledets.ae_suspensionMeasure_hasFlowExponent' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.ae_suspensionMeasure_hasFlowExponent

@@ -105,6 +105,9 @@ import Oseledets.Continuous.SuspensionBddRoofExponent
 import Oseledets.Continuous.SuspensionMeasureTransfer
 import Oseledets.Continuous.SuspensionDisintegration
 import Oseledets.Continuous.SuspensionGrowthDescent
+import Oseledets.Continuous.SuspensionExponentDescent
+import Oseledets.Continuous.SuspensionSpaceExponent
+import Oseledets.Continuous.SuspensionSpaceExponentValue
 import Oseledets.Smooth.DerivativeCocycle
 import Oseledets.Examples.Elementary
 import Oseledets.Entropy.Partition
