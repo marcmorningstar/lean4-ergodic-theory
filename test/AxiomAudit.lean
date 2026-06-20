@@ -86,6 +86,7 @@ import Oseledets.Entropy.KSEntropySystem
 import Oseledets.Entropy.KSEntropyProps
 import Oseledets.Entropy.KSEntropyJoin
 import Oseledets.Entropy.KSEntropyMono
+import Oseledets.Entropy.MargulisRuelleAbstract
 
 /-!
 # Axiom audit
@@ -1294,3 +1295,9 @@ info: 'Oseledets.Entropy.MeasurePartition.sum_toReal_measure_eq_one' depends on 
 /-- info: 'Oseledets.ae_suspensionMeasure_hasFlowExponent' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms Oseledets.ae_suspensionMeasure_hasFlowExponent
+
+-- Issue #4 (Margulis–Ruelle inequality): h(T) ≤ ∑ λᵢ⁺ reduced to the geometric atom-counting bound.
+
+/-- info: 'Oseledets.margulisRuelle_le_sumPosExp' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.margulisRuelle_le_sumPosExp
