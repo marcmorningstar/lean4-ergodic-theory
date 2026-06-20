@@ -110,6 +110,8 @@ import Oseledets.Continuous.SuspensionGrowthDescent
 import Oseledets.Continuous.SuspensionExponentDescent
 import Oseledets.Continuous.SuspensionSpaceExponent
 import Oseledets.Continuous.SuspensionSpaceExponentValue
+import Oseledets.Continuous.SuspensionQuotientImage
+import Oseledets.Continuous.SuspensionFlowExponentValue
 import Oseledets.Smooth.DerivativeCocycle
 import Oseledets.Examples.Elementary
 import Oseledets.Entropy.Partition

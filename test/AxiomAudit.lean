@@ -73,6 +73,8 @@ import Oseledets.Continuous.SuspensionGrowthDescent
 import Oseledets.Continuous.SuspensionExponentDescent
 import Oseledets.Continuous.SuspensionSpaceExponent
 import Oseledets.Continuous.SuspensionSpaceExponentValue
+import Oseledets.Continuous.SuspensionQuotientImage
+import Oseledets.Continuous.SuspensionFlowExponentValue
 import Oseledets.Smooth.DerivativeCocycle
 import Oseledets.Examples.Elementary
 import Oseledets.Entropy.Partition
@@ -1294,3 +1296,41 @@ info: 'Oseledets.Entropy.MeasurePartition.sum_toReal_measure_eq_one' depends on 
 /-- info: 'Oseledets.ae_suspensionMeasure_hasFlowExponent' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms Oseledets.ae_suspensionMeasure_hasFlowExponent
+
+-- Issue #5 (quotient-image measurability): discharge the `hmeas` quotient-image hypothesis.
+
+/-- info: 'Oseledets.suspensionActEquiv' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.suspensionActEquiv
+
+/-- info: 'Oseledets.suspensionActEquiv_apply' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.suspensionActEquiv_apply
+
+/-- info: 'Oseledets.measurableSet_suspensionAct_image' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.measurableSet_suspensionAct_image
+
+/-- info: 'Oseledets.preimage_image_suspensionMk' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.preimage_image_suspensionMk
+
+/-- info: 'Oseledets.measurableSet_suspensionMk_image' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.measurableSet_suspensionMk_image
+
+/-- info: 'Oseledets.measurableSet_suspensionMk_exponent_image' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.measurableSet_suspensionMk_exponent_image
+
+-- Issue #5 (unconditional space-level exponent): `hmeas` discharged + tied to the genuine flow.
+
+/-- info: 'Oseledets.ae_suspensionMeasure_hasFlowExponent_unconditional' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.ae_suspensionMeasure_hasFlowExponent_unconditional
+
+/-- info: 'Oseledets.ae_suspensionMeasure_hasFlowExponent_flowOrbit' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.ae_suspensionMeasure_hasFlowExponent_flowOrbit
