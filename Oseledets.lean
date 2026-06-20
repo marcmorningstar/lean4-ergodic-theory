@@ -94,6 +94,7 @@ import Oseledets.Continuous.SuspensionCoverCocycle
 import Oseledets.Continuous.SuspensionCoverFlow
 import Oseledets.Continuous.SuspensionDescent
 import Oseledets.Continuous.SuspensionNlap
+import Oseledets.Continuous.SuspensionFlowExponent
 import Oseledets.Smooth.DerivativeCocycle
 import Oseledets.Examples.Elementary
 import Oseledets.Entropy.Partition

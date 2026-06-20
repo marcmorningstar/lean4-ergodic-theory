@@ -57,6 +57,7 @@ import Oseledets.Continuous.SuspensionCoverCocycle
 import Oseledets.Continuous.SuspensionCoverFlow
 import Oseledets.Continuous.SuspensionDescent
 import Oseledets.Continuous.SuspensionNlap
+import Oseledets.Continuous.SuspensionFlowExponent
 import Oseledets.Smooth.DerivativeCocycle
 import Oseledets.Examples.Elementary
 import Oseledets.Entropy.Partition
@@ -1062,3 +1063,15 @@ info: 'Oseledets.Entropy.MeasurePartition.sum_toReal_measure_eq_one' depends on 
 /-- info: 'Oseledets.coverCocycle_returnTime_opNorm_le' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms Oseledets.coverCocycle_returnTime_opNorm_le
+
+-- Issue #5 (HEADLINE): the special-flow Lyapunov exponent along returns = λ_base / ∫τ.
+
+/-- info: 'Oseledets.coverCocycle_returnTime_tendsto_exponent' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.coverCocycle_returnTime_tendsto_exponent
+
+/-- info: 'Oseledets.IsOseledetsFiltration.coverCocycle_returnTime_tendsto_topExponent' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.IsOseledetsFiltration.coverCocycle_returnTime_tendsto_topExponent
