@@ -55,6 +55,7 @@ import Oseledets.Continuous.SuspensionFlowCocycleMul
 import Oseledets.Continuous.SuspensionCoverCocycle
 import Oseledets.Continuous.SuspensionCoverFlow
 import Oseledets.Continuous.SuspensionDescent
+import Oseledets.Continuous.SuspensionNlap
 import Oseledets.Smooth.DerivativeCocycle
 import Oseledets.Examples.Elementary
 import Oseledets.Entropy.Partition
@@ -1036,3 +1037,13 @@ info: 'Oseledets.Entropy.MeasurePartition.sum_toReal_measure_eq_one' depends on 
 /-- info: 'Oseledets.coverCocycle_one_lap_opNorm_le' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms Oseledets.coverCocycle_one_lap_opNorm_le
+
+-- Issue #5 (flow exponent bridge): cover-cocycle norm = base norm at return times.
+
+/-- info: 'Oseledets.coverCocycle_returnTime_eq' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.coverCocycle_returnTime_eq
+
+/-- info: 'Oseledets.coverCocycle_returnTime_opNorm_le' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.coverCocycle_returnTime_opNorm_le
