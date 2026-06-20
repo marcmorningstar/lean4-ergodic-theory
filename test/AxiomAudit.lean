@@ -55,6 +55,7 @@ import Oseledets.Entropy.Fekete
 import Oseledets.Entropy.KSEntropy
 import Oseledets.Entropy.KSEntropyBounds
 import Oseledets.Entropy.KSEntropySystem
+import Oseledets.Entropy.KSEntropyProps
 
 /-!
 # Axiom audit
@@ -737,6 +738,16 @@ info: 'Oseledets.Entropy.MeasurePartition.sum_toReal_measure_eq_one' depends on 
 /-- info: 'Oseledets.Entropy.ksEntropy_nonneg' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms Oseledets.Entropy.ksEntropy_nonneg
+
+-- Issue #4 (KS entropy property): the Fekete inf bound h(α,T) ≤ ksEntropySeq n / n.
+
+/-- info: 'Oseledets.Entropy.bddBelow_ksEntropySeq_div' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.Entropy.bddBelow_ksEntropySeq_div
+
+/-- info: 'Oseledets.Entropy.ksEntropyPartition_le_ksEntropySeq_div' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.Entropy.ksEntropyPartition_le_ksEntropySeq_div
 
 -- Issue #5 (quotient layer): the suspension space and its invariant probability measure.
 

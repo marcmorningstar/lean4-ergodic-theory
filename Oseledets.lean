@@ -92,6 +92,7 @@ import Oseledets.Entropy.Fekete
 import Oseledets.Entropy.KSEntropy
 import Oseledets.Entropy.KSEntropyBounds
 import Oseledets.Entropy.KSEntropySystem
+import Oseledets.Entropy.KSEntropyProps
 
 /-!
 # Oseledets
