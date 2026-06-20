@@ -51,6 +51,7 @@ import Oseledets.Continuous.SuspensionLapCount
 import Oseledets.Continuous.SuspensionFlowCocycle
 import Oseledets.Continuous.SuspensionFlowCocycleMul
 import Oseledets.Continuous.SuspensionCoverCocycle
+import Oseledets.Continuous.SuspensionCoverFlow
 import Oseledets.Smooth.DerivativeCocycle
 import Oseledets.Examples.Elementary
 import Oseledets.Entropy.Partition
@@ -988,3 +989,13 @@ info: 'Oseledets.Entropy.MeasurePartition.sum_toReal_measure_eq_one' depends on 
 /-- info: 'Oseledets.lapCount_returnTime_add' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms Oseledets.lapCount_returnTime_add
+
+-- Issue #5 (cover flow cocycle): the X×ℝ cover cocycle + its section return-boundary identity.
+
+/-- info: 'Oseledets.coverCocycle' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.coverCocycle
+
+/-- info: 'Oseledets.coverCocycle_section_returnTime' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.coverCocycle_section_returnTime
