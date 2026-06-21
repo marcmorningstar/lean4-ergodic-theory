@@ -16,7 +16,8 @@ multiplicative ergodic theorem from the two pieces built upstream:
   `Oseledets.measurableSet_graph_lambdaSublevel` (under the everywhere `IsUltrametricGrowth` gate);
 * the projection of the graph being **universally measurable**, hence the distance maps
   `x ↦ infDist c (V x)` being `AEMeasurable` (`Frontier.aemeasurable_infDist_of_measurableGraph`),
-  modulo the single classical residual `MeasureTheory.AnalyticSet.nullMeasurableSet`.
+  using the now-proved universal measurability `MeasureTheory.AnalyticSet.nullMeasurableSet`
+  (`Frontier.Issue6.AnalyticUniversallyMeasurable`).
 
 ## From a.e. weak measurability to an a.e. projector via polarisation
 
@@ -41,7 +42,7 @@ This is the natural **a.e.** analogue of `Oseledets.MeasurableSubspace`
   basis coordinate (`sorry`-free).
 * `Frontier.aemeasurable_orthProjMatrix_of_measurableGraph`: **the general a.e. converter** — a
   measurable graph at a standard Borel base yields `AEMeasurable (fun x => orthProjMatrix (V x)) μ`
-  (modulo the isolated `AnalyticSet.nullMeasurableSet`).
+  for every s-finite `μ` (using the now-proved `AnalyticSet.nullMeasurableSet`).
 * `Oseledets.aemeasurable_orthProjMatrix_lambdaSublevel`: **the #6 headline** — for the Lyapunov
   sublevel filtration over a standard Borel ergodic base (everywhere `IsUltrametricGrowth` gate),
   the orthogonal projector `x ↦ orthProjMatrix (lambdaSublevel A T x c)` is `AEMeasurable`.
@@ -51,9 +52,11 @@ This is the natural **a.e.** analogue of `Oseledets.MeasurableSubspace`
 The forward filtration's measurable graph requires the everywhere `IsUltrametricGrowth` gate
 `hUM : ∀ x, IsUltrametricGrowth (lambdaBar A T x)` — the pointwise form of the a.e.
 `Oseledets.isUltrametricGrowth_lambdaBar`, automatic e.g. for a bounded generator (everywhere-
-convergent Furstenberg–Kesten). With it the headline is `sorry`-free *except* for the single
-classical measure-theory residual `MeasureTheory.AnalyticSet.nullMeasurableSet` (analytic sets are
-universally measurable — Lusin/Choquet), threaded through `Frontier.Issue6.MeasurableProjection`.
+convergent Furstenberg–Kesten). With it, and for any s-finite `μ` (in particular the probability
+measure of the MET), the headline is `sorry`-free: the universal measurability
+`MeasureTheory.AnalyticSet.nullMeasurableSet` (analytic sets are universally measurable —
+Lusin/Choquet) is now proved in `Frontier.Issue6.AnalyticUniversallyMeasurable` and threaded
+through `Frontier.Issue6.MeasurableProjection`.
 
 Literature: C. González-Tokman, A. Quas, *A semi-invertible operator Oseledets theorem*
 (ETDS 2014), Appendix B; D. Ruelle, *Ergodic theory of differentiable dynamical systems*,
@@ -110,7 +113,7 @@ the polarisation identity `starProjection_apply_coord` writes as a fixed real co
 `AEMeasurable` distance maps `x ↦ infDist c (V x)` (`aemeasurable_infDist_of_measurableGraph`);
 `AEMeasurable` arithmetic and `aemeasurable_pi_iff` (Matrix carries the Pi structure) conclude.
 This is the a.e. analogue of `Oseledets.MeasurableSubspace`. -/
-theorem aemeasurable_orthProjMatrix_of_measurableGraph (μ : Measure X)
+theorem aemeasurable_orthProjMatrix_of_measurableGraph (μ : Measure X) [SFinite μ]
     (hgraph : MeasurableSet {p : X × EuclideanSpace ℝ (Fin d) | p.2 ∈ V p.1}) :
     AEMeasurable (fun x => Oseledets.orthProjMatrix (V x)) μ := by
   -- Reduce to entrywise `AEMeasurable` (Matrix carries the Pi structure, defeq to `m → n → ℝ`).
@@ -148,7 +151,7 @@ section Headline
 
 open scoped Matrix.Norms.L2Operator
 
-variable {μ : Measure X} {T : X → X}
+variable {μ : Measure X} [SFinite μ] {T : X → X}
 
 /-- **The singular issue #6 headline: an a.e.-measurable forward Lyapunov projector.** Over a
 standard Borel ergodic base `X` with an invertible measurable generator `A` (forward/inverse
@@ -160,8 +163,9 @@ a bounded generator), the orthogonal-projection matrix
 
 The sublevel filtration has a measurable graph (`Oseledets.measurableSet_graph_lambdaSublevel`),
 which the general a.e. converter `aemeasurable_orthProjMatrix_of_measurableGraph` turns into the
-a.e.-measurable projector. The only residual is the classical universal measurability of analytic
-sets `MeasureTheory.AnalyticSet.nullMeasurableSet`, threaded through the converter. -/
+a.e.-measurable projector (for any s-finite `μ`). The classical universal measurability of analytic
+sets `MeasureTheory.AnalyticSet.nullMeasurableSet` it relies on is proved in
+`Frontier.Issue6.AnalyticUniversallyMeasurable` and threaded through the converter. -/
 theorem _root_.Oseledets.aemeasurable_orthProjMatrix_lambdaSublevel
     [TopologicalSpace X] [PolishSpace X] [BorelSpace X] [NeZero d]
     {A : X → Matrix (Fin d) (Fin d) ℝ} (hA : Measurable A) (hT : Measurable T)
