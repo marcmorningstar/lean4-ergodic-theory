@@ -177,7 +177,12 @@ over `0 ≤ k ≤ n` of the operator norms of the compound matrices `‖C_k(M)�
 Margulis–Ruelle covering count consumes (Liao–Qiu §3, Lemma 3.3): the cover of the thickened image
 is controlled by `‖(toEuclideanLin M)^∧‖ = max_κ ‖C_κ(M)‖`, the maximal exterior-power operator
 norm. It bridges `|det M| = ∏ σᵢ` (the `k = n` term) with the truncated `∏ max(1, σᵢ)` the count
-needs. -/
+needs.
+
+(Retained for reference: the realised sharp covering count
+`Oseledets.coveringCount_image_ball_le_volProd` of `Oseledets.Entropy.Ruelle.SharpCovering` reaches
+`∏ max(1, σᵢ)` through a direct SVD ellipsoid volume bound rather than this compound-norm form, so
+this bridge is not on the live path.) -/
 theorem prod_max_one_singularValues_eq_sup_opNorm_compound (M : Matrix (Fin d) (Fin d) ℝ) (n : ℕ) :
     ∏ i ∈ range n, max 1 ((Matrix.toEuclideanLin M).singularValues i)
       = (range (n + 1)).sup' (nonempty_range_iff.2 (Nat.succ_ne_zero n))

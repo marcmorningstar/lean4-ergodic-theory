@@ -23,17 +23,15 @@ covering–distortion count into the atom-count growth bound, producing the ineq
 
 ## The two inputs
 
-1. **The one-step sharp local covering count (interface stub).**  The sharp anisotropic Liao–Qiu
+1. **The one-step sharp local covering count (proved in-tree).**  The sharp anisotropic Liao–Qiu
    covering count
    `coveringNumber ε (D_x(T^[n]) '' closedBall 0 ε) ≤ C_d · ∏ᵢ max(1, σᵢ(D_x(T^[n])))`,
-   i.e. `≤ C_d · volProd T n x`, is built in the sibling worktree
-   `Oseledets.Entropy.Ruelle.SharpCovering`
-   (NOT in HEAD as of the pinned Mathlib `v4.30.0-rc2`: it needs the orthonormal-basis SVD
-   factorisation absent there — see `Oseledets.Entropy.Ruelle.LocalCovering` for the recorded
-   obstruction).
-   It is declared here as the explicit `Prop`-valued interface
-   `Oseledets.SharpLocalCovering` and used as a hypothesis `hcover`, isolating the single
-   geometric atom; the orchestrator wires the real `SharpCovering` in.
+   i.e. `≤ C_d · volProd T n x`, is **fully proved in-tree** in
+   `Oseledets.Entropy.Ruelle.SharpCovering` (`Oseledets.coveringCount_image_ball_le_volProd`, via a
+   constructive SVD ellipsoid domination + determinant volume bound).  It is packaged here as the
+   explicit `Prop`-valued interface `Oseledets.SharpLocalCovering`, which
+   `sharpLocalCovering_of_coveringCount` *discharges* (with the explicit dimensional constant
+   `C_d = 6^d`); it is no longer a hypothesis of the sharp track.
 
 2. **The geometric atom-count count (honest non-compactness hypothesis).**  The combinatorial step
    — a non-empty atom of the refined partition `⋁ₖ₌₀ⁿ⁻¹ T⁻ᵏ P` maps under `T^[n]` into a set
@@ -47,22 +45,24 @@ covering–distortion count into the atom-count growth bound, producing the ineq
 
 ## Main results
 
-* `Oseledets.SharpLocalCovering` — the `Prop`-valued interface for the one-step sharp covering
-  count `coveringNumber ε (D_x(T^[n]) '' ball) ≤ C · volProd T n x`.
-* `Oseledets.atomCount_le_volProd_of_sharpCovering` — composing the covering stub with the
-  geometric count `hgeoCount` yields the per-orbit `volProd` atom bound
+* `Oseledets.SharpLocalCovering` — the `Prop`-valued packaging of the one-step sharp covering
+  count `coveringNumber ε (D_x(T^[n]) '' ball) ≤ C · volProd T n x`, *discharged* in-tree by
+  `sharpLocalCovering_of_coveringCount`.
+* `Oseledets.atomCount_le_volProd_of_sharpCovering` — composing the (proved) sharp covering count
+  with the geometric count `hgeoCount` yields the per-orbit `volProd` atom bound
   `atomCount ≤ C' · volProd T n x` consumed by the orbit assembly.
 * `Oseledets.hatom_of_sharpCovering` — discharges the existential `hatom` of the capstone for a
   fixed partition: at the a.e. orbit-rate base point the atom bound holds.
 * `Oseledets.margulisRuelle_sharp` — the **sharp unconditional (modulo the honest distortion
-  regime) Margulis–Ruelle inequality** `ksEntropy hT ≤ ∑ λᵢ⁺`, with the one geometric atom isolated
-  as `Oseledets.SharpLocalCovering` (built in the sibling `SharpCovering`).
+  regime) Margulis–Ruelle inequality** `ksEntropy hT ≤ ∑ λᵢ⁺`; the sharp covering count is
+  discharged internally from `SharpCovering`, leaving only the honest geometric atom count.
 
 ## References
 
 * Maryam Contractor, *The Pesin Entropy Formula*, UChicago REU 2023, §7.
 * Ricardo Mañé, *Ergodic theory and differentiable dynamics*, Springer 1987, §IV.12 (Lemma 12.5).
-* Gang Liao, Wenxiang Sun, *Margulis–Ruelle inequality for general manifolds*, §3, Lemmas 3.2–3.3.
+* Gang Liao, Na Qiu, *Margulis–Ruelle inequality for general manifolds*, Ergodic Theory Dynam.
+  Systems **42** (2022) 2064–2079, §3, Lemmas 3.2–3.3.
 * Felipe Riquelme, *Counterexamples to Ruelle's inequality in the noncompact case*, Ann. Inst.
   Fourier **67** (2017) 23–41.
 -/
@@ -74,7 +74,7 @@ namespace Oseledets
 
 variable {d : ℕ} [NeZero d]
 
-/-! ## The one-step sharp local covering count (interface to the sibling `SharpCovering`) -/
+/-! ## The one-step sharp local covering count (packaging the in-tree `SharpCovering`) -/
 
 section SharpCoveringInterface
 
@@ -90,7 +90,7 @@ noncomputable def coveringReal (T : EuclideanSpace ℝ (Fin d) → EuclideanSpac
     (Oseledets.cocycle (Oseledets.derivativeCocycle T) T n x)) ''
     closedBall 0 (ε : ℝ)) : ℝ≥0∞)).toReal
 
-/-- **The one-step sharp local covering count (interface `Prop`).**  For the `n`-fold iterate
+/-- **The one-step sharp local covering count (`Prop` packaging).**  For the `n`-fold iterate
 `T^[n]`, the image `D_x(T^[n]) '' closedBall 0 ε` of an `ε`-ball under the differential is coverable
 by at most `C · volProd T n x` balls of radius `ε`, where
 `volProd T n x = ∏ᵢ max(1, σᵢ(D_x(T^[n])))` is the per-orbit positive-part singular-value product
@@ -98,14 +98,13 @@ and `D_x(T^[n]) = toEuclideanCLM (cocycle (derivativeCocycle T) T n x)`
 (`Oseledets.chainRule_cocycle`).
 
 This is the **sharp anisotropic** Liao–Qiu count (a thin pancake needs *few* balls along its thin
-directions), the genuinely geometric per-step input distilled to a single hypothesis.  It is built
-in
-the sibling worktree `Oseledets.Entropy.Ruelle.SharpCovering`; as of pinned Mathlib (`v4.30.0-rc2`)
-only the
-isotropic count `≤ (2‖L‖+1)^d` is available in HEAD (`Metric.coveringCount_image_ball_linear_le`,
-`Oseledets.Entropy.Ruelle.LocalCovering`), so the sharp `∏ᵢ max(1, σᵢ)` count is
-infrastructure-blocked and
-this interface is the precise hypothesis the sharp track depends on. -/
+directions), the genuinely geometric per-step input.  It is **proved in-tree** by the sibling
+`Oseledets.Entropy.Ruelle.SharpCovering` (`Oseledets.coveringCount_image_ball_le_volProd`, via a
+constructive SVD ellipsoid domination); `sharpLocalCovering_of_coveringCount` instantiates that
+count at the differential `D_x(T^[n])` to discharge this packaging, so it is not a hypothesis.
+The weaker isotropic count `≤ (2‖L‖+1)^d` (the project lemma
+`Metric.coveringCount_image_ball_linear_le` in `Oseledets.Entropy.Ruelle.LocalCovering`) is
+subsumed by it. -/
 def SharpLocalCovering (T : EuclideanSpace ℝ (Fin d) → EuclideanSpace ℝ (Fin d)) (C : ℝ) (ε : ℝ≥0)
     (x : EuclideanSpace ℝ (Fin d)) : Prop :=
   ∀ n : ℕ,
@@ -115,7 +114,7 @@ def SharpLocalCovering (T : EuclideanSpace ℝ (Fin d) → EuclideanSpace ℝ (F
         closedBall 0 (ε : ℝ)) : ℝ≥0∞)
       ≤ ENNReal.ofReal (C * volProd T n x)
 
-/-- **The sharp local covering count, discharged by `SharpCovering`.**  The interface stub
+/-- **The sharp local covering count, discharged by `SharpCovering`.**  The packaging
 `SharpLocalCovering T (6^d) ε x` is *proved* (not assumed) from the sharp anisotropic one-step
 covering count `Oseledets.coveringCount_image_ball_le_volProd`, instantiated at the differential
 `L = D_x(T^[n]) = toEuclideanCLM (cocycle (derivativeCocycle T) T n x)` and centre `0`.
@@ -124,8 +123,8 @@ The covering bound gives `coveringNumber ε (L '' B(0,ε)) ≤ ofReal (6^d · �
 coercion `Matrix.coe_toEuclideanCLM_eq_toEuclideanLin` identifies the underlying linear map of the
 CLM with `toEuclideanLin (cocycle …)`, so `∏ᵢ max(1, σᵢ(L)) = volProd T n x` *definitionally*,
 giving
-exactly `SharpLocalCovering T (6^d) ε x` with the dimensional constant `Ccov' = 6^d`.  This removes
-the interface stub: the sharp track no longer takes `∀ x, SharpLocalCovering` as a hypothesis. -/
+exactly `SharpLocalCovering T (6^d) ε x` with the dimensional constant `Ccov' = 6^d`.  Hence the
+sharp track no longer takes `∀ x, SharpLocalCovering` as a hypothesis. -/
 theorem sharpLocalCovering_of_coveringCount
     (T : EuclideanSpace ℝ (Fin d) → EuclideanSpace ℝ (Fin d)) {ε : ℝ≥0} (hε : 0 < ε)
     (x : EuclideanSpace ℝ (Fin d)) :
@@ -145,7 +144,7 @@ theorem sharpLocalCovering_of_coveringCount
 
 end SharpCoveringInterface
 
-/-! ## The geometric atom-count count, composed with the covering stub -/
+/-! ## The geometric atom-count count, composed with the sharp covering count -/
 
 section AtomCount
 
@@ -166,9 +165,9 @@ Mañé/Katok count `hgeoCount` holds at a base point `x`: the non-empty atom cou
 `Oseledets.ksEntropyPartition_le_sumPosExp_of_atomVolProd`.
 
 The geometric count `hgeoCount` is the honest non-compactness input (the same regime as
-`Oseledets.Entropy.Ruelle.Crude`); `hcover` is the sharp covering interface stub.  The composition
-is the
-elementary chaining of the two real-valued bounds, monotone in the (finite) covering number. -/
+`Oseledets.Entropy.Ruelle.Crude`); `hcover` is the in-tree sharp covering count
+(`SharpLocalCovering`).  The composition is the elementary chaining of the two real-valued bounds,
+monotone in the (finite) covering number. -/
 theorem atomCount_le_volProd_of_sharpCovering {ι : Type*} [Fintype ι] [Nonempty ι]
     (P : Oseledets.Entropy.MeasurePartition μ ι) {Ccov Ccov' : ℝ} (hCcov : 0 ≤ Ccov)
     (hCcov' : 0 ≤ Ccov') {ε : ℝ≥0} {x : EuclideanSpace ℝ (Fin d)}
@@ -234,7 +233,7 @@ theorem hatom_of_sharpCovering {n : ℕ} (P : Oseledets.Entropy.MeasurePartition
   -- Select a base point in the intersection of the orbit-rate set and the geometric-count set.
   have hrate := tendsto_log_volProd hT hdet hint hint'
   obtain ⟨x, hxrate, hxgeo⟩ := (hrate.and hgeo).exists
-  -- Compose the geometric count with the sharp covering stub at `x`.
+  -- Compose the geometric count with the in-tree sharp covering count at `x`.
   have hatom := atomCount_le_volProd_of_sharpCovering hT P hCcov hCcov' (hcover x) hxgeo
   -- `C := max 1 (Ccov · Ccov') ≥ 1`, and the bound is preserved since `volProd ≥ 0`.
   refine ⟨max 1 (Ccov * Ccov'), x, le_max_left _ _, hxrate, ?_⟩

@@ -78,7 +78,7 @@ Under `hUM` the membership criterion `Oseledets.mem_lambdaSublevel` turns the gr
 union `{p | p.2 = 0} ∪ {p | lambdaBar A T p.1 p.2 ≤ c}`. The first set is the preimage of the
 closed singleton `{0}` under the continuous `p ↦ p.2`; the second is measurable from the joint
 measurability `Oseledets.jointMeasurable_lambdaBar` and the measurable constant `c`. -/
-theorem measurableSet_graph_lambdaSublevel [NeZero d]
+theorem measurableSet_graph_lambdaSublevel
     {A : X → Matrix (Fin d) (Fin d) ℝ} {T : X → X}
     (hA : Measurable A) (hT : Measurable T)
     (hUM : ∀ x, IsUltrametricGrowth (lambdaBar A T x)) (c : ℝ) :

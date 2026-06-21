@@ -17,8 +17,9 @@ import Mathlib.Topology.Metrizable.Basic
 
 This module discharges the single classical measure-theoretic residual of the singular
 ("issue #6") multiplicative ergodic theorem: **every analytic set in a standard Borel space is
-`NullMeasurableSet` for every (finite, σ-finite) measure** — the classical universal-measurability
-theorem of Lusin, obtained via Choquet's capacitability theorem.
+`NullMeasurableSet` for every s-finite (`SFinite`) measure** — the classical universal-measurability
+theorem of Lusin, obtained via Choquet's capacitability theorem.  (`SFinite` covers in particular
+every finite and σ-finite measure, hence every probability measure.)
 
 Mathlib provides the analytic-set construction (`MeasureTheory.AnalyticSet`) and the Lusin
 separation / Suslin theorems (`AnalyticSet.measurablySeparable`,
@@ -40,7 +41,7 @@ the decreasing intersection of closures of cylinder images with the *compact* im
 From `compactCap μ s = μ s` (`μ` finite) an increasing union `B` of compact subsets of `s` has
 `μ B = μ s < ∞`; Carathéodory splitting `μ s = μ B + μ (s \ B)` then forces `μ (s \ B) = 0`, so
 `s =ᵐ[μ] B` with `B` Borel: `NullMeasurableSet s μ` (`AnalyticSet.nullMeasurableSet_of_finite`).
-The σ-finite case follows by exhausting with finite-measure pieces
+The general s-finite case follows by dominating `μ` with a finite measure
 (`AnalyticSet.nullMeasurableSet`).
 
 ## Main results
@@ -52,11 +53,11 @@ The σ-finite case follows by exhausting with finite-measure pieces
 * `MeasureTheory.AnalyticSet.nullMeasurableSet_of_finite`: an analytic set is `NullMeasurableSet`
   for every finite measure.
 * `MeasureTheory.AnalyticSet.nullMeasurableSet`: the deliverable — an analytic set is
-  `NullMeasurableSet` for every σ-finite measure.
+  `NullMeasurableSet` for every s-finite (`SFinite`) measure.
 
 ## References
 
-* G. Choquet, *Theory of capacities*, Annales de l'Institut Fourier, 1953.
+* G. Choquet, *Theory of capacities*, Annales de l'Institut Fourier **5** (1954), 131–295.
 * A. S. Kechris, *Classical Descriptive Set Theory*, Theorem 30.13.
 * S. M. Srivastava, *A Course on Borel Sets*, Theorem 4.3.1.
 
@@ -507,8 +508,8 @@ theorem nullMeasurableSet_of_finite
 
 /-- **Analytic sets are universally measurable (the isolated classical residual, now proved).**
 Every analytic set in a standard Borel (Polish) space is `NullMeasurableSet` with respect to every
-σ-finite measure `μ` — the classical universal-measurability theorem of Lusin, via Choquet's
-capacitability theorem.
+s-finite (`SFinite`) measure `μ` — the classical universal-measurability theorem of Lusin, via
+Choquet's capacitability theorem.
 
 The finite case is `nullMeasurableSet_of_finite`. For a general s-finite `μ`, Mathlib's
 `exists_isFiniteMeasure_absolutelyContinuous` supplies a *finite* measure `ν` with `μ ≪ ν`; the

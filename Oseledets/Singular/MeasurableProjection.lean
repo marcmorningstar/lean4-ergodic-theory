@@ -66,7 +66,6 @@ universally measurable). C. González-Tokman, A. Quas, *A semi-invertible operat
 theorem* (ETDS 2014), Appendix B.
 -/
 
-open scoped Matrix
 open Metric MeasureTheory Submodule Set
 
 namespace Oseledets

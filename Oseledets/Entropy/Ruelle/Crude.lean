@@ -57,8 +57,9 @@ unconditional.
 
 * `Oseledets.Entropy.ksEntropyPartition_le_of_atomCount_growth` — the arithmetic backbone:
   `atomCount ≤ C · exp(n R)` ⇒ `h(P, T) ≤ R`.
-* `Oseledets.crudeRuelle_le_log_deriv_rate` — the crude Ruelle bound `h(P, T) ≤ d · B` under a
-  uniform `log⁺‖DT‖ ≤ B` bound and the geometric atom-count growth hypothesis at rate `d · B`.
+* `Oseledets.crudeRuelle_le_log_deriv_rate` — the crude Ruelle bound `h(P, T) ≤ d · B` from the
+  geometric atom-count growth hypothesis at rate `d · B` (with `B` the intended uniform
+  `log⁺‖DT‖ ≤ B` derivative bound).
 
 ## References
 
@@ -143,35 +144,32 @@ variable {d : ℕ}
 
 /-- **The crude Ruelle bound.**
 
-For a measure-preserving self-map `T` of `EuclideanSpace ℝ (Fin d)` whose derivative satisfies the
-uniform bound `log⁺‖D_x T‖ ≤ B`, and a finite partition `P` whose `n`-fold refinement
-`⋁ₖ₌₀ⁿ⁻¹ T⁻ᵏ P` has at most `C · exp(n · d · B)` non-empty atoms (the geometric atom-counting input,
-`hgrow`), the Kolmogorov–Sinai partition entropy is bounded by the *positive-part* log-derivative
-rate times the dimension:
+For a measure-preserving self-map `T` of `EuclideanSpace ℝ (Fin d)`, a rate `B` (intended to be a
+uniform bound `log⁺‖D_x T‖ ≤ B` on the derivative), and a finite partition `P` whose `n`-fold
+refinement `⋁ₖ₌₀ⁿ⁻¹ T⁻ᵏ P` has at most `C · exp(n · d · B)` non-empty atoms (the geometric
+atom-counting input, `hgrow`), the Kolmogorov–Sinai partition entropy is bounded by the
+*positive-part* log-derivative rate times the dimension:
 
 `h(P, T) ≤ d · B`.
 
 Here `d · B` plays the role of `d · ∫ log⁺‖D_x T‖ dμ`: the volume of `T^[n] '' (atom)` grows at most
 like `‖D(T^[n])‖^d`, and operator-norm submultiplicativity together with `log⁺‖D(T^[n])‖ ≤ n · B`
-turns the covering count of the image into `exp(n · d · B)` atoms.  The genuinely geometric step is
-abstracted as `hgrow`; the surrounding reduction is the unconditional
+turns the covering count of the image into `exp(n · d · B)` atoms.  Both the uniform-bound
+interpretation of `B` and the genuinely geometric step are folded into `hgrow` (which carries the
+rate `d · B` directly); the surrounding reduction is the unconditional
 `Entropy.ksEntropyPartition_le_of_atomCount_growth`.
 
 *Non-compactness.* On the noncompact `EuclideanSpace` the bare inequality `h ≤ d · ∫ log⁺‖DT‖` is
-false (Riquelme 2017); the uniform bound `B` and the cover-growth hypothesis `hgrow` are the honest
-extra data that make the statement true.  See the module docstring. -/
+false (Riquelme 2017); the cover-growth hypothesis `hgrow` at rate `d · B` is the honest extra datum
+that makes the statement true.  See the module docstring. -/
 theorem crudeRuelle_le_log_deriv_rate {μ : Measure (EuclideanSpace ℝ (Fin d))}
     [IsProbabilityMeasure μ] {T : EuclideanSpace ℝ (Fin d) → EuclideanSpace ℝ (Fin d)}
     (hT : MeasurePreserving T μ μ) {ι : Type*} [Fintype ι] [Nonempty ι]
-    (P : Entropy.MeasurePartition μ ι) {B : ℝ} (hB : 0 ≤ B)
-    (hbound : ∀ x, Real.posLog ‖fderiv ℝ T x‖ ≤ B) {C : ℝ} (hC : 1 ≤ C)
+    (P : Entropy.MeasurePartition μ ι) {B : ℝ} {C : ℝ} (hC : 1 ≤ C)
     (hgrow : ∀ᶠ n : ℕ in atTop,
       (Entropy.atomCount hT P n : ℝ) ≤ C * Real.exp (n * (d * B))) :
-    Entropy.ksEntropyPartition hT P ≤ d * B := by
-  -- `hbound` records that `B` is an honest uniform `log⁺`-derivative bound; the entropy bound is
-  -- the arithmetic reduction at rate `R = d · B`.
-  have _ := hbound
-  have _ := hB
-  exact Entropy.ksEntropyPartition_le_of_atomCount_growth hT P hC hgrow
+    Entropy.ksEntropyPartition hT P ≤ d * B :=
+  -- The entropy bound is the arithmetic reduction at rate `R = d · B`.
+  Entropy.ksEntropyPartition_le_of_atomCount_growth hT P hC hgrow
 
 end Oseledets

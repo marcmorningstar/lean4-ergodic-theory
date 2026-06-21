@@ -101,7 +101,7 @@ measurable cocycle generator `A` and measurable base dynamics `T`.
 `(n : ℝ)⁻¹ · log ‖toEuclideanCLM (cocycle A T n x) v‖`; each summand is jointly measurable
 (`measurable_norm_toEuclideanCLM_cocycle`, then `Real.log`, scaled by the constant `n⁻¹`),
 and `Measurable.limsup` lifts the per-step measurability to the limsup. -/
-theorem jointMeasurable_lambdaBar [NeZero d] {A : X → Matrix (Fin d) (Fin d) ℝ}
+theorem jointMeasurable_lambdaBar {A : X → Matrix (Fin d) (Fin d) ℝ}
     (hA : Measurable A) {T : X → X} (hT : Measurable T) :
     Measurable (fun p : X × EuclideanSpace ℝ (Fin d) => lambdaBar A T p.1 p.2) := by
   -- `lambdaBar A T x v = limsup_n s n (x, v)` with

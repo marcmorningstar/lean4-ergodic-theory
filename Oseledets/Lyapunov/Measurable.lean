@@ -59,7 +59,14 @@ namespace Oseledets
 variable {X : Type*} [MeasurableSpace X] {μ : Measure X} {T : X → X} {d : ℕ}
 
 /-- The Borel measurable structure on `EuclideanSpace ℝ (Fin d)` (a metric space). Used to make
-sense of `EuclideanSpace`-valued measurable maps below. -/
+sense of `EuclideanSpace`-valued measurable maps below.
+
+Implementation note: this is the `borel _` σ-algebra. It is *propositionally* equal to — but a
+syntactically different term from — Mathlib's own `WithLp.measurableSpace` on the same type. We
+therefore register `borel _` explicitly here and pin the `BorelSpace` witness as `⟨rfl⟩` below (the
+`rfl` is exactly the definitional `MeasurableSpace = borel _` this instance makes hold by fiat), so
+that downstream `MeasurableSpace`/`BorelSpace` typeclass resolution stays on a single coherent term
+and the Borel-measurability lemmas apply without coercion friction. -/
 instance instMeasurableSpaceEuclideanSpace :
     MeasurableSpace (EuclideanSpace ℝ (Fin d)) := borel _
 

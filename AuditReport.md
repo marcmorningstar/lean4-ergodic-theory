@@ -36,7 +36,12 @@ Modules: `SuspensionReturnTimeMeasurable`, `SuspensionExponentSetEquiv`, `Suspen
 
 ---
 
-## #4 — abstract reduction is the honest maximum; geometric core is a genuine wall
+## #4 — Phase 1: abstract reduction + the geometric wall characterized
+
+> **→ CLOSED in Phase 2** (see "PHASE 2 — Frontier campaign" below): the geometric core was *formalized*
+> — `Oseledets.margulisRuelle_sharp : ksEntropy ≤ Σλᵢ⁺` via the full Mañé covering-count pipeline (Mañé 12.5
+> + SVD anisotropic covering + orbit iteration), in the linted, axiom-audited lib. The section below records
+> the Phase-1 honest assessment (why the bare inequality is a wall) that motivated the eventual route.
 
 `margulisRuelle_le_sumPosExp` (already in the repo) proves `ksEntropy ≤ sumPosExp` conditional on the
 per-partition counting hypothesis `hgeo`, with the *entire* KS-entropy stack sorry-free underneath. This is
@@ -62,7 +67,12 @@ Multi-month, Mathlib-scale. Correctly left as the explicit open input.
 
 ---
 
-## #6 — all reachable det-free content landed; one wall, characterized from 3 routes
+## #6 — Phase 1: all reachable det-free content landed; the everywhere-flag wall characterized
+
+> **→ CLOSED in Phase 2** (see "PHASE 2 — Frontier campaign" below): the *a.e.* measurable singular forward
+> filtration was *formalized* — `Oseledets.aemeasurable_orthProjMatrix_lambdaSublevel`, via the polarization
+> route + the new `MeasureTheory.AnalyticSet.nullMeasurableSet` (a Mathlib gap). The wall below is for the
+> strictly-stronger *everywhere*-measurable flag; the a.e. formulation (the correct MET notion) is closed.
 
 ### Landed (sorry-free, axiom-clean) — the genuine singular forward MET content reachable in pinned Mathlib
 

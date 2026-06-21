@@ -37,27 +37,24 @@ with **no smallness hypothesis on `ε`** beyond positivity and **no `C¹` linear
 `∏ᵢ max(1, σᵢ) = ⨆_{k≤d} ∏_{i<k} σᵢ` (`Oseledets.Entropy.Ruelle.VolumeDistortion`): writing `σ₀ =
 ‖L‖`,
 `∏ᵢ max(1, σᵢ) ≤ (1 + σ₀) ^ d`, so the isotropic bound is a *valid but non-sharp* upper bound for
-the positive-part product (`Oseledets.prod_max_one_singularValues_le_one_add_opNorm_pow`).
+the positive-part product (`Oseledets.prod_max_one_le_one_add_top_pow`).
 
-## What is sharp and what is not (a recorded obstruction)
+## The isotropic count here vs. the sharp anisotropic count
 
 The genuinely **sharp** count `≲ ∏ᵢ max(1, σᵢ(L))` (anisotropic: a thin pancake needs *few* balls
 along its thin directions) cannot be reached by the *isotropic* volume bound above, which only sees
-`‖L‖ = σ₀`.  The sharp count requires either
+`‖L‖ = σ₀`.  The sharp count instead goes through a **constructive SVD diagonalisation**
+`L = U Σ Vᵀ` with `U, V` orthogonal: covering `L '' ball = U (Σ '' ball)` reduces, by
+isometry-invariance of covering numbers, to covering the *axis-aligned* ellipsoid `Σ '' ball`, an
+explicit product box of sides `σᵢ ε` covered by `∏ᵢ ⌈…⌉ ≲ ∏ᵢ max(1, σᵢ)` boxes (Mañé's Lemma 12.5).
 
-* a **constructive SVD diagonalisation** `L = U Σ Vᵀ` with `U, V` orthogonal (so that covering
-  `L '' ball = U (Σ '' ball)` reduces, by isometry-invariance of covering numbers
-  `Isometry.coveringNumber_image`, to covering the *axis-aligned* ellipsoid `Σ '' ball`, an explicit
-  product box of sides `σᵢ ε` covered by `∏ᵢ ⌈…⌉ ≲ ∏ᵢ max(1, σᵢ)` boxes — Mañé's Lemma 12.5); **or**
-* a **Minkowski-sum / Steiner-formula volume bound** for `vol((L '' ball) ⊕ ball)`, giving the
-  anisotropic `∏ᵢ (σᵢ ε + ε/2)` directly.
-
-As of the pinned Mathlib (`v4.30.0-rc2`) **neither is available**: `singularValues` exposes the
-values, antitonicity and `∏ σᵢ = ‖Cₖ‖` (used in `VolumeDistortion`), but **no orthonormal-basis SVD
-factorisation**; and there is no Minkowski-sum volume inequality / Steiner formula.  Hence the sharp
-anisotropic covering count is *infrastructure-blocked*, and this module delivers the fully honest
-isotropic specialisation together with the explicit `∏ᵢ max(1, σᵢ) ≤ (1 + ‖L‖) ^ d` comparison that
-locates it as the `k = d` extreme of the positive-part product.
+That sharp anisotropic count is **fully proved in-tree** in the sibling module
+`Oseledets.Entropy.Ruelle.SharpCovering` (`Oseledets.coveringCount_image_ball_le_volProd`, via the
+constructive `Oseledets.svd_exists` + an ellipsoid-domination volume bound, with dimensional
+constant `6^d`).  The present module records the simpler **isotropic** specialisation
+`(2 ‖L‖ + 1) ^ d`
+together with the explicit `∏ᵢ max(1, σᵢ) ≤ (1 + ‖L‖) ^ d` comparison that locates it as the `k = d`
+extreme of the positive-part product; the sharp track uses the `SharpCovering` count.
 
 ## Main results
 
@@ -66,7 +63,7 @@ locates it as the `k = d` extreme of the positive-part product.
 * `MeasureTheory.addHaar_cthickening_image_closedBall_le` — its Haar volume bound.
 * `Metric.coveringCount_image_ball_linear_le` — the **isotropic one-step covering count**:
   `coveringNumber ε (L '' closedBall x ε) ≤ ENNReal.ofReal ((2 * ‖L‖ + 1) ^ d)`.
-* `Oseledets.prod_max_one_singularValues_le_one_add_opNorm_pow` — the comparison
+* `Oseledets.prod_max_one_le_one_add_top_pow` — the comparison
   `∏ᵢ max(1, σᵢ(L)) ≤ (1 + ‖L‖) ^ d`, placing the sharp positive-part product below the
   isotropic count.
 -/
@@ -144,7 +141,7 @@ This is the linear instance of Liao–Qiu's one-step covering count (§3, Lemma 
 `(ε/2 + ‖L‖ ε) / (ε/2) = 2 ‖L‖ + 1`.
 
 It is the `k = d` (isotropic, top) truncation of the sharp positive-part product
-`∏ᵢ max(1, σᵢ(L))`; see `Oseledets.prod_max_one_singularValues_le_one_add_opNorm_pow` for the
+`∏ᵢ max(1, σᵢ(L))`; see `Oseledets.prod_max_one_le_one_add_top_pow` for the
 comparison `∏ᵢ max(1, σᵢ) ≤ (1 + ‖L‖) ^ d ≤ (2 ‖L‖ + 1) ^ d`. -/
 theorem coveringCount_image_ball_linear_le
     (μ : Measure (EuclideanSpace ℝ (Fin d))) [μ.IsAddHaarMeasure]

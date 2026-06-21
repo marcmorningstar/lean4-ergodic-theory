@@ -43,12 +43,14 @@ incarnation of `∑ λᵢ⁺`.
    multiplicity).  No extra Furstenberg–Kesten integrability is needed: the rate rides on the
    already-established per-exponent singular-value limits.
 
-2. **The local covering count (interface `coveringCount_image_ball_le_volProd`, stubbed).**  The
-   genuinely geometric per-step input — the image `T^[n](ball x ε)` is coverable by at most
-   `C · volProd T n x` balls of radius `ε` — is built in a sibling worktree
-   (`Oseledets.Entropy.Ruelle.LocalCovering`).  It is declared here with the agreed signature as
-   the explicit hypothesis `hcover`, so the orbit assembly is sorry-free *modulo* that one geometric
-   atom; the orchestrator wires the real `LocalCovering` in.
+2. **The local covering count (`coveringCount_image_ball_le_volProd`, proved in-tree).**  The
+   genuinely geometric per-step input — the image `L '' (ball x ε)` of an `ε`-ball under a linear
+   map `L` is coverable by at most `6^d · ∏ᵢ max(1, σᵢ(L))` balls of radius `ε` — is **fully proved
+   in-tree** in the sibling module `Oseledets.Entropy.Ruelle.SharpCovering` (via a constructive SVD
+   ellipsoid domination + determinant volume bound).  Specialised to the orbit differential
+   `L = D_x(T^[n])` (`Oseledets.chainRule_cocycle`) it gives exactly the per-orbit `volProd` count.
+   The honest mathematical caveat is the non-compactness distortion regime (`hgeo` below, Riquelme
+   2017), *not* the covering count itself.
 
 Feeding the orbit rate (layer 1) into the abstract atom-count reduction
 `Oseledets.Entropy.ksEntropyPartition_le_of_atomCount_growth` (`Oseledets.Entropy.Ruelle.Crude`)
@@ -73,8 +75,8 @@ reduction is unconditional.
 * `Oseledets.log_volProd_eq_sum_posLog` — `log (volProd …) = ∑_{i<d} log⁺ σᵢ`.
 * `Oseledets.tendsto_log_volProd` — the orbit growth rate
   `(1/n) log (volProd …) → sumPosExp`, a.e. (sorry-free).
-* `Oseledets.coveringCount_image_ball_le_volProd` — the **interface stub** for the local
-  covering count (built in the sibling `Oseledets.Entropy.Ruelle.LocalCovering`).
+* `Oseledets.coveringCount_image_ball_le_volProd` — the sharp local covering count, **proved
+  in-tree** in the sibling `Oseledets.Entropy.Ruelle.SharpCovering`.
 * `Oseledets.ksEntropyPartition_le_sumPosExp_of_atomVolProd` — the orbit assembly: a
   base-point `volProd` atom-count bound yields `h(P, T) ≤ sumPosExp`.
 * `Oseledets.margulisRuelle_sharp_of_atomVolProd` — the sharp Margulis–Ruelle inequality
@@ -280,39 +282,6 @@ theorem eventually_volProd_le {x : EuclideanSpace ℝ (Fin d)}
 
 end Rate
 
-/-! ## The local covering count (interface to the sibling `LocalCovering`) -/
-
-section LocalCoveringInterface
-
-open Metric
-
-/-- **The sharp one-step local covering count (interface stub).**  The image
-`T^[n](closedBall x ε)` of an `ε`-ball under the `n`-fold iterate is coverable by at most
-`C · volProd T n x` balls of radius `ε`, where `volProd T n x = ∏ᵢ max(1, σᵢ(D_x(T^[n])))` is the
-per-orbit positive-part singular-value product.  This is the **sharp anisotropic** Liao–Qiu covering
-count (a thin pancake needs *few* balls along its thin directions), specialised to the orbit iterate
-via the chain-rule cocycle (`Oseledets.chainRule_cocycle`,
-`D_x(T^[n]) = toEuclideanCLM (cocycle (derivativeCocycle T) T n x)`).
-
-It is built in the sibling worktree `Oseledets.Entropy.Ruelle.LocalCovering` and declared here as
-the agreed
-explicit hypothesis `hcover`, so the orbit assembly below is sorry-free *modulo* this single
-geometric atom; the orchestrator wires the real lemma in.  **Recorded obstruction.**  As of pinned
-Mathlib (`v4.30.0-rc2`) the sibling has established only the *isotropic* count
-`coveringNumber ε (L '' ball) ≤ (2‖L‖ + 1)^d` (`Metric.coveringCount_image_ball_linear_le`) plus
-the comparison `∏ᵢ max(1, σᵢ) ≤ (1 + ‖L‖)^d`
-(`Oseledets.prod_max_one_singularValues_le_one_add_opNorm_pow`);
-the genuinely *sharp* `∏ᵢ max(1, σᵢ)` count is infrastructure-blocked (no orthonormal-basis SVD
-factorisation, no Minkowski-sum / Steiner-formula volume bound in pinned Mathlib).  Hence this
-agreed-signature stub is the precise hypothesis that the sharp track depends on. -/
-def CoveringCountImageBallLeVolProd
-    (T : EuclideanSpace ℝ (Fin d) → EuclideanSpace ℝ (Fin d)) (C : ℝ) (ε : ℝ≥0) : Prop :=
-  ∀ (n : ℕ) (x : EuclideanSpace ℝ (Fin d)),
-    (coveringNumber ε (T^[n] '' closedBall x (ε : ℝ)) : ℝ≥0∞)
-      ≤ ENNReal.ofReal (C * volProd T n x)
-
-end LocalCoveringInterface
-
 /-! ## The orbit assembly: from a `volProd` atom-count bound to `h(P, T) ≤ sumPosExp` -/
 
 section Assembly
@@ -327,7 +296,8 @@ variable {μ : Measure (EuclideanSpace ℝ (Fin d))} [IsProbabilityMeasure μ]
 space, there is a base point `x` at which the orbit rate holds (`hxrate`, supplied a.e. by
 `tendsto_log_volProd`) and at which the non-empty atom count of the refined partition is eventually
 bounded by `C · volProd T n x` (`hatom`, the distilled output of the Mañé/Katok orbit
-covering–distortion count via the local covering `CoveringCountImageBallLeVolProd`).  Then the
+covering–distortion count via the in-tree local covering count
+`Oseledets.coveringCount_image_ball_le_volProd`).  Then the
 Kolmogorov–Sinai partition entropy is bounded by the positive-exponent sum:
 
 `h(P, T) ≤ sumPosExp`.
@@ -383,8 +353,8 @@ noncompact `EuclideanSpace`, Riquelme 2017); the surrounding orbit reduction —
 
 The orbit rate at the base point is *not* an extra hypothesis: it is supplied a.e. by
 `tendsto_log_volProd`, and a base point of the full-measure rate set carrying the atom bound is what
-`hatom` provides (its existence is the content of the geometric count, fed by the local covering
-`CoveringCountImageBallLeVolProd`). -/
+`hatom` provides (its existence is the content of the geometric count, fed by the in-tree local
+covering count `Oseledets.coveringCount_image_ball_le_volProd`). -/
 theorem margulisRuelle_sharp_of_atomVolProd (hdiff : Differentiable ℝ T)
     (hatom : ∀ (n : ℕ) (P : Oseledets.Entropy.MeasurePartition μ (Fin n)),
       ∃ (C : ℝ) (x : EuclideanSpace ℝ (Fin d)), 1 ≤ C ∧
