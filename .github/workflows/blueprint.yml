@@ -53,12 +53,24 @@ jobs:
           # already fails this build. (`lint:` here is lean-action's separate environment linter.)
           lint: false
 
+      # Create/configure the GitHub Pages site (source = "GitHub Actions") *before* deploying.
+      # Without this the repo has no Actions-backed Pages site (`GET /pages` returns 404), so the
+      # `actions/deploy-pages` step inside docgen-action fails with "Creating Pages deployment
+      # failed". `enablement: true` provisions it via the API using the `pages: write` token, which
+      # is the one part of the fix that does not require touching repository settings by hand.
+      # Only runs on the same events that deploy, so PRs stay pure dry runs.
+      - name: Setup Pages
+        if: github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+        uses: actions/configure-pages@983d7736d9b0ae728b81ab479565c72886d7745b # v5.0.0
+        with:
+          enablement: true
+
       - name: Compile blueprint and documentation
         uses: leanprover-community/docgen-action@deed0cdc44dd8e5de07a300773eb751d33e32fc8 # 2025-10-26
         with:
           blueprint: true
           homepage: home_page
-          references: docs/references.bib
-          # Only publish to GitHub Pages from `main`. On the setup branch and on PRs the
-          # blueprint/docs are still built (a dry run), but nothing is deployed.
-          deploy: ${{ github.ref == 'refs/heads/main' && github.event_name == 'push' }}
+          # Only publish to GitHub Pages from `main` (on push or a manual re-deploy via
+          # workflow_dispatch). On PRs and other branches the blueprint/docs are still built as a
+          # dry run, but nothing is deployed.
+          deploy: ${{ github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}
