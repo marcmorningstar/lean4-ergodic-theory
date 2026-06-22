@@ -13,28 +13,29 @@ import Mathlib.MeasureTheory.Constructions.BorelSpace.ContinuousLinearMap
 import Mathlib.MeasureTheory.MeasurableSpace.Constructions
 import Mathlib.Topology.Compactness.Lindelof
 import Mathlib.Topology.Compactness.SigmaCompact
-import Frontier.Issue2.Framing
+import Oseledets.Smooth.Framing
 
 /-!
 # Unconditional measurability of the manifold derivative cocycle (issue #9, no chart regularity)
 
-`Frontier/Issue2/MFDerivMeasurable.lean` proves measurability of `x ↦ mfderiv I I T x` on a
-σ-compact boundaryless `C¹` manifold by *un-conjugating* the fixed-base in-coordinates representative
-with **moving-source-index** coordinate changes `x ↦ tangentCoordChange I x c x`; those are
-continuous only under the extra hypothesis `[LocallyConstantChartAt H M]` (the canonical `chartAt x`
-is a pathological selector).
+The prior (LCC-conditional) route proved measurability of `x ↦ mfderiv I I T x` on a
+σ-compact boundaryless `C¹` manifold by *un-conjugating* the fixed-base in-coordinates
+representative with **moving-source-index** coordinate changes `x ↦ tangentCoordChange I x c x`;
+those are continuous only under the extra hypothesis `[LocallyConstantChartAt H M]` (the canonical
+`chartAt x` is a pathological selector).
 
 This file removes that hypothesis. The trick is to choose the linear frame **piecewise from a fixed
-reference chart per block**. On the block at source/target references `a`/`b`, the frame at `x` is the
-*fixed-reference* coordinate change `tangentCoordChange I x a x` (source side, with inverse
-`tangentCoordChange I a x x`) and `tangentCoordChange I (T x) b (T x)` (target side). The *conjugated*
-generator
+reference chart per block**. On the block at source/target references `a`/`b`, the frame at `x` is
+the *fixed-reference* coordinate change `tangentCoordChange I x a x` (source side, with inverse
+`tangentCoordChange I a x x`) and `tangentCoordChange I (T x) b (T x)` (target side). The
+*conjugated* generator
 `x ↦ tangentCoordChange I (T x) b (T x) ∘L mfderiv I I T x ∘L tangentCoordChange I a x x`
 is **exactly** the `fderivWithin` of the **fixed-chart-written** map
 `extChartAt I b ∘ T ∘ (extChartAt I a).symm`. Since `T` is `C¹`, this fixed-chart-written map is
 `ContDiffOn ℝ 1`, so its `fderivWithin` is continuous (`ContDiffOn.continuousOn_fderiv_of_isOpen`) —
-with **no chart-regularity hypothesis**. The moving native charts `chartAt x`, `chartAt (T x)` cancel
-algebraically inside the conjugated composite; they never appear as standalone moving-index factors.
+with **no chart-regularity hypothesis**. The moving native charts `chartAt x`, `chartAt (T x)`
+cancel algebraically inside the conjugated composite; they never appear as standalone moving-index
+factors.
 
 ## Main results
 
@@ -46,8 +47,8 @@ algebraically inside the conjugated composite; they never appear as standalone m
   `ContinuousOn` the block, with **no** `LocallyConstantChartAt`.
 * `continuousOn_framedGenerator_block` — the single-reference (`b = T a`) crux, in the exact
   `tangentCoordChange` form of the issue task.
-* `exists_measurableFraming_of_sigmaCompact` — **unconditional** existence of a `MeasurableFraming`
-  on a σ-compact boundaryless `C¹` manifold (no `LocallyConstantChartAt`).
+* `exists_measurableFraming_of_sigmaCompact` — **unconditional** existence of a
+  `MeasurableFraming` on a σ-compact boundaryless `C¹` manifold (no `LocallyConstantChartAt`).
 
 ## References
 
@@ -57,7 +58,7 @@ algebraically inside the conjugated composite; they never appear as standalone m
 open Filter Topology Set Function MeasureTheory
 open scoped Manifold
 
-namespace Frontier.Issue2
+namespace Oseledets
 
 noncomputable section
 
@@ -73,7 +74,8 @@ variable
 
 omit [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E] [I.Boundaryless] in
 /-- The **target** fixed-reference factor is the derivative of the fixed target chart at the moving
-image point: for `y ∈ (chartAt H b).source`, `tangentCoordChange I y b y = mfderiv (extChartAt I b) y`.
+image point: for `y ∈ (chartAt H b).source`,
+`tangentCoordChange I y b y = mfderiv (extChartAt I b) y`.
 Extracted from the first `congr` bullet of `inTangentCoordinates_eq_mfderiv_comp`. -/
 theorem tangentCoordChange_eq_mfderiv_extChartAt {b y : M} (hy : y ∈ (chartAt H b).source) :
     tangentCoordChange I y b y = mfderiv I 𝓘(ℝ, E) (extChartAt I b) y := by
@@ -101,11 +103,11 @@ theorem tangentCoordChange_eq_mfderivWithin_extChartAt_symm {a x : M}
 
 /-! ### The fixed-chart-written map and its smoothness -/
 
-/-- The manifold derivative recorded with the homogeneous model-fibre type `E →L[ℝ] E` (legitimate
-since `TangentSpace I x` is definitionally `E`). This packaging gives `mfderiv` a non-dependent
-`E →L[ℝ] E` type so it can be `.comp`-osed with the model-space `tangentCoordChange` factors (the
-`TangentSpace` synonym is not reducible, so the bare `mfderiv I I T x` would not unify). Mirrors
-`Frontier.Issue2.mfderivHom`. -/
+/-- The manifold derivative recorded with the homogeneous model-fibre type `E →L[ℝ] E`
+(legitimate since `TangentSpace I x` is definitionally `E`). This packaging gives `mfderiv` a
+non-dependent `E →L[ℝ] E` type so it can be `.comp`-osed with the model-space `tangentCoordChange`
+factors (the `TangentSpace` synonym is not reducible, so the bare `mfderiv I I T x` would not
+unify). -/
 def mfderivHom (T : M → M) (x : M) : E →L[ℝ] E := mfderiv I I T x
 
 variable (I) in
@@ -126,9 +128,9 @@ theorem isOpen_block2 {T : M → M} (hT : Continuous T) (a b : M) :
   (chartAt H a).open_source.inter ((chartAt H b).open_source.preimage hT)
 
 omit [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E] [I.Boundaryless] in
-/-- The fixed-chart-written map is `ContDiffOn ℝ 1` on the image of the block under the fixed source
-chart. This is `contMDiffOn_iff_of_subset_source` for the `C¹` map `T` and the chart pair `(a, b)` —
-**no** chart-regularity hypothesis. -/
+/-- The fixed-chart-written map is `ContDiffOn ℝ 1` on the image of the block under the fixed
+source chart. This is `contMDiffOn_iff_of_subset_source` for the `C¹` map `T` and the chart pair
+`(a, b)` — **no** chart-regularity hypothesis. -/
 theorem contDiffOn_fixedChartWritten2 {T : M → M} (hT : ContMDiff I I 1 T) (a b : M) :
     ContDiffOn ℝ 1 (fixedChartWritten2 I T a b)
       (extChartAt I a '' block2 (H := H) T a b) := by
@@ -140,8 +142,9 @@ theorem contDiffOn_fixedChartWritten2 {T : M → M} (hT : ContMDiff I I 1 T) (a 
 /-! ### The fold: the conjugated generator equals the fixed-chart `fderivWithin` -/
 
 variable (I) in
-/-- The **two-reference conjugated generator**: the manifold derivative `mfderiv I I T x` conjugated
-by the *fixed-reference* coordinate changes — source reference `a`, target reference `b`. -/
+/-- The **two-reference conjugated generator**: the manifold derivative `mfderiv I I T x`
+conjugated by the *fixed-reference* coordinate changes — source reference `a`, target reference
+`b`. -/
 def conjGen (T : M → M) (a b : M) (x : M) : E →L[ℝ] E :=
   (tangentCoordChange I (T x) b (T x)).comp
     ((mfderivHom (I := I) T x).comp (tangentCoordChange I a x x))
@@ -170,7 +173,8 @@ theorem conjGen_eq_fixedChart_fderivWithin {T : M → M} (hT : MDifferentiable I
   -- Rewrite the three factors as chart derivatives.
   rw [conjGen, tangentCoordChange_eq_mfderiv_extChartAt hxt,
     tangentCoordChange_eq_mfderivWithin_extChartAt_symm hxs,
-    show mfderivHom (I := I) T x = mfderivWithin I I T univ x by rw [mfderivHom, mfderivWithin_univ]]
+    show mfderivHom (I := I) T x = mfderivWithin I I T univ x by
+      rw [mfderivHom, mfderivWithin_univ]]
   -- Differentiability facts for the chain rule.
   have hsymmDiff : MDifferentiableWithinAt 𝓘(ℝ, E) I (extChartAt I a).symm (range I)
       (extChartAt I a x) := mdifferentiableWithinAt_extChartAt_symm hcsx
@@ -223,16 +227,17 @@ theorem continuousOn_extChartAt_source_block2 {T : M → M} (a b : M) :
 
 omit [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E] in
 /-- **CRUX LEMMA.** On the block `block2 H T a b`, the two-reference conjugated generator `conjGen`
-is `ContinuousOn`, with **no** chart-regularity hypothesis (`LocallyConstantChartAt`-free). It equals
-the `fderivWithin` of the fixed-chart-written `C¹` map composed with the continuous fixed source
-chart; the moving native charts cancel inside. -/
+is `ContinuousOn`, with **no** chart-regularity hypothesis (`LocallyConstantChartAt`-free). It
+equals the `fderivWithin` of the fixed-chart-written `C¹` map composed with the continuous fixed
+source chart; the moving native charts cancel inside. -/
 theorem continuousOn_conjGen_block2 {T : M → M} (hT : ContMDiff I I 1 T) (a b : M) :
     ContinuousOn (conjGen I T a b) (block2 (H := H) T a b) := by
   set img : Set E := extChartAt I a '' block2 (H := H) T a b with himg_def
   have hcd : ContDiffOn ℝ 1 (fixedChartWritten2 I T a b) img :=
     contDiffOn_fixedChartWritten2 hT a b
   -- `img` is open: `cs '' block = cs.symm ⁻¹' block ∩ cs.target`, an intersection of opens.
-  have himg_eq : img = (extChartAt I a).symm ⁻¹' block2 (H := H) T a b ∩ (extChartAt I a).target := by
+  have himg_eq : img =
+      (extChartAt I a).symm ⁻¹' block2 (H := H) T a b ∩ (extChartAt I a).target := by
     ext y; constructor
     · rintro ⟨z, hz, rfl⟩
       refine ⟨?_, (extChartAt I a).map_source (by rw [extChartAt_source]; exact hz.1)⟩
@@ -245,7 +250,8 @@ theorem continuousOn_conjGen_block2 {T : M → M} (hT : ContMDiff I I 1 T) (a b 
     exact (continuousOn_extChartAt_symm a).isOpen_inter_preimage (isOpen_extChartAt_target a)
       (isOpen_block2 hT.continuous a b)
   -- With `range I = univ`, `fderivWithin ℝ g (range I) = fderiv ℝ g`, continuous on the open `img`.
-  have hfderivCont : ContinuousOn (fderivWithin ℝ (fixedChartWritten2 I T a b) (range I)) img := by
+  have hfderivCont :
+      ContinuousOn (fderivWithin ℝ (fixedChartWritten2 I T a b) (range I)) img := by
     have heq : (fderivWithin ℝ (fixedChartWritten2 I T a b) (range I))
         = (fderiv ℝ (fixedChartWritten2 I T a b)) := by
       funext y; rw [I.range_eq_univ, fderivWithin_univ]
@@ -264,10 +270,10 @@ theorem continuousOn_conjGen_block2 {T : M → M} (hT : ContMDiff I I 1 T) (a b 
 
 omit [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E] in
 /-- **THE CRUX (task statement, `tangentCoordChange` form).** On the block
-`(chartAt H a).source ∩ T ⁻¹' (chartAt H (T a)).source`, with the **fixed-chart frame** at reference
-points `a` (source) / `T a` (target) — `(φ_a x).symm := tangentCoordChange I a x x` on the source
-side, `φ_{Ta}(T x) := tangentCoordChange I (T x) (T a) (T x)` on the target side — the conjugated
-generator
+`(chartAt H a).source ∩ T ⁻¹' (chartAt H (T a)).source`, with the **fixed-chart frame** at
+reference points `a` (source) / `T a` (target) — `(φ_a x).symm := tangentCoordChange I a x x` on
+the source side, `φ_{Ta}(T x) := tangentCoordChange I (T x) (T a) (T x)` on the target side — the
+conjugated generator
 `x ↦ tangentCoordChange I (T x) (T a) (T x) ∘L mfderiv I I T x ∘L tangentCoordChange I a x x`
 (the middle factor carried by the model-fibre cast `mfderivHom`) is `ContinuousOn`, with **NO
 chart-regularity hypothesis** (no `LocallyConstantChartAt`).
@@ -286,8 +292,8 @@ theorem continuousOn_framedGenerator_block {T : M → M} (hT : ContMDiff I I 1 T
 /-! ### Assembly: the piecewise trivialization frame and unconditional existence -/
 
 /-- The **fixed-reference tangent frame** at base point `c`, evaluated at `x`: the
-`continuousLinearEquivAt` of the tangent-bundle trivialization at `c`. On `(chartAt H c).source` (the
-trivialization base set) its forward map is `tangentCoordChange I x c x` and its inverse is
+`continuousLinearEquivAt` of the tangent-bundle trivialization at `c`. On `(chartAt H c).source`
+(the trivialization base set) its forward map is `tangentCoordChange I x c x` and its inverse is
 `tangentCoordChange I c x x`. Off the base set we fall back to a junk membership proof (the
 trivialization equiv is total in `x` via `Classical`); only the on-block values are used. -/
 def tangentFrameAt (c : M) (x : M) : TangentSpace I x ≃L[ℝ] E := by
@@ -300,7 +306,8 @@ def tangentFrameAt (c : M) (x : M) : TangentSpace I x ≃L[ℝ] E := by
 omit [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E] [I.Boundaryless] in
 /-- The frame as a continuous linear map equals `tangentCoordChange I x c x` on the chart source. -/
 theorem tangentFrameAt_coe {c x : M} (hx : x ∈ (chartAt H c).source) :
-    ((tangentFrameAt (I := I) c x) : TangentSpace I x →L[ℝ] E) = tangentCoordChange I x c x := by
+    ((tangentFrameAt (I := I) c x) : TangentSpace I x →L[ℝ] E) =
+      tangentCoordChange I x c x := by
   classical
   rw [tangentFrameAt, dif_pos hx,
     Bundle.Trivialization.coe_continuousLinearEquivAt_eq',
@@ -357,16 +364,17 @@ theorem framedGenerator_eq_conjGen {T : M → M} {a b : M}
 
 set_option linter.unusedSectionVars false in
 /-- **Unconditional existence of a measurable framing on a σ-compact boundaryless C¹ manifold.**
-For a `C¹`, σ-compact (hence Lindelöf) **boundaryless** manifold `M` with its Borel σ-algebra, and any
-`ContMDiff I I 1` self-map `T`, the tangent bundle admits a `MeasurableFraming` — **with no
+For a `C¹`, σ-compact (hence Lindelöf) **boundaryless** manifold `M` with its Borel σ-algebra, and
+any `ContMDiff I I 1` self-map `T`, the tangent bundle admits a `MeasurableFraming` — **with no
 `LocallyConstantChartAt` hypothesis**.
 
 The frame is chosen **piecewise from a fixed reference chart per block** (`tangentFrameAt`); the
 conjugated generator on each pair-block `Pₙ ∩ T⁻¹ Pₘ` is the two-reference conjugated generator
-`conjGen I T aₙ aₘ`, continuous there by the crux `continuousOn_conjGen_block2`. A σ-compact space is
-Lindelöf, so the chart-source cover has a countable subcover `(chartAt H aₙ).source`; disjointifying
-gives a countable Borel partition `Pₙ`, and the products `Pₙ ∩ T⁻¹ Pₘ` form a countable Borel cover on
-each piece of which the conjugated generator is continuous, hence measurable; the pieces glue. -/
+`conjGen I T aₙ aₘ`, continuous there by the crux `continuousOn_conjGen_block2`. A σ-compact space
+is Lindelöf, so the chart-source cover has a countable subcover `(chartAt H aₙ).source`;
+disjointifying gives a countable Borel partition `Pₙ`, and the products `Pₙ ∩ T⁻¹ Pₘ` form a
+countable Borel cover on each piece of which the conjugated generator is continuous, hence
+measurable; the pieces glue. -/
 theorem exists_measurableFraming_of_sigmaCompact
     [SigmaCompactSpace M] {T : M → M} (hT : ContMDiff I I 1 T) :
     Nonempty (MeasurableFraming I T) := by
@@ -382,7 +390,8 @@ theorem exists_measurableFraming_of_sigmaCompact
   · exact ⟨⟨fun _ => ContinuousLinearEquiv.refl ℝ E, Subsingleton.measurable⟩⟩
   -- `M` nonempty: enumerate the countable reference set `s` as a sequence `a : ℕ → M` whose chart
   -- sources cover `M`.
-  obtain ⟨a, ha_surj⟩ : ∃ a : ℕ → M, ∀ x : M, (∃ n, x ∈ (chartAt H (a n)).source) := by
+  obtain ⟨a, ha_surj⟩ :
+      ∃ a : ℕ → M, ∀ x : M, (∃ n, x ∈ (chartAt H (a n)).source) := by
     obtain ⟨a, ha⟩ := Set.countable_iff_exists_subset_range.1 hs_count
     refine ⟨a, fun x => ?_⟩
     have : x ∈ (⋃ c ∈ s, (chartAt H c).source) := hs_cover (mem_univ x)
@@ -413,7 +422,8 @@ theorem exists_measurableFraming_of_sigmaCompact
     have hd : Disjoint (P (idx x)) (P n) := by
       rw [hP_def]; exact disjoint_disjointed U hne
     exact Set.disjoint_left.1 hd (hidx_mem x) hn
-  set frame : (x : M) → TangentSpace I x ≃L[ℝ] E := fun x => tangentFrameAt (a (idx x)) x with hframe_def
+  set frame : (x : M) → TangentSpace I x ≃L[ℝ] E :=
+    fun x => tangentFrameAt (a (idx x)) x with hframe_def
   refine ⟨⟨frame, ?_⟩⟩
   -- measurability of the framed generator: glue over the countable cover `{P n ∩ T⁻¹' P m}`.
   set G : M → (E →L[ℝ] E) := fun x =>
@@ -440,12 +450,12 @@ theorem exists_measurableFraming_of_sigmaCompact
     funext y
     have hy1 : (y : M) ∈ P n := y.2.1
     have hy2 : T (y : M) ∈ P m := y.2.2
-    show G (y : M) = conjGen I T (a n) (a m) (y : M)
+    change G (y : M) = conjGen I T (a n) (a m) (y : M)
     rw [hG_def]
     refine framedGenerator_eq_conjGen frame (hQsub y.2) ?_ ?_
-    · show tangentFrameAt (a (idx (y : M))) (y : M) = tangentFrameAt (a n) (y : M)
+    · change tangentFrameAt (a (idx (y : M))) (y : M) = tangentFrameAt (a n) (y : M)
       rw [hidx_unique hy1]
-    · show tangentFrameAt (a (idx (T (y : M)))) (T (y : M)) = tangentFrameAt (a m) (T (y : M))
+    · change tangentFrameAt (a (idx (T (y : M)))) (T (y : M)) = tangentFrameAt (a m) (T (y : M))
       rw [hidx_unique hy2]
   -- continuity ⇒ measurability of the restriction.
   rw [hframe_eq]
@@ -455,4 +465,4 @@ theorem exists_measurableFraming_of_sigmaCompact
 
 end
 
-end Frontier.Issue2
+end Oseledets

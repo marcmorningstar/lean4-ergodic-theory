@@ -4,28 +4,28 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Marcel Morgenstern
 -/
 import Mathlib.Topology.Compactness.SigmaCompact
-import Frontier.Issue2.Framing
-import Frontier.Issue2.UnconditionalFraming
-import Frontier.Issue2.FrameAlg
+import Oseledets.Smooth.Framing
+import Oseledets.Smooth.UnconditionalFraming
+import Oseledets.Smooth.FrameAlg
 import Oseledets.Cocycle.Norm
 import Oseledets.MultiplicativeErgodic
 
 /-!
 # Unconditional Oseledets MET for the framed tangent cocycle (issue #9, no chart regularity)
 
-The existing headline `oseledets_filtration_derivativeCocycleManifold`
-(`Frontier/Issue2/DerivativeCocycleManifold.lean`) feeds the *canonical* manifold derivative
+The earlier canonical-frame headline `oseledets_filtration_derivativeCocycleManifold` (a staging
+route, now superseded) fed the *canonical* manifold derivative
 `x ↦ mfderiv I I T x` — framed by the **globally constant** `frameAlg` — into the matrix MET
 `Oseledets.oseledets_filtration`, and **takes its measurability `hAmeas` as a hypothesis**. That
-hypothesis is only dischargeable under the chart-regularity assumption `[LocallyConstantChartAt H M]`
-(the canonical `chartAt x` is a pathological selector, so `x ↦ mfderiv I I T x` need not be
-measurable for an arbitrary `ChartedSpace`).
+hypothesis is only dischargeable under the chart-regularity assumption
+`[LocallyConstantChartAt H M]` (the canonical `chartAt x` is a pathological selector, so
+`x ↦ mfderiv I I T x` need not be measurable for an arbitrary `ChartedSpace`).
 
-This file removes that hypothesis entirely. We feed the matrix MET the **framed** cocycle attached to
-a `MeasurableFraming I T` (`Frontier/Issue2/Framing.lean`): the *piecewise* tangent frame produced
-by `Frontier/Issue2/UnconditionalFraming.lean`, whose conjugated generator `framedGenerator` is
-measurable **with no chart regularity** (the moving native charts cancel inside the conjugated
-composite, leaving the `fderivWithin` of a fixed-chart-written `C¹` map — see
+This file removes that hypothesis entirely. We feed the matrix MET the **framed** cocycle attached
+to a `MeasurableFraming I T` (`Oseledets.Smooth.Framing`): the *piecewise* tangent frame
+produced by `Oseledets.Smooth.UnconditionalFraming`, whose conjugated generator
+`framedGenerator` is measurable **with no chart regularity** (the moving native charts cancel inside
+the conjugated composite, leaving the `fderivWithin` of a fixed-chart-written `C¹` map — see
 `UnconditionalFraming.continuousOn_conjGen_block2`). Pushing that generator through the constant
 framing algebra `frameAlg` gives a measurable matrix cocycle, so the measurability of the matrix
 generator is discharged **unconditionally**:
@@ -35,13 +35,15 @@ generator is discharged **unconditionally**:
 ## Main results
 
 * `framedMatrixCocycle_eq` — the matrix cocycle `Oseledets.cocycle A T n x` equals
-  `frameAlg E (fr.framedCocycle n x)` (multiplicativity of `frameAlg`, by induction along the orbit).
+  `frameAlg E (fr.framedCocycle n x)` (multiplicativity of `frameAlg`, by induction along the
+  orbit).
 * `oseledets_filtration_framedTangentCocycle` — **framing-parametrised unconditional headline**:
-  given any `fr : MeasurableFraming I T`, the matrix cocycle `A x := frameAlg E (fr.framedGenerator x)`
-  is measurable **unconditionally**, and under the genuine dynamical hypotheses (ergodicity,
-  nonsingularity, log-integrability) admits an Oseledets filtration — **no `LocallyConstantChartAt`**.
-* `exists_oseledets_filtration_framedTangentCocycle` — **fully unconditional existence form**: on a
-  σ-compact boundaryless `C¹` manifold there *exists* a measurable framing whose framed tangent
+  given any `fr : MeasurableFraming I T`, the matrix cocycle
+  `A x := frameAlg E (fr.framedGenerator x)` is measurable **unconditionally**, and under the
+  genuine dynamical hypotheses (ergodicity, nonsingularity, log-integrability) admits an Oseledets
+  filtration — **no `LocallyConstantChartAt`**.
+* `exists_oseledets_filtration_framedTangentCocycle` — **fully unconditional existence form**: on
+  a σ-compact boundaryless `C¹` manifold there *exists* a measurable framing whose framed tangent
   cocycle has an Oseledets filtration — **no `LocallyConstantChartAt`**.
 
 ## References
@@ -53,7 +55,7 @@ generator is discharged **unconditionally**:
 open MeasureTheory Filter Topology
 open scoped Matrix.Norms.L2Operator Manifold
 
-namespace Frontier.Issue2
+namespace Oseledets
 
 noncomputable section
 
@@ -98,9 +100,10 @@ the (constant) framing algebra `frameAlg E` turns it into the matrix cocycle of
 `A x := frameAlg E (fr.framedGenerator x)`:
 `Oseledets.cocycle A T n x = frameAlg E (fr.framedCocycle n x)`.
 
-Proved by induction, peeling the innermost generator from both the cocycle recursion (`cocycle_succ`)
-and the right-telescoping framed recursion (`framedCocycle_succ_right`), using that `frameAlg E` is an
-algebra equivalence (`map_one`, `map_mul`; multiplication in `E →L[ℝ] E` is composition). -/
+Proved by induction, peeling the innermost generator from both the cocycle recursion
+(`cocycle_succ`) and the right-telescoping framed recursion (`framedCocycle_succ_right`), using that
+`frameAlg E` is an algebra equivalence (`map_one`, `map_mul`; multiplication in `E →L[ℝ] E` is
+composition). -/
 theorem framedMatrixCocycle_eq {T : M → M} (hT : MDifferentiable I I T)
     (fr : MeasurableFraming I T) (n : ℕ) (x : M) :
     Oseledets.cocycle (fun y => frameAlg E (fr.framedGenerator y)) T n x
@@ -125,9 +128,9 @@ Given **any** measurable framing `fr : MeasurableFraming I T` of the tangent bun
 `C¹` self-map `T`, set the matrix cocycle `A x := frameAlg E (fr.framedGenerator x)`. Then:
 
 * `A` is **measurable unconditionally** — discharged as
-  `(measurable_frameAlg).comp fr.measurable_framedGenerator'`, with **NO `LocallyConstantChartAt`** and
-  **NO `hAmeas` hypothesis** (the chart pathology is dodged: `fr.framedGenerator` is measurable by the
-  piecewise-fixed-chart construction of `UnconditionalFraming`);
+  `(measurable_frameAlg).comp fr.measurable_framedGenerator'`, with **NO `LocallyConstantChartAt`**
+  and **NO `hAmeas` hypothesis** (the chart pathology is dodged: `fr.framedGenerator` is measurable
+  by the piecewise-fixed-chart construction of `UnconditionalFraming`);
 * under the genuine dynamical hypotheses — `T` ergodic measure-preserving, every generator
   nonsingular (`hdet`), and `log⁺‖A‖, log⁺‖A⁻¹‖ ∈ L¹(μ)` (`hint`, `hint'`) — `A` admits the full
   Oseledets filtration `Oseledets.oseledets_filtration`.
@@ -183,17 +186,17 @@ set_option linter.unusedSectionVars false in
 
 On a σ-compact, boundaryless, finite-dimensional `C¹` manifold with its Borel σ-algebra, for any
 ergodic measure-preserving `C¹` self-map `T`, **there exists** a measurable framing `fr` of the
-tangent bundle whose framed matrix cocycle `A x := frameAlg E (fr.framedGenerator x)` admits the full
-Oseledets filtration — provided the genuine per-framing dynamical hypotheses (nonsingularity,
+tangent bundle whose framed matrix cocycle `A x := frameAlg E (fr.framedGenerator x)` admits the
+full Oseledets filtration — provided the genuine per-framing dynamical hypotheses (nonsingularity,
 log-integrability) hold for *that* framing.
 
 The framing is produced **unconditionally** by
 `UnconditionalFraming.exists_measurableFraming_of_sigmaCompact` (piecewise fixed reference charts;
-**no `LocallyConstantChartAt`**), and its framed generator is measurable by construction, so the MET's
-measurability obligation never reappears. The conclusion is stated as: *there exists a framing such
-that, granting its dynamical hypotheses, the filtration holds* — keeping the per-framing det/log data
-as honest hypotheses (exactly as in the matrix MET), while the **measurability win** is fully
-discharged. -/
+**no `LocallyConstantChartAt`**), and its framed generator is measurable by construction, so the
+MET's measurability obligation never reappears. The conclusion is stated as: *there exists a framing
+such that, granting its dynamical hypotheses, the filtration holds* — keeping the per-framing
+det/log data as honest hypotheses (exactly as in the matrix MET), while the **measurability win** is
+fully discharged. -/
 theorem exists_oseledets_filtration_framedTangentCocycle
     {μ : Measure M} [IsProbabilityMeasure μ] {T : M → M}
     (hTerg : Ergodic T μ) (hTsmooth : ContMDiff I I 1 T) :
@@ -232,4 +235,4 @@ theorem exists_oseledets_filtration_framedTangentCocycle
 
 end
 
-end Frontier.Issue2
+end Oseledets

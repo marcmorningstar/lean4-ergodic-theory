@@ -26,14 +26,14 @@ space `E`:
 This file packages the *output* of a measurable trivialization (the structure
 `MeasurableFraming`) and proves, **sorry-free**, that GIVEN such a framing the tangent cocycle
 becomes a measurable cocycle of continuous linear self-maps of the model space `E` satisfying the
-genuine cocycle identity. The companion file `Frontier/Issue2/Existence.lean` addresses the
-construction of a measurable framing on a smooth second-countable manifold — the genuine wall of
-this issue.
+genuine cocycle identity. The companion file `Oseledets.Smooth.UnconditionalFraming` addresses
+the construction of a measurable framing on a smooth second-countable manifold — the genuine wall
+of this issue.
 
 ## Main definitions
 
-* `MeasurableFraming I T` — a measurable choice of linear frame `TangentSpace I x ≃L[ℝ] E` at each
-  point of `M`, such that the conjugated derivative `framedGenerator` is measurable.
+* `MeasurableFraming I T` — a measurable choice of linear frame `TangentSpace I x ≃L[ℝ] E` at
+  each point of `M`, such that the conjugated derivative `framedGenerator` is measurable.
 * `MeasurableFraming.framedGenerator` — the model-space generator
   `x ↦ fr (T x) ∘L mfderiv I I T x ∘L (fr x).symm`.
 * `MeasurableFraming.framedCocycle` — the iterated model-space cocycle.
@@ -56,7 +56,7 @@ this issue.
 open Filter Topology Function
 open scoped Manifold
 
-namespace Frontier.Issue2
+namespace Oseledets
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [MeasurableSpace E] [BorelSpace E]
@@ -98,7 +98,7 @@ with the model space `E`, such that the conjugated derivative
 This is the *output* of a measurable trivialization of the tangent bundle: by Filip's notes
 (§2.2.2) any vector bundle over a (standard Borel) base can be measurably trivialized, so on a
 smooth second-countable manifold such a framing exists. The *existence* is the genuine wall of
-issue #2 (see `Frontier/Issue2/Existence.lean`); this structure isolates exactly the data the
+issue #2 (the framing-existence wall); this structure isolates exactly the data the
 matrix MET consumes. -/
 structure MeasurableFraming (I : ModelWithCorners ℝ E H) (T : M → M) where
   /-- The linear frame at each point: an isomorphism of the tangent space with the model space. -/
@@ -182,4 +182,4 @@ theorem norm_framedGenerator (fr : MeasurableFraming I T) (x : M) :
 
 end MeasurableFraming
 
-end Frontier.Issue2
+end Oseledets

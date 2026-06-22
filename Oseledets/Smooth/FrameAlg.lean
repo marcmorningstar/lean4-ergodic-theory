@@ -18,32 +18,31 @@ constant** algebra equivalence
 `frameAlg E : (E →L[ℝ] E) ≃ₐ[ℝ] Matrix (Fin (finrank ℝ E)) (Fin (finrank ℝ E)) ℝ`.
 
 This is the algebraic heart of the bundle-to-matrix reduction of the manifold Oseledets MET: because
-it is an algebra equivalence it sends `1 ↦ 1` and products to products, turning a product of model-
-fibre endomorphisms (the framed tangent cocycle) into a matrix cocycle without side conditions; it
-preserves the L2 operator norm (the framing is an isometry), so the matrix integrability hypotheses
-are exactly the genuine `log⁺‖·‖` ones; and it is continuous and (entrywise) measurable, so a
-measurable model-fibre cocycle becomes a measurable matrix cocycle.
+it is an algebra equivalence it sends `1 ↦ 1` and products to products, turning a product of
+model-fibre endomorphisms (the framed tangent cocycle) into a matrix cocycle without side
+conditions; it preserves the L2 operator norm (the framing is an isometry), so the matrix
+integrability hypotheses are exactly the genuine `log⁺‖·‖` ones; and it is continuous and
+(entrywise) measurable, so a measurable model-fibre cocycle becomes a measurable matrix cocycle.
 
-This file isolates the framing algebra so that both the canonical-derivative headline
-(`Frontier/Issue2/DerivativeCocycleManifold.lean`) and the unconditional framed-cocycle MET
-(`Frontier/Issue2/UnconditionalMET.lean`) can share it without colliding over the `mfderivHom`
-definition that their respective measurability imports each introduce.
+This file isolates the framing algebra so that both the (superseded) canonical-derivative route
+and the unconditional framed-cocycle MET (`Oseledets.Smooth.UnconditionalMET`) can share it
+without colliding over the `mfderivHom` definition their measurability imports each introduce.
 
 ## Main definitions
 
-* `Frontier.Issue2.modelDim E` — `finrank ℝ E`, the matrix side.
-* `Frontier.Issue2.frameEquiv E` / `frameCLE E` — the fixed orthonormal framing (isometry / CLE).
-* `Frontier.Issue2.frameAlg E` — the framing algebra equivalence `(E →L[ℝ] E) ≃ₐ Matrix`.
+* `Oseledets.modelDim E` — `finrank ℝ E`, the matrix side.
+* `Oseledets.frameEquiv E` / `frameCLE E` — the fixed orthonormal framing (isometry / CLE).
+* `Oseledets.frameAlg E` — the framing algebra equivalence `(E →L[ℝ] E) ≃ₐ Matrix`.
 
 ## Main results
 
-* `Frontier.Issue2.norm_frameAlg` — the framing preserves the L2 operator norm.
-* `Frontier.Issue2.continuous_frameAlg` / `measurable_frameAlg` — continuity / measurability.
+* `Oseledets.norm_frameAlg` — the framing preserves the L2 operator norm.
+* `Oseledets.continuous_frameAlg` / `measurable_frameAlg` — continuity / measurability.
 -/
 
 open scoped Matrix.Norms.L2Operator
 
-namespace Frontier.Issue2
+namespace Oseledets
 
 noncomputable section
 
@@ -60,17 +59,17 @@ variable (E) in
 basis (`stdOrthonormalBasis`). Conjugating a tangent-space endomorphism by this isometry turns it
 into an endomorphism of `EuclideanSpace`, hence (via `Matrix.toEuclideanCLM`) into a matrix.
 
-Crucially this framing is **globally constant** — it does not depend on the base point `x` — because
-Mathlib models every tangent space `TangentSpace I x` on the *same* fixed space `E`. This is exactly
-the measurable bundle trivialisation required by the manifold MET, here in its simplest (constant)
-incarnation. -/
+Crucially this framing is **globally constant** — it does not depend on the base point `x` —
+because Mathlib models every tangent space `TangentSpace I x` on the *same* fixed space `E`. This is
+exactly the measurable bundle trivialisation required by the manifold MET, here in its simplest
+(constant) incarnation. -/
 def frameEquiv : E ≃ₗᵢ[ℝ] EuclideanSpace ℝ (Fin (modelDim E)) :=
   (stdOrthonormalBasis ℝ E).repr
 
 variable (E) in
-/-- The framing as a *continuous linear equivalence* `E ≃L[ℝ] EuclideanSpace ℝ (Fin (modelDim E))`,
-the underlying CLE of `frameEquiv`. Conjugating endomorphisms of `E` by `frameCLE` lands in
-endomorphisms of `EuclideanSpace`. -/
+/-- The framing as a *continuous linear equivalence*
+`E ≃L[ℝ] EuclideanSpace ℝ (Fin (modelDim E))`, the underlying CLE of `frameEquiv`. Conjugating
+endomorphisms of `E` by `frameCLE` lands in endomorphisms of `EuclideanSpace`. -/
 def frameCLE : E ≃L[ℝ] EuclideanSpace ℝ (Fin (modelDim E)) :=
   (frameEquiv E).toContinuousLinearEquiv
 
@@ -85,14 +84,14 @@ theorem norm_frameCLE_symm (w : EuclideanSpace ℝ (Fin (modelDim E))) :
     ‖(frameCLE E).symm w‖ = ‖w‖ := (frameEquiv E).symm.norm_map w
 
 variable (E) in
-/-- The **framing algebra isomorphism**: conjugation by `frameCLE` followed by `toEuclideanCLM.symm`,
-packaged as an algebra equivalence
+/-- The **framing algebra isomorphism**: conjugation by `frameCLE` followed by
+`toEuclideanCLM.symm`, packaged as an algebra equivalence
 `(E →L[ℝ] E) ≃ₐ[ℝ] Matrix (Fin (modelDim E)) (Fin (modelDim E)) ℝ`.
 
 Because it is an algebra equivalence it sends `1 ↦ 1` and products to products; this is precisely
 what turns the *bundle* cocycle (a product of endomorphisms along the orbit) into a *matrix* cocycle
-without any side conditions. It is the algebraic heart of the bundle-to-matrix reduction. (Continuity,
-needed only for the measurability of the matrix generator, is recorded separately in
+without any side conditions. It is the algebraic heart of the bundle-to-matrix reduction.
+(Continuity, needed only for the measurability of the matrix generator, is recorded separately in
 `continuous_frameAlg`.) -/
 def frameAlg : (E →L[ℝ] E) ≃ₐ[ℝ] Matrix (Fin (modelDim E)) (Fin (modelDim E)) ℝ :=
   (frameCLE E).conjContinuousAlgEquiv.toAlgEquiv.trans
@@ -116,10 +115,11 @@ theorem continuous_frameAlg : Continuous (frameAlg E) := by
     LinearMap.continuous_of_finiteDimensional _
   exact h2.comp h1
 
-/-- The image of an endomorphism `L : E →L[ℝ] E` under the conjugation `frameCLE ∘L L ∘L frameCLE⁻¹`
-acts on `EuclideanSpace` with the same operator norm as `L`: `frameCLE` and its inverse are
-isometries (the underlying maps of the `LinearIsometryEquiv` `frameEquiv`), so conjugation by them
-preserves the operator norm (`opNorm_comp_le` both ways with `norm_map`). -/
+/-- The image of an endomorphism `L : E →L[ℝ] E` under the conjugation
+`frameCLE ∘L L ∘L frameCLE⁻¹` acts on `EuclideanSpace` with the same operator norm as `L`:
+`frameCLE` and its inverse are isometries (the underlying maps of the `LinearIsometryEquiv`
+`frameEquiv`), so conjugation by them preserves the operator norm (`opNorm_comp_le` both ways with
+`norm_map`). -/
 theorem norm_conj_frameCLE (L : E →L[ℝ] E) :
     ‖(frameCLE E).conjContinuousAlgEquiv L‖ = ‖L‖ := by
   rw [ContinuousLinearEquiv.conjContinuousAlgEquiv_apply]
@@ -138,7 +138,8 @@ theorem norm_conj_frameCLE (L : E →L[ℝ] E) :
       _ = ‖L‖ * ‖w‖ := by rw [hinv]
   · -- ‖L‖ ≤ ‖e ∘L L ∘L e⁻¹‖, via the reverse conjugation
     refine ContinuousLinearMap.opNorm_le_bound _ (norm_nonneg _) fun v => ?_
-    have key : L v = (frameCLE E).symm ((frameCLE E).conjContinuousAlgEquiv L ((frameCLE E) v)) := by
+    have key : L v =
+        (frameCLE E).symm ((frameCLE E).conjContinuousAlgEquiv L ((frameCLE E) v)) := by
       simp [ContinuousLinearEquiv.conjContinuousAlgEquiv_apply]
     rw [key, hinv, ← hfwd v]
     exact ((frameCLE E).conjContinuousAlgEquiv L).le_opNorm _
@@ -150,17 +151,18 @@ theorem norm_frameAlg (L : E →L[ℝ] E) : ‖frameAlg E L‖ = ‖L‖ := by
   exact norm_conj_frameCLE L
 
 /-- The framing `frameAlg E` is measurable into the entrywise (Pi) measurable structure on matrices:
-each matrix entry `(frameAlg E L) i j` is a continuous (`ℝ`-linear, finite-dimensional) function of
-`L`, hence measurable. (We argue entrywise because the matrix carries the Pi measurable structure,
-which is not registered as the Borel σ-algebra of its norm topology, so `Continuous.measurable` does
-not apply directly.) -/
+each matrix entry `(frameAlg E L) i j` is a continuous (`ℝ`-linear, finite-dimensional) function
+of `L`, hence measurable. (We argue entrywise because the matrix carries the Pi measurable
+structure, which is not registered as the Borel σ-algebra of its norm topology, so
+`Continuous.measurable` does not apply directly.) -/
 theorem measurable_frameAlg : Measurable (frameAlg E) := by
   refine measurable_pi_iff.2 fun i => measurable_pi_iff.2 fun j => ?_
-  -- the `(i, j)` entry map `L ↦ (frameAlg E L) i j` is continuous (norm topology), hence measurable
+  -- the `(i, j)` entry map `L ↦ (frameAlg E L) i j` is continuous (norm topology), hence
+  -- measurable
   have hcont : Continuous fun L : E →L[ℝ] E => frameAlg E L i j :=
     (continuous_apply j).comp ((continuous_apply i).comp continuous_frameAlg)
   exact hcont.measurable
 
 end
 
-end Frontier.Issue2
+end Oseledets

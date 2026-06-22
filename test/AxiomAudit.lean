@@ -122,6 +122,7 @@ import Oseledets.Examples.Rokhlin.AbstractEqui
 import Oseledets.Examples.Rokhlin.DoublingCrux
 import Oseledets.Examples.Rokhlin.DoublingEquality
 import Oseledets.Lyapunov.Extensions.Yamamoto
+import Oseledets.Smooth.UnconditionalMET
 
 /-!
 # Axiom audit
@@ -1692,3 +1693,20 @@ results depending only on the standard axiom triple (Schur triangulation via the
 /-- info: 'Oseledets.exponents_const_general' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms Oseledets.exponents_const_general
+
+/-! ## Issue #9 — unconditional measurable manifold-derivative cocycle (migrated from `Frontier.Issue2`,
+sorry-free in the linted lib). The measurable-framing existence + the framed-tangent-cocycle Oseledets
+MET, both with NO `LocallyConstantChartAt` (the chart-regularity wall is discharged via piecewise
+fixed-reference charts), depending only on the standard axiom triple. -/
+
+/-- info: 'Oseledets.exists_measurableFraming_of_sigmaCompact' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.exists_measurableFraming_of_sigmaCompact
+
+/-- info: 'Oseledets.oseledets_filtration_framedTangentCocycle' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.oseledets_filtration_framedTangentCocycle
+
+/-- info: 'Oseledets.exists_oseledets_filtration_framedTangentCocycle' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.exists_oseledets_filtration_framedTangentCocycle
