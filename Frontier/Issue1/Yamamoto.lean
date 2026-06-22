@@ -6,6 +6,7 @@ Authors: Marcel Morgenstern
 import Oseledets.Lyapunov.Extensions.ConstantCocycle
 import Oseledets.Lyapunov.Extensions.ConstantCocycleSpectralRadius
 import Oseledets.Lyapunov.ExteriorNorm.Plucker
+import Frontier.Issue1.Schur
 import Mathlib.LinearAlgebra.Matrix.Charpoly.Eigs
 import Mathlib.Analysis.Complex.Polynomial.Basic
 
@@ -39,11 +40,13 @@ The arithmetic content **above** Yamamoto's limit — that the cocycle's `expone
 `exponents … i` is *defined* (in `Oseledets.Lyapunov.Extensions.Spectrum`) as the deterministic
 limit of exactly the sequence `(1/n) log σᵢ(cocycle …) = (1/n) log σᵢ(Mⁿ)`.
 
-Yamamoto's limit itself (`yamamoto_singularValues_tendsto`) is the **one** `BLOCKED` leaf. This
-module pursues the **exterior-power / Gelfand route** (Strategy C of the feasibility report), which
-*sidesteps* the polar decomposition, the multiplicative Jordan–Chevalley decomposition, and Weyl
-perturbation that the trace-moment route (Dowla–Mukherjee/Nayak) needs, reducing the entire leaf to
-a **single** residual matrix-analysis fact:
+Yamamoto's limit itself (`yamamoto_singularValues_tendsto`) is **now proved sorry-free** (it was the
+last `BLOCKED` leaf of issue #8). This module pursues the **exterior-power / Gelfand route**
+(Strategy C of the feasibility report), which *sidesteps* the polar decomposition, the multiplicative
+Jordan–Chevalley decomposition, and Weyl perturbation that the trace-moment route
+(Dowla–Mukherjee/Nayak) needs, reducing the entire leaf to a single residual matrix-analysis fact
+(`compoundMatrix_charpoly_roots_eq`), which is in turn discharged via ℂ-Schur triangulation
+(`Frontier.Issue1.Schur`):
 
 > the spectral radius of the `(i+1)`-st compound (exterior power) `C_{i+1}(M)` equals the product
 > of the top `i+1` eigenvalue moduli of `M`, `∏_{k≤i} |λₖ(M)|`.
@@ -62,21 +65,28 @@ follows by telescoping `j = i+1` against `j = i` in `(1/n) log`. The telescoping
 bookkeeping (`yamamoto_prod_to_index`) and the eventual-vanishing bridge (`hvanish`, from
 nilpotency of the compound when `|λᵢ| = 0`) are **sorry-free**.
 
-The spectral fact `spectralRadius_compound_eq_prod_eigenvalueModuli` is itself now **proved
-sorry-free** from a *single*, strictly sharper residual leaf:
-`compoundMatrix_charpoly_roots_eq` — the multiset of characteristic-polynomial roots of the
-complexified compound `(C_j M)_ℂ` equals the multiset of `j`-fold products of the eigenvalues of
-`M`, `(powersetCard j (roots M_ℂ)).map (∏)`. From that multiset identity, *all* of the remaining
-content — that the spectral radius (= max spectral modulus, finite-spectrum `toReal` plumbing) equals
-the product of the top-`j` eigenvalue moduli — is discharged sorry-free here via a self-contained
-combinatorial development: the top-`j` product maximizes products over `j`-sub-multisets of a
-nonnegative multiset (`prod_le_take_sort`, built from descending-sorted sublist domination
-`sublist_getElem_le_getElem_of_sorted_ge`), together with the sub-multiset lifting
-`exists_le_of_le_map` and the two `spectralRadius`-extraction bounds. The `j = 0`, `j ≤ d`, and
-`j > d` (empty-spectrum) ranges are all handled. The **single residual leaf** that Mathlib / this
-repository do not yet provide is therefore reduced to the clean multiset eigenvalue identity
-`compoundMatrix_charpoly_roots_eq` (the spectrum of `⋀^j A` = the `j`-fold products of the spectrum
-of `A`), stated as an individually-typed `sorry` with a precise discharge roadmap in its docstring.
+The spectral fact `spectralRadius_compound_eq_prod_eigenvalueModuli` is **proved sorry-free** from the
+clean multiset eigenvalue identity `compoundMatrix_charpoly_roots_eq` — the multiset of
+characteristic-polynomial roots of the complexified compound `(C_j M)_ℂ` equals the multiset of
+`j`-fold products of the eigenvalues of `M`, `(powersetCard j (roots M_ℂ)).map (∏)`. From that
+multiset identity, *all* of the remaining content — that the spectral radius (= max spectral modulus,
+finite-spectrum `toReal` plumbing) equals the product of the top-`j` eigenvalue moduli — is discharged
+sorry-free here via a self-contained combinatorial development: the top-`j` product maximizes products
+over `j`-sub-multisets of a nonnegative multiset (`prod_le_take_sort`, built from descending-sorted
+sublist domination `sublist_getElem_le_getElem_of_sorted_ge`), together with the sub-multiset lifting
+`exists_le_of_le_map` and the two `spectralRadius`-extraction bounds.
+
+**`compoundMatrix_charpoly_roots_eq` is now itself proved sorry-free** (the spectrum of `⋀^j A` =
+the `j`-fold products of the spectrum of `A`). The proof combines: (i) **Schur triangulation over
+`ℂ`** (`Matrix.schur_triangulation`, grafted in `Frontier.Issue1.Schur` from the Mathlib-style proof
+of Gordon Hsu) producing a unitary `U` and upper-triangular `T` with `A = U T U⁻¹` and `T.diag`
+multiset `= A.charpoly.roots`; (ii) **Cauchy–Binet for the minor-compound over any commutative ring**
+(`compoundOf_mul`, proved here via the abstract exterior power `exteriorPower.map` and
+`LinearMap.toMatrix_comp`) making `compoundOf j A` similar to the triangular `compoundOf j T`; and
+(iii) the **triangular-compound structure** (`compoundOf_blockTriangular`, `compoundOf_diag`,
+`roots_charpoly_of_blockTriangular_inj`, `diag_prod_multiset_eq`) reading off the compound's charpoly
+roots as the `j`-fold diagonal products `= (powersetCard j (roots M_ℂ)).map (∏)`. The whole module is
+therefore sorry-free.
 
 ## Main definitions
 
@@ -133,9 +143,10 @@ theorem eigenvalueModuli_length (M : Matrix (Fin d) (Fin d) ℝ) :
 
 /-! ## Strategy C: exterior-power / Gelfand reduction
 
-The whole leaf reduces, through reusable repository infrastructure, to a single residual spectral
-fact about the compound (exterior power) matrix. We first record the multiplicative ingredients,
-then the two sharp residual `sorry`s, then the sorry-free assembly. -/
+The whole leaf reduces, through reusable repository infrastructure, to the spectral fact about the
+compound (exterior power) matrix `compoundMatrix_charpoly_roots_eq`, which is itself proved sorry-free
+below (Schur triangulation + Cauchy–Binet + triangular-compound structure). We first record the
+multiplicative and combinatorial ingredients, then the sorry-free assembly. -/
 
 open scoped Matrix.Norms.L2Operator ENNReal
 
@@ -313,6 +324,224 @@ private theorem le_spectralRadius_toReal {N : ℕ} (A : Matrix (Fin N) (Fin N) �
   have := (ENNReal.toReal_le_toReal (by simp) hfin).mpr hle
   simpa using this
 
+/-! ### The bridge: complexified compound = compound of the complexification
+
+The `(t, s)` entry of `compoundMatrix j M` is the determinant of the `j × j` minor of `M` selecting
+the rows enumerated by the `t`-th `j`-subset and the columns enumerated by the `s`-th `j`-subset.
+These enumerators (`compoundRowEnum`, `compoundColEnum`) depend only on `d`, `j` and the index — not
+on the entry ring — so the same combinatorial data defines a compound `compoundOf` over *any*
+commutative ring. Functoriality of the determinant under a ring hom (`RingHom.map_det`,
+`Matrix.submatrix_map`) then gives the bridge
+`(compoundMatrix j M).map f = compoundOf j (M.map f)`. -/
+
+open scoped Classical in
+/-- The row/column enumerator of the `t`-th `j`-subset used in `compoundMatrix` (ring-agnostic). -/
+noncomputable def compoundEnum (j : ℕ) (t : Fin (Module.finrank ℝ (⋀[ℝ]^j (EuclideanSpace ℝ (Fin d)))))
+    (i : Fin j) : Fin d :=
+  (Set.powersetCard.ofFinEmbEquiv.symm
+    ((ExteriorNorm.wIndexEquiv (EuclideanSpace.basisFun (Fin d) ℝ) j).symm t)) i
+
+open scoped Classical in
+/-- The compound matrix of `A` over an arbitrary commutative ring, using the **same** combinatorial
+row/column enumerators as the real `ExteriorNorm.compoundMatrix`. Its `(t, s)` entry is the
+determinant of the `j × j` minor of `A` selecting rows `compoundEnum j t` and columns
+`compoundEnum j s`. -/
+noncomputable def compoundOf {S : Type*} [CommRing S] (j : ℕ) (A : Matrix (Fin d) (Fin d) S) :
+    Matrix (Fin (Module.finrank ℝ (⋀[ℝ]^j (EuclideanSpace ℝ (Fin d)))))
+      (Fin (Module.finrank ℝ (⋀[ℝ]^j (EuclideanSpace ℝ (Fin d))))) S :=
+  Matrix.of fun t s => (A.submatrix (compoundEnum j t) (compoundEnum j s)).det
+
+/-- `compoundOf` of a complex matrix coincides entrywise with the real `compoundMatrix` definition
+when `S = ℝ`. (Just unfolds both to the same minor determinant.) -/
+theorem compoundOf_real_eq (j : ℕ) (M : Matrix (Fin d) (Fin d) ℝ) :
+    compoundOf j M = ExteriorNorm.compoundMatrix j M := by
+  classical
+  ext t s
+  rw [compoundOf, ExteriorNorm.compoundMatrix, Matrix.of_apply, Matrix.of_apply]
+  rfl
+
+/-- **The bridge.** Mapping the real compound matrix through a ring hom equals the abstract compound
+of the mapped matrix: `(compoundMatrix j M).map f = compoundOf j (M.map f)`. The `(t, s)` entry is
+`f (det minor) = det (f-mapped minor) = det (minor of mapped matrix)` by `RingHom.map_det` and
+`Matrix.submatrix_map`. -/
+theorem map_compoundMatrix_eq_compoundOf {S : Type*} [CommRing S]
+    (j : ℕ) (M : Matrix (Fin d) (Fin d) ℝ) (f : ℝ →+* S) :
+    (ExteriorNorm.compoundMatrix j M).map f = compoundOf j (M.map f) := by
+  classical
+  ext t s
+  rw [Matrix.map_apply, ExteriorNorm.compoundMatrix, Matrix.of_apply, compoundOf, Matrix.of_apply,
+    RingHom.map_det, RingHom.mapMatrix_apply, Matrix.submatrix_map]
+  rfl
+
+/-- Specialisation of the bridge to the complexification `f = algebraMap ℝ ℂ`. -/
+theorem map_compoundMatrix_complex (j : ℕ) (M : Matrix (Fin d) (Fin d) ℝ) :
+    (ExteriorNorm.compoundMatrix j M).map (algebraMap ℝ ℂ)
+      = compoundOf j (M.map (algebraMap ℝ ℂ)) :=
+  map_compoundMatrix_eq_compoundOf j M (algebraMap ℝ ℂ)
+
+/-! ### Cauchy–Binet for `compoundOf` over any commutative ring (via the abstract exterior power)
+
+`compoundOf j A` is, after reindexing, the matrix in the wedge basis `(Pi.basisFun S (Fin d)).exteriorPower j` of the abstract functorial map `exteriorPower.map j (Matrix.toLin' A)`. Functoriality `exteriorPower.map j (g ∘ f) = (map j g) ∘ (map j f)` (`exteriorPower.map_comp`) together with `Matrix.toLin'_mul` and `LinearMap.toMatrix_comp` then gives the *Cauchy–Binet identity* `compoundOf j (A * B) = compoundOf j A * compoundOf j B` over **any** commutative ring `S` — the genuinely missing multiplicativity that the ℝ-only `ExteriorNorm.compoundMatrix_mul` does not provide over `ℂ`. -/
+
+open scoped Classical in
+/-- The **abstract `j`-th compound matrix** of `A`, indexed by `powersetCard (Fin d) j`: the matrix
+in the wedge basis `(Pi.basisFun S (Fin d)).exteriorPower j` of `exteriorPower.map j (toLin' A)`. -/
+noncomputable def compoundAbstract {S : Type*} [CommRing S] (j : ℕ) (A : Matrix (Fin d) (Fin d) S) :
+    Matrix (Set.powersetCard (Fin d) j) (Set.powersetCard (Fin d) j) S :=
+  LinearMap.toMatrix ((Pi.basisFun S (Fin d)).exteriorPower j)
+    ((Pi.basisFun S (Fin d)).exteriorPower j) (exteriorPower.map j (Matrix.toLin' A))
+
+/-- The `(t, s)` entry of `compoundAbstract j A` is the determinant of the `j × j` minor of `A`
+selecting rows enumerated by `ofFinEmbEquiv.symm t` and columns by `ofFinEmbEquiv.symm s`. -/
+theorem compoundAbstract_apply {S : Type*} [CommRing S] (j : ℕ) (A : Matrix (Fin d) (Fin d) S)
+    (t s : Set.powersetCard (Fin d) j) :
+    compoundAbstract j A t s
+      = (A.submatrix (fun i => Set.powersetCard.ofFinEmbEquiv.symm t i)
+          (fun i => Set.powersetCard.ofFinEmbEquiv.symm s i)).det := by
+  classical
+  rw [compoundAbstract, LinearMap.toMatrix_apply, exteriorPower.coe_basis,
+    exteriorPower.map_apply_ιMulti_family, exteriorPower.basis_repr_apply]
+  -- Now both sides are determinants of `j × j` matrices over `S`.
+  rw [exteriorPower.ιMulti_family, exteriorPower.ιMultiDual_apply_ιMulti, ← Matrix.det_transpose]
+  -- Entrywise: `b.coord p (toLin' A (b q)) = A p q`.
+  have hentry : ∀ p q : Fin d,
+      (Pi.basisFun S (Fin d)).coord p ((Matrix.toLin' A) ((Pi.basisFun S (Fin d)) q)) = A p q := by
+    intro p q
+    rw [Module.Basis.coord_apply, Pi.basisFun_repr, Matrix.toLin'_apply, Pi.basisFun_apply,
+      Matrix.mulVec_single_one, Matrix.col_apply]
+  congr 1
+  ext i k
+  simp only [Matrix.of_apply, Matrix.transpose_apply, Matrix.submatrix_apply, Function.comp_apply]
+  rw [hentry]
+
+/-- **Cauchy–Binet (abstract form).** `compoundAbstract j (A * B) = compoundAbstract j A *
+compoundAbstract j B`. Immediate from functoriality of `exteriorPower.map` and
+`LinearMap.toMatrix_comp`. -/
+theorem compoundAbstract_mul {S : Type*} [CommRing S] (j : ℕ)
+    (A B : Matrix (Fin d) (Fin d) S) :
+    compoundAbstract j (A * B) = compoundAbstract j A * compoundAbstract j B := by
+  classical
+  rw [compoundAbstract, compoundAbstract, compoundAbstract, Matrix.toLin'_mul,
+    exteriorPower.map_comp, LinearMap.toMatrix_comp _ ((Pi.basisFun S (Fin d)).exteriorPower j)]
+
+/-- `compoundAbstract j 1 = 1`. -/
+theorem compoundAbstract_one {S : Type*} [CommRing S] (j : ℕ) :
+    compoundAbstract j (1 : Matrix (Fin d) (Fin d) S) = 1 := by
+  rw [compoundAbstract, Matrix.toLin'_one, exteriorPower.map_id, LinearMap.toMatrix_id]
+
+/-- `compoundOf j A` is the reindexing of `compoundAbstract j A` along the wedge-index equivalence
+`wIndexEquiv`. (Both have entry `det (minor along the subset enumerators)`; the enumerators of
+`compoundOf` are precisely `ofFinEmbEquiv.symm` of the `wIndexEquiv`-preimage subset.) -/
+theorem compoundOf_eq_reindex {S : Type*} [CommRing S] (j : ℕ) (A : Matrix (Fin d) (Fin d) S) :
+    compoundOf j A
+      = Matrix.reindex (ExteriorNorm.wIndexEquiv (EuclideanSpace.basisFun (Fin d) ℝ) j)
+          (ExteriorNorm.wIndexEquiv (EuclideanSpace.basisFun (Fin d) ℝ) j)
+          (compoundAbstract j A) := by
+  classical
+  ext t s
+  rw [compoundOf, Matrix.of_apply, Matrix.reindex_apply, Matrix.submatrix_apply,
+    compoundAbstract_apply]
+  rfl
+
+/-- **Cauchy–Binet for `compoundOf`** over any commutative ring: multiplicativity of the
+minor-compound. -/
+theorem compoundOf_mul {S : Type*} [CommRing S] (j : ℕ) (A B : Matrix (Fin d) (Fin d) S) :
+    compoundOf j (A * B) = compoundOf j A * compoundOf j B := by
+  rw [compoundOf_eq_reindex, compoundOf_eq_reindex, compoundOf_eq_reindex, compoundAbstract_mul]
+  ext t s
+  simp only [Matrix.reindex_apply, Matrix.submatrix_apply, Matrix.mul_apply]
+  exact Fintype.sum_equiv (ExteriorNorm.wIndexEquiv (EuclideanSpace.basisFun (Fin d) ℝ) j) _ _
+    (fun _ => by simp [Equiv.symm_apply_apply])
+
+/-- `compoundOf j 1 = 1`. -/
+theorem compoundOf_one {S : Type*} [CommRing S] (j : ℕ) :
+    compoundOf j (1 : Matrix (Fin d) (Fin d) S) = 1 := by
+  rw [compoundOf_eq_reindex, compoundAbstract_one]
+  ext t s
+  simp only [Matrix.reindex_apply, Matrix.submatrix_apply, Matrix.one_apply,
+    EmbeddingLike.apply_eq_iff_eq]
+
+/-! ### Minors of an upper-triangular matrix
+
+For an upper-triangular `U` (`U.BlockTriangular id`, i.e. `U a b = 0` when `b < a`) and a strictly
+monotone index selection `r : Fin j → Fin d`, the principal-style minor `U.submatrix r r` is again
+upper triangular, so its determinant is the product of its diagonal entries `∏ U (r i) (r i)`. -/
+
+/-- A submatrix of an upper-triangular matrix along a strictly monotone selection `r` is upper
+triangular, hence its determinant is the diagonal product `∏ U (r i) (r i)`. -/
+theorem det_submatrix_upperTriangular_diag {S : Type*} [CommRing S] {n m : ℕ}
+    (U : Matrix (Fin n) (Fin n) S) (hU : U.BlockTriangular id) (r : Fin m → Fin n)
+    (hr : StrictMono r) :
+    (U.submatrix r r).det = ∏ i, U (r i) (r i) := by
+  classical
+  have hbt : (U.submatrix r r).BlockTriangular id := by
+    intro a b hab
+    -- `id b < id a` means `b < a`; want `(U.submatrix r r) a b = U (r a) (r b) = 0`.
+    have hba : (b : Fin m) < a := hab
+    have : r b < r a := hr hba
+    exact hU this
+  rw [Matrix.det_of_upperTriangular hbt]
+  rfl
+
+/-- **Vanishing of an off-diagonal triangular minor.** For an upper-triangular `U`
+(`U.BlockTriangular id`) and strictly monotone selections `r, c : Fin m → Fin n`, the minor
+`det (U.submatrix r c)` vanishes whenever the row selection "overtakes" the column selection at some
+index, i.e. there is `i` with `c i < r i`.
+
+Proof: by `det_apply`, each permutation term `∏ k, U (r (σ k)) (c k)` is nonzero only if
+`r (σ k) ≤ c k` for all `k` (upper-triangularity kills entries with `c k < r (σ k)`). Restricting to
+`k ≤ i` (there are `i+1` such), monotonicity of `c` gives `r (σ k) ≤ c k ≤ c i < r i`, hence (since
+`r` is strictly monotone) `σ k < i` — an injection from an `(i+1)`-set into an `i`-set, impossible.
+So every term vanishes. -/
+theorem det_submatrix_upperTriangular_vanish {S : Type*} [CommRing S] {n m : ℕ}
+    (U : Matrix (Fin n) (Fin n) S) (hU : U.BlockTriangular id) {r c : Fin m → Fin n}
+    (hr : StrictMono r) (hc : Monotone c) {i : Fin m} (hi : c i < r i) :
+    (U.submatrix r c).det = 0 := by
+  classical
+  rw [Matrix.det_apply]
+  refine Finset.sum_eq_zero (fun σ _ => ?_)
+  -- Show the term vanishes: find `k` with `U (r (σ k)) (c k) = 0`, then the product is 0.
+  suffices hprod : ∏ k, (U.submatrix r c) (σ k) k = 0 by
+    rw [hprod, smul_zero]
+  -- Either some factor is zero (done), or all factors are nonzero (contradiction).
+  by_contra hne
+  have hall : ∀ k, (U.submatrix r c) (σ k) k ≠ 0 := by
+    intro k hk
+    exact hne (Finset.prod_eq_zero (Finset.mem_univ k) hk)
+  -- Upper-triangularity: each nonzero factor forces `r (σ k) ≤ c k`.
+  have hle : ∀ k, r (σ k) ≤ c k := by
+    intro k
+    by_contra hlt
+    push_neg at hlt
+    -- `c k < r (σ k)`, i.e. `id (c k) < id (r (σ k))`, so `U (r (σ k)) (c k) = 0`.
+    exact hall k (hU hlt)
+  -- Pigeonhole on `k ≤ i`: `σ` maps `Iic i` (card `i+1`) into `Iio i` (card `i`).
+  have hmap : ∀ k ∈ Finset.Iic i, σ k ∈ Finset.Iio i := by
+    intro k hk
+    rw [Finset.mem_Iio]
+    -- `r (σ k) ≤ c k ≤ c i < r i`, so `r (σ k) < r i`, so `σ k < i`.
+    have hck : c k ≤ c i := hc (Finset.mem_Iic.mp hk)
+    have : r (σ k) < r i := lt_of_le_of_lt (le_trans (hle k) hck) hi
+    exact hr.lt_iff_lt.mp this
+  -- `σ` is injective, so the image of `Iic i` has card `= card (Iic i) = i+1 > i = card (Iio i)`.
+  have hinj : Set.InjOn σ (Finset.Iic i) := fun a _ b _ h => σ.injective h
+  have hcard := Finset.card_le_card_of_injOn σ hmap hinj
+  rw [Fin.card_Iic, Fin.card_Iio] at hcard
+  omega
+
+/-- **Roots of the charpoly of an upper-triangular matrix.** Over an integral domain, the
+characteristic-polynomial root multiset of an upper-triangular matrix (`M.BlockTriangular id`) is
+exactly the multiset of its diagonal entries. From `Matrix.charpoly_of_upperTriangular`
+(`charpoly = ∏ i, (X - C (M i i))`) and `Polynomial.roots_multiset_prod_X_sub_C`. -/
+theorem roots_charpoly_of_upperTriangular {S : Type*} [CommRing S] [IsDomain S] {n : ℕ}
+    (U : Matrix (Fin n) (Fin n) S) (hU : U.BlockTriangular id) :
+    U.charpoly.roots = Finset.univ.val.map (fun i => U i i) := by
+  rw [Matrix.charpoly_of_upperTriangular U hU]
+  rw [show (∏ i : Fin n, (Polynomial.X - Polynomial.C (U i i)))
+      = ((Finset.univ.val.map (fun i => U i i)).map (fun a => Polynomial.X - Polynomial.C a)).prod by
+    rw [Multiset.map_map, ← Finset.prod_eq_multiset_prod]; rfl]
+  rw [Polynomial.roots_multiset_prod_X_sub_C]
+
 /-- The compound index `finrank ℝ (⋀^j (EuclideanSpace ℝ (Fin d)))` is nonzero exactly when
 `j ≤ d`, since it equals `Nat.choose d j` (`exteriorPower.finrank_eq`,
 `finrank (EuclideanSpace ℝ (Fin d)) = d`). Packaged as a `NeZero` instance under `j ≤ d` so that
@@ -323,36 +552,303 @@ theorem neZero_finrank_exteriorPower_of_le {j : ℕ} (hj : j ≤ d) :
   rw [exteriorPower.finrank_eq, finrank_euclideanSpace, Fintype.card_fin]
   exact (Nat.choose_pos hj).ne'
 
-/-- **THE single sharp residual leaf (genuine matrix-analysis content).** The multiset of
+/-! ### Compound of a triangular matrix is triangular with the `j`-fold diagonal products
+
+For triangular `U` the minor `det (U.submatrix (enum t) (enum s))` vanishes unless the sorted row
+selection `enum t` is pointwise dominated by the column selection `enum s` (otherwise a row index
+overtakes a column index, killing the determinant by `det_submatrix_upperTriangular_vanish`); on the
+diagonal it is the product `∏ i, U (enum t i) (enum t i)` by `det_submatrix_upperTriangular_diag`. We
+package this as block-triangularity of `compoundOf j U` w.r.t. the lexicographic order of the sorted
+subset enumerators, whose diagonal is the `j`-fold diagonal products. -/
+
+/-- The subset enumerator `compoundEnum j t = ofFinEmbEquiv.symm (…)` is strictly monotone (it is the
+order embedding `Finset.orderEmbOfFin`). -/
+theorem compoundEnum_strictMono (j : ℕ)
+    (t : Fin (Module.finrank ℝ (⋀[ℝ]^j (EuclideanSpace ℝ (Fin d))))) :
+    StrictMono (compoundEnum j t) := by
+  classical
+  intro a b hab
+  rw [compoundEnum, compoundEnum, Set.powersetCard.ofFinEmbEquiv_symm_apply]
+  exact (Finset.orderEmbOfFin _ _).strictMono hab
+
+/-- **Compound of a triangular matrix is triangular** in the lexicographic order on the sorted subset
+enumerators, with diagonal entries the `j`-fold diagonal products. Concretely `compoundOf j U` is
+`BlockTriangular` for `b t := toLex (compoundEnum j t)`, and `compoundOf j U t t = ∏ i, U (enum i)
+(enum i)`. -/
+theorem compoundOf_blockTriangular {S : Type*} [CommRing S] (j : ℕ)
+    (U : Matrix (Fin d) (Fin d) S) (hU : U.BlockTriangular id) :
+    (compoundOf j U).BlockTriangular (fun t => toLex (compoundEnum j t)) := by
+  classical
+  intro t s hts
+  -- `hts : toLex (enum s) < toLex (enum t)` in the Pi.Lex order. Unfold to get the first index `i`
+  -- where they differ: `enum s i < enum t i`.
+  rw [compoundOf, Matrix.of_apply]
+  obtain ⟨i, _, hlt⟩ : ∃ i, (∀ k, k < i → compoundEnum j s k = compoundEnum j t k) ∧
+      compoundEnum j s i < compoundEnum j t i := hts
+  exact det_submatrix_upperTriangular_vanish U hU (compoundEnum_strictMono j t)
+    (compoundEnum_strictMono j s).monotone hlt
+
+/-- The diagonal entry of `compoundOf j U` for triangular `U` is the `j`-fold product of diagonal
+entries of `U` over the subset enumerated by `t`. -/
+theorem compoundOf_diag {S : Type*} [CommRing S] (j : ℕ)
+    (U : Matrix (Fin d) (Fin d) S) (hU : U.BlockTriangular id)
+    (t : Fin (Module.finrank ℝ (⋀[ℝ]^j (EuclideanSpace ℝ (Fin d))))) :
+    compoundOf j U t t = ∏ i, U (compoundEnum j t i) (compoundEnum j t i) := by
+  rw [compoundOf, Matrix.of_apply,
+    det_submatrix_upperTriangular_diag U hU (compoundEnum j t) (compoundEnum_strictMono j t)]
+
+/-! ### The diagonal-product multiset of the compound = the `j`-fold products of the diagonal
+
+For the diagonal entries `g : Fin d → S` of a triangular matrix, the multiset of `j`-fold products
+`∏_{a ∈ S} g a` over all `j`-subsets `S` (= the diagonal multiset of `compoundOf j U`) is exactly
+`(powersetCard j (univ.val.map g)).map prod`. This is the combinatorial heart matching the compound's
+diagonal to the eigenvalue `j`-products. -/
+
+/-- Product of `g` over the ordered enumeration of the `j`-subset indexed by `t` equals the product
+of `g` over that subset (`Finset`). -/
+theorem prod_compoundEnum {S : Type*} [CommMonoid S] (j : ℕ) (g : Fin d → S)
+    (t : Fin (Module.finrank ℝ (⋀[ℝ]^j (EuclideanSpace ℝ (Fin d))))) :
+    ∏ i, g (compoundEnum j t i)
+      = ∏ a ∈ ((ExteriorNorm.wIndexEquiv (EuclideanSpace.basisFun (Fin d) ℝ) j).symm t :
+          Set.powersetCard (Fin d) j).1, g a := by
+  classical
+  set Sset := (ExteriorNorm.wIndexEquiv (EuclideanSpace.basisFun (Fin d) ℝ) j).symm t with hSset
+  have himg : (Sset : Finset (Fin d))
+      = Finset.univ.image (Set.powersetCard.ofFinEmbEquiv.symm Sset) := by
+    rw [Set.powersetCard.ofFinEmbEquiv_symm_apply, Finset.image_orderEmbOfFin_univ]
+  calc ∏ i, g (compoundEnum j t i)
+      = ∏ i, g ((Set.powersetCard.ofFinEmbEquiv.symm Sset) i) := by
+        refine Finset.prod_congr rfl (fun i _ => ?_); rw [compoundEnum]
+    _ = ∏ a ∈ (Sset : Finset (Fin d)), g a := by
+        rw [himg, Finset.prod_image
+          (fun a _ b _ h => (Set.powersetCard.ofFinEmbEquiv.symm Sset).injective h)]
+
+/-- The multiset of `j`-subsets of `Fin d`, as enumerated by the compound index, equals the multiset
+`Multiset.powersetCard j univ.val` of `j`-sub-multisets of `univ.val`. (Bridge between the
+`Set.powersetCard (Fin d) j` subtype enumeration used by the compound and the `Multiset.powersetCard`
+on the LHS of the target.) -/
+theorem subset_multiset_eq_powersetCard (j : ℕ) :
+    (Finset.univ.val.map fun t : Fin (Module.finrank ℝ (⋀[ℝ]^j (EuclideanSpace ℝ (Fin d)))) =>
+        ((ExteriorNorm.wIndexEquiv (EuclideanSpace.basisFun (Fin d) ℝ) j).symm t :
+          Set.powersetCard (Fin d) j).1.val)
+      = Multiset.powersetCard j (Finset.univ.val : Multiset (Fin d)) := by
+  classical
+  -- Step 1: reindex `Fin N ≃ Set.powersetCard (Fin d) j` to a `univ`-over-subtype enumeration.
+  have hstep1 : (Finset.univ.val.map fun t : Fin (Module.finrank ℝ (⋀[ℝ]^j (EuclideanSpace ℝ (Fin d)))) =>
+        ((ExteriorNorm.wIndexEquiv (EuclideanSpace.basisFun (Fin d) ℝ) j).symm t :
+          Set.powersetCard (Fin d) j).1.val)
+      = (Finset.univ : Finset (Set.powersetCard (Fin d) j)).val.map
+          (fun S' : Set.powersetCard (Fin d) j => S'.1.val) := by
+    rw [← Multiset.map_univ_val_equiv
+      (ExteriorNorm.wIndexEquiv (EuclideanSpace.basisFun (Fin d) ℝ) j).symm, Multiset.map_map]
+    rfl
+  -- Step 2: `univ.val (subtype).map (·.1)` = `(univ.filter (·.card = j)).val` = `powersetCard j univ`.
+  have hstep2 : (Finset.univ : Finset (Set.powersetCard (Fin d) j)).val.map
+        (fun S' : Set.powersetCard (Fin d) j => S'.1)
+      = (Finset.powersetCard j (Finset.univ : Finset (Fin d))).val := by
+    rw [Finset.univ_val_map_subtype_val (α := Finset (Fin d))
+      (p := fun s => s ∈ Set.powersetCard (Fin d) j)]
+    congr 1
+    ext s
+    simp only [Finset.mem_filter, Finset.mem_univ, true_and, Set.powersetCard.mem_iff,
+      Finset.mem_powersetCard, Finset.subset_univ]
+  calc (Finset.univ.val.map fun t : Fin (Module.finrank ℝ (⋀[ℝ]^j (EuclideanSpace ℝ (Fin d)))) =>
+        ((ExteriorNorm.wIndexEquiv (EuclideanSpace.basisFun (Fin d) ℝ) j).symm t :
+          Set.powersetCard (Fin d) j).1.val)
+      = (Finset.univ : Finset (Set.powersetCard (Fin d) j)).val.map
+          (fun S' : Set.powersetCard (Fin d) j => S'.1.val) := hstep1
+    _ = ((Finset.univ : Finset (Set.powersetCard (Fin d) j)).val.map
+          (fun S' : Set.powersetCard (Fin d) j => S'.1)).map (fun F : Finset (Fin d) => F.val) :=
+        (Multiset.map_map (fun F : Finset (Fin d) => F.val)
+          (fun S' : Set.powersetCard (Fin d) j => S'.1) Finset.univ.val).symm
+    _ = (Finset.powersetCard j (Finset.univ : Finset (Fin d))).val.map (fun F : Finset (Fin d) => F.val) := by
+        rw [hstep2]
+    _ = Multiset.powersetCard j (Finset.univ.val : Multiset (Fin d)) :=
+        Finset.map_val_val_powersetCard _ _
+
+/-- **The diagonal-product multiset of the compound.** The multiset, over all compound indices `t`,
+of the `j`-fold diagonal products `∏ g (enum t i)` equals `(powersetCard j (univ.val.map g)).map
+prod`, for any `g : Fin d → S` over a commutative ring. -/
+theorem diag_prod_multiset_eq {S : Type*} [CommRing S] (j : ℕ) (g : Fin d → S) :
+    (Finset.univ.val.map
+        fun t : Fin (Module.finrank ℝ (⋀[ℝ]^j (EuclideanSpace ℝ (Fin d)))) =>
+          ∏ i, g (compoundEnum j t i))
+      = (Multiset.powersetCard j (Finset.univ.val.map g)).map Multiset.prod := by
+  classical
+  -- Rewrite each diagonal product as the product over the subset's underlying multiset.
+  have hL : (Finset.univ.val.map
+        fun t : Fin (Module.finrank ℝ (⋀[ℝ]^j (EuclideanSpace ℝ (Fin d)))) =>
+          ∏ i, g (compoundEnum j t i))
+      = (Finset.univ.val.map
+        fun t : Fin (Module.finrank ℝ (⋀[ℝ]^j (EuclideanSpace ℝ (Fin d)))) =>
+          (((ExteriorNorm.wIndexEquiv (EuclideanSpace.basisFun (Fin d) ℝ) j).symm t :
+            Set.powersetCard (Fin d) j).1.val.map g).prod) := by
+    refine Multiset.map_congr rfl (fun t _ => ?_)
+    rw [prod_compoundEnum, Finset.prod]
+  rw [hL, Multiset.powersetCard_map, Multiset.map_map]
+  -- Reduce to the subset-multiset bridge, mapped through `(·.map g).prod`.
+  rw [show (fun t : Fin (Module.finrank ℝ (⋀[ℝ]^j (EuclideanSpace ℝ (Fin d)))) =>
+        (((ExteriorNorm.wIndexEquiv (EuclideanSpace.basisFun (Fin d) ℝ) j).symm t :
+          Set.powersetCard (Fin d) j).1.val.map g).prod)
+      = (fun m : Multiset (Fin d) => (m.map g).prod) ∘
+        (fun t => ((ExteriorNorm.wIndexEquiv (EuclideanSpace.basisFun (Fin d) ℝ) j).symm t :
+          Set.powersetCard (Fin d) j).1.val) from rfl]
+  rw [← Multiset.map_map, subset_multiset_eq_powersetCard]
+  rfl
+
+/-- **Roots of a block-triangular matrix with injective ordering function.** If `M : Matrix (Fin N)
+(Fin N) S` (over an integral domain) is `BlockTriangular b` with `b : Fin N → α` injective into a
+linearly ordered `α`, then `M.charpoly.roots` is the diagonal multiset `univ.val.map M.diag`. Proof:
+sort the index by `b` (`Tuple.sort b`); the sorted relabeling makes `M` upper triangular
+(`BlockTriangular id`), its charpoly equals `M`'s (conjugation by a permutation), and the diagonal
+multiset is permutation-invariant. -/
+theorem roots_charpoly_of_blockTriangular_inj {S : Type*} [CommRing S] [IsDomain S] {N : ℕ}
+    {α : Type*} [LinearOrder α] (M : Matrix (Fin N) (Fin N) S) {b : Fin N → α}
+    (hb : Function.Injective b) (hM : M.BlockTriangular b) :
+    M.charpoly.roots = Finset.univ.val.map M.diag := by
+  classical
+  -- Sorting permutation: `b ∘ σ` is monotone, and injective ⇒ strictly monotone.
+  set σ := Tuple.sort b with hσ
+  have hmono : Monotone (b ∘ σ) := Tuple.monotone_sort b
+  have hsmono : StrictMono (b ∘ σ) :=
+    hmono.strictMono_of_injective (hb.comp σ.injective)
+  -- Reindex: `N' := M.submatrix σ σ` is BlockTriangular id.
+  have hN' : (M.submatrix σ σ).BlockTriangular id := by
+    intro p q hpq
+    -- `id q < id p` i.e. `q < p`; want `(M.submatrix σ σ) p q = M (σ p) (σ q) = 0`,
+    -- using `b (σ q) < b (σ p)` from strict monotonicity.
+    have : (b ∘ σ) q < (b ∘ σ) p := hsmono hpq
+    exact hM this
+  -- charpoly invariance under conjugation by the permutation `σ`.
+  have hcharpoly : (M.submatrix σ σ).charpoly = M.charpoly := by
+    have := Matrix.charpoly_reindex σ.symm M
+    rwa [Matrix.reindex_apply, Equiv.symm_symm] at this
+  -- diag multiset is permutation-invariant.
+  have hdiag : Finset.univ.val.map (fun i => (M.submatrix σ σ) i i)
+      = Finset.univ.val.map M.diag := by
+    have hd : (fun i => (M.submatrix σ σ) i i) = M.diag ∘ σ := by
+      funext i; simp [Matrix.diag, Matrix.submatrix_apply]
+    rw [hd, ← Multiset.map_map M.diag σ, Multiset.map_univ_val_equiv]
+  rw [← hcharpoly, roots_charpoly_of_upperTriangular _ hN', hdiag]
+
+/-- `compoundOf j ↑Q` is a unit for any matrix unit `Q`, with inverse `compoundOf j ↑Q⁻¹`
+(from Cauchy–Binet `compoundOf_mul` and `compoundOf_one`). -/
+theorem isUnit_compoundOf {S : Type*} [CommRing S] (j : ℕ) (Q : (Matrix (Fin d) (Fin d) S)ˣ) :
+    IsUnit (compoundOf j (Q : Matrix (Fin d) (Fin d) S)) :=
+  ⟨{ val := compoundOf j (Q : Matrix (Fin d) (Fin d) S)
+     inv := compoundOf j (↑Q⁻¹ : (Matrix (Fin d) (Fin d) S)ˣ)
+     val_inv := by rw [← compoundOf_mul, Units.mul_inv, compoundOf_one]
+     inv_val := by rw [← compoundOf_mul, Units.inv_mul, compoundOf_one] }, rfl⟩
+
+/-- **The assembly (Schur ⇒ compound roots identity).** GIVEN a Schur factorization of `A` over `ℂ`
+— a unit `Q` and an upper-triangular `T` (`T.BlockTriangular id`) with `A = ↑Q * T * ↑Q⁻¹` and
+diagonal multiset `univ.val.map T.diag = A.charpoly.roots` — the compound root identity
+`(compoundOf j A).charpoly.roots = (powersetCard j A.charpoly.roots).map prod` holds. Proof:
+Cauchy–Binet makes `compoundOf j A` conjugate (by the unit `compoundOf j ↑Q`) to the triangular
+`compoundOf j T`; conjugation preserves the charpoly; `compoundOf j T` is block-triangular with
+diagonal the `j`-fold products of `T`'s diagonal, whose multiset is the `j`-fold products of
+`A.charpoly.roots`. -/
+theorem compoundOf_charpoly_roots_of_schur (j : ℕ) (A : Matrix (Fin d) (Fin d) ℂ)
+    (Q : (Matrix (Fin d) (Fin d) ℂ)ˣ) (T : Matrix (Fin d) (Fin d) ℂ)
+    (hT : T.BlockTriangular id)
+    (hconj : A = (Q : Matrix (Fin d) (Fin d) ℂ) * T * (↑Q⁻¹ : Matrix (Fin d) (Fin d) ℂ))
+    (hdiagT : Finset.univ.val.map T.diag = A.charpoly.roots) :
+    (compoundOf j A).charpoly.roots
+      = (A.charpoly.roots.powersetCard j).map Multiset.prod := by
+  classical
+  -- `compoundOf j A` is conjugate to `compoundOf j T` by the unit `P := compoundOf j ↑Q`.
+  obtain ⟨P, hP⟩ := isUnit_compoundOf j Q
+  have hPinv : ((↑P⁻¹ : Matrix (Fin (Module.finrank ℝ (⋀[ℝ]^j (EuclideanSpace ℝ (Fin d)))))
+        (Fin (Module.finrank ℝ (⋀[ℝ]^j (EuclideanSpace ℝ (Fin d))))) ℂ))
+      = compoundOf j (↑Q⁻¹ : (Matrix (Fin d) (Fin d) ℂ)ˣ) := by
+    refine Units.inv_eq_of_mul_eq_one_right ?_
+    rw [hP, ← compoundOf_mul, Units.mul_inv, compoundOf_one]
+  have hAcompound : compoundOf j A
+      = (↑P : Matrix _ _ ℂ) * compoundOf j T * (↑P⁻¹ : Matrix _ _ ℂ) := by
+    rw [hconj, compoundOf_mul, compoundOf_mul, hP, hPinv]
+  -- Charpoly is conjugation-invariant.
+  have hcharpoly : (compoundOf j A).charpoly = (compoundOf j T).charpoly := by
+    rw [hAcompound, Matrix.coe_units_inv P, Matrix.charpoly_units_conj P (compoundOf j T)]
+  -- The triangular compound's roots = its diagonal multiset (block-triangular, injective order).
+  have hinj : Function.Injective
+      (fun t : Fin (Module.finrank ℝ (⋀[ℝ]^j (EuclideanSpace ℝ (Fin d)))) =>
+        toLex (compoundEnum j t)) := by
+    intro a b hab
+    -- `toLex` injective; `compoundEnum` injective.
+    have h1 : compoundEnum j a = compoundEnum j b := by
+      have := congrArg ofLex hab; simpa using this
+    -- `compoundEnum j t = ⇑(ofFinEmbEquiv.symm (wIndexEquiv.symm t))`; unwind the injectivities.
+    have hemb : Set.powersetCard.ofFinEmbEquiv.symm
+        ((ExteriorNorm.wIndexEquiv (EuclideanSpace.basisFun (Fin d) ℝ) j).symm a)
+        = Set.powersetCard.ofFinEmbEquiv.symm
+        ((ExteriorNorm.wIndexEquiv (EuclideanSpace.basisFun (Fin d) ℝ) j).symm b) :=
+      DFunLike.coe_injective h1
+    exact (ExteriorNorm.wIndexEquiv (EuclideanSpace.basisFun (Fin d) ℝ) j).symm.injective
+      (Set.powersetCard.ofFinEmbEquiv.symm.injective hemb)
+  have hroots : (compoundOf j T).charpoly.roots
+      = Finset.univ.val.map (compoundOf j T).diag :=
+    roots_charpoly_of_blockTriangular_inj _ hinj (compoundOf_blockTriangular j T hT)
+  rw [hcharpoly, hroots]
+  -- Compute the diagonal multiset of `compoundOf j T` as the `j`-fold products of `T`'s diagonal.
+  have hdiagcompound : Finset.univ.val.map (compoundOf j T).diag
+      = (Multiset.powersetCard j (Finset.univ.val.map T.diag)).map Multiset.prod := by
+    rw [show (compoundOf j T).diag
+        = fun t => ∏ i, T.diag (compoundEnum j t i) from
+      funext fun t => compoundOf_diag j T hT t]
+    exact diag_prod_multiset_eq j T.diag
+  rw [hdiagcompound, hdiagT]
+
+/-- **The spectrum of the `j`-th exterior power (now proved sorry-free).** The multiset of
 characteristic-polynomial roots of the complexified `j`-th compound matrix is exactly the multiset of
 `j`-fold products of the complex eigenvalues of `M`:
 ```
   roots( (C_j M)_ℂ.charpoly )  =  (powersetCard j  roots(M_ℂ.charpoly)).map (∏)
 ```
 This is the classical statement that the spectrum of `⋀^j A` is the set of `j`-fold products
-`λ_{i₀}⋯λ_{i_{j-1}}` of eigenvalues of `A`, here at the level of multisets (with algebraic
-multiplicity). It is the *only* fact that Mathlib / this repository do not yet provide; everything
-else in this module — the combinatorial maximization, the spectral-radius / `toReal` plumbing, the
-Gelfand reduction, and the telescoping — is discharged sorry-free below and above.
+`λ_{i₀}⋯λ_{i_{j-1}}` of eigenvalues of `A`, at the level of multisets (with algebraic multiplicity).
 
-ROADMAP to discharge this `sorry`:
-* Over the algebraically closed `ℂ`, `M_ℂ` is triangularizable: there is an invertible `P` with
-  `P⁻¹ M_ℂ P = U` upper triangular, `U.diag = ` the eigenvalues (this is the missing Schur/flag form,
-  obtainable from `Module.End.iSup_maxGenEigenspace_eq_top` / `IsAlgClosed.splits` +
-  `Polynomial.splits_iff_card_roots`).
-* The compound is functorial and similarity-equivariant: `C_j (P⁻¹ M_ℂ P) = (C_j P)⁻¹ (C_j M_ℂ)
-  (C_j P)` (from `ExteriorNorm.compoundMatrix_mul` / `_inv_mul`), so `C_j M_ℂ` is similar to
-  `C_j U`, hence has the same charpoly and roots.
-* `C_j U` is upper triangular in the induced wedge order with diagonal entries the `j`-fold diagonal
-  products `∏_{k∈S} U_{kk}` over `S ∈ powersetCard j` (the off-diagonal minors of a triangular matrix
-  selecting an increasing row set against a different column set vanish; cf. the local `gram_det`
-  computation for the diagonal case). A triangular matrix's charpoly is `∏ (X - diagᵢ)`
-  (`Matrix.charpoly` of `BlockTriangular`), whose roots are exactly the diagonal entries, i.e. the
-  `j`-fold products of the eigenvalues. -/
+**Proof (assembled from the sorry-free pieces above).**
+* The bridge `map_compoundMatrix_complex` turns the goal into a statement about the ring-agnostic
+  minor-compound `compoundOf j A` with `A := M.map (algebraMap ℝ ℂ)`.
+* **Schur triangulation over `ℂ`** (`Matrix.schur_triangulation`, grafted in `Frontier.Issue1.Schur`
+  from the Mathlib-style proof of Gordon Hsu): `A = U * T * star U` with `U` unitary and `T` upper
+  triangular (`T.BlockTriangular id`); since `star U = U⁻¹`, `A` is similar to `T`, so `A.charpoly =
+  T.charpoly` and `T`'s diagonal multiset is `A.charpoly.roots`.
+* **Cauchy–Binet over any commutative ring** (`compoundOf_mul`, proved here via the abstract exterior
+  power `exteriorPower.map` and `LinearMap.toMatrix_comp`): `compoundOf j` is multiplicative and sends
+  units to units, so `compoundOf j A` is similar (by the unit `compoundOf j U`) to `compoundOf j T`;
+  hence `(compoundOf j A).charpoly = (compoundOf j T).charpoly` (`compoundOf_charpoly_roots_of_schur`).
+* **Triangular compound** (`compoundOf_blockTriangular`, `compoundOf_diag`): `compoundOf j T` is
+  block-triangular in the lexicographic order of the subset enumerators, with diagonal the `j`-fold
+  diagonal products of `T`; `roots_charpoly_of_blockTriangular_inj` reads off its charpoly roots as
+  that diagonal multiset, and `diag_prod_multiset_eq` matches it to
+  `(powersetCard j (univ.val.map T.diag)).map prod = (powersetCard j A.charpoly.roots).map prod`. -/
 theorem compoundMatrix_charpoly_roots_eq (M : Matrix (Fin d) (Fin d) ℝ) (j : ℕ) :
     ((ExteriorNorm.compoundMatrix j M).map (algebraMap ℝ ℂ)).charpoly.roots
-      = (((M.map (algebraMap ℝ ℂ)).charpoly.roots).powersetCard j).map Multiset.prod :=
-  sorry
+      = (((M.map (algebraMap ℝ ℂ)).charpoly.roots).powersetCard j).map Multiset.prod := by
+  classical
+  rw [map_compoundMatrix_complex]
+  set A : Matrix (Fin d) (Fin d) ℂ := M.map (algebraMap ℝ ℂ) with hA
+  -- Schur triangulation over `ℂ`: `A = U * T * star U` with `U` unitary, `T` upper triangular.
+  set U : Matrix (Fin d) (Fin d) ℂ := (A.schurTriangulationUnitary : Matrix (Fin d) (Fin d) ℂ)
+    with hU
+  set T : Matrix (Fin d) (Fin d) ℂ := (A.schurTriangulation : Matrix (Fin d) (Fin d) ℂ) with hT
+  have hTtri : T.BlockTriangular id := by rw [hT]; exact A.schurTriangulation.2
+  have hschur : A = U * T * star U := A.schur_triangulation
+  -- Package the unitary as a matrix unit `Q` with `↑Q⁻¹ = star ↑U`.
+  let Q : (Matrix (Fin d) (Fin d) ℂ)ˣ :=
+    { val := U
+      inv := star U
+      val_inv := by rw [hU]; exact Unitary.coe_mul_star_self A.schurTriangulationUnitary
+      inv_val := by rw [hU]; exact Unitary.coe_star_mul_self A.schurTriangulationUnitary }
+  have hconj : A = (Q : Matrix (Fin d) (Fin d) ℂ) * T * (↑Q⁻¹ : Matrix (Fin d) (Fin d) ℂ) := hschur
+  -- The triangular factor's diagonal multiset is `A.charpoly.roots` (similar matrices, triangular).
+  have hdiagT : Finset.univ.val.map T.diag = A.charpoly.roots := by
+    have hAcharpoly : A.charpoly = T.charpoly := by
+      rw [hconj, Matrix.coe_units_inv Q, Matrix.charpoly_units_conj Q T]
+    rw [hAcharpoly, roots_charpoly_of_upperTriangular T hTtri]
+    rfl
+  exact compoundOf_charpoly_roots_of_schur j A Q T hTtri hconj hdiagT
 
 theorem spectralRadius_compound_eq_prod_eigenvalueModuli [NeZero d]
     (M : Matrix (Fin d) (Fin d) ℝ) (j : ℕ) :
@@ -702,9 +1198,10 @@ This is assembled by **Strategy C** (exterior-power / Gelfand): the product-form
 `(∏_{k<j} σₖ(Mⁿ))^{1/n} → ρ(C_j(M))` (`tendsto_prod_singularValues_pow`, sorry-free) are rewritten
 through the residual spectral fact (`spectralRadius_compound_eq_prod_eigenvalueModuli`,
 `ρ(C_{i+1}(M)) = ∏_{k≤i}|λₖ|`) and telescoped through `yamamoto_prod_to_index` (now sorry-free) to
-the single index `i`. The glue here is sorry-free; the only remaining `sorry` in the module is the
-single residual matrix-analysis fact `spectralRadius_compound_eq_prod_eigenvalueModuli` (see its
-docstring).
+the single index `i`. The glue here is sorry-free; the former single residual matrix-analysis fact
+`spectralRadius_compound_eq_prod_eigenvalueModuli` is now itself **proved sorry-free** (via
+`compoundMatrix_charpoly_roots_eq` + ℂ-Schur triangulation — see `Frontier.Issue1.Schur`), so this
+whole module is now sorry-free.
 
 For the degenerate `d = 0` case (no `NeZero d`) the statement is handled by the constant-cocycle
 consumer directly, which always supplies `[NeZero d]`. -/
