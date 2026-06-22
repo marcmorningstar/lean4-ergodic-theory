@@ -166,6 +166,8 @@ import Oseledets.Examples.CatMapToral
 import Oseledets.Examples.Rokhlin.AbstractEqui
 import Oseledets.Examples.Rokhlin.DoublingCrux
 import Oseledets.Examples.Rokhlin.DoublingEquality
+import Oseledets.Mathlib.SchurTriangulation
+import Oseledets.Lyapunov.Extensions.Yamamoto
 
 /-!
 # Oseledets
