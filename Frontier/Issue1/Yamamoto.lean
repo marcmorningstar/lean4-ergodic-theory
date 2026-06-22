@@ -56,15 +56,27 @@ The reduction works because the repository already provides the two non-trivial 
 * **Gelfand for a real matrix** (`Oseledets.tendsto_pow_norm_one_div_spectralRadius`):
   `‖Bⁿ‖^{1/n} → (spectralRadius ℂ B_ℂ).toReal`, applied to `B = C_j(M)`.
 
-Chaining these gives `(σ₀⋯σ_{j-1}(Mⁿ))^{1/n} → ρ(C_j(M))`; with the residual spectral fact
+Chaining these gives `(σ₀⋯σ_{j-1}(Mⁿ))^{1/n} → ρ(C_j(M))`; with the spectral fact
 `ρ(C_{i+1}(M)) = ∏_{k≤i}|λₖ|` this is the product form of Yamamoto, and the single-index statement
 follows by telescoping `j = i+1` against `j = i` in `(1/n) log`. The telescoping/`log`-of-zero
 bookkeeping (`yamamoto_prod_to_index`) and the eventual-vanishing bridge (`hvanish`, from
-nilpotency of the compound when `|λᵢ| = 0`) are now **sorry-free**. The **single residual leaf**
-that Mathlib/this repository do not yet provide is stated as a sharp, individually-typed `sorry`
-below: `spectralRadius_compound_eq_prod_eigenvalueModuli` (the eigenvalues of an exterior power are
-the `(i+1)`-fold products of the base eigenvalues, so the spectral radius is the product of the top
-moduli). All the analytic plumbing around it is discharged sorry-free.
+nilpotency of the compound when `|λᵢ| = 0`) are **sorry-free**.
+
+The spectral fact `spectralRadius_compound_eq_prod_eigenvalueModuli` is itself now **proved
+sorry-free** from a *single*, strictly sharper residual leaf:
+`compoundMatrix_charpoly_roots_eq` — the multiset of characteristic-polynomial roots of the
+complexified compound `(C_j M)_ℂ` equals the multiset of `j`-fold products of the eigenvalues of
+`M`, `(powersetCard j (roots M_ℂ)).map (∏)`. From that multiset identity, *all* of the remaining
+content — that the spectral radius (= max spectral modulus, finite-spectrum `toReal` plumbing) equals
+the product of the top-`j` eigenvalue moduli — is discharged sorry-free here via a self-contained
+combinatorial development: the top-`j` product maximizes products over `j`-sub-multisets of a
+nonnegative multiset (`prod_le_take_sort`, built from descending-sorted sublist domination
+`sublist_getElem_le_getElem_of_sorted_ge`), together with the sub-multiset lifting
+`exists_le_of_le_map` and the two `spectralRadius`-extraction bounds. The `j = 0`, `j ≤ d`, and
+`j > d` (empty-spectrum) ranges are all handled. The **single residual leaf** that Mathlib / this
+repository do not yet provide is therefore reduced to the clean multiset eigenvalue identity
+`compoundMatrix_charpoly_roots_eq` (the spectrum of `⋀^j A` = the `j`-fold products of the spectrum
+of `A`), stated as an individually-typed `sorry` with a precise discharge roadmap in its docstring.
 
 ## Main definitions
 
@@ -127,6 +139,143 @@ then the two sharp residual `sorry`s, then the sorry-free assembly. -/
 
 open scoped Matrix.Norms.L2Operator ENNReal
 
+/-! ### Combinatorial core: the top-`j` product maximizes products over `j`-sub-multisets
+
+These lemmas are pure order/combinatorics on multisets of nonnegative reals; they have no matrix
+content. The goal is `prod_le_take_sort` and `topProd_mem_powersetCard_prod`, which together pin the
+maximum of `T.prod` over `T ∈ powersetCard j m` to the product of the top `j` elements of the
+descending sort of `m`. -/
+
+/-- **Lifting a sub-multiset through a map.** If `T ≤ s.map f` then there is `u ≤ s` with
+`u.map f = T`. (Pick a preimage of each element of `T` inside `s`.) -/
+private theorem exists_le_of_le_map {α β : Type*} {f : α → β} {T : Multiset β} {s : Multiset α}
+    (h : T ≤ s.map f) : ∃ u ≤ s, u.map f = T := by
+  classical
+  induction T using Multiset.induction_on generalizing s with
+  | empty => exact ⟨0, Multiset.zero_le s, by simp⟩
+  | cons b T ih =>
+      -- `b ∈ s.map f`, so `b = f a` for some `a ∈ s`.
+      have hb : b ∈ s.map f := Multiset.mem_of_le h (Multiset.mem_cons_self b T)
+      rw [Multiset.mem_map] at hb
+      obtain ⟨a, ha, rfl⟩ := hb
+      -- `T ≤ (s.erase a).map f`.
+      have hTle : T ≤ (s.erase a).map f := by
+        have hcons : f a ::ₘ T ≤ s.map f := h
+        rw [← Multiset.cons_erase ha, Multiset.map_cons] at hcons
+        exact (Multiset.cons_le_cons_iff (f a)).mp hcons
+      obtain ⟨u, hule, humap⟩ := ih hTle
+      refine ⟨a ::ₘ u, ?_, ?_⟩
+      · rw [← Multiset.cons_erase ha]; exact Multiset.cons_le_cons a hule
+      · rw [Multiset.map_cons, humap]
+
+/-- The product of the first `j` entries of a list equals `∏_{k<j} L.getD k 0`, for `j ≤ length`. -/
+private theorem prod_take_eq_prod_range_getD (L : List ℝ) (j : ℕ) (hj : j ≤ L.length) :
+    (L.take j).prod = ∏ k ∈ Finset.range j, L.getD k 0 := by
+  induction j with
+  | zero => simp
+  | succ m ih =>
+      have hm : m ≤ L.length := Nat.le_of_succ_le hj
+      have hmlt : m < L.length := hj
+      rw [List.prod_take_succ L m hmlt, ih hm, Finset.prod_range_succ]
+      congr 1
+      rw [List.getD_eq_getElem?_getD, List.getElem?_eq_getElem hmlt, Option.getD_some]
+
+/-- **Descending-sorted sublist domination.** If `c` is a sublist of a list `l` that is sorted in
+non-increasing order (`l.Pairwise (· ≥ ·)`), then position-by-position the entries of `c` are
+dominated by those of `l`: `c[i] ≤ l[i]` for every `i < c.length`. (Inserting elements of a
+descending list can only make later entries no larger, so the `i`-th entry of the sublist sits at or
+after the `i`-th entry of the whole list.) -/
+private theorem sublist_getElem_le_getElem_of_sorted_ge {α : Type*} [Preorder α]
+    {c l : List α} (hcl : c.Sublist l) (hl : l.Pairwise (· ≥ ·)) :
+    ∀ (i : ℕ) (hic : i < c.length),
+      c[i] ≤ l[i]'(lt_of_lt_of_le hic hcl.length_le) := by
+  induction hcl with
+  | slnil => intro i hic; simp at hic
+  | @cons L₁ L₂ a h ih =>
+      -- relation is `L₁ <+ (a :: L₂)`; here `l = a :: L₂`, `c = L₁`.
+      intro i hic
+      have hLsorted : L₂.Pairwise (· ≥ ·) := (List.pairwise_cons.mp hl).2
+      have hiL : i < L₂.length := lt_of_lt_of_le hic h.length_le
+      -- IH on `L₂` (sorted): `L₁[i] ≤ L₂[i]`.
+      have hcL : L₁[i]'hic ≤ L₂[i]'hiL := ih hLsorted i hic
+      -- `L₂[i] ≤ (a :: L₂)[i]` by descending sortedness of `a :: L₂`.
+      have hipp : i + 1 < (a :: L₂).length := by simpa using Nat.succ_lt_succ hiL
+      have hstep : L₂[i]'hiL ≤ (a :: L₂)[i]'(by simpa using Nat.lt_succ_of_lt hiL) := by
+        have := (List.pairwise_iff_getElem.mp hl) i (i + 1)
+          (by simpa using Nat.lt_succ_of_lt hiL) hipp (Nat.lt_succ_self i)
+        have hshift : (a :: L₂)[i + 1]'hipp = L₂[i]'hiL := by simp
+        rw [hshift] at this
+        exact this
+      exact le_trans hcL hstep
+  | @cons_cons L₁ L₂ a h ih =>
+      intro i hic
+      cases i with
+      | zero => simp
+      | succ k =>
+          have hkc : k < L₁.length := by simpa using Nat.lt_of_succ_lt_succ (by simpa using hic)
+          have hLsorted : L₂.Pairwise (· ≥ ·) := (List.pairwise_cons.mp hl).2
+          have := ih hLsorted k hkc
+          simpa using this
+
+/-- For a sub-multiset `T ≤ m`, the descending sorts satisfy `T.sort <+ m.sort`. (Both are
+non-increasingly sorted and `T.sort` is a sub-permutation of `m.sort`.) -/
+private theorem sort_sublist_sort_of_le {m T : Multiset ℝ} (hTm : T ≤ m) :
+    (T.sort (· ≥ ·)).Sublist (m.sort (· ≥ ·)) := by
+  refine List.sublist_of_subperm_of_pairwise (r := (· ≥ ·)) ?_ ?_ ?_
+  · -- `T.sort <+~ m.sort` from `T ≤ m` via the multiset coercion.
+    have : ((T.sort (· ≥ ·) : List ℝ) : Multiset ℝ) ≤ ((m.sort (· ≥ ·) : List ℝ) : Multiset ℝ) := by
+      rw [Multiset.sort_eq, Multiset.sort_eq]; exact hTm
+    rwa [Multiset.coe_le] at this
+  · exact Multiset.pairwise_sort _ _
+  · exact Multiset.pairwise_sort _ _
+
+/-- **Products of a `j`-sub-multiset are dominated by the top-`j` product.** For a multiset `m` of
+nonnegative reals and a sub-multiset `T ≤ m` with `card T = j`, the product `T.prod` is at most the
+product of the top `j` entries of the descending sort of `m`. -/
+private theorem prod_le_take_sort {m T : Multiset ℝ} {j : ℕ} (hpos : ∀ x ∈ m, 0 ≤ x)
+    (hTm : T ≤ m) (hcard : Multiset.card T = j) :
+    T.prod ≤ (((m.sort (· ≥ ·)).take j).prod) := by
+  classical
+  -- Work with the descending sorts.
+  set Lm := m.sort (· ≥ ·) with hLm
+  set LT := T.sort (· ≥ ·) with hLT
+  have hsub : LT.Sublist Lm := sort_sublist_sort_of_le hTm
+  have hLTlen : LT.length = j := by rw [hLT, Multiset.length_sort, hcard]
+  have hLmsorted : Lm.Pairwise (· ≥ ·) := Multiset.pairwise_sort _ _
+  have hjLm : j ≤ Lm.length := by rw [← hLTlen]; exact hsub.length_le
+  -- `T.prod = LT.prod`.
+  have hTprod : LT.prod = T.prod := by
+    rw [hLT, ← Multiset.prod_coe, Multiset.sort_eq]
+  rw [← hTprod]
+  -- nonneg of entries of `LT` (they are entries of `m`).
+  have hposLT : ∀ i (hi : i < LT.length), 0 ≤ LT[i] := by
+    intro i hi
+    have hmem : LT[i] ∈ LT := List.getElem_mem hi
+    have hmem' : LT[i] ∈ m := by
+      have : LT[i] ∈ (T.sort (· ≥ ·)) := by rw [← hLT]; exact hmem
+      rw [Multiset.mem_sort] at this
+      exact Multiset.mem_of_le hTm this
+    exact hpos _ hmem'
+  -- Position-by-position domination from the sublist + sortedness.
+  have hdom := sublist_getElem_le_getElem_of_sorted_ge hsub hLmsorted
+  -- Express both products over `Fin j` and compare.
+  have hLT_take_len : (Lm.take j).length = j := by rw [List.length_take]; omega
+  -- A list of length `j` has product equal to the `Fin j`-indexed product of its entries.
+  have prod_eq_fin : ∀ (L : List ℝ) (hL : L.length = j),
+      L.prod = ∏ i : Fin j, L[(i : ℕ)]'(by rw [hL]; exact i.2) := by
+    intro L hL
+    subst hL
+    rw [← Fin.prod_univ_getElem L]
+  rw [prod_eq_fin LT hLTlen, prod_eq_fin (Lm.take j) hLT_take_len]
+  apply Finset.prod_le_prod
+  · intro i _; exact hposLT i (by rw [hLTlen]; exact i.2)
+  · intro i _
+    have hiLm : (i : ℕ) < Lm.length := lt_of_lt_of_le i.2 hjLm
+    have hdomi := hdom i (by rw [hLTlen]; exact i.2)
+    have htake : (Lm.take j)[(i : ℕ)]'(by rw [hLT_take_len]; exact i.2) = Lm[(i : ℕ)]'hiLm := by
+      rw [List.getElem_take]
+    rw [htake]; exact hdomi
+
 /-- **The compound (exterior power) of a matrix power is the power of the compound.**
 `C_k(Mⁿ) = (C_k M)ⁿ`. This is Cauchy–Binet (`ExteriorNorm.compoundMatrix_mul`) iterated, with
 `ExteriorNorm.compoundMatrix_one` for the base case; it is the multiplicativity that lets Gelfand's
@@ -137,33 +286,206 @@ theorem compoundMatrix_pow (k : ℕ) (M : Matrix (Fin d) (Fin d) ℝ) (n : ℕ) 
   | zero => simpa using ExteriorNorm.compoundMatrix_one k
   | succ m ih => rw [pow_succ, pow_succ, ExteriorNorm.compoundMatrix_mul, ih]
 
-/-- **Residual leaf 1 (the eigenvalues of an exterior power).** For every `j`, the spectral radius
-of the `j`-th compound (exterior power) `C_j(M)` over `ℂ` equals the product of the top `j`
-eigenvalue moduli of `M`:
-```
-  ρ(C_j(M)_ℂ)  =  ∏_{k < j} |λₖ(M)|.
-```
-This is the classical fact that the eigenvalues of `⋀^j A` are exactly the `j`-fold products
-`λ_{i₀}⋯λ_{i_{j-1}}` over strictly increasing index tuples; the largest modulus among these products
-is attained at the top `j` eigenvalues (the list `eigenvalueModuli M` is sorted non-increasingly), so
-the spectral radius — the maximal modulus of a spectral value — is `∏_{k<j}|λₖ|`. (For `j = 0` both
-sides are `1`: `C_0(M)` is the `1×1` identity and the empty product is `1`. For `j > d` both sides
-are `0`.)
+/-! ### Spectral-radius bookkeeping over `ℂ` (finite spectrum = charpoly roots) -/
 
-`SHARP SORRY` (Strategy-C residual). Mathlib has `exteriorPower.map` but **no** lemma identifying its
-characteristic polynomial / spectrum with the `j`-fold products of the base eigenvalues, and this
-repository's `ExteriorNorm.compoundMatrix` carries only the *norm/singular-value* side, not the
-*eigenvalue* side. Closing this requires either (i) a charpoly-of-compound lemma
-`(C_j M).charpoly = ∏_{S ∈ powersetCard j} (X - ∏_{k∈S} λₖ)` built from the wedge-basis action of
-`⋀^j(toLin M)` on products of eigenvectors, or (ii) the `det`/`trace`-coefficient route via the
-elementary symmetric polynomials of the eigenvalues. Either is a self-contained matrix-analysis
-contribution; it is the *only* genuinely missing mathematical content of Strategy C, the polar /
-Jordan–Chevalley / Weyl machinery of the trace-moment route being entirely sidestepped. -/
+/-- **Upper bound for the (real) spectral radius.** If every spectral value of `A` has norm at most
+`B ≥ 0`, then `(spectralRadius ℂ A).toReal ≤ B`, provided the spectral radius is finite. -/
+private theorem spectralRadius_toReal_le {N : ℕ} (A : Matrix (Fin N) (Fin N) ℂ) {B : ℝ}
+    (hB : 0 ≤ B) (hfin : spectralRadius ℂ A ≠ ⊤)
+    (hbound : ∀ μ ∈ spectrum ℂ A, ‖μ‖ ≤ B) :
+    (spectralRadius ℂ A).toReal ≤ B := by
+  have hle : spectralRadius ℂ A ≤ ENNReal.ofReal B := by
+    refine iSup₂_le fun μ hμ => ?_
+    calc (‖μ‖₊ : ENNReal) = ENNReal.ofReal ‖μ‖ := by
+            rw [← ENNReal.ofReal_coe_nnreal, coe_nnnorm]
+      _ ≤ ENNReal.ofReal B := ENNReal.ofReal_le_ofReal (hbound μ hμ)
+  calc (spectralRadius ℂ A).toReal ≤ (ENNReal.ofReal B).toReal :=
+          ENNReal.toReal_le_toReal hfin ENNReal.ofReal_ne_top |>.mpr hle
+    _ = B := ENNReal.toReal_ofReal hB
+
+/-- **Lower bound for the (real) spectral radius.** Every spectral value's norm is at most the real
+spectral radius (finite case). -/
+private theorem le_spectralRadius_toReal {N : ℕ} (A : Matrix (Fin N) (Fin N) ℂ) {μ : ℂ}
+    (hfin : spectralRadius ℂ A ≠ ⊤) (hμ : μ ∈ spectrum ℂ A) :
+    ‖μ‖ ≤ (spectralRadius ℂ A).toReal := by
+  have hle : (‖μ‖₊ : ENNReal) ≤ spectralRadius ℂ A :=
+    le_iSup₂ (f := fun k _ => (‖k‖₊ : ENNReal)) μ hμ
+  have := (ENNReal.toReal_le_toReal (by simp) hfin).mpr hle
+  simpa using this
+
+/-- The compound index `finrank ℝ (⋀^j (EuclideanSpace ℝ (Fin d)))` is nonzero exactly when
+`j ≤ d`, since it equals `Nat.choose d j` (`exteriorPower.finrank_eq`,
+`finrank (EuclideanSpace ℝ (Fin d)) = d`). Packaged as a `NeZero` instance under `j ≤ d` so that
+Gelfand's formula (which needs a nonempty matrix index) applies to `C_j(M)`. -/
+theorem neZero_finrank_exteriorPower_of_le {j : ℕ} (hj : j ≤ d) :
+    NeZero (Module.finrank ℝ (⋀[ℝ]^j (EuclideanSpace ℝ (Fin d)))) := by
+  refine ⟨?_⟩
+  rw [exteriorPower.finrank_eq, finrank_euclideanSpace, Fintype.card_fin]
+  exact (Nat.choose_pos hj).ne'
+
+/-- **THE single sharp residual leaf (genuine matrix-analysis content).** The multiset of
+characteristic-polynomial roots of the complexified `j`-th compound matrix is exactly the multiset of
+`j`-fold products of the complex eigenvalues of `M`:
+```
+  roots( (C_j M)_ℂ.charpoly )  =  (powersetCard j  roots(M_ℂ.charpoly)).map (∏)
+```
+This is the classical statement that the spectrum of `⋀^j A` is the set of `j`-fold products
+`λ_{i₀}⋯λ_{i_{j-1}}` of eigenvalues of `A`, here at the level of multisets (with algebraic
+multiplicity). It is the *only* fact that Mathlib / this repository do not yet provide; everything
+else in this module — the combinatorial maximization, the spectral-radius / `toReal` plumbing, the
+Gelfand reduction, and the telescoping — is discharged sorry-free below and above.
+
+ROADMAP to discharge this `sorry`:
+* Over the algebraically closed `ℂ`, `M_ℂ` is triangularizable: there is an invertible `P` with
+  `P⁻¹ M_ℂ P = U` upper triangular, `U.diag = ` the eigenvalues (this is the missing Schur/flag form,
+  obtainable from `Module.End.iSup_maxGenEigenspace_eq_top` / `IsAlgClosed.splits` +
+  `Polynomial.splits_iff_card_roots`).
+* The compound is functorial and similarity-equivariant: `C_j (P⁻¹ M_ℂ P) = (C_j P)⁻¹ (C_j M_ℂ)
+  (C_j P)` (from `ExteriorNorm.compoundMatrix_mul` / `_inv_mul`), so `C_j M_ℂ` is similar to
+  `C_j U`, hence has the same charpoly and roots.
+* `C_j U` is upper triangular in the induced wedge order with diagonal entries the `j`-fold diagonal
+  products `∏_{k∈S} U_{kk}` over `S ∈ powersetCard j` (the off-diagonal minors of a triangular matrix
+  selecting an increasing row set against a different column set vanish; cf. the local `gram_det`
+  computation for the diagonal case). A triangular matrix's charpoly is `∏ (X - diagᵢ)`
+  (`Matrix.charpoly` of `BlockTriangular`), whose roots are exactly the diagonal entries, i.e. the
+  `j`-fold products of the eigenvalues. -/
+theorem compoundMatrix_charpoly_roots_eq (M : Matrix (Fin d) (Fin d) ℝ) (j : ℕ) :
+    ((ExteriorNorm.compoundMatrix j M).map (algebraMap ℝ ℂ)).charpoly.roots
+      = (((M.map (algebraMap ℝ ℂ)).charpoly.roots).powersetCard j).map Multiset.prod :=
+  sorry
+
 theorem spectralRadius_compound_eq_prod_eigenvalueModuli [NeZero d]
     (M : Matrix (Fin d) (Fin d) ℝ) (j : ℕ) :
     (spectralRadius ℂ ((ExteriorNorm.compoundMatrix j M).map (algebraMap ℝ ℂ))).toReal
-      = ∏ k ∈ Finset.range j, (eigenvalueModuli M).getD k 0 :=
-  sorry
+      = ∏ k ∈ Finset.range j, (eigenvalueModuli M).getD k 0 := by
+  classical
+  set Aℂ := (ExteriorNorm.compoundMatrix j M).map (algebraMap ℝ ℂ) with hAℂ
+  -- Roots/moments of `M` over `ℂ`.
+  set rootsM := ((M.map (algebraMap ℝ ℂ)).charpoly).roots with hrootsM
+  set momentsM : Multiset ℝ := rootsM.map (fun z => ‖z‖) with hmomentsM
+  have hcardRoots : Multiset.card rootsM = d := by
+    rw [hrootsM, (Polynomial.splits_iff_card_roots).mp (IsAlgClosed.splits _),
+      Matrix.charpoly_natDegree_eq_dim, Fintype.card_fin]
+  have hcardMoments : Multiset.card momentsM = d := by
+    rw [hmomentsM, Multiset.card_map, hcardRoots]
+  have hposMoments : ∀ x ∈ momentsM, 0 ≤ x := by
+    intro x hx
+    rw [hmomentsM, Multiset.mem_map] at hx
+    obtain ⟨z, _, rfl⟩ := hx; exact norm_nonneg z
+  -- `‖∏ S‖ = (S.map ‖·‖).prod` for any complex multiset.
+  have hnorm_prod : ∀ S : Multiset ℂ, ‖S.prod‖ = (S.map (fun z => ‖z‖)).prod := by
+    intro S
+    have := map_multiset_prod (normHom : ℂ →*₀ ℝ) S
+    simpa using this
+  -- `eigenvalueModuli M = momentsM.sort (· ≥ ·)`.
+  have heigen : eigenvalueModuli M = momentsM.sort (· ≥ ·) := rfl
+  have hlenEig : (eigenvalueModuli M).length = d := eigenvalueModuli_length M
+  -- The complex spectrum of the compound = root support; describe spectrum-membership via the
+  -- sharp roots identity.
+  have hroots_eq : Aℂ.charpoly.roots = (rootsM.powersetCard j).map Multiset.prod := by
+    rw [hAℂ, compoundMatrix_charpoly_roots_eq]
+  have hspec_mem : ∀ μ : ℂ, μ ∈ spectrum ℂ Aℂ ↔
+      ∃ S ∈ rootsM.powersetCard j, S.prod = μ := by
+    intro μ
+    rw [Matrix.mem_spectrum_iff_isRoot_charpoly, ← Polynomial.mem_roots Aℂ.charpoly_monic.ne_zero,
+      hroots_eq, Multiset.mem_map]
+  -- For each spectral value `μ = S.prod`, `‖μ‖ = (S.map ‖·‖).prod`, a `j`-product of moments.
+  rcases le_or_gt j d with hjd | hjd
+  · -- Main range `j ≤ d`.
+    -- The compound dimension `choose d j` is nonzero, so the matrix algebra is nontrivial and the
+    -- spectral radius is finite.
+    haveI : NeZero (Module.finrank ℝ (⋀[ℝ]^j (EuclideanSpace ℝ (Fin d)))) :=
+      neZero_finrank_exteriorPower_of_le hjd
+    haveI : Nonempty (Fin (Module.finrank ℝ (⋀[ℝ]^j (EuclideanSpace ℝ (Fin d))))) :=
+      ⟨⟨0, Nat.pos_of_ne_zero (NeZero.ne _)⟩⟩
+    have hfin : spectralRadius ℂ Aℂ ≠ ⊤ :=
+      ne_top_of_le_ne_top (by simp) (spectrum.spectralRadius_le_nnnorm (𝕜 := ℂ) Aℂ)
+    -- The take-`j` of the sorted moments, as a sub-multiset, realizes the top-`j` product.
+    set Ltop := (momentsM.sort (· ≥ ·)).take j with hLtop
+    have hLtop_sub : (Ltop : Multiset ℝ) ≤ momentsM := by
+      have h1 : (Ltop : Multiset ℝ) ≤ ((momentsM.sort (· ≥ ·) : List ℝ) : Multiset ℝ) := by
+        rw [Multiset.coe_le]
+        exact ((momentsM.sort (· ≥ ·)).take_prefix j).sublist.subperm
+      rwa [Multiset.sort_eq] at h1
+    have hLtop_card : Multiset.card (Ltop : Multiset ℝ) = j := by
+      rw [Multiset.coe_card, hLtop, List.length_take, Multiset.length_sort, hcardMoments,
+        Nat.min_eq_left hjd]
+    -- RHS equals the top-`j` product.
+    have hlen : (momentsM.sort (· ≥ ·)).length = d := by
+      rw [Multiset.length_sort, hcardMoments]
+    have hRHS : ∏ k ∈ Finset.range j, (eigenvalueModuli M).getD k 0 = Ltop.prod := by
+      rw [heigen, hLtop, prod_take_eq_prod_range_getD _ _ (by rw [hlen]; exact hjd)]
+    rw [hRHS]
+    -- Now prove `(spectralRadius).toReal = Ltop.prod` by two inequalities.
+    -- The top-`j` product is nonnegative (entries of `Ltop` are entries of `momentsM`).
+    have hLtop_nonneg : 0 ≤ Ltop.prod := by
+      apply List.prod_nonneg
+      intro x hx
+      have : x ∈ momentsM := Multiset.mem_of_le hLtop_sub (by rw [Multiset.mem_coe]; exact hx)
+      exact hposMoments x this
+    refine le_antisymm ?_ ?_
+    · -- ≤: every spectral modulus is ≤ the top-`j` product.
+      refine spectralRadius_toReal_le _ hLtop_nonneg hfin ?_
+      intro μ hμ
+      rw [hspec_mem] at hμ
+      obtain ⟨S, hS, rfl⟩ := hμ
+      rw [Multiset.mem_powersetCard] at hS
+      -- `‖∏ S‖ = ∏_{x∈S} ‖x‖ = (S.map ‖·‖).prod`.
+      rw [hnorm_prod S]
+      -- `S.map ‖·‖ ≤ momentsM`, card `j`; apply the combinatorial bound.
+      have hsub : (S.map (fun z => ‖z‖)) ≤ momentsM := by
+        rw [hmomentsM]; exact Multiset.map_le_map hS.1
+      have hcard' : Multiset.card (S.map (fun z => ‖z‖)) = j := by
+        rw [Multiset.card_map]; exact hS.2
+      have := prod_le_take_sort (m := momentsM) (T := S.map (fun z => ‖z‖))
+        hposMoments hsub hcard'
+      rwa [← hLtop] at this
+    · -- ≥: the top-`j` subset realizes a spectral value of that modulus.
+      -- Find `S ≤ rootsM`, `card S = j`, with `S.map ‖·‖ = Ltop` (as multisets).
+      obtain ⟨S, hSle, hSmap⟩ := exists_le_of_le_map
+        (f := fun z : ℂ => ‖z‖) (T := (Ltop : Multiset ℝ)) (s := rootsM)
+        (by rw [← hmomentsM]; exact hLtop_sub)
+      have hScard : Multiset.card S = j := by
+        have : Multiset.card (S.map (fun z => ‖z‖)) = Multiset.card (Ltop : Multiset ℝ) := by
+          rw [hSmap]
+        rwa [Multiset.card_map, hLtop_card] at this
+      -- `S.prod` is a spectral value with `‖S.prod‖ = Ltop.prod`.
+      have hSspec : S.prod ∈ spectrum ℂ Aℂ := by
+        rw [hspec_mem]
+        exact ⟨S, by rw [Multiset.mem_powersetCard]; exact ⟨hSle, hScard⟩, rfl⟩
+      have hnormS : ‖S.prod‖ = Ltop.prod := by
+        rw [hnorm_prod S, hSmap, Multiset.prod_coe]
+      have := le_spectralRadius_toReal Aℂ hfin hSspec
+      rwa [hnormS] at this
+  · -- Tail `j > d`: the compound has dimension `choose d j = 0`, spectrum empty, radius `0`;
+    -- the RHS product contains the zero factor `getD d 0 = 0`.
+    -- RHS = 0 because `getD d 0 = 0` (list has length `d`) and `d ∈ range j`.
+    have hRHS0 : ∏ k ∈ Finset.range j, (eigenvalueModuli M).getD k 0 = 0 := by
+      apply Finset.prod_eq_zero (i := d) (by rw [Finset.mem_range]; exact hjd)
+      rw [List.getD_eq_getElem?_getD, List.getElem?_eq_none (by rw [hlenEig]), Option.getD_none]
+    rw [hRHS0]
+    -- The compound dimension is `0`, so the matrix is over the empty index; spectrum is empty.
+    have hdim0 : Module.finrank ℝ (⋀[ℝ]^j (EuclideanSpace ℝ (Fin d))) = 0 := by
+      rw [exteriorPower.finrank_eq, finrank_euclideanSpace, Fintype.card_fin,
+        Nat.choose_eq_zero_of_lt hjd]
+    -- `Fin (finrank …)` is empty.
+    haveI hempty : IsEmpty (Fin (Module.finrank ℝ (⋀[ℝ]^j (EuclideanSpace ℝ (Fin d))))) := by
+      rw [hdim0]; exact Fin.isEmpty
+    -- The matrix algebra is a subsingleton (`1 = 0`), so every spectrum is empty.
+    have hsubsingleton : Subsingleton (Matrix (Fin (Module.finrank ℝ
+        (⋀[ℝ]^j (EuclideanSpace ℝ (Fin d)))))
+        (Fin (Module.finrank ℝ (⋀[ℝ]^j (EuclideanSpace ℝ (Fin d))))) ℂ) :=
+      inferInstance
+    have hspecempty : spectrum ℂ Aℂ = ∅ := by
+      rw [Set.eq_empty_iff_forall_notMem]
+      intro μ hμ
+      rw [spectrum.mem_iff] at hμ
+      apply hμ
+      -- In a subsingleton ring `algebraMap μ - Aℂ` is a unit (everything is).
+      exact (isUnit_of_subsingleton _)
+    have hradius0 : spectralRadius ℂ Aℂ = 0 := by
+      rw [spectralRadius, hspecempty]; simp
+    rw [hradius0, ENNReal.toReal_zero]
 
 /-- **A complex matrix of spectral radius `0` is nilpotent.** If `spectralRadius ℂ A = 0` then every
 spectral value (= every root of `A.charpoly`) has norm `0`, hence is `0`; the (monic, split)
@@ -204,16 +526,6 @@ theorem isNilpotent_of_spectralRadius_eq_zero {N : ℕ} (A : Matrix (Fin N) (Fin
   refine ⟨N, ?_⟩
   have := A.aeval_self_charpoly
   rwa [hXpow, map_pow, Polynomial.aeval_X] at this
-
-/-- The compound index `finrank ℝ (⋀^j (EuclideanSpace ℝ (Fin d)))` is nonzero exactly when
-`j ≤ d`, since it equals `Nat.choose d j` (`exteriorPower.finrank_eq`,
-`finrank (EuclideanSpace ℝ (Fin d)) = d`). Packaged as a `NeZero` instance under `j ≤ d` so that
-Gelfand's formula (which needs a nonempty matrix index) applies to `C_j(M)`. -/
-theorem neZero_finrank_exteriorPower_of_le {j : ℕ} (hj : j ≤ d) :
-    NeZero (Module.finrank ℝ (⋀[ℝ]^j (EuclideanSpace ℝ (Fin d)))) := by
-  refine ⟨?_⟩
-  rw [exteriorPower.finrank_eq, finrank_euclideanSpace, Fintype.card_fin]
-  exact (Nat.choose_pos hj).ne'
 
 /-- **The Gelfand limit for the compound, in product form.** For every `j ≥ 1`,
 ```

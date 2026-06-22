@@ -132,7 +132,10 @@ continuity of `tangentCoordChange I p q` only for **fixed** indices `p q`
 never as a function of the base point for a single trivialization. Supplying continuity of this
 moving-index coordinate change is the entire residual content of issue #2; it is isolated here as the
 single sharp obligation `continuousOn_tangentCoordChange_movingIndex`. Everything else in this module
-(the un-conjugation telescoping above and the chart-glue below) is proved sorry-free around it. -/
+(the un-conjugation telescoping above, the chart-glue below, **and the dual moving-target-index
+factor `continuousOn_tangentCoordChange_movingTargetIndex`, which is derived from this one by
+continuous-linear-map inversion**) is proved sorry-free around it. So this module — and hence the
+whole issue-#9 measurability chain — now rests on exactly **one** `sorry`. -/
 
 /-- **The sharp residual gap (issue #2).** The coordinate change with moving source index
 `x ↦ tangentCoordChange I x c x` is continuous on the chart source `(chartAt H c).source`.
@@ -156,15 +159,52 @@ theorem continuousOn_rightFactor (a : M) :
     ContinuousOn (fun x => tangentCoordChange I x a x) (chartAt H a).source :=
   continuousOn_tangentCoordChange_movingIndex a
 
-/-- The dual sharp gap: the coordinate change with moving **target** index
-`x ↦ tangentCoordChange I c x x` is continuous on `(chartAt H c).source`. By
-`tangentCoordChange_comp`/`_self` it is the pointwise inverse of the moving-source-index factor of
-`continuousOn_tangentCoordChange_movingIndex`; it is the *same* missing
-moving-trivialization-index continuity primitive (stated dually so the left recovery factor needs no
-`CompleteSpace` assumption to invert). -/
+/-- The dual moving-**target**-index coordinate change `x ↦ tangentCoordChange I c x x` is continuous
+on `(chartAt H c).source`. This is **proved** (not a separate gap): on the chart source the maps
+`tangentCoordChange I x c x` and `tangentCoordChange I c x x` are mutually inverse continuous linear
+maps (telescoping to the identity via `tangentCoordChange_comp`/`_self`), so this factor equals
+`ContinuousLinearMap.inverse (tangentCoordChange I x c x)`; continuity then follows from
+`continuousOn_tangentCoordChange_movingIndex` and the analyticity (hence continuity) of
+`ContinuousLinearMap.inverse` at invertible values (`IsInvertible.contDiffAt_map_inverse`, using
+`[FiniteDimensional ℝ E] ⇒ CompleteSpace E`). Thus the single residual primitive is
+`continuousOn_tangentCoordChange_movingIndex` alone. -/
 theorem continuousOn_tangentCoordChange_movingTargetIndex (c : M) :
     ContinuousOn (fun x => tangentCoordChange I c x x) (chartAt H c).source := by
-  sorry
+  set s : Set M := (chartAt H c).source with hs_def
+  -- For `x ∈ s`, `tcc I x c x` and `tcc I c x x` are mutually inverse continuous linear maps,
+  -- telescoping to the identity via `tangentCoordChange_comp`/`_self`.
+  have key : ∀ x ∈ s, (tangentCoordChange I x c x ∘L tangentCoordChange I c x x
+        = ContinuousLinearMap.id ℝ E) ∧
+      (tangentCoordChange I c x x ∘L tangentCoordChange I x c x = ContinuousLinearMap.id ℝ E) := by
+    intro x hx
+    have hxc : x ∈ (extChartAt I c).source := by rwa [extChartAt_source]
+    have hxx : x ∈ (extChartAt I x).source := by
+      rw [extChartAt_source]; exact mem_chart_source H x
+    constructor
+    · ext v
+      simp only [ContinuousLinearMap.coe_comp', comp_apply, ContinuousLinearMap.id_apply]
+      rw [tangentCoordChange_comp ⟨⟨hxc, hxx⟩, hxc⟩]
+      exact tangentCoordChange_self hxc
+    · ext v
+      simp only [ContinuousLinearMap.coe_comp', comp_apply, ContinuousLinearMap.id_apply]
+      rw [tangentCoordChange_comp ⟨⟨hxx, hxc⟩, hxx⟩]
+      exact tangentCoordChange_self hxx
+  -- The moving-target-index factor equals `inverse` of the moving-source-index factor on `s`.
+  have hinv : EqOn (fun x => tangentCoordChange I c x x)
+      (fun x => ContinuousLinearMap.inverse (tangentCoordChange I x c x)) s := by
+    intro x hx
+    exact (ContinuousLinearMap.inverse_eq (key x hx).1 (key x hx).2).symm
+  refine ContinuousOn.congr ?_ hinv
+  -- Continuity within `s` at each `x`: compose continuity of the source-index factor with
+  -- continuity of `inverse` at its (invertible) value.
+  intro x hx
+  have hg : ContinuousWithinAt (fun y => tangentCoordChange I y c y) s x :=
+    continuousOn_tangentCoordChange_movingIndex c x hx
+  have hInvertible : (tangentCoordChange I x c x).IsInvertible :=
+    ContinuousLinearMap.IsInvertible.of_inverse (key x hx).1 (key x hx).2
+  have hcontInv : ContinuousAt ContinuousLinearMap.inverse (tangentCoordChange I x c x) :=
+    (hInvertible.contDiffAt_map_inverse (n := 1)).continuousAt
+  exact (hcontInv.tendsto).comp hg
 
 /-- The left recovery factor `x ↦ tangentCoordChange I (T a) (T x) (T x)` is continuous on the block
 `(chartAt H a).source ∩ T ⁻¹' (chartAt H (T a)).source`: precompose the moving-target-index gap
