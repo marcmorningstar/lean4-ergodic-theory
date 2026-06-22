@@ -5,8 +5,13 @@ Authors: Marcel Morgenstern
 -/
 import Mathlib.Geometry.Manifold.MFDeriv.Basic
 import Mathlib.Geometry.Manifold.MFDeriv.SpecificFunctions
+import Mathlib.Geometry.Manifold.MFDeriv.Atlas
+import Mathlib.Geometry.Manifold.MFDeriv.Tangent
 import Mathlib.Geometry.Manifold.ContMDiff.Defs
+import Mathlib.Geometry.Manifold.ContMDiffMFDeriv
 import Mathlib.Analysis.InnerProductSpace.PiL2
+import Mathlib.Topology.Compactness.SigmaCompact
+import Frontier.Issue2.MFDerivMeasurable
 import Oseledets.Cocycle.Norm
 import Oseledets.MultiplicativeErgodic
 
@@ -325,13 +330,11 @@ theorem measurable_mfderiv_of_contMDiff_boundaryless
     [I.Boundaryless] [MeasurableSpace M] [BorelSpace M]
     [SigmaCompactSpace M] [SecondCountableTopology H] {T : M → M}
     (hT : ContMDiff I I 1 T) :
-    Measurable (bundleDerivativeCocycle I T) := by
-  -- SHARP RESIDUAL CORE — see the docstring. `bundleDerivativeCocycle I T x = mfderiv I I T x`
-  -- (`E →L[ℝ] E`, by `rfl`). Reduces to the moving-chart-index recovery step in the chart-glue of
-  -- `inTangentCoordinates I I id T (mfderiv I I T) x₀` (continuous by `ContMDiffAt.mfderiv_const`,
-  -- m = 0, n = 1) across a countable atlas. Mathlib has no isolable moving-trivialization-index
-  -- coordinate-change continuity lemma; supplying it is the wall.
-  sorry
+    Measurable (bundleDerivativeCocycle I T) :=
+  -- `bundleDerivativeCocycle I T x = mfderiv I I T x = mfderivHom I T x` (all `E →L[ℝ] E`, by `rfl`).
+  -- The full chart-glue measurability is in `Frontier.Issue2.measurable_mfderivHom`; the only
+  -- residual is the moving-trivialization-index coordinate-change continuity isolated there.
+  measurable_mfderivHom hT
 
 /-- **Measurability of the manifold derivative cocycle generator — THE WALL.**
 

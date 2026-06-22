@@ -84,28 +84,40 @@ claims only a **Borel** (in fact `F_σ`) projection, *not* a closed one — exac
 hypothesis (or σ-compactness) is load-bearing and the projection lemma below stays BLOCKED rather
 than collapsing to this false topological shortcut.
 
-### The SINGLE remaining BLOCKED leaf (Strategy B re-route)
+### The SINGLE remaining BLOCKED leaf — now the 4.7.2 structure primitive
 
-The 2026-06-22 Strategy-B (Euclidean-specialization) re-route **collapses the issue-#6 target onto a
-single, strictly sharper leaf**, eliminating the research-scale Saint-Raymond σ-compact-section wall
-for the actual call site.
+The 2026-06-22 Strategy-B (Euclidean-specialization) re-route collapsed the issue-#6 target onto the
+compact-box leaf; a *second* sharpening pass (this file) further reduces that leaf to **one named,
+reusable descriptive-set-theory primitive**, with the entire Srivastava 4.7.4 / 4.7.11 assembly now
+proved **sorry-free around it**.
 
-* `Frontier.measurableSet_image_fst_of_subset_compact_box` (BLOCKED — Srivastava `4.7.4` with `Y`
-  already compact): the projection of a *Borel* set **contained in a fixed compact box**
-  `univ ×ˢ Q` (`Q` compact) is Borel. This is the compact-`Y` instance of `4.7.11`. Only the missing
-  product topology-refinement (`4.7.1`/`4.7.2`, refine *only* `X` to make `B` closed in `(X,τ')×Q`,
-  same Borel σ-algebra) blocks it; the proper-map heart (`Q` compact ⟹ proper restriction) is
-  already sorry-free above. The Hilbert-cube `WLOG`-`Y`-compact reduction is **gone** (the box `Q` is
-  given).
+* `Frontier.exists_borel_openSection_structure` (**BLOCKED — the single isolated DST wall**,
+  Srivastava `4.7.2` / `4.7.1`, Kunugui–Novikov): a Borel `C ⊆ X × Y` with **open** sections is a
+  countable union `C = ⋃ₙ (A n ×ˢ V n)` of Borel rectangles (`V` a base of `Y`, `A n` Borel). The
+  set-theoretic identity is elementary (`A n = {x | V n ⊆ C_x}`); the *only* obstruction is that this
+  `A n` is **coanalytic**, and replacing it by a Borel set with the union preserved needs the
+  **generalized reduction theorem 4.6.5** for coanalytic sets — the coanalytic pointclass and that
+  reduction theorem are **absent from Mathlib**. (Mathlib *does* have the first separation theorem
+  `AnalyticSet.measurablySeparable`, which is one of the two ingredients; the reduction theorem is the
+  missing one.) This is strictly smaller and more reusable than the former monolithic box leaf.
+
+* `Frontier.measurableSet_image_fst_of_subset_compact_box` (**now sorry-free *given* the 4.7.2
+  primitive**): the projection of a Borel set with **closed sections** contained in a fixed compact
+  box `univ ×ˢ Q` is Borel (the compact-`Y` instance of `4.7.11`). Proved here via the sorry-free
+  4.7.4 refinement `exists_finer_polish_isClosed_of_closed_sections` (refine *only* `X`'s Polish
+  topology — same Borel σ-algebra — to make `B` closed in `(X, τ') × Y`) followed by the sorry-free
+  topology-agnostic proper-map close `measurableSet_image_fst_of_isClosed_box` (`Q` compact ⟹ proper
+  restriction). **Honest added hypothesis:** closed sections (`∀ x, IsClosed {y | (x,y) ∈ B}`) — the
+  earlier statement omitted it and was in fact *false* without it (a Borel `B ⊆ X × [0,1]` can have
+  an analytic, non-Borel projection). The consumer supplies it.
 
 * **ELIMINATED — `exists_borel_compactSection_cover` (Saint Raymond `5.12.2`, the Effros/`Π¹₁`-
   boundedness wall) is no longer needed.** For the Euclidean consumer the σ-compact ball-sections are
   exhausted by *compact* closed balls (`EuclideanSpace` is `ProperSpace`):
-  `S = ⋃ₙ (S ∩ (univ ×ˢ closedBall c ρₙ))`, each piece inside a fixed compact box. This is the
-  sorry-free `Frontier.measurableSet_image_fst_of_ball_slab`, which replaces the entire
-  `5.12.3 ⇐ 5.12.2` descriptive-set-theory chain by the elementary closed-ball exhaustion.
+  `S = ⋃ₙ (S ∩ (univ ×ˢ closedBall c ρₙ))`, each piece inside a fixed compact box with closed
+  sections. This is the sorry-free `Frontier.measurableSet_image_fst_of_ball_slab`.
 
-Granting the one sharp box leaf, the assembly down to the issue-#6 target
+Granting the one sharp 4.7.2 primitive, the assembly down to the issue-#6 target
 `Frontier.measurableInfDist_of_measurableGraph_AK` (the everywhere-Borel `MeasurableInfDist`
 discharge) is proved sorry-free here.
 
@@ -115,11 +127,19 @@ discharge) is proved sorry-free here.
 * `Frontier.isClosed_image_fst_of_isProperMap_restrict` (sorry-free).
 * `Frontier.measurableSet_image_fst_of_isProperMap_restrict` (sorry-free).
 * `Frontier.isProperMap_fst_restrict_of_isClosed_compactSpace` (sorry-free).
-* `Frontier.measurableSet_image_fst_of_subset_compact_box` (BLOCKED — the SINGLE sharp leaf, `4.7.4`
-  with compact `Y`).
-* `Frontier.measurableSet_image_fst_of_ball_slab` (sorry-free *given* the box leaf; leaf 2
+* `Frontier.exists_finer_polish_isOpen_forall` (sorry-free): countably many Borel sets become open in
+  one finer Polish topology.
+* `Frontier.exists_borel_openSection_structure` (**BLOCKED — the SINGLE isolated DST primitive**,
+  Srivastava 4.7.2; needs the coanalytic reduction theorem 4.6.5 absent from Mathlib).
+* `Frontier.exists_finer_polish_isClosed_of_closed_sections` (sorry-free *given* the 4.7.2
+  primitive): Srivastava 4.7.4 — refine `X` alone to close a Borel set with closed sections.
+* `Frontier.measurableSet_image_fst_of_isClosed_box` (sorry-free): topology-agnostic proper-map
+  close of a closed box-contained set.
+* `Frontier.measurableSet_image_fst_of_subset_compact_box` (sorry-free *given* the 4.7.2 primitive;
+  with the honest closed-section hypothesis): the compact-`Y` instance of `4.7.11`.
+* `Frontier.measurableSet_image_fst_of_ball_slab` (sorry-free *given* the 4.7.2 primitive; leaf 2
   eliminated by closed-ball exhaustion): the Euclidean ball-slab Arsenin–Kunugui.
-* `Frontier.measurableInfDist_of_measurableGraph_AK` (sorry-free *given* the box leaf): the
+* `Frontier.measurableInfDist_of_measurableGraph_AK` (sorry-free *given* the 4.7.2 primitive): the
   everywhere-Borel discharge of `MeasurableInfDist`, the issue-#6 target.
 
 Literature: W. J. Arsenin (1940); K. Kunugui (1940); J. Saint Raymond, *Boréliens à coupes `K_σ`*,
@@ -224,62 +244,193 @@ end FalseShortcut
 
 /-! ### The Arsenin–Kunugui theorem: statement, reduction, and BLOCKED DST leaves -/
 
+section RefinementPlumbing
+
+variable {X Y : Type*}
+  [tX : TopologicalSpace X] [PolishSpace X] [MeasurableSpace X] [BorelSpace X]
+  [tY : TopologicalSpace Y] [PolishSpace Y] [MeasurableSpace Y] [BorelSpace Y]
+
+/-! #### Sorry-free topology-refinement plumbing for Srivastava 4.7.4
+
+The 4.7.4 mechanism is **refine only `X`'s Polish topology** so a given Borel set with closed
+sections becomes closed in the product. Two reusable, fully sorry-free pieces of plumbing. The
+ambient topologies `tX`, `tY` are *named* so the refined existential `τ'` cannot shadow them. -/
+
+omit [TopologicalSpace Y] [PolishSpace Y] [MeasurableSpace Y] [BorelSpace Y] in
+/-- **Countably many Borel sets become open in one finer Polish topology (sorry-free).** Given a
+sequence `A : ℕ → Set X` of Borel sets in a Polish `X`, there is a finer Polish topology `τ'` on `X`
+(with the *same* Borel σ-algebra, `MeasureTheory.borel_eq_borel_of_le`) in which **every** `A n` is
+open. This is the per-coordinate refinement underlying both `Measurable.exists_continuous` and
+Srivastava 4.7.4: each `A n` is `IsClopenable` (`MeasurableSet.isClopenable`), and
+`exists_polishSpace_forall_le` takes a common finer Polish topology below all the witnesses. -/
+theorem exists_finer_polish_isOpen_forall {A : ℕ → Set X} (hA : ∀ n, MeasurableSet (A n)) :
+    ∃ τ' : TopologicalSpace X, τ' ≤ tX ∧ @PolishSpace X τ' ∧
+      ∀ n, IsOpen[τ'] (A n) := by
+  -- Each `A n` is clopenable: a finer Polish topology `m n` makes it open.
+  choose m mt m_polish _ m_open using fun n => (hA n).isClopenable
+  -- Take a common finer Polish topology below all the `m n`.
+  obtain ⟨τ', τ'm, τ't, τ'_polish⟩ :=
+    PolishSpace.exists_polishSpace_forall_le m mt m_polish
+  refine ⟨τ', τ't, τ'_polish, fun n => τ'm n _ (m_open n)⟩
+
+/-- **SHARP isolated DST primitive — Srivastava 4.7.2 (Kunugui–Novikov structure theorem).** A Borel
+set `C ⊆ X × Y` (`X`, `Y` Polish) **all of whose sections `C_x` are open** is a countable union
+`C = ⋃ₙ (A n ×ˢ V n)` of *Borel rectangles*, where `(V n)` is a fixed countable base of `Y` and the
+`A n ⊆ X` are **Borel**. (Srivastava, *A Course on Borel Sets*, Thm 4.7.2; Kechris 28.??).
+
+**This is the single genuine descriptive-set-theory wall isolated by this file.** The *set-theoretic*
+identity is elementary (`C = ⋃ₙ (C_n ×ˢ V n)` with `C_n = {x | V n ⊆ C_x}`, since each open section
+is the union of the base elements it contains); the difficulty is *purely* that `C_n` is only
+**coanalytic**, and replacing it by a Borel `A n ⊆ C_n` with the union preserved needs the
+**generalized reduction theorem for coanalytic sets** (Srivastava 4.6.5) via the first separation
+theorem (`AnalyticSet.measurablySeparable`, which *is* in Mathlib) applied as in 4.7.1. The
+coanalytic pointclass and the reduction theorem are **absent from Mathlib**, so this primitive is
+left `sorry`. It is strictly sharper and more reusable than the former monolithic box leaf: every
+other step of Srivastava 4.7.4 / 4.7.11 (the topology refinement, the proper-map close) is proved
+sorry-free below *from* this primitive.
+
+Roadmap to discharge it (the missing Mathlib chapter): (1) define the coanalytic pointclass; (2)
+prove the generalized first-separation / reduction theorem 4.6.5 for a sequence of coanalytic sets
+with Borel union (the heart, using `AnalyticSet.measurablySeparable` + a transfinite/inductive
+reduction); (3) assemble 4.7.1 (`A 0, A 1` disjoint analytic with `(A 0)_x` closed ⟹ Borel
+`B n` separating); (4) specialize to `A 0 = Cᶜ`, `A 1 = C` for 4.7.2. -/
+theorem exists_borel_openSection_structure
+    {C : Set (X × Y)} (hC : MeasurableSet C) (hopen : ∀ x, IsOpen {y | (x, y) ∈ C})
+    (V : ℕ → Set Y) (hV : TopologicalSpace.IsTopologicalBasis (Set.range V)) :
+    ∃ A : ℕ → Set X, (∀ n, MeasurableSet (A n)) ∧ C = ⋃ n, A n ×ˢ V n := by
+  sorry -- SHARP ISOLATED DST WALL (Srivastava 4.7.2 / 4.7.1): structure theorem for Borel sets with
+        -- open sections. Needs the coanalytic reduction theorem 4.6.5 (absent from Mathlib). All of
+        -- 4.7.4 / 4.7.11 below is proved sorry-free FROM this primitive. See the docstring roadmap.
+
+/-- **Srivastava 4.7.4 — refine `X` alone to close a Borel set with closed sections (sorry-free
+*given* the 4.7.2 primitive).** For a Borel `B ⊆ X × Y` with every section `B_x` **closed**, there
+is a finer Polish topology `τ'` on `X` (same Borel σ-algebra) such that `B` is **closed** in the
+product `(X, τ') × Y`. Mechanism (Srivastava): the complement `Bᶜ` has *open* sections, so by 4.7.2
+(`exists_borel_openSection_structure`) `Bᶜ = ⋃ₙ (A n ×ˢ V n)` with `A n` Borel; refine `X` to make
+every `A n` open (`exists_finer_polish_isOpen_forall`); then each `A n ×ˢ V n` is open in
+`(X, τ') × Y`, so `Bᶜ` is open and `B` is closed. -/
+theorem exists_finer_polish_isClosed_of_closed_sections
+    {B : Set (X × Y)} (hB : MeasurableSet B) (hclosed : ∀ x, IsClosed {y | (x, y) ∈ B}) :
+    ∃ τ' : TopologicalSpace X, τ' ≤ tX ∧ @PolishSpace X τ' ∧
+      IsClosed[@instTopologicalSpaceProd X Y τ' tY] B := by
+  -- A countable base `V : ℕ → Set Y` of `Y`.
+  obtain ⟨V, hVbasis⟩ := TopologicalSpace.exists_seq_basis Y
+  -- The complement `Bᶜ` has open sections, so by 4.7.2 it is `⋃ₙ (A n ×ˢ V n)` with `A n` Borel.
+  have hcompl_open : ∀ x, IsOpen {y | (x, y) ∈ Bᶜ} := by
+    intro x
+    have : {y | (x, y) ∈ Bᶜ} = {y | (x, y) ∈ B}ᶜ := by ext y; simp
+    rw [this]; exact (hclosed x).isOpen_compl
+  obtain ⟨A, hAmeas, hAstruct⟩ :=
+    exists_borel_openSection_structure hB.compl hcompl_open V hVbasis
+  -- Refine `X` so every `A n` is open.
+  obtain ⟨τ', hτ'le, hτ'pol, hAopen⟩ := exists_finer_polish_isOpen_forall hAmeas
+  refine ⟨τ', hτ'le, hτ'pol, ?_⟩
+  -- `Bᶜ` is open in `(X, τ') × Y`: it is the union of open rectangles `A n ×ˢ V n`.
+  rw [← isOpen_compl_iff]
+  have hcompl_eq : Bᶜ = ⋃ n, A n ×ˢ V n := hAstruct
+  rw [hcompl_eq]
+  refine @isOpen_iUnion (X × Y) ℕ (@instTopologicalSpaceProd X Y τ' _) _ (fun n => ?_)
+  exact @IsOpen.prod X Y τ' _ (A n) (V n) (hAopen n) (hVbasis.isOpen ⟨n, rfl⟩)
+
+end RefinementPlumbing
+
+/-! #### Topology-agnostic closed-box close (the proper-map heart applied at any Polish topology) -/
+
+section ClosedBoxHelper
+
+/-- **Sorry-free closed-box projection (proper-map heart, topology-agnostic).** Stated with *fully
+explicit* instances so it can be `@`-applied at a *refined* Polish topology on `X` (this is how the
+box leaf consumes Srivastava 4.7.4). If `B ⊆ X × Y` is **closed** in the product topology, contained
+in `Set.univ ×ˢ Q` for a **compact** `Q`, then `Prod.fst '' B` is `MeasurableSet`. Proof: pull `B`
+back to the compact-fibre product `X × ↥Q` (a `CompactSpace` fibre), where the restricted projection
+is proper (`isProperMap_fst_restrict_of_isClosed_compactSpace`), hence the projection is closed
+(`isClosed_image_fst_of_isProperMap_restrict`), hence Borel; the `↥Q`-image equals `Prod.fst '' B`
+since `B ⊆ univ ×ˢ Q`. No section/closedness-naive shortcut is used. -/
+theorem measurableSet_image_fst_of_isClosed_box
+    {X Y : Type*} [TopologicalSpace X] [PolishSpace X] [MeasurableSpace X] [BorelSpace X]
+    [TopologicalSpace Y] (B : Set (X × Y)) (Q : Set Y) (hQ : IsCompact Q)
+    (hsub : B ⊆ Set.univ ×ˢ Q) (hBclosed : IsClosed B) :
+    MeasurableSet (Prod.fst '' B) := by
+  -- View `B` inside the compact-fibre product `X × ↥Q`.
+  haveI : CompactSpace Q := isCompact_iff_compactSpace.mp hQ
+  set Bq : Set (X × Q) := (fun p : X × Q => (p.1, (p.2 : Y))) ⁻¹' B with hBqdef
+  have hcont : Continuous (fun p : X × Q => (p.1, (p.2 : Y))) :=
+    continuous_fst.prodMk (continuous_subtype_val.comp continuous_snd)
+  have hBqclosed : IsClosed Bq := hBclosed.preimage hcont
+  have hproper := isProperMap_fst_restrict_of_isClosed_compactSpace (Y := Q) (X := X) hBqclosed
+  have hmeasImg : MeasurableSet (Prod.fst '' Bq) :=
+    (isClosed_image_fst_of_isProperMap_restrict hproper).measurableSet
+  -- `Prod.fst '' Bq = Prod.fst '' B` (both `= {x | ∃ y ∈ Q, (x,y) ∈ B}`; `B ⊆ univ ×ˢ Q`).
+  have himg_eq : Prod.fst '' Bq = Prod.fst '' B := by
+    ext x
+    simp only [hBqdef, mem_image, mem_preimage, Prod.exists, Subtype.exists]
+    constructor
+    · rintro ⟨x', q, hq, hmem, rfl⟩
+      exact ⟨x', q, hmem, rfl⟩
+    · rintro ⟨x', y, hxy, rfl⟩
+      exact ⟨x', y, (hsub hxy).2, hxy, rfl⟩
+  rwa [himg_eq] at hmeasImg
+
+end ClosedBoxHelper
+
 section ArseninKunugui
 
 variable {X Y : Type*}
   [TopologicalSpace X] [PolishSpace X] [MeasurableSpace X] [BorelSpace X]
   [TopologicalSpace Y] [PolishSpace Y] [MeasurableSpace Y] [BorelSpace Y]
 
-/-- **SHARPER BLOCKED leaf — projection of a Borel set contained in a fixed compact box is Borel
-(the compact-`Y` instance of Srivastava 4.7.11 / 4.7.4).** For a measurable `B ⊆ X × Y` (`X`, `Y`
-Polish) that is contained in `Set.univ ×ˢ Q` for a **single fixed compact** `Q ⊆ Y` (so every
-section `B_x ⊆ Q` and is — being closed in the compact `Q` once `B` is made closed — compact), the
-projection `Prod.fst '' B` is `MeasurableSet`.
+/-- **The compact-box Arsenin–Kunugui leaf (sorry-free *given only* the 4.7.2 DST primitive
+`exists_borel_openSection_structure`).** For a measurable `B ⊆ X × Y` (`X`, `Y` Polish) contained in
+`Set.univ ×ˢ Q` for a **single fixed compact** `Q ⊆ Y` and with every section `B_x` **closed** (the
+honest, load-bearing hypothesis — satisfied at the call site, where the section is a closed subspace
+intersected with a closed ball, hence compact), the projection `Prod.fst '' B` is `MeasurableSet`.
 
-**This is left `sorry`, but it is the SHARP residual of Strategy B** (Euclidean specialization),
-strictly smaller than the original opaque `measurableSet_image_fst_of_isCompact_sections`:
+This is the compact-`Y` instance of Srivastava 4.7.11. Mechanism (Strategy B, Srivastava's first
+Novikov proof): by 4.7.4 (`exists_finer_polish_isClosed_of_closed_sections`, sorry-free given the
+4.7.2 primitive) refine `X`'s Polish topology to `τ'` — *same Borel σ-algebra*
+(`MeasureTheory.borel_eq_borel_of_le`) — so that `B` becomes **closed** in `(X, τ') × Y`. Then `B`
+is closed in `(X, τ') × Q` (the subspace `Q` is a `CompactSpace`), and the file's sorry-free
+proper-map heart (`isProperMap_fst_restrict_of_isClosed_compactSpace`,
+`measurableSet_image_fst_of_isProperMap_restrict`) makes `Prod.fst '' B` **closed** in `τ'`, hence
+Borel for `@borel X τ' = ‹MeasurableSpace X›` (Borel invariance under the refinement). The naive
+"closed `B` + compact sections ⟹ closed projection" route is *false*
+(`not_isClosed_image_fst_of_isClosed_isCompact_sections`); the proper-map / `Q`-compact step is what
+rescues it.
 
-* The **Hilbert-cube `WLOG`-`Y`-compact reduction (1b)** is *gone* — the fibre lives in the *given*
-  compact `Q`, so no universal-embedding lemma is needed.
-* The **σ-compact-section decomposition leaf (old `exists_borel_compactSection_cover`, Saint Raymond
-  5.12.2 — the principal research wall)** is *gone*: for the Euclidean consumer it is discharged
-  sorry-free by the explicit closed-ball exhaustion (`isSigmaCompact_isClosed_inter_ball`), see
-  `measurableSet_image_fst_of_isSigmaCompact_sections_euclidean` below.
-
-What remains is exactly **Srivastava 4.7.4 with `Y` already compact**: refine the Polish topology of
-`X` (only) to a finer one — *same Borel σ-algebra* (`MeasureTheory.borel_eq_borel_of_le`,
-`MeasureTheory.isClopenable_iff_measurableSet`) — making the Borel `B` *closed* in the product
-`(X, τ') × Q`; then the proper-map heart already proved sorry-free in this file
-(`isProperMap_fst_restrict_of_isClosed_compactSpace`, `Q` a `CompactSpace`,
-`measurableSet_image_fst_of_isProperMap_restrict`) gives `Prod.fst '' B` closed — hence Borel — in
-`τ'`, and Borel-invariance transports it back to the original topology. The single genuinely missing
-Mathlib ingredient is the **product** refinement lemma: `MeasurableSet.isClopenable` refines the
-*whole product* `X × Q` (which would destroy compactness of the `Q`-fibre), whereas 4.7.4 refines
-*only* `X`. That product-clopenable-in-`X`-alone step is `4.7.1/4.7.2` (Borel set with open sections
-`= ⋃ₖ Bₖ × Vₖ`), whose Borel-ness of `Bₖ = {x | Vₖ ⊆ B_xᶜ}` is itself a co-projection — circular
-without the very theorem, *unless* the compactness of `Q` is exploited fibrewise, which is precisely
-the Novikov argument and the remaining work. The naive "closed `B` + compact sections ⟹ closed
-projection" route is *false* (`not_isClosed_image_fst_of_isClosed_isCompact_sections`), so this is
-genuinely descriptive-set-theoretic. -/
+**Honest added hypothesis:** `hclosed : ∀ x, IsClosed {y | (x, y) ∈ B}`. The previous statement
+omitted it, but it is *necessary*: without a closed/compact-section hypothesis the box leaf is
+**false** (a Borel `B ⊆ X × [0,1]` can have an analytic, non-Borel projection — Lusin's example).
+The Euclidean consumer supplies it (`(V x) ∩ closedBall` is closed). -/
 theorem measurableSet_image_fst_of_subset_compact_box
     {B : Set (X × Y)} (hB : MeasurableSet B) {Q : Set Y} (hQ : IsCompact Q)
-    (hsub : B ⊆ Set.univ ×ˢ Q) :
+    (hsub : B ⊆ Set.univ ×ˢ Q) (hclosed : ∀ x, IsClosed {y | (x, y) ∈ B}) :
     MeasurableSet (Prod.fst '' B) := by
-  sorry -- SHARPER BLOCKED (Strategy B residual): Srivastava 4.7.4 with `Y` already compact —
-        -- refine ONLY `X`'s Polish topology to make the Borel `B ⊆ X × Q` closed in the product,
-        -- same Borel σ-algebra, then the file's proper-map machinery (`Q` compact) closes it. The
-        -- missing Mathlib piece is the product-only refinement (4.7.1/4.7.2); the WLOG-compact (1b)
-        -- and the Saint-Raymond σ-compact-section wall (old 5.12.2 leaf) are BOTH eliminated.
+  -- Capture the *original* Polish and Borel instances before any refinement is introduced.
+  have hpolX : @PolishSpace X (inferInstance : TopologicalSpace X) := inferInstance
+  have hborelX : @BorelSpace X (inferInstance : TopologicalSpace X) ‹MeasurableSpace X› :=
+    inferInstance
+  -- Refine `X`'s topology to make `B` closed in the product (Srivastava 4.7.4).
+  obtain ⟨τ', hτ'le, hτ'pol, hBclosed⟩ :=
+    exists_finer_polish_isClosed_of_closed_sections hB hclosed
+  -- Under `τ'`, `X` keeps the SAME Borel σ-algebra (`borel_eq_borel_of_le`), so `@borel X τ'`
+  -- equals the original `MeasurableSpace X`.
+  have hborel_eq : @borel X τ' = ‹MeasurableSpace X› := by
+    rw [MeasureTheory.borel_eq_borel_of_le hτ'pol hpolX hτ'le, ← hborelX.measurable_eq]
+  -- Apply the topology-agnostic closed-box helper at `τ'`; its conclusion is
+  -- `@MeasurableSet X (@borel X τ') (Prod.fst '' B)`, which is the original `MeasurableSet`.
+  have key : @MeasurableSet X (@borel X τ') (Prod.fst '' B) :=
+    @measurableSet_image_fst_of_isClosed_box X Y τ' hτ'pol (@borel X τ')
+      (@BorelSpace.mk X τ' (@borel X τ') rfl) ‹TopologicalSpace Y› B Q hQ hsub hBclosed
+  rwa [hborel_eq] at key
 
-/-- **The Arsenin–Kunugui theorem on a fixed compact box (sorry-free *given* the sharp leaf).** A
-measurable `B ⊆ X × Y` contained in `Set.univ ×ˢ Q` for a fixed compact `Q` has measurable
-projection. This is `measurableSet_image_fst_of_subset_compact_box`, re-exported under the
-Arsenin–Kunugui name for the assembly. -/
+/-- **The Arsenin–Kunugui theorem on a fixed compact box (sorry-free *given* the 4.7.2 primitive).**
+A measurable `B ⊆ X × Y` contained in `Set.univ ×ˢ Q` for a fixed compact `Q`, with closed sections,
+has measurable projection. Re-exported under the Arsenin–Kunugui name for the assembly. -/
 theorem arseninKunugui_measurableSet_image_fst_box
     {B : Set (X × Y)} (hB : MeasurableSet B) {Q : Set Y} (hQ : IsCompact Q)
-    (hsub : B ⊆ Set.univ ×ˢ Q) :
+    (hsub : B ⊆ Set.univ ×ˢ Q) (hclosed : ∀ x, IsClosed {y | (x, y) ∈ B}) :
     MeasurableSet (Prod.fst '' B) :=
-  measurableSet_image_fst_of_subset_compact_box hB hQ hsub
+  measurableSet_image_fst_of_subset_compact_box hB hQ hsub hclosed
 
 end ArseninKunugui
 
@@ -354,10 +505,20 @@ union `ball c r = ⋃ₙ closedBall c (r − 1/(n+1))` of *compact* closed balls
 **contained in the fixed compact box** `univ ×ˢ closedBall c ρₙ`, so the sharp box leaf
 `measurableSet_image_fst_of_subset_compact_box` applies, and a countable union of measurable sets is
 measurable. The only `sorry` reached is that single box leaf (Srivastava 4.7.4 with compact `Y`); no
-hyperspace/derivative/`Π¹₁` machinery is invoked. -/
+hyperspace/derivative/`Π¹₁` machinery is invoked.
+
+**Closed-section hypothesis (honest, load-bearing).** Each compact-box piece `S ∩ (univ ×ˢ closedBall
+c ρₙ)` (with `ρₙ < r`) must have *closed* sections for the box leaf to apply — without a
+closed/compact-section hypothesis the AK projection theorem is false. We require it in the exact form
+used: `hsec x ρ (ρ < r)` says the section of `S` intersected with the closed ball `closedBall c ρ` is
+closed. The Euclidean graph-slab consumer satisfies it: the section of `S = graph ∩ (univ ×ˢ ball c
+r)` is `V x ∩ ball c r`, and for `ρ < r` we have `closedBall c ρ ⊆ ball c r`, so the intersection
+collapses to `V x ∩ closedBall c ρ`, a closed subspace meeting a closed ball, hence closed. -/
 theorem measurableSet_image_fst_of_ball_slab
     {S : Set (X × EuclideanSpace ℝ (Fin d))} (hS : MeasurableSet S)
-    (c : EuclideanSpace ℝ (Fin d)) (r : ℝ) (hsub : S ⊆ Set.univ ×ˢ Metric.ball c r) :
+    (c : EuclideanSpace ℝ (Fin d)) (r : ℝ) (hsub : S ⊆ Set.univ ×ˢ Metric.ball c r)
+    (hsec : ∀ (x : X) (ρ : ℝ), ρ < r →
+      IsClosed ({y | (x, y) ∈ S} ∩ Metric.closedBall c ρ)) :
     MeasurableSet (Prod.fst '' S) := by
   -- Exhaust the open ball by the compact closed balls `closedBall c (r - 1/(n+1))`.
   have hcover : Metric.ball c r = ⋃ n : ℕ, Metric.closedBall c (r - 1 / (n + 1)) := by
@@ -388,11 +549,21 @@ theorem measurableSet_image_fst_of_ball_slab
   rw [himg]
   refine MeasurableSet.iUnion fun n => ?_
   -- Each piece lives in the fixed compact box `univ ×ˢ closedBall c ρₙ`; apply the box leaf.
+  have hρ : (r - 1 / (n + 1) : ℝ) < r := by
+    have : (0 : ℝ) < 1 / (n + 1) := by positivity
+    linarith
   refine measurableSet_image_fst_of_subset_compact_box
     (hS.inter (MeasurableSet.univ.prod measurableSet_closedBall))
     (Q := Metric.closedBall c (r - 1 / (n + 1)))
-    (isCompact_closedBall c (r - 1 / (n + 1))) ?_
-  exact inter_subset_right
+    (isCompact_closedBall c (r - 1 / (n + 1))) inter_subset_right ?_
+  -- Closed sections of the piece: `{y | (x,y) ∈ S} ∩ closedBall c ρₙ`, closed by `hsec` (`ρₙ < r`).
+  intro x
+  have hsec_eq : {y | (x, y) ∈ S ∩ (Set.univ ×ˢ Metric.closedBall c (r - 1 / (n + 1)))}
+      = {y | (x, y) ∈ S} ∩ Metric.closedBall c (r - 1 / (n + 1)) := by
+    ext y
+    simp only [mem_setOf_eq, mem_inter_iff, Set.mem_prod, mem_univ, true_and, Metric.mem_closedBall]
+  rw [hsec_eq]
+  exact hsec x (r - 1 / (n + 1)) hρ
 
 /-- **Everywhere-Borel `MeasurableInfDist` from a measurable graph (issue-#6 target, via
 Arsenin–Kunugui).** Over a standard Borel (Polish) base `X`, a measurable graph
@@ -440,7 +611,25 @@ theorem measurableInfDist_of_measurableGraph_AK
   have hslab : MeasurableSet ({p : X × EuclideanSpace ℝ (Fin d) | p.2 ∈ V p.1}
       ∩ (Set.univ ×ˢ Metric.ball c r)) :=
     hgraph.inter (MeasurableSet.univ.prod measurableSet_ball)
-  exact measurableSet_image_fst_of_ball_slab hslab c r inter_subset_right
+  refine measurableSet_image_fst_of_ball_slab hslab c r inter_subset_right ?_
+  -- Closed sections within closed balls: for `ρ < r`, `closedBall c ρ ⊆ ball c r`, so the slab
+  -- section collapses to `V x ∩ closedBall c ρ`, a closed subspace meeting a closed ball.
+  intro x ρ hρ
+  have hsub_ball : Metric.closedBall c ρ ⊆ Metric.ball c r := by
+    intro y hy
+    exact Metric.mem_ball.mpr (lt_of_le_of_lt (Metric.mem_closedBall.mp hy) hρ)
+  have hsec_eq : {y | (x, y) ∈ ({p : X × EuclideanSpace ℝ (Fin d) | p.2 ∈ V p.1}
+        ∩ (Set.univ ×ˢ Metric.ball c r))} ∩ Metric.closedBall c ρ
+      = (V x : Set (EuclideanSpace ℝ (Fin d))) ∩ Metric.closedBall c ρ := by
+    ext y
+    simp only [mem_inter_iff, mem_setOf_eq, Set.mem_prod, mem_univ, true_and, SetLike.mem_coe,
+      Metric.mem_ball, Metric.mem_closedBall]
+    constructor
+    · rintro ⟨⟨hyV, _⟩, hyρ⟩; exact ⟨hyV, hyρ⟩
+    · rintro ⟨hyV, hyρ⟩
+      exact ⟨⟨hyV, lt_of_le_of_lt hyρ hρ⟩, hyρ⟩
+  rw [hsec_eq]
+  exact (V x).closed_of_finiteDimensional.inter Metric.isClosed_closedBall
 
 end Issue6Target
 

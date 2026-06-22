@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Marcel Morgenstern
 -/
 import Frontier.Issue2.Framing
+import Frontier.Issue2.MFDerivMeasurable
 import Mathlib.MeasureTheory.MeasurableSpace.Constructions
 import Mathlib.Topology.Compactness.SigmaCompact
 
@@ -142,27 +143,21 @@ derivative a non-dependent codomain, so that `Measurable` makes sense; it mirror
 `Frontier.Issue2.bundleDerivativeCocycle` (kept local here, where `E` carries only `NormedSpace`). -/
 noncomputable def mfderivModel (T : M → M) (x : M) : E →L[ℝ] E := mfderiv I I T x
 
-/-- **The sharp analytic core (issue #2 wall), minimal-context restatement.**
+omit [MeasurableSpace E] [BorelSpace E] in
+/-- **The sharp analytic core (issue #2 wall), restatement for the framing existence.**
 Measurability of the manifold derivative `x ↦ mfderiv I I T x : E →L[ℝ] E` (`mfderivModel`) for a
-`C¹` self-map `T` of a **boundaryless** σ-compact manifold with its Borel σ-algebra. This is the
-exact analogue of `Frontier.Issue2.measurable_mfderiv_of_contMDiff_boundaryless`, stated here with
-only `[NormedSpace ℝ E]` (no inner-product / finite-dimensional assumptions, which the framing
-existence does not need). See that lemma's docstring for the precise reduction and the residual
-analytic gap (the moving-trivialization-index coordinate-change continuity Mathlib does not
-isolate). -/
+`C¹` self-map `T` of a **boundaryless** σ-compact manifold with its Borel σ-algebra. Delegates to the
+full chart-glue measurability `Frontier.Issue2.measurable_mfderivHom` (`mfderivModel T = mfderivHom I T`
+by `rfl`); the only residual is the moving-trivialization-index coordinate-change continuity isolated
+there. The honest hypothesis `[FiniteDimensional ℝ E]` (used to reduce operator-norm continuity of
+the coordinate changes to pointwise continuity) is added here; it is automatic in the MET setting. -/
 theorem measurable_mfderivModel_of_contMDiff_boundaryless
+    [FiniteDimensional ℝ E]
     [I.Boundaryless]
     [SigmaCompactSpace M] [SecondCountableTopology H] {T : M → M}
     (hT : ContMDiff I I 1 T) :
-    Measurable (mfderivModel (I := I) T) := by
-  -- SHARP RESIDUAL CORE — identical to Leaf A; see
-  -- `Frontier.Issue2.measurable_mfderiv_of_contMDiff_boundaryless`. With the constant identity
-  -- frame the conjugated map is `mfderivModel T x = mfderiv I I T x` itself, so this is exactly
-  -- measurability of `x ↦ mfderiv I I T x`. The recovery from the (continuous) fixed-base
-  -- `inTangentCoordinates I I id T (mfderiv I I T) x₀` to `mfderiv` itself needs moving-chart-index
-  -- coordinate-change continuity, which Mathlib packages only inside `inTangentCoordinates`, never
-  -- as an isolable factor.
-  sorry
+    Measurable (mfderivModel (I := I) T) :=
+  measurable_mfderivHom hT
 
 /-- **Existence of a measurable framing on a σ-compact boundaryless C¹ manifold.**
 For a `C¹`, σ-compact (hence second-countable) **boundaryless** manifold `M` with its Borel
@@ -176,6 +171,7 @@ obligation is exactly measurability of `x ↦ mfderiv I I T x` — supplied by t
 `measurable_mfderivModel_of_contMDiff_boundaryless`. The disjointified-atlas / trivialization
 machinery in the old plan is unnecessary. -/
 theorem exists_measurableFraming_of_sigmaCompact
+    [FiniteDimensional ℝ E]
     [I.Boundaryless]
     [SigmaCompactSpace M] [SecondCountableTopology H]
     {T : M → M} (hT : ContMDiff I I 1 T) :

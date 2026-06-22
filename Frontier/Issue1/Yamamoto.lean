@@ -58,12 +58,13 @@ The reduction works because the repository already provides the two non-trivial 
 
 Chaining these gives `(σ₀⋯σ_{j-1}(Mⁿ))^{1/n} → ρ(C_j(M))`; with the residual spectral fact
 `ρ(C_{i+1}(M)) = ∏_{k≤i}|λₖ|` this is the product form of Yamamoto, and the single-index statement
-follows by telescoping `j = i+1` against `j = i` in `(1/n) log`. The **two residual leaves** that
-Mathlib/this repository do not yet provide are stated as sharp, individually-typed `sorry`s below:
-`spectralRadius_compound_eq_prod_eigenvalueModuli` (the eigenvalues of an exterior power are the
-`(i+1)`-fold products of the base eigenvalues, so the spectral radius is the product of the top
-moduli) and `yamamoto_prod_to_index` (the telescoping/`log`-of-zero bookkeeping from the product
-form to the single index). All the analytic plumbing between them is discharged sorry-free.
+follows by telescoping `j = i+1` against `j = i` in `(1/n) log`. The telescoping/`log`-of-zero
+bookkeeping (`yamamoto_prod_to_index`) and the eventual-vanishing bridge (`hvanish`, from
+nilpotency of the compound when `|λᵢ| = 0`) are now **sorry-free**. The **single residual leaf**
+that Mathlib/this repository do not yet provide is stated as a sharp, individually-typed `sorry`
+below: `spectralRadius_compound_eq_prod_eigenvalueModuli` (the eigenvalues of an exterior power are
+the `(i+1)`-fold products of the base eigenvalues, so the spectral radius is the product of the top
+moduli). All the analytic plumbing around it is discharged sorry-free.
 
 ## Main definitions
 
@@ -164,6 +165,46 @@ theorem spectralRadius_compound_eq_prod_eigenvalueModuli [NeZero d]
       = ∏ k ∈ Finset.range j, (eigenvalueModuli M).getD k 0 :=
   sorry
 
+/-- **A complex matrix of spectral radius `0` is nilpotent.** If `spectralRadius ℂ A = 0` then every
+spectral value (= every root of `A.charpoly`) has norm `0`, hence is `0`; the (monic, split)
+characteristic polynomial is therefore `X ^ N`, and Cayley–Hamilton gives `A ^ N = 0`. -/
+theorem isNilpotent_of_spectralRadius_eq_zero {N : ℕ} (A : Matrix (Fin N) (Fin N) ℂ)
+    (h : spectralRadius ℂ A = 0) : IsNilpotent A := by
+  -- Every spectral value is `0`.
+  have hspec : ∀ μ ∈ spectrum ℂ A, μ = 0 := by
+    intro μ hμ
+    have : (‖μ‖₊ : ENNReal) ≤ spectralRadius ℂ A := le_iSup₂ (f := fun k _ => (‖k‖₊ : ENNReal)) μ hμ
+    rw [h, nonpos_iff_eq_zero] at this
+    simpa using this
+  -- Every charpoly root is `0`.
+  have hroots : ∀ μ ∈ A.charpoly.roots, μ = 0 := by
+    intro μ hμ
+    refine hspec μ ?_
+    rw [Matrix.mem_spectrum_iff_isRoot_charpoly]
+    exact (Polynomial.mem_roots'.mp hμ).2
+  -- The charpoly splits and is monic, so it is the product over its roots of `(X - root)`.
+  have hsplits : A.charpoly.Splits := IsAlgClosed.splits _
+  have hmonic : A.charpoly.Monic := A.charpoly_monic
+  have hprod : A.charpoly = (A.charpoly.roots.map fun a => Polynomial.X - Polynomial.C a).prod := by
+    have := hsplits.eq_prod_roots_of_monic hmonic
+    simpa using this
+  -- All roots are `0`, so the product is `X ^ (card roots) = X ^ N`.
+  have hcard : A.charpoly.roots.card = N := by
+    rw [(Polynomial.splits_iff_card_roots).mp hsplits, Matrix.charpoly_natDegree_eq_dim,
+      Fintype.card_fin]
+  have hXpow : A.charpoly = Polynomial.X ^ N := by
+    rw [hprod]
+    have hmap : (A.charpoly.roots.map fun a => Polynomial.X - Polynomial.C a)
+        = A.charpoly.roots.map fun _ => (Polynomial.X : Polynomial ℂ) := by
+      refine Multiset.map_congr rfl ?_
+      intro a ha
+      rw [hroots a ha, map_zero, sub_zero]
+    rw [hmap, Multiset.map_const', Multiset.prod_replicate, hcard]
+  -- Cayley–Hamilton.
+  refine ⟨N, ?_⟩
+  have := A.aeval_self_charpoly
+  rwa [hXpow, map_pow, Polynomial.aeval_X] at this
+
 /-- The compound index `finrank ℝ (⋀^j (EuclideanSpace ℝ (Fin d)))` is nonzero exactly when
 `j ≤ d`, since it equals `Nat.choose d j` (`exteriorPower.finrank_eq`,
 `finrank (EuclideanSpace ℝ (Fin d)) = d`). Packaged as a `NeZero` instance under `j ≤ d` so that
@@ -194,29 +235,144 @@ theorem tendsto_prod_singularValues_pow (M : Matrix (Fin d) (Fin d) ℝ) (j : �
   -- `∏_{k<j} σₖ(Mⁿ) = ‖C_j(Mⁿ)‖ = ‖(C_j M)ⁿ‖`.
   rw [ExteriorNorm.prod_singularValues_eq_l2_opNorm_compound, compoundMatrix_pow]
 
+/-- **Monotonicity of the sorted eigenvalue moduli.** Because `eigenvalueModuli M` is the
+non-increasing (`· ≥ ·`) sort of the modulus multiset, the `i`-th entry never exceeds an earlier
+entry: for `k ≤ i` with `i` inside the list, `(eigenvalueModuli M).getD k 0 ≥ (eigenvalueModuli
+M).getD i 0`. Pure list bookkeeping (no matrix content). -/
+theorem eigenvalueModuli_getD_antitone (M : Matrix (Fin d) (Fin d) ℝ) {k i : ℕ}
+    (hki : k ≤ i) (hi : i < (eigenvalueModuli M).length) :
+    (eigenvalueModuli M).getD i 0 ≤ (eigenvalueModuli M).getD k 0 := by
+  have hk : k < (eigenvalueModuli M).length := lt_of_le_of_lt hki hi
+  have hsorted : (eigenvalueModuli M).Pairwise (· ≥ ·) := by
+    rw [eigenvalueModuli]; exact Multiset.pairwise_sort _ _
+  have hrel : (eigenvalueModuli M).get ⟨k, hk⟩ ≥ (eigenvalueModuli M).get ⟨i, hi⟩ :=
+    hsorted.rel_get_of_le (by exact_mod_cast hki)
+  rw [List.getD_eq_getElem?_getD, List.getD_eq_getElem?_getD,
+    List.getElem?_eq_getElem hk, List.getElem?_eq_getElem hi, Option.getD_some, Option.getD_some]
+  simpa [List.get_eq_getElem] using hrel
+
 /-- **Residual leaf 2 (telescoping / `log`-of-zero bookkeeping).** Given the product-form Gelfand
 limits — `(∏_{k<j} σₖ(Mⁿ))^{1/n} → ∏_{k<j}|λₖ|` for `j = i` and `j = i+1`, packaged via residual
-leaf 1 — the single-index Yamamoto limit `(1/n) log σᵢ(Mⁿ) → log|λᵢ|` follows by telescoping
+leaf 1 — together with the eventual vanishing of `σᵢ(Mⁿ)` when `|λᵢ| = 0` (the honest hypothesis
+`hvanish`, discharged at the call site from the nilpotency of the compound), the single-index
+Yamamoto limit `(1/n) log σᵢ(Mⁿ) → log|λᵢ|` follows by telescoping
 `log(∏_{k<i+1}) − log(∏_{k<i}) = log σᵢ`.
 
-`SHARP SORRY` (Strategy-C residual). This is the "elementary but voluminous" repackaging flagged as
-sub-lemma S15 in the feasibility report: it must pass from the multiplicative (`^{1/n}`) form to the
-additive (`(1/n)·log`) form, divide out the lower product, and handle the junk-value branches where a
-singular value or an eigenvalue modulus vanishes (`Real.log 0 = 0`, division by `0`), including the
-`i ≥ d` tail where both sides are constantly `0`. It needs only `Real`-analysis plumbing
-(`Real.continuousAt_log`, `Real.log_prod`, `tendsto_nhds_unique`, antitone-sort index bookkeeping for
-`eigenvalueModuli`), no new matrix analysis, but is left sharp rather than flailed. -/
+This is the "elementary but voluminous" repackaging flagged as sub-lemma S15 in the feasibility
+report: it passes from the multiplicative (`^{1/n}`) form to the additive (`(1/n)·log`) form,
+divides out the lower product, and handles the junk-value branch where `|λᵢ|` vanishes
+(`Real.log 0 = 0`). Sorry-free; uses only `Real`-analysis plumbing (`Real.log_rpow`,
+`Real.log_prod`, `Filter.Tendsto.log`) plus the sortedness of `eigenvalueModuli` and the
+honest `hvanish` hypothesis. -/
 theorem yamamoto_prod_to_index [NeZero d] (M : Matrix (Fin d) (Fin d) ℝ) (i : ℕ)
     (hi : Tendsto (fun n : ℕ =>
         (∏ k ∈ Finset.range (i + 1), (Matrix.toEuclideanLin (M ^ n)).singularValues k) ^ (1 / n : ℝ))
       atTop (𝓝 (∏ k ∈ Finset.range (i + 1), (eigenvalueModuli M).getD k 0)))
     (hi' : Tendsto (fun n : ℕ =>
         (∏ k ∈ Finset.range i, (Matrix.toEuclideanLin (M ^ n)).singularValues k) ^ (1 / n : ℝ))
-      atTop (𝓝 (∏ k ∈ Finset.range i, (eigenvalueModuli M).getD k 0))) :
+      atTop (𝓝 (∏ k ∈ Finset.range i, (eigenvalueModuli M).getD k 0)))
+    (hvanish : (eigenvalueModuli M).getD i 0 = 0 →
+        ∀ᶠ n : ℕ in atTop, (Matrix.toEuclideanLin (M ^ n)).singularValues i = 0) :
     Tendsto (fun n : ℕ => (n : ℝ)⁻¹ *
         Real.log ((Matrix.toEuclideanLin (M ^ n)).singularValues i))
-      atTop (𝓝 (Real.log ((eigenvalueModuli M).getD i 0))) :=
-  sorry
+      atTop (𝓝 (Real.log ((eigenvalueModuli M).getD i 0))) := by
+  -- Abbreviations.
+  set lami : ℝ := (eigenvalueModuli M).getD i 0 with hlami_def
+  -- Both eigenvalue moduli are nonnegative (they are norms of complex numbers).
+  have hmem_nonneg : ∀ x ∈ eigenvalueModuli M, 0 ≤ x := by
+    intro x hx
+    simp only [eigenvalueModuli, Multiset.mem_sort, Multiset.mem_map] at hx
+    obtain ⟨z, _, rfl⟩ := hx
+    exact norm_nonneg z
+  have hmod_nonneg : ∀ k, 0 ≤ (eigenvalueModuli M).getD k 0 := by
+    intro k
+    rcases lt_or_ge k (eigenvalueModuli M).length with hk | hk
+    · rw [List.getD_eq_getElem?_getD, List.getElem?_eq_getElem hk, Option.getD_some]
+      exact hmem_nonneg _ (List.getElem_mem hk)
+    · rw [List.getD_eq_getElem?_getD, List.getElem?_eq_none hk, Option.getD_none]
+  rcases eq_or_lt_of_le (hmod_nonneg i) with hlami_zero | hlami_pos
+  · -- **Zero case**: `λᵢ = 0`, so the target limit is `Real.log 0 = 0`, and the `i`-th singular
+    -- value vanishes eventually (`hvanish`), making the sequence eventually constant `0`.
+    have hlami0 : lami = 0 := hlami_zero.symm
+    rw [hlami0, Real.log_zero]
+    apply Tendsto.congr' (f₁ := fun _ : ℕ => (0 : ℝ))
+    · filter_upwards [hvanish hlami0] with n hn
+      rw [hn, Real.log_zero, mul_zero]
+    · exact tendsto_const_nhds
+  · -- **Positive case**: `λᵢ > 0`, hence (by sortedness) every earlier modulus is `> 0`, so both
+    -- product limits are positive; take `log` of both `Tendsto`s and subtract.
+    have hi_lt_len : i < (eigenvalueModuli M).length := by
+      by_contra h
+      push_neg at h
+      rw [List.getD_eq_getElem?_getD, List.getElem?_eq_none h, Option.getD_none] at hlami_pos
+      exact lt_irrefl _ hlami_pos
+    -- Each factor of the top product is positive.
+    have hfac_pos : ∀ k ∈ Finset.range (i + 1), 0 < (eigenvalueModuli M).getD k 0 := by
+      intro k hk
+      rw [Finset.mem_range, Nat.lt_succ_iff] at hk
+      exact lt_of_lt_of_le hlami_pos (eigenvalueModuli_getD_antitone M hk hi_lt_len)
+    -- The two product limits are positive.
+    have hP1_pos : 0 < ∏ k ∈ Finset.range (i + 1), (eigenvalueModuli M).getD k 0 :=
+      Finset.prod_pos hfac_pos
+    have hP0_pos : 0 < ∏ k ∈ Finset.range i, (eigenvalueModuli M).getD k 0 :=
+      Finset.prod_pos fun k hk => hfac_pos k (by
+        rw [Finset.mem_range] at hk ⊢; omega)
+    -- Take `log` of both convergences.
+    have hlog1 := hi.log hP1_pos.ne'
+    have hlog0 := hi'.log hP0_pos.ne'
+    -- The difference of the two log-sequences is `(1/n) log σᵢ(Mⁿ)`, eventually.
+    -- First, `log` of the product limits telescopes to `log λᵢ`.
+    have hlami_eq : Real.log (∏ k ∈ Finset.range (i + 1), (eigenvalueModuli M).getD k 0)
+        - Real.log (∏ k ∈ Finset.range i, (eigenvalueModuli M).getD k 0) = Real.log lami := by
+      rw [hlami_def, Real.log_prod (fun k hk => (hfac_pos k hk).ne'),
+        Real.log_prod (fun k hk => (hfac_pos k (by rw [Finset.mem_range] at hk ⊢; omega)).ne'),
+        Finset.sum_range_succ]
+      ring
+    -- Combine: `hlog1 - hlog0 → log λᵢ`.
+    have hcomb := hlog1.sub hlog0
+    rw [hlami_eq] at hcomb
+    -- Match the combined sequence to the goal sequence, eventually.
+    refine hcomb.congr' ?_
+    filter_upwards [hi.eventually (eventually_gt_nhds hP1_pos),
+      hi'.eventually (eventually_gt_nhds hP0_pos),
+      eventually_ge_atTop 1] with n hn1 hn0 hn_ge
+    have hn_ne : (1 / n : ℝ) ≠ 0 := by
+      have : (0 : ℝ) < n := by exact_mod_cast Nat.lt_of_lt_of_le Nat.zero_lt_one hn_ge
+      positivity
+    -- At such `n`, all singular values in the top product are positive.
+    -- `(∏σ)^{1/n} > 0` forces `∏σ > 0`.
+    have hPn1_pos : 0 < ∏ k ∈ Finset.range (i + 1),
+        (Matrix.toEuclideanLin (M ^ n)).singularValues k := by
+      by_contra h
+      push_neg at h
+      have hge : 0 ≤ ∏ k ∈ Finset.range (i + 1),
+          (Matrix.toEuclideanLin (M ^ n)).singularValues k :=
+        Finset.prod_nonneg fun k _ => (Matrix.toEuclideanLin (M ^ n)).singularValues_nonneg k
+      have : ∏ k ∈ Finset.range (i + 1),
+          (Matrix.toEuclideanLin (M ^ n)).singularValues k = 0 := le_antisymm h hge
+      rw [this, Real.zero_rpow hn_ne] at hn1
+      exact lt_irrefl _ hn1
+    have hPn0_pos : 0 < ∏ k ∈ Finset.range i,
+        (Matrix.toEuclideanLin (M ^ n)).singularValues k := by
+      by_contra h
+      push_neg at h
+      have hge : 0 ≤ ∏ k ∈ Finset.range i,
+          (Matrix.toEuclideanLin (M ^ n)).singularValues k :=
+        Finset.prod_nonneg fun k _ => (Matrix.toEuclideanLin (M ^ n)).singularValues_nonneg k
+      have : ∏ k ∈ Finset.range i,
+          (Matrix.toEuclideanLin (M ^ n)).singularValues k = 0 := le_antisymm h hge
+      rw [this, Real.zero_rpow hn_ne] at hn0
+      exact lt_irrefl _ hn0
+    -- `σᵢ(Mⁿ) > 0` since the top product is positive and it is one of the factors.
+    have hσi_pos : 0 < (Matrix.toEuclideanLin (M ^ n)).singularValues i := by
+      rw [Finset.prod_range_succ] at hPn1_pos
+      nlinarith [Finset.prod_nonneg (fun k (_ : k ∈ Finset.range i) =>
+        (Matrix.toEuclideanLin (M ^ n)).singularValues_nonneg k),
+        (Matrix.toEuclideanLin (M ^ n)).singularValues_nonneg i]
+    -- Now compute the difference of logs of `rpow`s.
+    rw [Real.log_rpow hPn1_pos, Real.log_rpow hPn0_pos,
+      Finset.prod_range_succ, Real.log_mul hPn0_pos.ne' hσi_pos.ne']
+    ring
 
 /-! ## Yamamoto's theorem (assembled from the two residual leaves, sorry-free glue) -/
 
@@ -232,10 +388,11 @@ logarithmic form consumed by the Oseledets spectrum.
 
 This is assembled by **Strategy C** (exterior-power / Gelfand): the product-form Gelfand limits
 `(∏_{k<j} σₖ(Mⁿ))^{1/n} → ρ(C_j(M))` (`tendsto_prod_singularValues_pow`, sorry-free) are rewritten
-through residual leaf 1 (`spectralRadius_compound_eq_prod_eigenvalueModuli`,
-`ρ(C_{i+1}(M)) = ∏_{k≤i}|λₖ|`) and telescoped through residual leaf 2 (`yamamoto_prod_to_index`) to
-the single index `i`. The glue here is sorry-free; the two residual matrix-analysis facts are the
-only `sorry`s in the module (see their docstrings).
+through the residual spectral fact (`spectralRadius_compound_eq_prod_eigenvalueModuli`,
+`ρ(C_{i+1}(M)) = ∏_{k≤i}|λₖ|`) and telescoped through `yamamoto_prod_to_index` (now sorry-free) to
+the single index `i`. The glue here is sorry-free; the only remaining `sorry` in the module is the
+single residual matrix-analysis fact `spectralRadius_compound_eq_prod_eigenvalueModuli` (see its
+docstring).
 
 For the degenerate `d = 0` case (no `NeZero d`) the statement is handled by the constant-cocycle
 consumer directly, which always supplies `[NeZero d]`. -/
@@ -255,7 +412,56 @@ theorem yamamoto_singularValues_tendsto [NeZero d] (M : Matrix (Fin d) (Fin d) �
     rw [spectralRadius_compound_eq_prod_eigenvalueModuli M (i + 1)] at hi
     have hi' := tendsto_prod_singularValues_pow M i
     rw [spectralRadius_compound_eq_prod_eigenvalueModuli M i] at hi'
-    exact yamamoto_prod_to_index M i hi hi'
+    have hvanish : (eigenvalueModuli M).getD i 0 = 0 →
+        ∀ᶠ n : ℕ in atTop, (Matrix.toEuclideanLin (M ^ n)).singularValues i = 0 := by
+      intro hzero
+      -- With `|λᵢ| = 0`, the spectral radius of the `(i+1)`-st compound vanishes, so the compound
+      -- is nilpotent; its powers vanish eventually, forcing the top `σ`-product (= the compound
+      -- norm) and hence `σᵢ(Mⁿ)` to vanish eventually.
+      set B := ExteriorNorm.compoundMatrix (i + 1) M with hB
+      -- spectral radius of the compound = `∏_{k<i+1} |λₖ| = 0`.
+      have hrho0 : (spectralRadius ℂ (B.map (algebraMap ℝ ℂ))).toReal = 0 := by
+        rw [hB, spectralRadius_compound_eq_prod_eigenvalueModuli M (i + 1)]
+        apply Finset.prod_eq_zero (Finset.self_mem_range_succ i)
+        exact hzero
+      -- The spectral radius is finite (bounded by the operator norm), so `toReal = 0 ⇒ = 0`.
+      have hfin : spectralRadius ℂ (B.map (algebraMap ℝ ℂ)) ≠ ⊤ :=
+        ne_top_of_le_ne_top (by simp) (spectrum.spectralRadius_le_nnnorm _)
+      have hrho : spectralRadius ℂ (B.map (algebraMap ℝ ℂ)) = 0 := by
+        rwa [ENNReal.toReal_eq_zero_iff, or_iff_left hfin] at hrho0
+      -- Hence the complexified compound is nilpotent, and so is `B` itself.
+      have hnilℂ : IsNilpotent (B.map (algebraMap ℝ ℂ)) :=
+        isNilpotent_of_spectralRadius_eq_zero _ hrho
+      obtain ⟨N, hN⟩ := hnilℂ
+      have hBN : B ^ N = 0 := by
+        have hmap : (B ^ N).map (algebraMap ℝ ℂ) = 0 := by
+          rw [Matrix.map_pow, hN]
+        ext a b
+        have hab := congrArg (fun Z => Z a b) hmap
+        simp only [Matrix.map_apply, Matrix.zero_apply] at hab
+        exact (algebraMap ℝ ℂ).injective (by simpa using hab)
+      -- For `n ≥ N`, `Bⁿ = 0`, so the top `σ`-product vanishes, hence `σᵢ(Mⁿ) = 0`.
+      filter_upwards [eventually_ge_atTop N] with n hn
+      have hBn0 : B ^ n = 0 := by
+        obtain ⟨m, rfl⟩ := Nat.exists_eq_add_of_le hn
+        rw [pow_add, hBN, zero_mul]
+      have hprod0 : ∏ k ∈ Finset.range (i + 1),
+          (Matrix.toEuclideanLin (M ^ n)).singularValues k = 0 := by
+        rw [ExteriorNorm.prod_singularValues_eq_l2_opNorm_compound, compoundMatrix_pow, ← hB, hBn0,
+          norm_zero]
+      -- The top product is `(∏_{k<i} σₖ) * σᵢ`; since `σᵢ` is the smallest factor (antitone) and
+      -- the product is `0`, in fact `σᵢ(Mⁿ) = 0`.
+      rw [Finset.prod_range_succ] at hprod0
+      by_contra hne
+      have hσi : 0 < (Matrix.toEuclideanLin (M ^ n)).singularValues i :=
+        lt_of_le_of_ne ((Matrix.toEuclideanLin (M ^ n)).singularValues_nonneg i) (Ne.symm hne)
+      have hlow : 0 < ∏ k ∈ Finset.range i,
+          (Matrix.toEuclideanLin (M ^ n)).singularValues k :=
+        Finset.prod_pos fun k hk => lt_of_lt_of_le hσi
+          ((Matrix.toEuclideanLin (M ^ n)).singularValues_antitone
+            (by rw [Finset.mem_range] at hk; omega))
+      exact (mul_pos hlow hσi).ne' hprod0
+    exact yamamoto_prod_to_index M i hi hi' hvanish
   · -- Tail `i ≥ d`: the `i`-th singular value is `0` (`singularValues_of_finrank_le`) and the
     -- `i`-th eigenvalue modulus is `0` (`getD` past the length-`d` list); both sides are the
     -- constant `Real.log 0 = 0`. Sorry-free.
