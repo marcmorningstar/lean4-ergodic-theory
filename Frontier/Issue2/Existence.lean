@@ -9,7 +9,7 @@ import Mathlib.MeasureTheory.MeasurableSpace.Constructions
 import Mathlib.Topology.Compactness.SigmaCompact
 
 /-!
-# Existence of a measurable framing — the WALL of issue #2
+# Existence of a measurable framing (issue #9, under `LocallyConstantChartAt`)
 
 `Frontier/Issue2/Framing.lean` proves, sorry-free, that **given** a `MeasurableFraming` (a
 measurable trivialization of the tangent bundle), the manifold derivative cocycle becomes a
@@ -39,7 +39,7 @@ The constructive proof, specialised to the tangent bundle of a manifold:
    `ContMDiffAt.mfderiv_const` (with `m = 0`); a function continuous (hence measurable) on each
    block of a countable measurable partition is measurable.
 
-## What is delivered here, and what is the BLOCKED leaf
+## What is delivered here
 
 * `measurable_of_measurable_on_countable_cover` — the **measure-theory glue**, step 4's tail:
   a function measurable on each block of a countable measurable cover is measurable. Proved
@@ -49,8 +49,12 @@ The constructive proof, specialised to the tangent bundle of a manifold:
   assembles into a `MeasurableFraming`. Proved sorry-free (it is `of_measurable_on_countable_cover`
   applied to the conjugated derivative). This isolates exactly the analytic input still owed: the
   *per-block measurability* hypothesis `hblock`.
-* `exists_measurableFraming_of_sigmaCompact` — the **WALL**: existence of a framing on a σ-compact
-  smooth manifold. A single BLOCKED leaf; see its docstring for the two precise missing pieces.
+* `exists_measurableFraming_of_sigmaCompact` — existence of a measurable framing on a σ-compact
+  smooth manifold, **now proved sorry-free** under the honest chart-regularity hypothesis
+  `[LocallyConstantChartAt H M]` (charts locally constant in the base point). This hypothesis is
+  genuinely necessary: for an arbitrary `ChartedSpace` the unconstrained `chartAt` selection can be
+  non-measurable, so an *unconditional* measurable framing does not exist on every σ-compact C¹
+  manifold. See `Frontier.Issue2.LocallyConstantChartAt`.
 
 ## What is missing in Mathlib (verified by exhaustive grep over `Mathlib/Geometry/Manifold/`)
 
@@ -153,7 +157,7 @@ there. The honest hypothesis `[FiniteDimensional ℝ E]` (used to reduce operato
 the coordinate changes to pointwise continuity) is added here; it is automatic in the MET setting. -/
 theorem measurable_mfderivModel_of_contMDiff_boundaryless
     [FiniteDimensional ℝ E]
-    [I.Boundaryless]
+    [I.Boundaryless] [LocallyConstantChartAt H M]
     [SigmaCompactSpace M] [SecondCountableTopology H] {T : M → M}
     (hT : ContMDiff I I 1 T) :
     Measurable (mfderivModel (I := I) T) :=
@@ -172,7 +176,7 @@ obligation is exactly measurability of `x ↦ mfderiv I I T x` — supplied by t
 machinery in the old plan is unnecessary. -/
 theorem exists_measurableFraming_of_sigmaCompact
     [FiniteDimensional ℝ E]
-    [I.Boundaryless]
+    [I.Boundaryless] [LocallyConstantChartAt H M]
     [SigmaCompactSpace M] [SecondCountableTopology H]
     {T : M → M} (hT : ContMDiff I I 1 T) :
     Nonempty (MeasurableFraming I T) :=

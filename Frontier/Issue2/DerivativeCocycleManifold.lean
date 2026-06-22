@@ -58,10 +58,13 @@ has *no* measurability theory for the manifold derivative: `mfderiv` is defined 
 `if MDifferentiableAt … then fderivWithin (writtenInExtChartAt …) … else 0`, and there is no global
 lemma `Measurable (fun x => mfderiv I I T x)` (the analogue of `measurable_fderiv` used in the
 Euclidean file), nor any `MeasurableSpace` instance produced from a `ChartedSpace` structure.
-Supplying it is a Mathlib-scale task (gluing the chart-local `fderivWithin`-measurability across a
-countable measurable cover by chart domains, after equipping `M` with its Borel σ-algebra). It is
-isolated here as the hypothesis `hAmeas` of `oseledets_filtration_derivativeCocycleManifold` and as
-the single `sorry` in `measurable_bundleDerivativeCocycle`.
+Mathlib supplies none of this, but it is **now proved sorry-free** under the honest chart-regularity
+hypothesis `[LocallyConstantChartAt H M]` (charts locally constant in the base point — necessary,
+since for an arbitrary `ChartedSpace` the unconstrained `chartAt` selection can make
+`x ↦ mfderiv I I T x` non-measurable); see `Frontier.Issue2.MFDerivMeasurable.measurable_mfderivHom`.
+Hence `measurable_bundleDerivativeCocycle` is sorry-free. The hypothesis form `hAmeas` of
+`oseledets_filtration_derivativeCocycleManifold` is retained so that conditional headline stays
+independent of any chart-regularity assumption.
 
 ## Main definitions
 
@@ -78,7 +81,7 @@ the single `sorry` in `measurable_bundleDerivativeCocycle`.
 * `Frontier.Issue2.det_derivativeCocycleManifold_ne_zero` — nonvanishing determinant from
   invertibility of each bundle generator (**sorry-free**).
 * `Frontier.Issue2.measurable_bundleDerivativeCocycle` — measurability of the bundle generator
-  (**the wall**; one documented `sorry`).
+  (**proved sorry-free** under `[LocallyConstantChartAt H M]`).
 * `Frontier.Issue2.oseledets_filtration_derivativeCocycleManifold` — the Oseledets filtration for
   the derivative cocycle of an ergodic `C¹` self-map of `M`, taking the framed-generator
   measurability as a hypothesis (so this statement is itself **sorry-free**).
@@ -327,7 +330,7 @@ moving-trivialization-index continuity that Mathlib packages only *inside* `inTa
 single sharp, fully-typed `sorry` — strictly stronger hypotheses than the original opaque leaf, and
 faithful to the literature (Filip §2.2.2; Arnold, *RDS*, Ch. 4). -/
 theorem measurable_mfderiv_of_contMDiff_boundaryless
-    [I.Boundaryless] [MeasurableSpace M] [BorelSpace M]
+    [I.Boundaryless] [LocallyConstantChartAt H M] [MeasurableSpace M] [BorelSpace M]
     [SigmaCompactSpace M] [SecondCountableTopology H] {T : M → M}
     (hT : ContMDiff I I 1 T) :
     Measurable (bundleDerivativeCocycle I T) :=
@@ -346,7 +349,7 @@ C¹ / σ-compact** hypotheses it is exactly the sharp core
 `measurable_mfderiv_of_contMDiff_boundaryless`: `bundleDerivativeCocycle I T x` is, by definition,
 `mfderiv I I T x`. -/
 theorem measurable_bundleDerivativeCocycle
-    [I.Boundaryless] [MeasurableSpace M] [BorelSpace M]
+    [I.Boundaryless] [LocallyConstantChartAt H M] [MeasurableSpace M] [BorelSpace M]
     [SigmaCompactSpace M] [SecondCountableTopology H] {T : M → M}
     (hT : ContMDiff I I 1 T) :
     Measurable (bundleDerivativeCocycle I T) :=
@@ -364,11 +367,11 @@ theorem measurable_frameAlg : Measurable (frameAlg E) := by
     (continuous_apply j).comp ((continuous_apply i).comp continuous_frameAlg)
   exact hcont.measurable
 
-/-- Measurability of the matrix generator follows from the bundle-derivative measurability wall by
-measurability of the framing `frameAlg E`. Stated separately so the dependence on the wall is
-explicit; the matrix MET takes this as the hypothesis `hAmeas`. -/
+/-- Measurability of the matrix generator follows from the bundle-derivative measurability (proved
+under `[LocallyConstantChartAt H M]`) by measurability of the framing `frameAlg E`. Stated
+separately so the dependence is explicit; the matrix MET takes this as the hypothesis `hAmeas`. -/
 theorem measurable_derivativeCocycleManifold
-    [I.Boundaryless] [MeasurableSpace M] [BorelSpace M]
+    [I.Boundaryless] [LocallyConstantChartAt H M] [MeasurableSpace M] [BorelSpace M]
     [SigmaCompactSpace M] [SecondCountableTopology H] {T : M → M}
     (hT : ContMDiff I I 1 T) :
     Measurable (derivativeCocycleManifold I T) :=

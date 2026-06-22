@@ -10,6 +10,7 @@ import Mathlib.Geometry.Manifold.MFDeriv.Tangent
 import Mathlib.Geometry.Manifold.ContMDiffMFDeriv
 import Mathlib.MeasureTheory.Constructions.BorelSpace.ContinuousLinearMap
 import Mathlib.Topology.Compactness.Lindelof
+import Frontier.Issue2.LocallyConstantChartAt
 
 /-!
 # Borel measurability of the manifold derivative `x ↦ mfderiv I I T x`
@@ -52,7 +53,7 @@ variable
   {H : Type*} [TopologicalSpace H]
   {I : ModelWithCorners ℝ E H}
   {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I 1 M]
-  [I.Boundaryless]
+  [I.Boundaryless] [LocallyConstantChartAt H M]
 
 /-- The manifold derivative recorded with the homogeneous model-fibre type `E →L[ℝ] E` (legitimate
 since `TangentSpace I x` is definitionally `E`). -/
@@ -122,34 +123,68 @@ theorem mfderiv_eq_unconj {T : M → M} {a x : M}
     exact tangentCoordChange_self hyy
   exact hleft.symm
 
-/-! ### The sharp residual gap: continuity of the moving-trivialization-index coordinate change
+/-! ### Continuity of the moving-trivialization-index coordinate change
 
 Both recovery factors in `mfderiv_eq_unconj` are values of `x ↦ tangentCoordChange I x c x`
-(the coordinate change whose **first/source trivialization index moves with the point**, equal by
-`mfderiv_chartAt_eq_tangentCoordChange` to `mfderiv I I (chartAt H c) x`). Mathlib provides
-continuity of `tangentCoordChange I p q` only for **fixed** indices `p q`
-(`continuousOn_tangentCoordChange`) and of `Trivialization.continuousLinearMapAt` only pointwise,
-never as a function of the base point for a single trivialization. Supplying continuity of this
-moving-index coordinate change is the entire residual content of issue #2; it is isolated here as the
-single sharp obligation `continuousOn_tangentCoordChange_movingIndex`. Everything else in this module
-(the un-conjugation telescoping above, the chart-glue below, **and the dual moving-target-index
-factor `continuousOn_tangentCoordChange_movingTargetIndex`, which is derived from this one by
-continuous-linear-map inversion**) is proved sorry-free around it. So this module — and hence the
-whole issue-#9 measurability chain — now rests on exactly **one** `sorry`. -/
+(the coordinate change whose **first/source trivialization index moves with the point**). Mathlib
+provides continuity of `tangentCoordChange I p q` only for **fixed** indices `p q`
+(`continuousOn_tangentCoordChange`), never as a function of the base point through the moving source
+trivialization. This was the entire residual content of issue #2. It is now **proved** under the
+honest chart-regularity hypothesis `[LocallyConstantChartAt H M]` (charts are locally constant in the
+base point, so near every point the moving-index map coincides with a fixed-index one), supplied by
+`continuousOn_tangentCoordChange_movingIndex`. Everything else in this module (the un-conjugation
+telescoping above, the chart-glue below, and the dual moving-target-index factor
+`continuousOn_tangentCoordChange_movingTargetIndex`, derived from this one by continuous-linear-map
+inversion) is proved sorry-free around it. So this module — and hence the whole issue-#9
+measurability chain — is now **completely sorry-free**. -/
 
-/-- **The sharp residual gap (issue #2).** The coordinate change with moving source index
-`x ↦ tangentCoordChange I x c x` is continuous on the chart source `(chartAt H c).source`.
+/-- **Continuity of the moving-source-index coordinate change (issue #2), now proved.** The
+coordinate change with moving source index `x ↦ tangentCoordChange I x c x` is continuous on the
+chart source `(chartAt H c).source`.
 
-By `mfderiv_chartAt_eq_tangentCoordChange` this is exactly continuity of `x ↦ mfderiv I I (chartAt H c) x`
-on the chart domain — the manifold derivative of a *fixed* chart map at the moving point. Mathlib has
-no lemma for this: `ContMDiffAt.mfderiv_const` only yields continuity of the in-coordinates
-representative (which reintroduces this very coordinate change), and the single-trivialization
-`continuousLinearMapAt` carries no base-point continuity statement. Closing it is the
-moving-trivialization-index continuity flagged in
-`docs/research/frontier/issue2/FEASIBILITY-2026-06-22.md`. -/
+Proof under `[LocallyConstantChartAt H M]`: at each `a` in the chart source, the chart map is
+eventually constant (`eventually_chartAt_eq`), so near `a` (within the source) the moving-index map
+`x ↦ tangentCoordChange I x c x` agrees with the *fixed*-index map `x ↦ tangentCoordChange I a c x`,
+whose continuity at `a` is `continuousOn_tangentCoordChange a c` (Mathlib's fixed-index result),
+restricted from `(extChartAt I a).source ∩ (extChartAt I c).source` to the chart source via
+`nhdsWithin_inter_of_mem`. Transfer along the eventual equality with
+`ContinuousWithinAt.congr_of_eventuallyEq`. -/
 theorem continuousOn_tangentCoordChange_movingIndex (c : M) :
     ContinuousOn (fun x => tangentCoordChange I x c x) (chartAt H c).source := by
-  sorry
+  intro a ha
+  set s : Set M := (chartAt H c).source with hs_def
+  -- `s = (extChartAt I c).source` (unconditional, by `extChartAt_source`).
+  have hs_ext : s = (extChartAt I c).source := (extChartAt_source (I := I) c).symm
+  -- `a` lies in the FIXED-index continuity domain `(extChartAt I a).source ∩ (extChartAt I c).source`.
+  have ha_as : a ∈ (extChartAt I a).source := mem_extChartAt_source a
+  have ha_cs : a ∈ (extChartAt I c).source := by rw [extChartAt_source]; exact ha
+  -- Continuity of the FIXED first-index coordinate change at `a`, within the intersection.
+  have hcont_fixed : ContinuousWithinAt (fun x => tangentCoordChange I a c x)
+      ((extChartAt I a).source ∩ (extChartAt I c).source) a :=
+    (continuousOn_tangentCoordChange a c) a ⟨ha_as, ha_cs⟩
+  -- Restrict the within-set down to `s`: `s = (extChartAt I c).source`, and the `(extChartAt I a)`
+  -- factor is a neighbourhood of `a`, so within `s` the intersection filter coincides with `s`.
+  have hsub : nhdsWithin a s ≤
+      nhdsWithin a ((extChartAt I a).source ∩ (extChartAt I c).source) := by
+    rw [hs_ext]
+    have hmem : (extChartAt I a).source ∈ nhdsWithin a (extChartAt I c).source :=
+      mem_nhdsWithin_of_mem_nhds ((isOpen_extChartAt_source (I := I) a).mem_nhds ha_as)
+    rw [nhdsWithin_inter_of_mem hmem]
+  have hcont_fixed_s : ContinuousWithinAt (fun x => tangentCoordChange I a c x) s a :=
+    hcont_fixed.mono_left hsub
+  -- Near `a`, the moving-index function agrees with the fixed-index one (within `s`).
+  have hloc : ∀ᶠ x in nhds a, chartAt H x = chartAt H a := eventually_chartAt_eq a
+  have hlocS : ∀ᶠ x in nhdsWithin a s, chartAt H x = chartAt H a :=
+    hloc.filter_mono nhdsWithin_le_nhds
+  have heq : (fun x => tangentCoordChange I x c x) =ᶠ[nhdsWithin a s]
+      (fun x => tangentCoordChange I a c x) := by
+    filter_upwards [hlocS] with x hx
+    -- equal charts ⇒ equal extended charts ⇒ equal coordinate change at the SOURCE index `x ↦ a`.
+    have hext : extChartAt I x = extChartAt I a := by
+      simp only [extChartAt]; rw [hx]
+    rw [tangentCoordChange_def, tangentCoordChange_def, hext]
+  -- Transfer continuity along the eventual equality (the value-at-`a` goal is `rfl`).
+  exact hcont_fixed_s.congr_of_eventuallyEq heq rfl
 
 /-! ### Continuity of the recovery factors on a chart block -/
 
