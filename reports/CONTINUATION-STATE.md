@@ -3,7 +3,7 @@
 **This file is the single self-contained handoff.** Attach a new session to it ("read
 `reports/CONTINUATION-STATE.md` and continue") and everything needed is here: role, infra, invariants,
 current residuals (file:line), measured priorities, the method that worked, and the exact next actions.
-Last updated 2026-06-22.
+Last updated 2026-06-22 (#8 migrated into the linted `Oseledets` library; priority-1 complete).
 
 ---
 
@@ -25,7 +25,7 @@ Residual sorries (authoritative — from `lake build` warnings, not docstring gr
 
 | Issue | File:line | Status |
 |---|---|---|
-| **#8** | `Frontier/Issue1/Yamamoto.lean` | ✅ **CLOSED sorry-free** (commit `bf92e09`). `compoundMatrix_charpoly_roots_eq` proved via new `Frontier/Issue1/Schur.lean` (ℂ-Schur, a correctly-attributed Apache-2.0 graft of `leanprover-community/physlib`'s `Mathematics/SchurTriangulation.lean`) + functorial Cauchy–Binet (`compoundAbstract_mul` via `exteriorPower.map_comp`) + triangular-minor det lemmas + diagonal→`powersetCard` bridge. Axiom audit clean on the target + `yamamoto_singularValues_tendsto`/`exponents_const_general`/`spectralRadius_compound_eq_prod_eigenvalueModuli`. **Kept in staging; NOT migrated to `Oseledets/`** (would vendor the grafted `autoImplicit` Schur file + needs delinting). |
+| **#8** | `Oseledets/Lyapunov/Extensions/Yamamoto.lean` | ✅ **CLOSED sorry-free + MIGRATED to the linted lib** (proof `bf92e09`; migration `654837e`+`e874e6d`). `compoundMatrix_charpoly_roots_eq` proved via new `Frontier/Issue1/Schur.lean` (ℂ-Schur, a correctly-attributed Apache-2.0 graft of `leanprover-community/physlib`'s `Mathematics/SchurTriangulation.lean`) + functorial Cauchy–Binet (`compoundAbstract_mul` via `exteriorPower.map_comp`) + triangular-minor det lemmas + diagonal→`powersetCard` bridge. Axiom audit clean on the target + `yamamoto_singularValues_tendsto`/`exponents_const_general`/`spectralRadius_compound_eq_prod_eigenvalueModuli`. **✅ MIGRATED to the linted `Oseledets/` library**: Schur delinted into the quarantined shim `Oseledets/Mathlib/SchurTriangulation.lean` (physlib attribution kept, `autoImplicit`→explicit per-section `variable`s — incl. a shared `universe u` for the `cond b m n` instances and a decl-level `{E}` on `SchurTriangulationAux.of`); Yamamoto at `Oseledets/Lyapunov/Extensions/Yamamoto.lean` (import re-pointed, lines wrapped, `push_neg`→`push Not`). Both imported from `Oseledets.lean`; 4 `#print axioms` guards in `test/AxiomAudit.lean` confirm `[propext, Classical.choice, Quot.sound]`. Full `lake build` green under `warningAsError`; `Frontier/Issue1` removed. **#8 fully done.** |
 | **#9** | `Frontier/Issue2/` | ✅ **RESOLVED (Option B), sorry-free** (commit `54c7bd2`). ⚠️ The prior residual `continuousOn_tangentCoordChange_movingIndex` was **mathematically FALSE** (`ChartedSpace.chartAt` is an unconstrained selector ⇒ moving-index coord change can be non-measurable; the unconditional `exists_measurableFraming_of_sigmaCompact` was false-by-dependence). Fixed by a new honest typeclass `Frontier/Issue2/LocallyConstantChartAt` (`∀ a, ∀ᶠ x in 𝓝 a, chartAt H x = chartAt H a`), threaded through; non-vacuous (`H H` instance) and NOT derivable from `IsManifold` (fails for multi-chart atlases). All four lemmas sorry-free, axiom audit clean. **Limitation:** excludes multi-chart atlases; unconditional-on-all-manifolds needs a continuously-varying chart-selector argument (Mathlib-scale). |
 | **#10** | `Frontier/Issue4Pesin/ManeLowerBound.lean:177,208` | ⛔ Out of scope (unchanged). Layer-1 (SMB + countable-partition KS-entropy API) + Layer-2 foliation chain (abs. continuity of Wᵘ, disintegration of μ along Wᵘ): measured ~4–6 months, 8 nodes in series, no Mathlib precursors. 2 sorries. |
 | **#11** | `Frontier/Issue6/ArseninKunugui.lean:301` (+ `CastaingSelection.lean:479`, `MeasurableGraphToProjector.lean:405`) | ⛔ **BLOCKED — missing Mathlib chapter** (confirmed, grep-verified). `exists_borel_openSection_structure` = Srivastava 4.7.2 needs the **coanalytic pointclass + generalized reduction theorem 4.6.5** (absent; Mathlib has only the first-separation engine `AnalyticSet.measurablySeparable`/`MeasurablySeparable.iUnion`). The re-scoping shortcut provably fails. **Correction to prior handoff:** the 2 extra sorry sites are NOT a 1-line forward — `_AK` lives in the top module `ArseninKunugui` but the stale sorries are in modules it imports (`CastaingSelection`←`MeasurableGraphToProjector`), so collapsing 3→1 needs relocating the `_AK` core to a base module (a real, if mechanical, refactor of a blocked wall). ~2–4 sessions to actually close. |
@@ -42,18 +42,24 @@ Ranked by **measured** effort (DAG reports `docs/research/frontier/issue{4,6}/DA
 node-availability grep-verified + adversarially audited). Parallel-Claude wall-clock ≈ critical-path
 depth × per-node design+prove time (breadth is absorbed by running many warm agents at once).
 
-**#8 and #9 are now CLOSED** (sorry-free, in the `Frontier` staging lib; commits `bf92e09`, `54c7bd2`,
-pushed). Remaining open work, ranked:
+**#8 is COMPLETE** — sorry-free + migrated into the linted, upstreamable `Oseledets` library and
+axiom-audited (proof `bf92e09`; migration `654837e`+`e874e6d`). **#9 is CLOSED** (sorry-free; still in
+`Frontier` staging, commit `54c7bd2`). Remaining open work, ranked:
 
 | Priority | Target | Parallel-Claude | Notes |
 |---|---|---|---|
-| **1** | **#8 → `Oseledets/`** | ~a session | *Not a proof* — a migration/vendoring call. Move the sorry-free Issue1 chain into the linted lib: delint `Schur.lean` (drop `autoImplicit`, fix `push_neg` deprecations), restructure, add to `Oseledets.lean` + `test/AxiomAudit.lean`, make `warningAsError`-green. OR wait for Mathlib's own Schur and re-point. Decide how to vendor the Physlib graft first. |
+| **✅ DONE** | **#8 → `Oseledets/`** | done (`654837e`+`e874e6d`) | Migrated: Schur vendored as the quarantined `Oseledets/Mathlib/SchurTriangulation.lean` shim (delint-only — `autoImplicit`→explicit per-section `variable`s incl. a shared `universe u` for the `cond` instances + decl-level `{E}` on `.of`; `push_neg`→`push Not`), Yamamoto at `Oseledets/Lyapunov/Extensions/Yamamoto.lean`, 4 axiom guards added, `Frontier/Issue1` removed. `lake build` green under `warningAsError`. |
 | **2** | **#9 strengthening** | days–weeks | (Optional.) Discharge `LocallyConstantChartAt` from a *continuously-varying chart-selector* construction so #9 holds for multi-chart atlases (Sⁿ etc.) — a genuine "regular charted space" Mathlib-scale addition. The current Option-B result is already sorry-free + sound under the hypothesis. |
 | **3** | **#11** | ~2–4 sessions | **BLOCKED on a missing Mathlib chapter**: the coanalytic pointclass + generalized reduction theorem 4.6.5 (Srivastava). Mathlib has only the first-separation engine. Build: `CoanalyticSet` + closure lemmas → 4.6.5 reduction induction (the heart) → 4.7.1 → 4.7.2 (`exists_borel_openSection_structure`); then relocate `_AK` to a base module + forward the 2 stale sorries. The re-scoping shortcut provably fails. |
 | **4** | **#10** | ~4–6 months | Genuinely large; 8 design-novel nodes in **series** (Layer-2 foliation: abs. continuity of Wᵘ, disintegration of μ along Wᵘ — no Mathlib precursors). Don't brute-force; at most land SMB as a standalone. |
 
-**Recommended next run:** decide the **#8 migration/vendoring** (priority 1) — it's the only near-term
-*completion* left. #9/#8 proofs are done; #11 and #10 are multi-session Mathlib-chapter builds.
+**Recommended next run:** **#8 is done** (migrated, axiom-audited — no near-term *completion* remains).
+The rest are all multi-session Mathlib-scale builds: optionally the **#9 strengthening** (priority 2 —
+discharge `LocallyConstantChartAt` via a continuously-varying chart selector, days–weeks), then **#11**
+(priority 3 — build the missing coanalytic/reduction chapter, ~2–4 sessions). #10 (priority 4,
+~4–6 months) — don't brute-force; at most land SMB standalone. Optional polish on #8: when Mathlib
+gains its own Schur decomposition, delete the `Oseledets/Mathlib/SchurTriangulation.lean` shim and
+re-point `Yamamoto` to it.
 
 ## 4. Infrastructure (all verified working)
 
