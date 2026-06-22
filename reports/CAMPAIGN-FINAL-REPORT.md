@@ -1,5 +1,10 @@
 # Oseledets Frontier Campaign — Final Report (2026-06-22)
 
+> **To continue the work, attach a session to `reports/CONTINUATION-STATE.md`** — the single
+> self-contained handoff (current residuals, measured priorities, infra, invariants, next actions).
+> This file is the narrative retrospective.
+
+
 Autonomous CEO-orchestrated effort to resolve the 4 open GitHub issues (#8, #9, #10, #11) — the
 research-level `BLOCKED` leaves of the otherwise-complete Oseledets MET formalization.
 

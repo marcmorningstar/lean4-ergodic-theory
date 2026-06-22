@@ -46,6 +46,13 @@ not printed). The `Oseledets` library is built with `linter.mathlibStandardSet` 
 warnings promoted to errors (`lakefile.toml`), so `lake build` — and hence CI — fails on any
 style-lint regression. See `docs/progress/STATE.md` for the final composition.
 
+**Open work — the frontier strengthenings (GitHub issues #8–#11).** The core theorem is done, but
+four research-level strengthenings remain as `BLOCKED` `sorry` leaves in the unlinted
+`Frontier.Issue*` staging lib (#8 Yamamoto, #9 mfderiv-measurability, #10 Pesin SRB, #11
+Arsenin–Kunugui). A campaign drove each to a small, sharp residual. **`reports/CONTINUATION-STATE.md`
+is the single self-contained handoff** — attach a new session to that file and it has everything
+(current residuals + file:line, measured priorities, infra, invariants, exact next actions).
+
 ## Layout
 
 | Path | Purpose |
@@ -80,9 +87,17 @@ whose `lake serve` daemon **aborts with a loud warning** rather than start such 
 only by choice with `LEANCHECK_ALLOW_MATHLIB_REBUILD=1`). A direct `lake build` is *not* guarded and
 is the authoritative gate — make sure the Mathlib cache is in place before building.
 
-**Parallel agents — one worktree each.** Many agents grinding proofs at once must NOT share a
-checkout: they race git's working tree and `.lake/build`. Give each its own git worktree with
-`.claude/scripts/lwt` (a thin launcher over the `lwt` tool in the leancheck plugin):
+**Warm lean-worker / parallel agents — one worktree each.** Many agents grinding proofs at once must
+NOT share a checkout: they race git's working tree and `.lake/build`. Give each its own git worktree
+with `.claude/scripts/lwt` (a thin launcher over the `lwt` tool in the leancheck plugin). **Prereq:**
+`lwt` needs the leancheck plugin installed — if `.claude/scripts/lwt` errors with "leancheck plugin
+not found", run once: `claude plugin marketplace add marcmorningstar/leancheck && claude plugin
+install leancheck@lean-tools`. Subagents MAY run `lwt` but are git-BLOCKED by
+`.claude/hooks/block-subagent-git.sh` (only the orchestrator does git/merges); the leancheck
+PostToolUse hook auto-appends a build report after each subagent `.lean` edit, so workers iterate warm
+without running lake/git. RAM ceiling: ~6–8 concurrent warm builds is safe (~0.5 GB/serve daemon +
+2–4 GB/build on ~31 GB); pre-provision worktrees serially from the orchestrator to avoid a
+`git worktree add` index race.
 
 ```bash
 WT=$(.claude/scripts/lwt add my-branch | tail -1)   # symlinks the shared Mathlib cache, copies the
@@ -127,6 +142,22 @@ works in every shell.
   use `.firecrawl/`, which is git-ignored).
 - Prefer `firecrawl` over the built-in WebFetch/WebSearch for richer, full-page
   markdown when researching the math.
+
+## GitHub (`gh`)
+
+The `gh` CLI is installed and authenticated (account `marcmorningstar`) — use it for all GitHub
+operations (issues, PRs, comments):
+
+```bash
+gh issue list --state open                 # the open frontier issues #8–#11
+gh issue comment <n> --body-file <f.md>     # post a progress update
+gh pr create / gh pr edit <n> --body-file <f.md>
+```
+
+- `gh pr edit` can fail with a *"Projects (classic) … deprecated"* GraphQL error on this repo; if so,
+  PATCH the PR via the REST API instead (`https://api.github.com/repos/marcmorningstar/lean4-oseledets/pulls/<n>`)
+  using a token from `git credential fill` (host `github.com`).
+- Issues #8–#11 are decomposed, not resolved — reference them (`Refs #8`), do not auto-close.
 
 ## Agents
 
