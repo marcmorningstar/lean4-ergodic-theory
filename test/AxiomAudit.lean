@@ -131,6 +131,8 @@ import Oseledets.Entropy.FactorEntropy
 import Oseledets.Entropy.FactorGeneratorSaturate
 import Oseledets.Entropy.CondGivenPartitionBridge
 import Oseledets.Entropy.AbramovRokhlin
+import Oseledets.Entropy.CondKSMovingLimit
+import Oseledets.Entropy.AbramovRokhlinGenerator
 
 /-!
 # Axiom audit
@@ -1740,3 +1742,26 @@ info: 'Oseledets.Entropy.condEntropyGivenPartition_eq_condEntropy_generated' dep
 -/
 #guard_msgs in
 #print axioms Oseledets.Entropy.condEntropyGivenPartition_eq_condEntropy_generated
+
+-- Issue #13: W3 DISCHARGED — the moving-index Cesàro/martingale limit (blocking + the fixed-partition
+-- Lévy theorem) and the resulting UNCONDITIONAL Abramov–Rokhlin addition formula under a base generator.
+
+/-- info: 'Oseledets.Entropy.tendsto_condEntropy_genJoin_div' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.Entropy.tendsto_condEntropy_genJoin_div
+
+/-- info: 'Oseledets.Entropy.tendsto_condCellSeq_div' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.Entropy.tendsto_condCellSeq_div
+
+/-- info: 'Oseledets.Entropy.abramovRokhlin_partition' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.Entropy.abramovRokhlin_partition
+
+/-- info: 'Oseledets.Entropy.abramov_rokhlin_of_generator' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.Entropy.abramov_rokhlin_of_generator
