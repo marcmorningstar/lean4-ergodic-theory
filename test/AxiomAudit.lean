@@ -121,6 +121,16 @@ import Oseledets.Examples.CatMapToral
 import Oseledets.Examples.Rokhlin.AbstractEqui
 import Oseledets.Examples.Rokhlin.DoublingCrux
 import Oseledets.Examples.Rokhlin.DoublingEquality
+import Oseledets.Entropy.CondChainRule
+import Oseledets.Entropy.CondPullback
+import Oseledets.Entropy.CondJointPullback
+import Oseledets.Entropy.CondMono
+import Oseledets.Entropy.CondEntropyContinuous
+import Oseledets.Entropy.CondKSEntropySystem
+import Oseledets.Entropy.FactorEntropy
+import Oseledets.Entropy.FactorGeneratorSaturate
+import Oseledets.Entropy.CondGivenPartitionBridge
+import Oseledets.Entropy.AbramovRokhlin
 
 /-!
 # Axiom audit
@@ -1670,3 +1680,63 @@ info: 'Oseledets.Examples.Rokhlin.ksEntropyPartition_doublingMap_eq_log_two' dep
 /-- info: 'Oseledets.Examples.Rokhlin.volume_binJoinCell' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms Oseledets.Examples.Rokhlin.volume_binJoinCell
+
+-- Conditional / relative entropy + Abramov–Rokhlin (issue #13).
+
+/-- info: 'Oseledets.Entropy.condEntropy_join_eq' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.Entropy.condEntropy_join_eq
+
+/-- info: 'Oseledets.Entropy.condEntropy_pullback' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.Entropy.condEntropy_pullback
+
+/-- info: 'Oseledets.Entropy.condEntropy_comap_pullback' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.Entropy.condEntropy_comap_pullback
+
+/-- info: 'Oseledets.Entropy.condEntropy_mono_of_le' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.Entropy.condEntropy_mono_of_le
+
+/-- info: 'Oseledets.Entropy.condKsEntropy_bot' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.Entropy.condKsEntropy_bot
+
+/-- info: 'Oseledets.Entropy.factor_relative_eq' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.Entropy.factor_relative_eq
+
+/-- info: 'Oseledets.Entropy.abramov_rokhlin' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.Entropy.abramov_rokhlin
+
+-- Issue #13 §5b: the partition-level Abramov–Rokhlin skeleton (B6a reduced to the W3 limit).
+
+/-- info: 'Oseledets.Entropy.entropy_joinCells_of_refines' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.Entropy.entropy_joinCells_of_refines
+
+/-- info: 'Oseledets.Entropy.abramovRokhlin_partition_of_W3' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.Entropy.abramovRokhlin_partition_of_W3
+
+/-- info: 'Oseledets.Entropy.abramov_rokhlin_of_W3' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.Entropy.abramov_rokhlin_of_W3
+
+/-- info: 'Oseledets.Entropy.condEntropy_tendsto_iSup' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.Entropy.condEntropy_tendsto_iSup
+
+/-- info: 'Oseledets.Entropy.factor_iSup_comap_eq' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.Entropy.factor_iSup_comap_eq
+
+/--
+info: 'Oseledets.Entropy.condEntropyGivenPartition_eq_condEntropy_generated' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+-/
+#guard_msgs in
+#print axioms Oseledets.Entropy.condEntropyGivenPartition_eq_condEntropy_generated
