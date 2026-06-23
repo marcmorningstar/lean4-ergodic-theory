@@ -159,6 +159,9 @@ import Oseledets.Entropy.FactorGeneratorSaturate
 import Oseledets.Entropy.CondGivenPartitionBridge
 import Oseledets.Entropy.AbramovRokhlinPartition
 import Oseledets.Entropy.AbramovRokhlin
+import Oseledets.Entropy.AbramovRokhlinDefect
+import Oseledets.Entropy.CondBlockSubadditive
+import Oseledets.Entropy.JoinSigmaAlgebra
 import Oseledets.MeasureTheory.CoveringFromVolume
 import Oseledets.MeasureTheory.AnalyticUniversallyMeasurable
 import Oseledets.Entropy.Ruelle.AtomCount
