@@ -128,6 +128,8 @@ import Oseledets.Entropy.CondMono
 import Oseledets.Entropy.CondEntropyContinuous
 import Oseledets.Entropy.CondKSEntropySystem
 import Oseledets.Entropy.FactorEntropy
+import Oseledets.Entropy.FactorGeneratorSaturate
+import Oseledets.Entropy.CondGivenPartitionBridge
 import Oseledets.Entropy.AbramovRokhlin
 
 /-!
@@ -1726,3 +1728,15 @@ info: 'Oseledets.Examples.Rokhlin.ksEntropyPartition_doublingMap_eq_log_two' dep
 /-- info: 'Oseledets.Entropy.condEntropy_tendsto_iSup' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms Oseledets.Entropy.condEntropy_tendsto_iSup
+
+/-- info: 'Oseledets.Entropy.factor_iSup_comap_eq' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.Entropy.factor_iSup_comap_eq
+
+/--
+info: 'Oseledets.Entropy.condEntropyGivenPartition_eq_condEntropy_generated' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+-/
+#guard_msgs in
+#print axioms Oseledets.Entropy.condEntropyGivenPartition_eq_condEntropy_generated

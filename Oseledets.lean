@@ -155,6 +155,8 @@ import Oseledets.Entropy.CondKSEntropySystem
 import Oseledets.Entropy.FactorMap
 import Oseledets.Entropy.Generator
 import Oseledets.Entropy.FactorEntropy
+import Oseledets.Entropy.FactorGeneratorSaturate
+import Oseledets.Entropy.CondGivenPartitionBridge
 import Oseledets.Entropy.AbramovRokhlinPartition
 import Oseledets.Entropy.AbramovRokhlin
 import Oseledets.MeasureTheory.CoveringFromVolume
