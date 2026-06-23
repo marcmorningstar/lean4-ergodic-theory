@@ -5,6 +5,7 @@ Authors: Marcel Morgenstern
 -/
 import Oseledets.Entropy.FactorEntropy
 import Oseledets.Entropy.CondKSEntropySystem
+import Oseledets.Entropy.AbramovRokhlinPartition
 
 /-!
 # The Abramov–Rokhlin addition formula (issue #13)
@@ -49,7 +50,7 @@ so the headline `abramov_rokhlin` is **sorry-free modulo that one supplied ident
 * Peter Walters, *An Introduction to Ergodic Theory*, GTM **79**, Springer (1982), Ch. 4.
 -/
 
-open MeasureTheory Function
+open MeasureTheory Function Filter Topology
 
 namespace Oseledets.Entropy
 
@@ -97,5 +98,35 @@ theorem abramov_rokhlin
     factor_relative_eq hT hS hfac.1 hfac.2.2 R
   -- Pure `EReal` assembly: combine the two real coercions on the right via `EReal.coe_add`.
   rw [hredT, hredS, hredRel, hBA, hfre, EReal.coe_add]
+
+/-- **The Abramov–Rokhlin addition formula, with the partition-level identity (B6a) discharged down
+to its single analytic residual.** This is the sharpened form of `abramov_rokhlin`: instead of
+supplying the whole partition-level identity `hBA`, it supplies only the **W3 σ-convergence**
+hypothesis `hW3` (the Cesàro limit of the conditional cell-form sequence equals the relative
+entropy) together with the structural per-`n` refinement `hrefine` (each cell of the `P`-join lies
+`μ`-a.e. in a single cell of the `π⁻¹R`-join). The partition-level identity is then *proved* via
+`abramovRokhlin_partition_of_W3` — its finite/algebraic skeleton (the refinement collapse, the
+per-`n` chain rule, the divide-by-`n` Fekete assembly) is all sorry-free — so the only remaining
+supplied analytic input is the martingale/σ-convergence limit `hW3`. -/
+theorem abramov_rokhlin_of_W3
+    {μ : Measure α} {ν : Measure β} [IsProbabilityMeasure μ] [IsProbabilityMeasure ν]
+    {T : α → α} {S : β → β} {π : α → β}
+    (hfac : IsFactorMap π T S μ ν)
+    (hT : MeasurePreserving T μ μ) (hS : MeasurePreserving S ν ν)
+    (P : MeasurePartition μ (Fin n)) (R : MeasurePartition ν (Fin m))
+    (hm : MeasurableSpace.comap π mβ ≤ mα)
+    (hinv : MeasurableSpace.comap T (MeasurableSpace.comap π mβ) ≤ MeasurableSpace.comap π mβ)
+    (hredT : ksEntropy hT = ((ksEntropyPartition hT P : ℝ) : EReal))
+    (hredS : ksEntropy hS = ((ksEntropyPartition hS R : ℝ) : EReal))
+    (hredRel : condKsEntropy hm hT hinv
+        = ((condKsEntropyPartition hm hT hinv P : ℝ) : EReal))
+    (g : ∀ k, (Fin k → Fin n) → (Fin k → Fin m))
+    (hrefine : ∀ k f, (ksJoin hT P k).cells f ≤ᵐ[μ]
+        (ksJoin hT (R.pulledBack hfac.1) k).cells (g k f))
+    (hW3 : Tendsto (fun k => condCellSeq hT (R.pulledBack hfac.1) P k / k) atTop
+        (𝓝 (condKsEntropyPartition hm hT hinv P))) :
+    ksEntropy hT = ksEntropy hS + condKsEntropy hm hT hinv :=
+  abramov_rokhlin hfac hT hS P R hm hinv hredT hredS hredRel
+    (abramovRokhlin_partition_of_W3 hm hT hinv (R.pulledBack hfac.1) P g hrefine hW3)
 
 end Oseledets.Entropy

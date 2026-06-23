@@ -1707,3 +1707,17 @@ info: 'Oseledets.Examples.Rokhlin.ksEntropyPartition_doublingMap_eq_log_two' dep
 /-- info: 'Oseledets.Entropy.abramov_rokhlin' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms Oseledets.Entropy.abramov_rokhlin
+
+-- Issue #13 §5b: the partition-level Abramov–Rokhlin skeleton (B6a reduced to the W3 limit).
+
+/-- info: 'Oseledets.Entropy.entropy_joinCells_of_refines' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.Entropy.entropy_joinCells_of_refines
+
+/-- info: 'Oseledets.Entropy.abramovRokhlin_partition_of_W3' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.Entropy.abramovRokhlin_partition_of_W3
+
+/-- info: 'Oseledets.Entropy.abramov_rokhlin_of_W3' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.Entropy.abramov_rokhlin_of_W3
