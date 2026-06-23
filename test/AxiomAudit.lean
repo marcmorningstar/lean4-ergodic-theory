@@ -125,6 +125,7 @@ import Oseledets.Entropy.CondChainRule
 import Oseledets.Entropy.CondPullback
 import Oseledets.Entropy.CondJointPullback
 import Oseledets.Entropy.CondMono
+import Oseledets.Entropy.CondEntropyContinuous
 import Oseledets.Entropy.CondKSEntropySystem
 import Oseledets.Entropy.FactorEntropy
 import Oseledets.Entropy.AbramovRokhlin
@@ -1721,3 +1722,7 @@ info: 'Oseledets.Examples.Rokhlin.ksEntropyPartition_doublingMap_eq_log_two' dep
 /-- info: 'Oseledets.Entropy.abramov_rokhlin_of_W3' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms Oseledets.Entropy.abramov_rokhlin_of_W3
+
+/-- info: 'Oseledets.Entropy.condEntropy_tendsto_iSup' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.Entropy.condEntropy_tendsto_iSup

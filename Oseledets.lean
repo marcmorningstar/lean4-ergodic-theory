@@ -147,6 +147,7 @@ import Oseledets.Entropy.CondPartition
 import Oseledets.Entropy.CondExpEquivariant
 import Oseledets.Entropy.CondPullback
 import Oseledets.Entropy.CondMono
+import Oseledets.Entropy.CondEntropyContinuous
 import Oseledets.Entropy.CondChainRule
 import Oseledets.Entropy.CondJointPullback
 import Oseledets.Entropy.CondKSEntropy
