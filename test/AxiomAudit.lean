@@ -153,6 +153,7 @@ import Oseledets.Krieger.ColumnCode
 import Oseledets.Krieger.TowerCode
 import Oseledets.Krieger.SMBLeaves
 import Oseledets.Krieger.CodeTerm
+import Oseledets.Krieger.UpperSMB
 
 /-!
 # Axiom audit
@@ -2134,3 +2135,18 @@ axioms: [propext, Classical.choice, Quot.sound] -/
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms Oseledets.Krieger.ColumnLayoutData.codes
+
+-- Issue #15 (unconditional drive): the analytic side CLOSED. Adversarial catch: the literal hbreiman
+-- is off-by-one for infoFun (conditions on 𝒞₀..𝒞ₙ₋₁, not 𝒞₁..𝒞ₙ); resolved via the true edge-form
+-- telescoping + orbital decay. ae_tendsto_div_infoFun_self = the UNCONDITIONAL pointwise SMB; and
+-- UpperSMBInMeasure is now a THEOREM (upperSMBInMeasure_of_ergodic), discharging C2's hypothesis.
+
+/-- info: 'Oseledets.Krieger.ae_tendsto_div_infoFun_self' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Krieger.ae_tendsto_div_infoFun_self
+
+/-- info: 'Oseledets.Krieger.upperSMBInMeasure_of_ergodic' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Krieger.upperSMBInMeasure_of_ergodic
