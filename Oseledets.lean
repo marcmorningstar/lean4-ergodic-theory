@@ -207,6 +207,7 @@ import Oseledets.Krieger.SMBSharp
 import Oseledets.Krieger.CodeMap
 import Oseledets.Krieger.NameCountSharp
 import Oseledets.Krieger.KeaneSerafin
+import Oseledets.Krieger.Recovery
 
 /-!
 # Oseledets
