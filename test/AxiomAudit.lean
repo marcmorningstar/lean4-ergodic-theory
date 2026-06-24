@@ -139,6 +139,8 @@ import Oseledets.Krieger.NameCount
 import Oseledets.Krieger.RokhlinTower
 import Oseledets.Krieger.Coding
 import Oseledets.Krieger.Krieger
+import Oseledets.Krieger.CountableEntropy
+import Oseledets.Krieger.SMB
 
 /-!
 # Axiom audit
@@ -1810,15 +1812,25 @@ info: 'Oseledets.Entropy.condEntropyGivenPartition_eq_condEntropy_generated' dep
 #guard_msgs in
 #print axioms Oseledets.Krieger.comap_twoSidedSat_le
 
-/-- info: 'Oseledets.Krieger.IsGeneratingTwoSided.of_le' depends on axioms:
+/-- info: 'Oseledets.Krieger.IsGeneratingTwoSidedMod0.of_codes' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
-#guard_msgs in
-#print axioms Oseledets.Krieger.IsGeneratingTwoSided.of_le
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Krieger.IsGeneratingTwoSidedMod0.of_codes
 
-/-- info: 'Oseledets.Krieger.CodesTwoSided.isGeneratingTwoSided' depends on axioms:
+/-- info: 'Oseledets.Krieger.CodesTwoSidedMod0.isGeneratingTwoSidedMod0' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
-#guard_msgs in
-#print axioms Oseledets.Krieger.CodesTwoSided.isGeneratingTwoSided
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Krieger.CodesTwoSidedMod0.isGeneratingTwoSidedMod0
+
+/-- info: 'Oseledets.Krieger.isGeneratingTwoSidedMod0_of_literal' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Krieger.isGeneratingTwoSidedMod0_of_literal
+
+/-- info: 'Oseledets.Krieger.codesTwoSidedMod0_of_aeRecovery' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Krieger.codesTwoSidedMod0_of_aeRecovery
 
 /-- info: 'Oseledets.Krieger.krieger_finite_generator_of_coding' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
@@ -1829,3 +1841,26 @@ info: 'Oseledets.Entropy.condEntropyGivenPartition_eq_condEntropy_generated' dep
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms Oseledets.Krieger.krieger_finite_generator
+
+-- Issue #15 (unconditional drive, Wave 0): countable-partition Shannon entropy + the
+-- finite-static-entropy criterion (Downarowicz Fact 1.1.4), infrastructure for the
+-- finite-entropy countable generator (sub-problem A).
+
+/-- info: 'Oseledets.Krieger.cHμ_summable_of_summable_index_mul' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.Krieger.cHμ_summable_of_summable_index_mul
+
+-- Issue #15 (unconditional drive, Wave 0): SMB infrastructure — the uniform partition-function
+-- bound and the crude-rate name-count limsup (Birkhoff-free, Markov + Borel–Cantelli). The sharp
+-- rate (1/n)·infoFun → h is the residual (Chung L¹ maximal domination + the lower-half assembly).
+
+/-- info: 'Oseledets.Krieger.lintegral_exp_infoFun_sub_log_card_le_one' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Krieger.lintegral_exp_infoFun_sub_log_card_le_one
+
+/-- info: 'Oseledets.Krieger.ae_limsup_div_infoFun_le_log_card' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Krieger.ae_limsup_div_infoFun_le_log_card

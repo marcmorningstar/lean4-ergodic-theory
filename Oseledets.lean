@@ -199,6 +199,8 @@ import Oseledets.Krieger.TowerBase
 import Oseledets.Krieger.RokhlinTower
 import Oseledets.Krieger.Coding
 import Oseledets.Krieger.Krieger
+import Oseledets.Krieger.CountableEntropy
+import Oseledets.Krieger.SMB
 
 /-!
 # Oseledets

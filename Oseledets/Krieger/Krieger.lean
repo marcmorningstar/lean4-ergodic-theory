@@ -18,7 +18,7 @@ recovery core of `Oseledets.Krieger.Coding`.
 Let `e : α ≃ᵐ α` be an **ergodic, aperiodic, measure-preserving automorphism** of a standard-Borel
 probability space `(α, μ)`, with finite Kolmogorov–Sinai entropy `h`. If `k : ℕ` satisfies
 `Real.log k > h`, then `e` admits a **finite two-sided generator of size `≤ k`**: a partition
-`P : MeasurePartition μ (Fin k)` that is `IsGeneratingTwoSided`.
+`P : MeasurePartition μ (Fin k)` that is `IsGeneratingTwoSidedMod0` (generates mod 0).
 
 The proof has three layers, of which this file is the top:
 
@@ -26,21 +26,33 @@ The proof has three layers, of which this file is the top:
 * **M2 (name count).** `(1 / N) · info ≤ h` a.e., so the number of distinct `N`-names of a fixed
   generator `Q` along the tower columns is `≤ kᴺ` up to `ε` whenever `log k > h`.
 * **M3 (coding + recovery, this development).** The combinatorics of M1+M2 build a `Fin k`-valued
-  partition `P` that **codes** a (two-sided) generator `Q` — i.e. the two-sided `P`-itinerary
-  recovers each `Q`-cell (`Oseledets.Krieger.CodesTwoSided`). The recovery core
-  (`Oseledets.Krieger.IsGeneratingTwoSided.of_le`) then promotes `P` to a two-sided generator.
+  partition `P` that **codes** a (two-sided) generator `Q` **mod 0** — i.e. the two-sided
+  `P`-itinerary recovers each `Q`-cell up to a μ-null set (`Oseledets.Krieger.CodesTwoSidedMod0`).
+  The recovery core (`Oseledets.Krieger.IsGeneratingTwoSidedMod0.of_codes`) then promotes `P` to a
+  two-sided generator mod 0.
+
+## Why *mod 0*
+
+Generators in ergodic theory always generate the σ-algebra **up to null sets** (mod 0): the Krieger
+construction produces an a.e.-defined, a.e.-invertible code, which recovers each generator cell
+only modulo a μ-null set. Against an honest standard-Borel (non-`μ`-complete) `mα` this *cannot*
+establish a literal σ-algebra equality, so the headline is — faithfully — phrased with the mod-0
+conditions `IsGeneratingTwoSidedMod0` / `CodesTwoSidedMod0` (the μ-completion of the two-sided
+saturation is the full ambient). See `Oseledets.Krieger.Coding` for the mod-0 development and
+`Oseledets.Krieger.isGeneratingTwoSidedMod0_of_literal` for faithfulness (literal ⟹ mod 0).
 
 ## What is proved here, and what is supplied
 
-The **recovery half** — that a code of a two-sided generator is a two-sided generator — is proved
-*unconditionally* in `Oseledets.Krieger.Coding` and is wired in here. The **coding-existence half**
-— that `log k > h` (plus ergodicity, aperiodicity, the Rokhlin tower and the name count) yields a
-`Fin k`-valued code of a two-sided generator — is the genuine combinatorial crux of Krieger's
-theorem; it is consumed here through the named hypothesis `KriegerCodingData` (the existence of the
-coded partition), exactly the object the M1+M2 layers produce. Both packaged forms are provided:
+The **recovery half** — that a mod-0 code of a mod-0 two-sided generator is a mod-0 two-sided
+generator — is proved *unconditionally* in `Oseledets.Krieger.Coding` and is wired in here. The
+**coding-existence half** — that `log k > h` (plus ergodicity, aperiodicity, the Rokhlin tower and
+the name count) yields a `Fin k`-valued mod-0 code of a two-sided generator — is the genuine
+combinatorial crux of Krieger's theorem; it is consumed here through the named hypothesis
+`KriegerCodingData` (the existence of the coded partition), exactly the object the M1+M2 layers
+produce. Both packaged forms are provided:
 
 * `krieger_finite_generator_of_coding`: the clean assembly — given a `KriegerCodingData`, exhibit
-  the finite two-sided generator. **Fully proved, unconditionally.**
+  the finite mod-0 two-sided generator. **Fully proved, unconditionally.**
 * `krieger_finite_generator`: the faithful headline carrying all of Krieger's hypotheses
   (ergodicity, aperiodicity, measure preservation, the entropy threshold `Real.log k > h`) together
   with the coding-existence hypothesis; it specializes the assembly. The entropy threshold and the
@@ -52,8 +64,8 @@ coded partition), exactly the object the M1+M2 layers produce. Both packaged for
 
 * `Oseledets.Krieger.Aperiodic`: a.e.-aperiodicity of `e` (no nontrivial periodic points up to a
   null set) — the form the Rokhlin lemma consumes.
-* `Oseledets.Krieger.KriegerCodingData`: the existence of a `Fin k`-valued code of a two-sided
-  generator — the conclusion of the M1+M2 coding combinatorics.
+* `Oseledets.Krieger.KriegerCodingData`: the existence of a `Fin k`-valued mod-0 code of a mod-0
+  two-sided generator — the conclusion of the M1+M2 coding combinatorics.
 
 ## Main results
 
@@ -88,53 +100,61 @@ tower construction consumes. -/
 def Aperiodic (e : α ≃ᵐ α) (μ : Measure α) : Prop :=
   ∀ n : ℤ, n ≠ 0 → μ {x | ziter e n x = x} = 0
 
-/-- **The coding data produced by the Krieger combinatorics (M1 + M2).** Bundles a finite index
-type `κ` with a partition `Q` that two-sidedly generates `(α, e, μ)`, together with a `Fin k`-valued
-partition `P` that *codes* `Q` two-sidedly (the two-sided `P`-itinerary recovers each `Q`-cell,
-`Oseledets.Krieger.CodesTwoSided`).
+/-- **The coding data produced by the Krieger combinatorics (M1 + M2).** Bundles the
+measure-preservation of `e`, a finite index type `κ` with a partition `Q` that two-sidedly generates
+`(α, e, μ)` **mod 0**, together with a `Fin k`-valued partition `P` that *codes* `Q` two-sidedly
+**mod 0** (the two-sided `P`-itinerary recovers each `Q`-cell up to a μ-null set,
+`Oseledets.Krieger.CodesTwoSidedMod0`).
 
 This is exactly the object the Rokhlin-tower + name-count construction yields when `Real.log k > h`:
 `Q` is a fixed two-sided generator (it exists because `α` is standard Borel), and `P` is the
-column-coding partition built from the `≤ kᴺ` name bound. The headline turns a `KriegerCodingData`
-into a finite two-sided generator by recovery. -/
+column-coding partition built from the `≤ kᴺ` name bound, which recovers the `Q`-name only a.e. The
+headline turns a `KriegerCodingData` into a finite mod-0 two-sided generator by recovery. The
+measure-preservation `mp` is carried because the mod-0 recovery
+(`Oseledets.Krieger.IsGeneratingTwoSidedMod0.of_codes`) needs it: preimage under the iterates `eⁿ`
+must commute with the μ-completion. -/
 structure KriegerCodingData (e : α ≃ᵐ α) (μ : Measure α) (k : ℕ) where
+  /-- `e` is measure preserving (needed for mod-0 shift-invariance of the saturation). -/
+  mp : MeasurePreserving (e : α → α) μ μ
   /-- The (finite) index type of the auxiliary generator `Q`. -/
   κ : Type*
   /-- `κ` is finite — `Q` is a finite partition. -/
   fintypeκ : Fintype κ
-  /-- A finite partition that two-sidedly generates the dynamics. -/
+  /-- A finite partition that two-sidedly generates the dynamics mod 0. -/
   gen : MeasurePartition μ κ
   /-- The candidate `Fin k`-valued coding partition. -/
   code : MeasurePartition μ (Fin k)
-  /-- The generator `Q = gen` two-sidedly generates `(α, e, μ)`. -/
-  gen_generating : IsGeneratingTwoSided e gen
-  /-- The coding partition `P = code` codes `Q` two-sidedly: its two-sided itinerary recovers each
-  cell of `Q`. -/
-  code_codes : CodesTwoSided e gen code
+  /-- The generator `Q = gen` two-sidedly generates `(α, e, μ)` mod 0. -/
+  gen_generating : IsGeneratingTwoSidedMod0 e gen
+  /-- The coding partition `P = code` codes `Q` two-sidedly mod 0: its two-sided itinerary recovers
+  each cell of `Q` up to a μ-null set. -/
+  code_codes : CodesTwoSidedMod0 e gen code
 
 attribute [instance] KriegerCodingData.fintypeκ
 
 /-- **The recovery assembly of Krieger's theorem.** Given coding data `D` — a `Fin k`-valued
-partition `D.code` that two-sidedly codes a two-sided generator `D.gen` — the coding partition
-itself is a finite two-sided generator. This is the unconditional top layer: it is exactly
-`Oseledets.Krieger.CodesTwoSided.isGeneratingTwoSided` applied to `D`, repackaged as an existence
-statement.
+partition `D.code` that two-sidedly codes, mod 0, a mod-0 two-sided generator `D.gen` — the coding
+partition itself is a finite **mod-0** two-sided generator. This is the unconditional top layer: it
+is exactly `Oseledets.Krieger.CodesTwoSidedMod0.isGeneratingTwoSidedMod0` applied to `D`, repackaged
+as an existence statement.
 
 No entropy, ergodicity, or aperiodicity hypotheses enter here: those are consumed *upstream*, in
 producing the coding data `D`. This lemma is the pure recovery content of Krieger's theorem. -/
 theorem krieger_finite_generator_of_coding {e : α ≃ᵐ α} {k : ℕ}
     (D : KriegerCodingData e μ k) :
-    ∃ P : MeasurePartition μ (Fin k), IsGeneratingTwoSided e P :=
-  ⟨D.code, D.code_codes.isGeneratingTwoSided D.gen_generating⟩
+    ∃ P : MeasurePartition μ (Fin k), IsGeneratingTwoSidedMod0 e P :=
+  ⟨D.code, D.code_codes.isGeneratingTwoSidedMod0 D.mp D.gen_generating⟩
 
 /-- **Krieger's finite generator theorem (headline assembly).**
 
 Let `e : α ≃ᵐ α` be an ergodic, aperiodic, measure-preserving automorphism of a standard-Borel
 probability space `(α, μ)` with Kolmogorov–Sinai entropy `h := (ksEntropy he).toReal`. If
 `k : ℕ` satisfies `Real.log k > h`, and the Krieger coding construction supplies a `Fin k`-valued
-code of a two-sided generator (`KriegerCodingData e μ k`), then `e` admits a **finite two-sided
-generator of size `≤ k`**: a partition `P : MeasurePartition μ (Fin k)` with
-`IsGeneratingTwoSided e P`.
+mod-0 code of a mod-0 two-sided generator (`KriegerCodingData e μ k`), then `e` admits a **finite
+two-sided generator of size `≤ k`, mod 0**: a partition `P : MeasurePartition μ (Fin k)` with
+`IsGeneratingTwoSidedMod0 e P` (the μ-completion of its two-sided saturation is the full ambient
+σ-algebra). The mod-0 conclusion is the standard, faithful form of Krieger's theorem: ergodic-theory
+generators generate up to null sets (see `Oseledets.Krieger.Coding`).
 
 The dynamical hypotheses (`herg`, `hap`, `he`) and the entropy threshold `hk : Real.log k > h` are
 precisely the inputs the upstream M1 (Rokhlin tower) and M2 (name count) layers consume to *produce*
@@ -146,7 +166,7 @@ theorem krieger_finite_generator [IsProbabilityMeasure μ] {e : α ≃ᵐ α}
     (_he : MeasurePreserving (e : α → α) μ μ) (_herg : Ergodic (e : α → α) μ)
     (_hap : Aperiodic e μ) {k : ℕ} {h : ℝ} (_hk : Real.log k > h)
     (hcode : KriegerCodingData e μ k) :
-    ∃ P : MeasurePartition μ (Fin k), IsGeneratingTwoSided e P :=
+    ∃ P : MeasurePartition μ (Fin k), IsGeneratingTwoSidedMod0 e P :=
   krieger_finite_generator_of_coding hcode
 
 end Oseledets.Krieger
