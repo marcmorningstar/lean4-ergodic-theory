@@ -142,6 +142,7 @@ import Oseledets.Krieger.Krieger
 import Oseledets.Krieger.CountableEntropy
 import Oseledets.Krieger.SMB
 import Oseledets.Krieger.Generator
+import Oseledets.Krieger.PrefixCode
 
 /-!
 # Axiom audit
@@ -1879,3 +1880,21 @@ info: 'Oseledets.Entropy.condEntropyGivenPartition_eq_condEntropy_generated' dep
 axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms Oseledets.Krieger.exists_countable_twoSided_generator_of_keaneSerafinData
+
+-- Issue #15 (unconditional drive, Wave 1): the sentinel/comma-free prefix-code counting (C1) —
+-- the self-contained combinatorial core of the symbolic coding, fully closed (no residual).
+
+/-- info: 'Oseledets.Krieger.exists_sentinelEncoding' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Krieger.exists_sentinelEncoding
+
+/-- info: 'Oseledets.Krieger.sentinelEncodeList_injective' depends on axioms:
+[propext, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Krieger.sentinelEncodeList_injective
+
+/-- info: 'Oseledets.Krieger.pow_le_pow_iff_log' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Krieger.pow_le_pow_iff_log
