@@ -156,6 +156,7 @@ import Oseledets.Krieger.CodeTerm
 import Oseledets.Krieger.UpperSMB
 import Oseledets.Krieger.Interleave
 import Oseledets.Krieger.RefTower
+import Oseledets.Krieger.StageBuild
 
 /-!
 # Axiom audit
@@ -2188,3 +2189,29 @@ axioms: [propext, Classical.choice, Quot.sound] -/
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms Oseledets.Krieger.RefiningTowerCode.codes_ofStages
+
+-- Issue #15 (unconditional drive): the CONCRETE escape-symbol code. stageCode (one measurable code
+-- via getD…s, the escape symbol doubling as off-tower default AND column terminator) +
+-- measurable_stageCode + stageCode_predecessor (the W7/W8 bracketing proved UNCONDITIONALLY over the
+-- whole towerBase) + stageCode_of_tower (the full per-stage StageCode). Residual = cross-stage
+-- interleaving (one fixed code agreeing with each stageCode), carried in StageInput.
+
+/-- info: 'Oseledets.Krieger.measurable_stageCode' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Krieger.measurable_stageCode
+
+/-- info: 'Oseledets.Krieger.stageCode_predecessor' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Krieger.stageCode_predecessor
+
+/-- info: 'Oseledets.Krieger.stageCode_of_tower' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Krieger.stageCode_of_tower
+
+/-- info: 'Oseledets.Krieger.StageInput.codes' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Krieger.StageInput.codes
