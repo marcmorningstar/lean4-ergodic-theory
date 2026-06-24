@@ -210,6 +210,7 @@ import Oseledets.Krieger.KeaneSerafin
 import Oseledets.Krieger.Recovery
 import Oseledets.Krieger.SMBPointwise
 import Oseledets.Krieger.ColumnCode
+import Oseledets.Krieger.TowerCode
 
 /-!
 # Oseledets

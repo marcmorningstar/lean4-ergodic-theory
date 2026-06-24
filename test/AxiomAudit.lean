@@ -150,6 +150,7 @@ import Oseledets.Krieger.KeaneSerafin
 import Oseledets.Krieger.Recovery
 import Oseledets.Krieger.SMBPointwise
 import Oseledets.Krieger.ColumnCode
+import Oseledets.Krieger.TowerCode
 
 /-!
 # Axiom audit
@@ -2055,3 +2056,28 @@ axioms: [propext, Classical.choice, Quot.sound] -/
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms Oseledets.Krieger.SentinelColumnCode.codes
+
+-- Issue #15 (unconditional drive): the OFFSET-AWARE tower code. Adversarial catch: the bare
+-- sentinelParse is position-blind (parse_event_cannot_separate: same label at x and e·x), so the
+-- bare SentinelColumnCode.recovers is unsatisfiable. Fixed with blockOffset / sentinelParseAt
+-- (offset increases by 1 under the shift ⟹ can separate floors) + the floor-address map.
+
+/-- info: 'Oseledets.Krieger.parse_event_cannot_separate' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Krieger.parse_event_cannot_separate
+
+/-- info: 'Oseledets.Krieger.measurable_sentinelParseAt' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Krieger.measurable_sentinelParseAt
+
+/-- info: 'Oseledets.Krieger.measurable_floorAddr' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Krieger.measurable_floorAddr
+
+/-- info: 'Oseledets.Krieger.SentinelColumnCodeAt.codes' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Krieger.SentinelColumnCodeAt.codes
