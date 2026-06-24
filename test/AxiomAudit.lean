@@ -148,6 +148,7 @@ import Oseledets.Krieger.CodeMap
 import Oseledets.Krieger.NameCountSharp
 import Oseledets.Krieger.KeaneSerafin
 import Oseledets.Krieger.Recovery
+import Oseledets.Krieger.SMBPointwise
 
 /-!
 # Axiom audit
@@ -2008,3 +2009,28 @@ axioms: [propext, Classical.choice, Quot.sound] -/
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms Oseledets.Krieger.ColumnCodeData.codes
+
+-- Issue #15 (unconditional drive): pointwise SMB R3/R4 closed + R5 reduced. The conditional
+-- information function, the keystone ∫ g_𝒜 = H(P|𝒜), and the R4 Birkhoff main term are proved
+-- unconditionally; the full pointwise (1/n)infoFun → h is reduced to two named analytic leaves
+-- (the Chung Doob stopping-time tail + the Maker dominated-Cesàro), carried as hypotheses.
+
+/-- info: 'Oseledets.Krieger.integral_condInfoFun_eq_condEntropy' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Krieger.integral_condInfoFun_eq_condEntropy
+
+/-- info: 'Oseledets.Krieger.ae_tendsto_birkhoffAverage_condInfoFun_futureSigma' depends on
+axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Krieger.ae_tendsto_birkhoffAverage_condInfoFun_futureSigma
+
+/-- info: 'Oseledets.Krieger.lintegral_condInfoMaxFun_le_of_layer' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Krieger.lintegral_condInfoMaxFun_le_of_layer
+
+/-- info: 'Oseledets.Krieger.ae_tendsto_div_infoFun_of_tail' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Krieger.ae_tendsto_div_infoFun_of_tail
