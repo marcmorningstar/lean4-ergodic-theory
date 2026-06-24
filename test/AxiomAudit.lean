@@ -143,7 +143,6 @@ import Oseledets.Krieger.CountableEntropy
 import Oseledets.Krieger.SMB
 import Oseledets.Krieger.Generator
 import Oseledets.Krieger.PrefixCode
-import Oseledets.Krieger.SMBSharp
 
 /-!
 # Axiom audit
@@ -1882,6 +1881,31 @@ axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms Oseledets.Krieger.exists_countable_twoSided_generator_of_keaneSerafinData
 
+-- Issue #15 (unconditional drive, Wave 1): the cross-layer coding bridge — a *countable* mod-0
+-- two-sided generator (Generator layer) coded by a *Fintype* `Fin k` partition (Coding layer). The
+-- recovery `IsGeneratingTwoSidedMod0c.of_codesc` is what the refactored `KriegerCodingData`/headline
+-- now consume; `codesTwoSidedMod0c_of_aeRecovery` is the sufficient condition the C3 wave discharges.
+
+/-- info: 'Oseledets.Krieger.ctwoSidedSat_mono_of_codesc' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Krieger.ctwoSidedSat_mono_of_codesc
+
+/-- info: 'Oseledets.Krieger.IsGeneratingTwoSidedMod0c.of_codesc' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Krieger.IsGeneratingTwoSidedMod0c.of_codesc
+
+/-- info: 'Oseledets.Krieger.CodesTwoSidedMod0c.isGeneratingTwoSidedMod0' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Krieger.CodesTwoSidedMod0c.isGeneratingTwoSidedMod0
+
+/-- info: 'Oseledets.Krieger.codesTwoSidedMod0c_of_aeRecovery' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Krieger.codesTwoSidedMod0c_of_aeRecovery
+
 -- Issue #15 (unconditional drive, Wave 1): the sentinel/comma-free prefix-code counting (C1) —
 -- the self-contained combinatorial core of the symbolic coding, fully closed (no residual).
 
@@ -1899,17 +1923,3 @@ axioms: [propext, Classical.choice, Quot.sound] -/
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms Oseledets.Krieger.pow_le_pow_iff_log
-
--- Issue #15 (unconditional drive): sharp SMB integral-level identity h(P,T) = H(P | strict future),
--- via Breiman telescoping + the #13 Lévy theorem (unconditional; no Birkhoff/Chung at integral level).
--- The pointwise a.e. (1/n)·infoFun → h residual is R5 (Chung L¹ maximal domination) + Birkhoff assembly.
-
-/-- info: 'Oseledets.Krieger.ksEntropySeq_eq_sum_condEntropy' depends on axioms:
-[propext, Classical.choice, Quot.sound] -/
-#guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.ksEntropySeq_eq_sum_condEntropy
-
-/-- info: 'Oseledets.Krieger.ksEntropyPartition_eq_condEntropy_iSup' depends on axioms:
-[propext, Classical.choice, Quot.sound] -/
-#guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.ksEntropyPartition_eq_condEntropy_iSup

@@ -88,6 +88,8 @@ open MeasureTheory Function MeasurableSpace Filter
 
 namespace Oseledets.Krieger
 
+open Oseledets.Entropy
+
 variable {α : Type*} {κ : Type*} [mα : MeasurableSpace α] {μ : Measure α}
 
 /-! ### The `Countable`-indexed two-sided saturation and mod-0 generation
@@ -137,6 +139,104 @@ theorem comap_eventuallyMeasurableSpace_ctwoSidedSat_le (e : α ≃ᵐ α)
   le_trans (comap_eventuallyMeasurableSpace_le
       (measurePreserving_ziter e he m).quasiMeasurePreserving)
     (eventuallyMeasurableSpace_mono (comap_ctwoSidedSat_le e Q m))
+
+/-! ### The cross-layer coding predicate: a countable generator coded by a `Fintype` partition
+
+Krieger's construction codes the **countable** finite-entropy generator `Q : κ → Set α` (sub-problem
+A, `exists_countable_twoSided_generator`) into a **`Fin k`/`Fintype`** partition `P` (sub-problem B,
+the Rokhlin-tower / name-count combinatorics). The two saturation layers therefore meet here: `Q`
+lives in the `Countable` layer (`ctwoSidedSat`, `IsGeneratingTwoSidedMod0c`) while `P` lives in the
+`Fintype` layer of `Coding.lean` (`twoSidedSat`, `IsGeneratingTwoSidedMod0`). The bridge is the
+**cross-layer coding predicate** `CodesTwoSidedMod0c e Q P`: every cell of the countable `Q` is
+recovered, mod 0, by the two-sided `P`-itinerary of the finite partition. From it the **cross-layer
+recovery** (`IsGeneratingTwoSidedMod0c.of_codesc`) promotes a mod-0 countable two-sided generator
+`Q` to the mod-0 finite two-sided generator `P` — the exact step the headline assembly needs. -/
+
+variable {ι : Type*} [Fintype ι]
+
+/-- **The cross-layer mod-0 coding predicate.** A `Fintype`-indexed (`Fin k`-valued) partition
+`P : MeasurePartition μ ι` *codes* a **countable** family of cells `Q : κ → Set α` two-sidedly mod 0
+under `e` when every cell of `Q` is recovered, up to a μ-null set, by the two-sided `P`-itinerary:
+`generateFrom (range Q) ≤ eventuallyMeasurableSpace (twoSidedSat e P) (ae μ)`.
+
+The left-hand σ-algebra is the *static* σ-algebra `σ(Q) = generateFrom (range Q)` of the countable
+family — exactly the `n = 0` term of `ctwoSidedSat e Q`, matching how `IsGeneratingTwoSidedMod0c`
+and `ctwoSidedSat` are phrased. The right-hand side is the μ-completion of the *finite* partition's
+two-sided saturation `Oseledets.Krieger.twoSidedSat`. This is the conclusion of the symbolic block
+code: off a null set, the two-sided `P`-itinerary of a point determines its `Q`-name, hence which
+`Q`-cell it lies in. -/
+def CodesTwoSidedMod0c (e : α ≃ᵐ α) (Q : κ → Set α) (P : MeasurePartition μ ι) : Prop :=
+  generateFrom (Set.range Q) ≤ eventuallyMeasurableSpace (twoSidedSat e P) (ae μ)
+
+/-- **Cross-layer mod-0 recovery / refinement monotonicity.** If every cell of the countable family
+`Q` is recovered mod 0 by the two-sided saturation of the finite partition `P`
+(`σ(Q) ≤ completion (twoSidedSat e P)`), then the *entire* countable two-sided saturation of `Q` is
+contained in that completion: `ctwoSidedSat e Q ≤ completion (twoSidedSat e P)`.
+
+Each `ℤ`-term `comap (eᵐ) σ(Q)` of `ctwoSidedSat e Q` is bounded, by `comap`-monotonicity in the
+hypothesis, by `comap (eᵐ) (completion (twoSidedSat e P))`, which is bounded by
+`completion (twoSidedSat e P)` by mod-0 shift-invariance of the *finite* saturation
+(`Oseledets.Krieger.comap_eventuallyMeasurableSpace_twoSidedSat_le`). Taking the supremum over `m`
+gives the claim. This is the cross-layer analogue of
+`Oseledets.Krieger.twoSidedSat_mono_of_codes`. -/
+theorem ctwoSidedSat_mono_of_codesc (e : α ≃ᵐ α)
+    (he : MeasurePreserving (e : α → α) μ μ) (P : MeasurePartition μ ι) (Q : κ → Set α)
+    (hrec : generateFrom (Set.range Q) ≤ eventuallyMeasurableSpace (twoSidedSat e P) (ae μ)) :
+    ctwoSidedSat e Q ≤ eventuallyMeasurableSpace (twoSidedSat e P) (ae μ) := by
+  rw [ctwoSidedSat_def]
+  refine iSup_le fun m => ?_
+  exact le_trans (MeasurableSpace.comap_mono hrec)
+    (comap_eventuallyMeasurableSpace_twoSidedSat_le e he P m)
+
+/-- **Cross-layer recovery lifts a mod-0 countable two-sided generator to a finite one.** If the
+countable family `Q` two-sidedly generates `(α, e, μ)` mod 0 (`IsGeneratingTwoSidedMod0c μ e Q`) and
+the two-sided itinerary of the *finite* partition `P` recovers each cell of `Q` mod 0
+(`CodesTwoSidedMod0c e Q P`), then `P` two-sidedly generates mod 0 in the `Fintype` sense
+(`Oseledets.Krieger.IsGeneratingTwoSidedMod0 e P`).
+
+`mα ≤ completion (ctwoSidedSat e Q)` (by `Q`'s mod-0 generation) and
+`completion (ctwoSidedSat e Q) ≤ completion (completion (twoSidedSat e P)) ≤ completion
+(twoSidedSat e P)` by cross-layer recovery monotonicity (`ctwoSidedSat_mono_of_codesc`),
+completion-monotonicity (`Oseledets.Krieger.eventuallyMeasurableSpace_mono`), and
+completion-idempotence (`Oseledets.Krieger.eventuallyMeasurableSpace_idem`). Chaining gives
+`mα ≤ completion (twoSidedSat e P)`, i.e. `IsGeneratingTwoSidedMod0 e P`. This is the cross-layer
+analogue of `Oseledets.Krieger.IsGeneratingTwoSidedMod0.of_codes`, bridging the `Countable` layer
+(`Generator.lean`) to the `Fintype` layer (`Coding.lean`). -/
+theorem IsGeneratingTwoSidedMod0c.of_codesc {e : α ≃ᵐ α}
+    (he : MeasurePreserving (e : α → α) μ μ) {P : MeasurePartition μ ι} {Q : κ → Set α}
+    (hQ : IsGeneratingTwoSidedMod0c μ e Q) (hrec : CodesTwoSidedMod0c e Q P) :
+    IsGeneratingTwoSidedMod0 e P :=
+  le_trans hQ
+    (le_trans (eventuallyMeasurableSpace_mono (ctwoSidedSat_mono_of_codesc e he P Q hrec))
+      eventuallyMeasurableSpace_idem)
+
+/-- A cross-layer mod-0 code of a mod-0 countable two-sided generator is a mod-0 finite two-sided
+generator — the cross-layer headline reduction. Immediate from
+`IsGeneratingTwoSidedMod0c.of_codesc` and the definition of `CodesTwoSidedMod0c`. -/
+theorem CodesTwoSidedMod0c.isGeneratingTwoSidedMod0 {e : α ≃ᵐ α}
+    (he : MeasurePreserving (e : α → α) μ μ) {Q : κ → Set α} {P : MeasurePartition μ ι}
+    (hQ : IsGeneratingTwoSidedMod0c μ e Q) (hP : CodesTwoSidedMod0c e Q P) :
+    IsGeneratingTwoSidedMod0 e P :=
+  IsGeneratingTwoSidedMod0c.of_codesc he hQ hP
+
+/-- **The convenient sufficient condition for the cross-layer symbolic-code layer (C3).** To
+establish a cross-layer mod-0 code `CodesTwoSidedMod0c e Q P` of a *countable* family
+`Q : κ → Set α` it suffices to exhibit, for each cell `Q j`, a `twoSidedSat e P`-measurable set
+`t` with `Q j =ᵐ[μ] t` — i.e. to recover every `Q`-cell, up to a μ-null set, from the two-sided
+`P`-itinerary
+of the finite partition `P`. This is exactly the output of an a.e.-injective measurable block code
+`π : α → (ℤ → Fin k)` that recovers the countable `Q`-name a.e.: each `Q`-cell is, mod 0, a cylinder
+event in the `P`-itinerary, hence `twoSidedSat e P`-measurable mod 0.
+
+Formally, `σ(Q) = generateFrom (range Q)`, so `generateFrom_le` reduces the goal to the cells (the
+range of `Q`), each handled by the hypothesis. This is the countable analogue of
+`Oseledets.Krieger.codesTwoSidedMod0_of_aeRecovery`. -/
+theorem codesTwoSidedMod0c_of_aeRecovery {e : α ≃ᵐ α} {Q : κ → Set α} {P : MeasurePartition μ ι}
+    (hcode : ∀ j, ∃ t, @MeasurableSet α (twoSidedSat e P) t ∧ Q j =ᵐ[μ] t) :
+    CodesTwoSidedMod0c e Q P := by
+  refine MeasurableSpace.generateFrom_le ?_
+  rintro _ ⟨j, rfl⟩
+  exact hcode j
 
 /-! ### The generation criterion via a standard-Borel generating sequence
 

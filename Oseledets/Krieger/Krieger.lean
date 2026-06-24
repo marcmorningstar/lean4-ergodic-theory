@@ -3,7 +3,7 @@ Copyright (c) 2026 Marcel Morgenstern. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Marcel Morgenstern
 -/
-import Oseledets.Krieger.Coding
+import Oseledets.Krieger.Generator
 import Mathlib.Dynamics.Ergodic.Ergodic
 
 /-!
@@ -101,42 +101,49 @@ def Aperiodic (e : α ≃ᵐ α) (μ : Measure α) : Prop :=
   ∀ n : ℤ, n ≠ 0 → μ {x | ziter e n x = x} = 0
 
 /-- **The coding data produced by the Krieger combinatorics (M1 + M2).** Bundles the
-measure-preservation of `e`, a finite index type `κ` with a partition `Q` that two-sidedly generates
-`(α, e, μ)` **mod 0**, together with a `Fin k`-valued partition `P` that *codes* `Q` two-sidedly
-**mod 0** (the two-sided `P`-itinerary recovers each `Q`-cell up to a μ-null set,
-`Oseledets.Krieger.CodesTwoSidedMod0`).
+measure-preservation of `e`, a **countable** index type `κ` with a family of cells `Q` that
+two-sidedly generates `(α, e, μ)` **mod 0** (`Oseledets.Krieger.IsGeneratingTwoSidedMod0c`, the
+`Countable`-layer condition), together with a `Fin k`-valued partition `P` that *codes* the
+countable `Q` two-sidedly **mod 0** across the two layers (the two-sided `P`-itinerary recovers each
+`Q`-cell up to a μ-null set, `Oseledets.Krieger.CodesTwoSidedMod0c`).
 
-This is exactly the object the Rokhlin-tower + name-count construction yields when `Real.log k > h`:
-`Q` is a fixed two-sided generator (it exists because `α` is standard Borel), and `P` is the
-column-coding partition built from the `≤ kᴺ` name bound, which recovers the `Q`-name only a.e. The
-headline turns a `KriegerCodingData` into a finite mod-0 two-sided generator by recovery. The
-measure-preservation `mp` is carried because the mod-0 recovery
-(`Oseledets.Krieger.IsGeneratingTwoSidedMod0.of_codes`) needs it: preimage under the iterates `eⁿ`
-must commute with the μ-completion. -/
+This is exactly the object the unconditional Krieger construction yields when `Real.log k > h`: `Q`
+is the **countable finite-entropy two-sided generator** produced by the Keane–Serafin / Downarowicz
+half (`Oseledets.Krieger.exists_countable_twoSided_generator`, sub-problem A), and `P` is the
+column-coding `Fin k` partition built from the `≤ kᴺ` name bound (sub-problem B), which recovers the
+countable `Q`-name only a.e. The two saturation layers — the `Countable` layer of `Generator.lean`
+for `Q` and the `Fintype` layer of `Coding.lean` for `P` — are bridged by `CodesTwoSidedMod0c`. The
+headline turns a `KriegerCodingData` into a finite mod-0 two-sided generator by the cross-layer
+recovery `Oseledets.Krieger.IsGeneratingTwoSidedMod0c.of_codesc`. The measure-preservation `mp` is
+carried because that recovery needs it: preimage under the iterates `eⁿ` must commute with the
+μ-completion. -/
 structure KriegerCodingData (e : α ≃ᵐ α) (μ : Measure α) (k : ℕ) where
   /-- `e` is measure preserving (needed for mod-0 shift-invariance of the saturation). -/
   mp : MeasurePreserving (e : α → α) μ μ
-  /-- The (finite) index type of the auxiliary generator `Q`. -/
+  /-- The (countable) index type of the auxiliary generator `Q`. -/
   κ : Type*
-  /-- `κ` is finite — `Q` is a finite partition. -/
-  fintypeκ : Fintype κ
-  /-- A finite partition that two-sidedly generates the dynamics mod 0. -/
-  gen : MeasurePartition μ κ
+  /-- `κ` is countable — `Q` is a countable (finite-entropy) generator. -/
+  countableκ : Countable κ
+  /-- A countable family of cells that two-sidedly generates the dynamics mod 0. -/
+  gen : κ → Set α
+  /-- Each cell of the countable generator is measurable. -/
+  gen_measurable : ∀ i, MeasurableSet (gen i)
   /-- The candidate `Fin k`-valued coding partition. -/
   code : MeasurePartition μ (Fin k)
-  /-- The generator `Q = gen` two-sidedly generates `(α, e, μ)` mod 0. -/
-  gen_generating : IsGeneratingTwoSidedMod0 e gen
-  /-- The coding partition `P = code` codes `Q` two-sidedly mod 0: its two-sided itinerary recovers
-  each cell of `Q` up to a μ-null set. -/
-  code_codes : CodesTwoSidedMod0 e gen code
+  /-- The countable generator `Q = gen` two-sidedly generates `(α, e, μ)` mod 0. -/
+  gen_generating : IsGeneratingTwoSidedMod0c μ e gen
+  /-- The coding partition `P = code` codes the countable `Q` two-sidedly mod 0 (cross-layer): its
+  two-sided itinerary recovers each cell of `Q` up to a μ-null set. -/
+  code_codes : CodesTwoSidedMod0c e gen code
 
-attribute [instance] KriegerCodingData.fintypeκ
+attribute [instance] KriegerCodingData.countableκ
 
 /-- **The recovery assembly of Krieger's theorem.** Given coding data `D` — a `Fin k`-valued
-partition `D.code` that two-sidedly codes, mod 0, a mod-0 two-sided generator `D.gen` — the coding
-partition itself is a finite **mod-0** two-sided generator. This is the unconditional top layer: it
-is exactly `Oseledets.Krieger.CodesTwoSidedMod0.isGeneratingTwoSidedMod0` applied to `D`, repackaged
-as an existence statement.
+partition `D.code` that two-sidedly codes, mod 0, the **countable** mod-0 two-sided generator
+`D.gen` — the coding partition itself is a finite **mod-0** two-sided generator. This is the
+unconditional top layer: it is exactly the cross-layer recovery
+`Oseledets.Krieger.CodesTwoSidedMod0c.isGeneratingTwoSidedMod0` applied to `D`, repackaged as an
+existence statement (bridging the `Countable` generator layer to the `Fintype` coding layer).
 
 No entropy, ergodicity, or aperiodicity hypotheses enter here: those are consumed *upstream*, in
 producing the coding data `D`. This lemma is the pure recovery content of Krieger's theorem. -/
