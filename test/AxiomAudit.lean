@@ -147,6 +147,7 @@ import Oseledets.Krieger.SMBSharp
 import Oseledets.Krieger.CodeMap
 import Oseledets.Krieger.NameCountSharp
 import Oseledets.Krieger.KeaneSerafin
+import Oseledets.Krieger.Recovery
 
 /-!
 # Axiom audit
@@ -1987,3 +1988,23 @@ axioms: [propext, Classical.choice, Quot.sound] -/
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms Oseledets.Krieger.exists_countable_twoSided_generator_of_levels
+
+-- Issue #15 (unconditional drive): the refining-tower recovery (sub-problem B). The two-sided
+-- recurrence tiling + Borel–Cantelli scaffolding are unconditional + sorry-free (the feared crux
+-- was cheap via Mathlib's Conservative API); the residual is the existence of a ColumnCodeData
+-- (the code symbol + the measurable bi-infinite sentinel parser — symbolic-dynamics infra Mathlib lacks).
+
+/-- info: 'Oseledets.Krieger.twoSided_recurrence' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Krieger.twoSided_recurrence
+
+/-- info: 'Oseledets.Krieger.codesTwoSidedMod0c_of_columnCode' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Krieger.codesTwoSidedMod0c_of_columnCode
+
+/-- info: 'Oseledets.Krieger.ColumnCodeData.codes' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Krieger.ColumnCodeData.codes
