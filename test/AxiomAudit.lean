@@ -133,6 +133,12 @@ import Oseledets.Entropy.CondGivenPartitionBridge
 import Oseledets.Entropy.AbramovRokhlin
 import Oseledets.Entropy.CondKSMovingLimit
 import Oseledets.Entropy.AbramovRokhlinGenerator
+import Oseledets.Krieger.ZIterate
+import Oseledets.Krieger.InfoFunction
+import Oseledets.Krieger.NameCount
+import Oseledets.Krieger.RokhlinTower
+import Oseledets.Krieger.Coding
+import Oseledets.Krieger.Krieger
 
 /-!
 # Axiom audit
@@ -1765,3 +1771,61 @@ info: 'Oseledets.Entropy.condEntropyGivenPartition_eq_condEntropy_generated' dep
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms Oseledets.Entropy.abramov_rokhlin_of_generator
+
+-- Issue #15: Krieger's finite generator theorem. The full M0–M3 infrastructure is sorry-free and
+-- axiom-clean: two-sided generation (M0), the Rokhlin tower (M1), the information function + the
+-- martingale-free name-count engine (M2), and the σ-algebra recovery core + the faithful headline
+-- `krieger_finite_generator` modulo the supplied finite coding `KriegerCodingData` (M3). The one
+-- residual to make the headline unconditional — constructing `KriegerCodingData` (a two-sided SMB +
+-- a finite-entropy countable generator + a symbolic block-code) — is a genuine multi-layer wall,
+-- not in Mathlib; it is NOT discharged here and carries no `sorry` (it is a hypothesis).
+
+/-- info: 'Oseledets.Krieger.isGeneratingOneSided_le_twoSided' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.Krieger.isGeneratingOneSided_le_twoSided
+
+/-- info: 'Oseledets.Krieger.rokhlin_tower' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.Krieger.rokhlin_tower
+
+/-- info: 'Oseledets.Krieger.rokhlin_tower_aux' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.Krieger.rokhlin_tower_aux
+
+/-- info: 'Oseledets.Krieger.integral_infoFun_eq' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.Krieger.integral_infoFun_eq
+
+/-- info: 'Oseledets.Krieger.ae_forall_eventually_div_infoFun_le' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.Krieger.ae_forall_eventually_div_infoFun_le
+
+/-- info: 'Oseledets.Krieger.comap_twoSidedSat_le' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.Krieger.comap_twoSidedSat_le
+
+/-- info: 'Oseledets.Krieger.IsGeneratingTwoSided.of_le' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.Krieger.IsGeneratingTwoSided.of_le
+
+/-- info: 'Oseledets.Krieger.CodesTwoSided.isGeneratingTwoSided' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.Krieger.CodesTwoSided.isGeneratingTwoSided
+
+/-- info: 'Oseledets.Krieger.krieger_finite_generator_of_coding' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.Krieger.krieger_finite_generator_of_coding
+
+/-- info: 'Oseledets.Krieger.krieger_finite_generator' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.Krieger.krieger_finite_generator
