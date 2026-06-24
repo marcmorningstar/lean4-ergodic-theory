@@ -158,6 +158,7 @@ import Oseledets.Krieger.Interleave
 import Oseledets.Krieger.RefTower
 import Oseledets.Krieger.StageBuild
 import Oseledets.Krieger.Weave
+import Oseledets.Krieger.Bracket
 
 /-!
 # Axiom audit
@@ -2232,3 +2233,18 @@ axioms: [propext, Classical.choice, Quot.sound] -/
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms Oseledets.Krieger.BracketedTowerSystem.codes
+
+-- Issue #15 (unconditional drive): the marker-set factoring. markerCode M emb dataLetter (s on M,
+-- data letters off M) is measurable (measurable_markerCode); AlignedTowerCastle reduces the three
+-- self-bracketing conditions to set-membership on ONE coherent marker set M. Sub-problem B's entire
+-- residual is now the EXISTENCE of M + nested towers — the Kakutani–Rokhlin nested aligned castle.
+
+/-- info: 'Oseledets.Krieger.measurable_markerCode' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Krieger.measurable_markerCode
+
+/-- info: 'Oseledets.Krieger.AlignedTowerCastle.codes' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Krieger.AlignedTowerCastle.codes
