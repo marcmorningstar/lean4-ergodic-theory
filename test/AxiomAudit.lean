@@ -152,6 +152,7 @@ import Oseledets.Krieger.SMBPointwise
 import Oseledets.Krieger.ColumnCode
 import Oseledets.Krieger.TowerCode
 import Oseledets.Krieger.SMBLeaves
+import Oseledets.Krieger.CodeTerm
 
 /-!
 # Axiom audit
@@ -2112,3 +2113,24 @@ axioms: [propext, Classical.choice, Quot.sound] -/
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms Oseledets.Krieger.tendsto_measure_div_infoFun_gt
+
+-- Issue #15 (unconditional drive): the offset/floor alignment — the heart of the tower code. On a
+-- column-tiled stream the offset-aware parser reads dec(column-block)(floorAddr), so sub-problem B's
+-- entire symbolic side reduces (sorry-free) to ONE field: ColumnLayoutData.recovers_tiled = the a.e.
+-- two-sided column tiling of one fixed interleaving code (the refining-tower / Borel–Cantelli limit;
+-- a single tower closes only mod-ε, not mod-0 — adversarially caught).
+
+/-- info: 'Oseledets.Krieger.sentinelParseAt_column' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Krieger.sentinelParseAt_column
+
+/-- info: 'Oseledets.Krieger.sentinelParseAt_itin_eq' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Krieger.sentinelParseAt_itin_eq
+
+/-- info: 'Oseledets.Krieger.ColumnLayoutData.codes' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Krieger.ColumnLayoutData.codes
