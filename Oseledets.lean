@@ -214,6 +214,7 @@ import Oseledets.Krieger.TowerCode
 import Oseledets.Krieger.SMBLeaves
 import Oseledets.Krieger.CodeTerm
 import Oseledets.Krieger.UpperSMB
+import Oseledets.Krieger.Interleave
 
 /-!
 # Oseledets

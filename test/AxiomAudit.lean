@@ -154,6 +154,7 @@ import Oseledets.Krieger.TowerCode
 import Oseledets.Krieger.SMBLeaves
 import Oseledets.Krieger.CodeTerm
 import Oseledets.Krieger.UpperSMB
+import Oseledets.Krieger.Interleave
 
 /-!
 # Axiom audit
@@ -2150,3 +2151,23 @@ axioms: [propext, Classical.choice, Quot.sound] -/
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms Oseledets.Krieger.upperSMBInMeasure_of_ergodic
+
+-- Issue #15 (unconditional drive): the refining-tower interleaving core. The Borel–Cantelli m→∞
+-- reduction + the parser/encode bridge are unconditional + sorry-free, reducing sub-problem B to ONE
+-- bundle RefiningTowerCode whose only genuine field is stage_tiled (the escape-symbol multi-stage
+-- construction repairing the hprev bottom-block defect — adversarially caught, 5th of the campaign).
+
+/-- info: 'Oseledets.Krieger.aeParse_of_aeStageTiled' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Krieger.aeParse_of_aeStageTiled
+
+/-- info: 'Oseledets.Krieger.sentinelParseAt_itin_of_encode' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Krieger.sentinelParseAt_itin_of_encode
+
+/-- info: 'Oseledets.Krieger.RefiningTowerCode.codes' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Krieger.RefiningTowerCode.codes
