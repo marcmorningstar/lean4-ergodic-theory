@@ -157,6 +157,7 @@ import Oseledets.Krieger.UpperSMB
 import Oseledets.Krieger.Interleave
 import Oseledets.Krieger.RefTower
 import Oseledets.Krieger.StageBuild
+import Oseledets.Krieger.Weave
 
 /-!
 # Axiom audit
@@ -2215,3 +2216,19 @@ axioms: [propext, Classical.choice, Quot.sound] -/
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms Oseledets.Krieger.StageInput.codes
+
+-- Issue #15 (unconditional drive): the cross-stage WEAVE. The derived-name trick (weaveName = read
+-- the master code off the column + invert through emb) makes code_floor/code_pred DEFINITIONAL
+-- (stageCode_weaveName_eq), so the overlap consistency is automatic — there is literally one code.
+-- Sub-problem B is reduced to ONE leaf: the existence of a BracketedTowerSystem (nested towers + one
+-- self-bracketed master code), the genuine Keane–Serafin nested-marker construction.
+
+/-- info: 'Oseledets.Krieger.stageCode_weaveName_eq' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Krieger.stageCode_weaveName_eq
+
+/-- info: 'Oseledets.Krieger.BracketedTowerSystem.codes' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Krieger.BracketedTowerSystem.codes

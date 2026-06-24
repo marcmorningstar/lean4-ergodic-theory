@@ -217,6 +217,7 @@ import Oseledets.Krieger.UpperSMB
 import Oseledets.Krieger.Interleave
 import Oseledets.Krieger.RefTower
 import Oseledets.Krieger.StageBuild
+import Oseledets.Krieger.Weave
 
 /-!
 # Oseledets
