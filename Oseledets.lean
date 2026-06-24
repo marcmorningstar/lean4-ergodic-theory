@@ -201,6 +201,7 @@ import Oseledets.Krieger.Coding
 import Oseledets.Krieger.Krieger
 import Oseledets.Krieger.CountableEntropy
 import Oseledets.Krieger.SMB
+import Oseledets.Krieger.Generator
 
 /-!
 # Oseledets

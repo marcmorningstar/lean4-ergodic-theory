@@ -141,6 +141,7 @@ import Oseledets.Krieger.Coding
 import Oseledets.Krieger.Krieger
 import Oseledets.Krieger.CountableEntropy
 import Oseledets.Krieger.SMB
+import Oseledets.Krieger.Generator
 
 /-!
 # Axiom audit
@@ -1864,3 +1865,17 @@ info: 'Oseledets.Entropy.condEntropyGivenPartition_eq_condEntropy_generated' dep
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms Oseledets.Krieger.ae_limsup_div_infoFun_le_log_card
+
+-- Issue #15 (unconditional drive, Wave 1): the finite-entropy countable two-sided generator
+-- (Keane–Serafin / Downarowicz Thm 4.2.3 first half) — the structural reduction is unconditional;
+-- the dynamical KeaneSerafinData (per-step SMB + Rokhlin recovery) is the isolated residual.
+
+/-- info: 'Oseledets.Krieger.exists_countable_twoSided_generator' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Krieger.exists_countable_twoSided_generator
+
+/-- info: 'Oseledets.Krieger.exists_countable_twoSided_generator_of_keaneSerafinData' depends on
+axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Krieger.exists_countable_twoSided_generator_of_keaneSerafinData
