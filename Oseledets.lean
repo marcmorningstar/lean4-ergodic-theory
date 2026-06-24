@@ -211,6 +211,7 @@ import Oseledets.Krieger.Recovery
 import Oseledets.Krieger.SMBPointwise
 import Oseledets.Krieger.ColumnCode
 import Oseledets.Krieger.TowerCode
+import Oseledets.Krieger.SMBLeaves
 
 /-!
 # Oseledets

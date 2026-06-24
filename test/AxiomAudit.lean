@@ -151,6 +151,7 @@ import Oseledets.Krieger.Recovery
 import Oseledets.Krieger.SMBPointwise
 import Oseledets.Krieger.ColumnCode
 import Oseledets.Krieger.TowerCode
+import Oseledets.Krieger.SMBLeaves
 
 /-!
 # Axiom audit
@@ -2081,3 +2082,33 @@ axioms: [propext, Classical.choice, Quot.sound] -/
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms Oseledets.Krieger.SentinelColumnCodeAt.codes
+
+-- Issue #15 (unconditional drive): BOTH analytic leaves of the pointwise SMB closed — the Chung
+-- Doob stopping-time tail (g* ∈ L¹) and the Maker/Breiman dominated-Cesàro. The pointwise SMB
+-- ae_tendsto_div_infoFun + the in-measure tendsto_measure_div_infoFun_gt (⟹ UpperSMBInMeasure) are
+-- unconditional given only the R2 Breiman telescoping (mechanical measure-algebra, not analytic).
+
+/-- info: 'Oseledets.Krieger.chungTail' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Krieger.chungTail
+
+/-- info: 'Oseledets.Krieger.lintegral_condInfoMaxFun_lt_top' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Krieger.lintegral_condInfoMaxFun_lt_top
+
+/-- info: 'Oseledets.Krieger.makerTail' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Krieger.makerTail
+
+/-- info: 'Oseledets.Krieger.ae_tendsto_div_infoFun' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Krieger.ae_tendsto_div_infoFun
+
+/-- info: 'Oseledets.Krieger.tendsto_measure_div_infoFun_gt' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Krieger.tendsto_measure_div_infoFun_gt
