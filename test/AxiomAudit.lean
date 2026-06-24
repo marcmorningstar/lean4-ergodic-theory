@@ -155,6 +155,7 @@ import Oseledets.Krieger.SMBLeaves
 import Oseledets.Krieger.CodeTerm
 import Oseledets.Krieger.UpperSMB
 import Oseledets.Krieger.Interleave
+import Oseledets.Krieger.RefTower
 
 /-!
 # Axiom audit
@@ -2171,3 +2172,19 @@ axioms: [propext, Classical.choice, Quot.sound] -/
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms Oseledets.Krieger.RefiningTowerCode.codes
+
+-- Issue #15 (unconditional drive): the escape-symbol StageCode interface (the W7 hprev repair). The
+-- StageCode bracketing (s at every column predecessor) discharges hprev ⟹ per-stage alignment
+-- (StageCode.tiled), and a sequence of StageCodes assembles to CodesTwoSidedMod0c
+-- (RefiningTowerCode.codes_ofStages). The residual is the measurable interleaving code spelling
+-- sentinelEncode + bracketing (StageCode's spells/brackets fields).
+
+/-- info: 'Oseledets.Krieger.StageCode.tiled' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Krieger.StageCode.tiled
+
+/-- info: 'Oseledets.Krieger.RefiningTowerCode.codes_ofStages' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Krieger.RefiningTowerCode.codes_ofStages
