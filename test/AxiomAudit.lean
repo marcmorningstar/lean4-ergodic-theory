@@ -2325,3 +2325,18 @@ axioms: [propext, Classical.choice, Quot.sound] -/
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms Oseledets.Entropy.ksEntropy_eq_ksEntropyPartition_of_generating
+
+/-- info: 'Oseledets.Multifractal.dimH_le_of_fine_cover_mass_lower' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Multifractal.dimH_le_of_fine_cover_mass_lower
+
+/-- info: 'Oseledets.Multifractal.dimH_eq_of_localDimension_eq' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Multifractal.dimH_eq_of_localDimension_eq
+
+/-- info: 'Oseledets.Multifractal.dimH_eq_finrank_carrier_of_absolutelyContinuous' depends on
+axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Multifractal.dimH_eq_finrank_carrier_of_absolutelyContinuous
