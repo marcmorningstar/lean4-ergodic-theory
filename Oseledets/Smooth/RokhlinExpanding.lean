@@ -5,6 +5,7 @@ Authors: Marcel Morgenstern
 -/
 import Mathlib.MeasureTheory.Measure.Decomposition.RadonNikodym
 import Mathlib.MeasureTheory.Measure.Haar.InnerProductSpace
+import Mathlib.MeasureTheory.Function.Jacobian
 import Oseledets.Entropy.Partition
 
 /-!
@@ -55,6 +56,7 @@ cells) — the conditional-expectation argument needs only injectivity — and w
 -/
 
 open MeasureTheory Function
+open scoped ENNReal
 
 namespace Oseledets
 
@@ -117,5 +119,88 @@ lemma frontier_null (h : IsInjectivityPartition μ T ξ) (i : ι) :
   measure_mono_null (Set.subset_iUnion (fun j => frontier (ξ.cells j)) i) h.boundaryNull
 
 end IsInjectivityPartition
+
+/-! ### N5.3 — the per-cell Jacobian–measure identity -/
+
+section Jacobian
+
+variable {d : ℕ} {μ : Measure (EuclideanSpace ℝ (Fin d))} [IsFiniteMeasure μ]
+    {T : EuclideanSpace ℝ (Fin d) → EuclideanSpace ℝ (Fin d)}
+    {ι : Type*} [Fintype ι]
+
+/-- **The change-of-variables crux of Rokhlin's formula (per-cell version).**
+
+For an absolutely continuous finite measure `μ ≪ volume` with density `ρ := μ.rnDeriv volume`, a
+differentiable self-map `T` with non-vanishing Jacobian on the cell `ξ.cells i`, and an
+injectivity partition `ξ`, the measure `μ (ξᵢ ∩ T⁻¹' B)` is recovered as the integral over the
+image `T '' ξᵢ ∩ B` of the **per-branch transfer density**
+`ρ (g⁻¹ y) / |det Dₓ T|ₓ₌g⁻¹ y`, where `g⁻¹ = Function.invFunOn T (ξ.cells i)` is the branch of the
+inverse of `T` on the cell.
+
+The orientation of the density ratio is pinned by the change-of-variables identity itself: writing
+`S := ξᵢ ∩ T⁻¹' B`, we have `μ S = ∫_S ρ ∂volume` and, by
+`MeasureTheory.lintegral_image_eq_lintegral_abs_det_fderiv_mul` applied to `T` on `S` with the
+transfer density as the integrand, `∫_{T '' S} (transfer) = ∫_S |det DT_x| · (transfer ∘ T)`. On
+`S ⊆ ξᵢ` the inverse branch collapses (`invFunOn T ξᵢ (T x) = x`), so the integrand becomes
+`|det DT_x| · ρ x / |det DT_x| = ρ x`, recovering `μ S`. The non-vanishing Jacobian hypothesis
+`hdet` is exactly what makes this cancellation hold: where `det DT_x = 0` the ratio would undercount
+`ρ`, so it cannot be dropped. -/
+theorem measure_cell_inter_preimage_eq_setLIntegral_transfer
+    (hac : μ ≪ volume) (hdiff : Differentiable ℝ T)
+    (ξ : Oseledets.Entropy.MeasurePartition μ ι)
+    (hξ : IsInjectivityPartition μ T ξ) (i : ι)
+    (hdet : ∀ x ∈ ξ.cells i, (fderiv ℝ T x).det ≠ 0)
+    {B : Set (EuclideanSpace ℝ (Fin d))} (hB : MeasurableSet B) :
+    μ (ξ.cells i ∩ T ⁻¹' B)
+      = ∫⁻ y in T '' ξ.cells i ∩ B,
+          (μ.rnDeriv volume) (Function.invFunOn T (ξ.cells i) y)
+            / ENNReal.ofReal |(fderiv ℝ T (Function.invFunOn T (ξ.cells i) y)).det| ∂volume := by
+  set ρ := μ.rnDeriv volume with hρ
+  set f' : EuclideanSpace ℝ (Fin d) → (EuclideanSpace ℝ (Fin d) →L[ℝ]
+    EuclideanSpace ℝ (Fin d)) := fun x => fderiv ℝ T x with hf'
+  -- The branch of the inverse of `T` on the cell `ξ.cells i`.
+  set j : EuclideanSpace ℝ (Fin d) → EuclideanSpace ℝ (Fin d) :=
+    Function.invFunOn T (ξ.cells i) with hj
+  -- The transfer density `g y = ρ (j y) / ofReal |det (f' (j y))|`.
+  set g : EuclideanSpace ℝ (Fin d) → ℝ≥0∞ :=
+    fun y => ρ (j y) / ENNReal.ofReal |(f' (j y)).det| with hg
+  -- `S := ξᵢ ∩ T⁻¹' B`, a measurable set.
+  have hTmeas : Measurable T := hdiff.continuous.measurable
+  have hSmeas : MeasurableSet (ξ.cells i ∩ T ⁻¹' B) := (hξ.meas i).inter (hTmeas hB)
+  set S := ξ.cells i ∩ T ⁻¹' B with hS
+  -- `HasFDerivWithinAt` of `T` on `S` from differentiability.
+  have hHasFD : ∀ x ∈ S, HasFDerivWithinAt T (f' x) S x := fun x _ =>
+    (hdiff x).hasFDerivAt.hasFDerivWithinAt
+  -- `InjOn T S`, inherited from the cell.
+  have hInjS : Set.InjOn T S := (hξ.inj i).mono Set.inter_subset_left
+  -- Step 1: `μ S = ∫_S ρ ∂volume`.
+  have hstep1 : μ S = ∫⁻ x in S, ρ x ∂volume := by
+    conv_lhs => rw [← withDensity_rnDeriv_volume_eq hac]
+    rw [withDensity_apply ρ hSmeas]
+  -- Step 2: the image of `S` under `T` is `T '' ξᵢ ∩ B`.
+  have hstep2 : T '' S = T '' ξ.cells i ∩ B := by
+    rw [hS, Set.image_inter_preimage]
+  -- Step 3: the change-of-variables formula applied to `T` on `S` with integrand `g`.
+  have hcov : ∫⁻ y in T '' S, g y ∂volume
+      = ∫⁻ x in S, ENNReal.ofReal |(f' x).det| * g (T x) ∂volume :=
+    lintegral_image_eq_lintegral_abs_det_fderiv_mul volume hSmeas hHasFD hInjS g
+  -- Step 4: on `S ⊆ ξᵢ` the integrand `ofReal|det DT_x| * g (T x)` collapses to `ρ x`.
+  have hcollapse : ∫⁻ x in S, ENNReal.ofReal |(f' x).det| * g (T x) ∂volume
+      = ∫⁻ x in S, ρ x ∂volume := by
+    refine setLIntegral_congr_fun hSmeas (fun x hx => ?_)
+    have hxcell : x ∈ ξ.cells i := Set.inter_subset_left hx
+    -- `invFunOn T ξᵢ (T x) = x` by the left-inverse property of `invFunOn` on `ξᵢ`.
+    have hjx : j (T x) = x := (hξ.inj i).leftInvOn_invFunOn hxcell
+    -- The nonzero, finite ENNReal `ofReal |det DT_x|`.
+    have hposR : 0 < |(f' x).det| := abs_pos.mpr (hdet x hxcell)
+    have hne0 : ENNReal.ofReal |(f' x).det| ≠ 0 := (ENNReal.ofReal_ne_zero_iff.mpr hposR)
+    have hnetop : ENNReal.ofReal |(f' x).det| ≠ ∞ := ENNReal.ofReal_ne_top
+    rw [hg]
+    simp only [hjx]
+    exact ENNReal.mul_div_cancel hne0 hnetop
+  -- Assemble: `μ S = ∫_S ρ = ∫_S |det|·(g∘T) = ∫_{T''S} g = ∫_{T''ξᵢ ∩ B} g`.
+  rw [hstep1, ← hcollapse, ← hcov, hstep2]
+
+end Jacobian
 
 end Oseledets
