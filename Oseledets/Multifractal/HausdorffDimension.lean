@@ -21,6 +21,10 @@ The headline result is:
   w.r.t. a Haar measure, then **every** set `s` of full `μ`-measure has Hausdorff dimension equal to
   the ambient dimension `finrank ℝ E`.
 
+The Frostman lower-bound machinery and the Billingsley upper bound are formulated over a bare
+metric space (`MetricSpace` + Borel + second-countable), so the general bridge
+`dimH_eq_of_localDimension_eq` applies to non-Euclidean ambient spaces — e.g. a symbolic shift.
+
 ## Proof outline
 
 * **Upper bound** `dimH s ≤ finrank ℝ E`. Immediate from `s ⊆ univ`, monotonicity `dimH_mono`, and
@@ -40,17 +44,19 @@ open scoped ENNReal NNReal MeasureTheory
 
 namespace Oseledets.Multifractal
 
-variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
-  [MeasurableSpace E] [BorelSpace E]
+/-! ## Metric-space machinery
 
-omit [MeasurableSpace E] [BorelSpace E] in
-/-- **Upper bound on the Hausdorff dimension of any set.** In a finite-dimensional real
-inner-product space the Hausdorff dimension of any set is bounded by the ambient dimension. -/
-theorem dimH_le_finrank (s : Set E) : dimH s ≤ (finrank ℝ E : ℝ≥0∞) := by
-  calc dimH s ≤ dimH (Set.univ : Set E) := dimH_mono (subset_univ s)
-    _ = (finrank ℝ E : ℝ≥0∞) := Real.dimH_univ_eq_finrank E
+The Frostman lower bound, the Billingsley upper bound and the general bridge only ever use generic
+metric-space facts (`dist`, `Metric.closedBall`, `ediam`, the Vitali enlargement covering, and the
+Hausdorff-measure/`dimH` API). We therefore prove them over a genuine metric space with a Borel
+second-countable structure, so they are usable on non-inner-product ambient spaces. -/
 
-omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] in
+section Metric
+
+variable {E : Type*} [MetricSpace E] [MeasurableSpace E] [BorelSpace E]
+  [SecondCountableTopology E]
+
+omit [SecondCountableTopology E] in
 /-- **Mass-distribution / Frostman principle (single uniform bound).** Let `μ` be a finite measure
 on `E`, `0 < a`, and `A` a set on which a *uniform* ball bound holds: there is a radius `δ > 0` such
 that `μ.real (closedBall x r) ≤ r ^ a` for every `x ∈ A` and every `0 < r ≤ δ`. If `0 < μ A`, then
@@ -145,7 +151,7 @@ theorem le_dimH_of_uniform_ball_bound {μ : Measure E} [IsFiniteMeasure μ] {a :
   have := le_dimH_of_hausdorffMeasure_ne_zero (s := t) (d := a) hHt.ne'
   simpa using this
 
-omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [BorelSpace E] in
+omit [BorelSpace E] [SecondCountableTopology E] in
 /-- **From the local-dimension limit to a uniform ball bound near a point.** If at `x` the
 local-dimension quotient `log μ.real(B(x,r)) / log r` tends to `d` and `a < d`, then there is a
 radius `δ > 0` below which `μ.real (closedBall x r) ≤ r ^ a`. -/
@@ -316,23 +322,7 @@ theorem le_dimH_of_ae_tendsto_quotient {μ : Measure E} [IsProbabilityMeasure μ
   refine le_dimH_of_uniform_ball_bound hapos (hBmeas n) hδn (hBbound n) inter_subset_left hn
     |>.trans (dimH_mono inter_subset_right)
 
-/-- **The local-dimension → Hausdorff-dimension bridge (headline).** Let `μ` be a probability
-measure on a finite-dimensional real inner-product space `E`, absolutely continuous with respect to
-a Haar measure `ν`. Then every set `s` of full `μ`-measure has Hausdorff dimension equal to the
-ambient dimension `finrank ℝ E`.
-
-The upper bound is the trivial `dimH s ≤ dimH univ = finrank`. The lower bound is the
-mass-distribution argument packaged in `le_dimH_of_ae_tendsto_quotient`, fed by the a.e.
-local-dimension limit `ae_tendsto_localDimension_of_absolutelyContinuous`. -/
-theorem dimH_eq_finrank_of_ae_full_of_absolutelyContinuous {μ ν : Measure E}
-    [IsProbabilityMeasure μ] [ν.IsAddHaarMeasure] (hμν : μ ≪ ν) {s : Set E} (hs : μ sᶜ = 0) :
-    dimH s = (finrank ℝ E : ℝ≥0∞) := by
-  refine le_antisymm (dimH_le_finrank s) ?_
-  have hle := le_dimH_of_ae_tendsto_quotient (d := (finrank ℝ E : ℝ)) hs
-    (ae_tendsto_localDimension_of_absolutelyContinuous hμν)
-  rwa [ENNReal.ofReal_natCast] at hle
-
-/-! ## The Billingsley upper bound
+/-! ### The Billingsley upper bound
 
 The companion to the Frostman lower bound `le_dimH_of_uniform_ball_bound`. Where Frostman gives
 `a ≤ dimH` from an *upper* ball bound `μ(B(x,r)) ≤ r ^ a`, the **Billingsley** principle gives
@@ -503,7 +493,7 @@ theorem dimH_le_of_fine_cover_mass_lower {μ : Measure E} [IsFiniteMeasure μ] {
   refine ne_top_of_le_ne_top ?_ (hmeasure_le.trans hliminf_le)
   exact ENNReal.mul_ne_top hK_lt_top (measure_ne_top μ _)
 
-omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [BorelSpace E] in
+omit [BorelSpace E] [SecondCountableTopology E] in
 /-- **From the local-dimension limit to a fine lower ball bound near a point.** If at `x` every
 closed ball of positive radius has positive `μ`-mass (i.e. `x` is in the support of `μ`) and the
 local-dimension quotient `log μ.real(B(x,r)) / log r` tends to `d` with `d < a`, then for every
@@ -552,7 +542,7 @@ theorem exists_fine_ball_lower_of_tendsto {μ : Measure E} [IsFiniteMeasure μ] 
   calc ENNReal.ofReal (r ^ a) ≤ ENNReal.ofReal m := ENNReal.ofReal_le_ofReal hreal
     _ = μ (closedBall x r) := ofReal_measureReal (measure_ne_top μ _)
 
-omit [InnerProductSpace ℝ E] [FiniteDimensional ℝ E] [BorelSpace E] in
+omit [BorelSpace E] [SecondCountableTopology E] in
 /-- **A positive local-dimension limit forces positive ball masses.** If the local-dimension
 quotient `log μ.real(B(x,r)) / log r` tends to a *positive* value `d`, then every closed ball
 around `x` of positive radius has positive `μ`-mass. Otherwise some ball would be `μ`-null, and by
@@ -578,9 +568,9 @@ theorem ball_mass_pos_of_tendsto_pos {μ : Measure E} {x : E} {d : ℝ} (hd : 0 
   exact hd.ne' (tendsto_nhds_unique hx hlim0)
 
 /-- **The local-dimension → Hausdorff-dimension bridge (general form).** Let `μ` be a probability
-measure on a finite-dimensional real inner-product space `E`, `0 < α`, and `s` a set of full
-`μ`-measure on which the local-dimension quotient `log μ.real(B(x,r)) / log r` tends, as `r → 0⁺`,
-to the constant `α` *for every* `x ∈ s`. Then `dimH s = α`.
+measure on a metric space `E`, `0 < α`, and `s` a set of full `μ`-measure on which the
+local-dimension quotient `log μ.real(B(x,r)) / log r` tends, as `r → 0⁺`, to the constant `α` *for
+every* `x ∈ s`. Then `dimH s = α`.
 
 Both inequalities use a single hypothesis. The **lower** bound `α ≤ dimH s` is the Frostman
 direction `le_dimH_of_ae_tendsto_quotient`, fed by the limit holding `μ`-a.e. (it holds everywhere
@@ -628,6 +618,43 @@ theorem dimH_eq_of_localDimension_eq {μ : Measure E} [IsProbabilityMeasure μ] 
     have hlow := le_dimH_of_ae_tendsto_quotient (d := (α : ℝ)) hs hae
     rwa [ENNReal.ofReal_coe_nnreal] at hlow
 
+end Metric
+
+/-! ## The Euclidean (finite-dimensional inner-product) specializations
+
+These results genuinely need the inner-product / finite-dimensional structure: they speak of the
+ambient dimension `finrank ℝ E`, of Haar measures, and of the absolutely-continuous local-dimension
+computation `ae_tendsto_localDimension_of_absolutelyContinuous`. They reuse the metric machinery
+above (a finite-dimensional inner-product space is a Borel, second-countable metric space). -/
+
+section Euclidean
+
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+  [MeasurableSpace E] [BorelSpace E]
+
+omit [MeasurableSpace E] [BorelSpace E] in
+/-- **Upper bound on the Hausdorff dimension of any set.** In a finite-dimensional real
+inner-product space the Hausdorff dimension of any set is bounded by the ambient dimension. -/
+theorem dimH_le_finrank (s : Set E) : dimH s ≤ (finrank ℝ E : ℝ≥0∞) := by
+  calc dimH s ≤ dimH (Set.univ : Set E) := dimH_mono (subset_univ s)
+    _ = (finrank ℝ E : ℝ≥0∞) := Real.dimH_univ_eq_finrank E
+
+/-- **The local-dimension → Hausdorff-dimension bridge (headline).** Let `μ` be a probability
+measure on a finite-dimensional real inner-product space `E`, absolutely continuous with respect to
+a Haar measure `ν`. Then every set `s` of full `μ`-measure has Hausdorff dimension equal to the
+ambient dimension `finrank ℝ E`.
+
+The upper bound is the trivial `dimH s ≤ dimH univ = finrank`. The lower bound is the
+mass-distribution argument packaged in `le_dimH_of_ae_tendsto_quotient`, fed by the a.e.
+local-dimension limit `ae_tendsto_localDimension_of_absolutelyContinuous`. -/
+theorem dimH_eq_finrank_of_ae_full_of_absolutelyContinuous {μ ν : Measure E}
+    [IsProbabilityMeasure μ] [ν.IsAddHaarMeasure] (hμν : μ ≪ ν) {s : Set E} (hs : μ sᶜ = 0) :
+    dimH s = (finrank ℝ E : ℝ≥0∞) := by
+  refine le_antisymm (dimH_le_finrank s) ?_
+  have hle := le_dimH_of_ae_tendsto_quotient (d := (finrank ℝ E : ℝ)) hs
+    (ae_tendsto_localDimension_of_absolutelyContinuous hμν)
+  rwa [ENNReal.ofReal_natCast] at hle
+
 /-- **Tie-back: the absolutely-continuous case via the general bridge.** When the ambient dimension
 is positive, the headline a.c. result is recovered through `dimH_eq_of_localDimension_eq` on the
 *specific* conull carrier `s₀ = {x | log μ.real(B(x,r))/log r → finrank}`, on which the local
@@ -654,5 +681,7 @@ theorem dimH_eq_finrank_carrier_of_absolutelyContinuous {μ ν : Measure E} [IsP
       exact hx)
   rw [hbridge]
   exact_mod_cast (ENNReal.coe_natCast (finrank ℝ E))
+
+end Euclidean
 
 end Oseledets.Multifractal
