@@ -2298,3 +2298,13 @@ axioms: [propext, Classical.choice, Quot.sound] -/
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms Oseledets.Multifractal.renyiDim_uniform_tendsto_dim
+
+/-- info: 'Oseledets.Multifractal.ae_tendsto_localDimension_of_absolutelyContinuous' depends on
+axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Multifractal.ae_tendsto_localDimension_of_absolutelyContinuous
+
+/-- info: 'Oseledets.Multifractal.ae_localDimension_eq_finrank' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Multifractal.ae_localDimension_eq_finrank

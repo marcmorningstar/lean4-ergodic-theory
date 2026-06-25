@@ -34,14 +34,15 @@ constant: `Tendsto (fun ε => renyiDim (p ε) ε q) (𝓝[Set.Ioo 0 1] 0) (𝓝 
 ## Scope (what is, and is NOT, formalized here)
 
 This is **only** the degenerate uniform / monofractal case, where the per-resolution dimension is
-constant in `ε` and the limit is trivial. The **general non-uniform refining limit** (item 6 for a
-genuinely multifractal measure, where `D_q(ε)` varies with `ε` and one must control the limit) and
-**item 5** (the pointwise *local dimension* `lim_{r→0} log μ(B(x,r)) / log r` and
-exact-dimensionality of `μ`) are the *deep frontier* and are deliberately **not** formalized here.
-The local dimension is a joint measure-*and*-metric invariant: it is not invariant under a general
-measure-preserving map and requires the smooth / bi-Lipschitz dynamical structure
-(Eckmann–Ruelle, Barreira–Pesin–Schmeling) that this library does not carry. See the issue for the
-research-grade statement.
+constant in `ε` and the limit is trivial. The pointwise *local dimension* itself is defined, and its
+absolutely-continuous case proved, in `Oseledets.Multifractal.LocalDimension` (item 5). What stays
+the genuine frontier is the **general non-uniform refining limit** (item 6 for a genuinely
+multifractal measure) and **general exact-dimensionality** — a.e.-constancy of the local dimension
+for a singular / SRB measure, and the Young / Ledrappier–Young identity. These need the absolute
+continuity of conditional measures on unstable manifolds (the Ledrappier–Young core), the same
+Mathlib-absent ingredient that blocks the library's Pesin–SRB work (issue #10), not any missing
+metric or ergodic theorem (the Lyapunov exponents, entropy, Margulis–Ruelle inequality, and a
+pointwise Birkhoff theorem are all already present). See the issue for the research-grade statement.
 -/
 
 open Real Filter Topology

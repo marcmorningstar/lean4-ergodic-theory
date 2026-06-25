@@ -10,6 +10,7 @@ import Oseledets.Multifractal.Monotone
 import Oseledets.Multifractal.Spectrum
 import Oseledets.Multifractal.Measure
 import Oseledets.Multifractal.RefiningLimit
+import Oseledets.Multifractal.LocalDimension
 
 /-!
 # Coarse-grained multifractal analysis of an invariant measure
@@ -41,12 +42,18 @@ singularity spectrum `f(α)` (the Legendre transform of `τ`), together with the
 * `Oseledets.Multifractal.RefiningLimit` — the degenerate (uniform / monofractal) case of the
   refining-partition limit (issue #16, item 6): for a uniform family with `N = ε^{-d}` cells,
   `D_q(P_ε) = d` at every resolution, so the `ε → 0` limit is `d`.
+* `Oseledets.Multifractal.LocalDimension` — the pointwise local dimension
+  `d_μ(x) = lim_{r→0} log μ(B(x,r)) / log r` (issue #16, item 5), with the **absolutely-continuous
+  case** proved: for `μ ≪` Haar on a finite-dimensional real inner-product space, `d_μ(x) = finrank`
+  a.e. (exact-dimensionality in the a.c. case).
 
-The finite-resolution core (issue #16, items 1–4) is self-contained and sorry-free, as is the
-uniform case of the refining limit (item 6). The pointwise local dimension and the general
-(non-uniform) refining limit / exact-dimensionality (items 5 and 6-general) are the deep frontier:
-the local dimension is a joint measure-and-metric invariant, so it is not invariant under a general
-measure-preserving map and needs the smooth / bi-Lipschitz dynamics
-(Young; Barreira–Pesin–Schmeling) that this library's setting lacks. They are deliberately not
-formalized in this layer.
+The finite-resolution core (issue #16, items 1–4) is self-contained and sorry-free, as are the
+uniform case of the refining limit (item 6) and the absolutely-continuous case of the local
+dimension (item 5). What remains the genuine frontier is the **general (singular) exact-
+dimensionality** — a.e.-constancy of `d_μ` for an SRB / hyperbolic measure and the Young /
+Ledrappier–Young identity `d_μ = h_μ · (1/λ₁ − …)` — together with the general non-uniform refining
+limit. These need the absolute continuity of conditional measures on unstable manifolds (the
+Ledrappier–Young core), the same Mathlib-absent ingredient that blocks the library's Pesin–SRB work
+(issue #10); the Lyapunov exponents, KS entropy, the Margulis–Ruelle inequality, and a pointwise
+Birkhoff theorem are all already present in this library.
 -/
