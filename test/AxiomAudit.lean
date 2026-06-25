@@ -2366,3 +2366,28 @@ axioms: [propext, Classical.choice, Quot.sound] -/
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms Oseledets.Multifractal.dimH_eq_ksEntropy_div_log_two
+
+/-- info: 'Oseledets.Multifractal.integral_empiricalCellMass_eq' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Multifractal.integral_empiricalCellMass_eq
+
+/-- info: 'Oseledets.Multifractal.tendsto_empiricalCellMass_ae' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Multifractal.tendsto_empiricalCellMass_ae
+
+/-- info: 'Oseledets.Multifractal.cellMassFamily_sum_eq_one' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Multifractal.cellMassFamily_sum_eq_one
+
+/-- info: 'Oseledets.Multifractal.not_isHeterogeneous_iff_equalMeasure' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Multifractal.not_isHeterogeneous_iff_equalMeasure
+
+/-- info: 'Oseledets.Multifractal.refiningLimitConvergesProp_of_uniform' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Multifractal.refiningLimitConvergesProp_of_uniform

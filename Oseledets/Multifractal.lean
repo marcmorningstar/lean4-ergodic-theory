@@ -14,6 +14,8 @@ import Oseledets.Multifractal.LocalDimension
 import Oseledets.Multifractal.HausdorffDimension
 import Oseledets.Multifractal.SymbolicDimension
 import Oseledets.Multifractal.SymbolicDimensionBernoulli
+import Oseledets.Multifractal.Source.FlowEmpirical
+import Oseledets.Multifractal.Source.FlowPartition
 
 /-!
 # Coarse-grained multifractal analysis of an invariant measure
