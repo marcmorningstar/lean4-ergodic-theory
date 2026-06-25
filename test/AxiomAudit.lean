@@ -92,6 +92,7 @@ import Oseledets.Continuous.SuspensionExponentSetMeasurable
 import Oseledets.Continuous.SuspensionFlowExponentFinal
 import Oseledets.Smooth.DerivativeCocycle
 import Oseledets.Smooth.Expanding
+import Oseledets.Smooth.RokhlinExpanding
 import Oseledets.Examples.Elementary
 import Oseledets.Entropy.Partition
 import Oseledets.Entropy.Join
@@ -2340,3 +2341,13 @@ axioms: [propext, Classical.choice, Quot.sound] -/
 axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms Oseledets.Multifractal.dimH_eq_finrank_carrier_of_absolutelyContinuous
+
+/-- info: 'Oseledets.condEntropy_comap_eq_integral_log_abs_det' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.condEntropy_comap_eq_integral_log_abs_det
+
+/-- info: 'Oseledets.ksEntropyPartition_eq_integral_log_abs_det' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.ksEntropyPartition_eq_integral_log_abs_det
