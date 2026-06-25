@@ -129,6 +129,7 @@ import Oseledets.Continuous.SuspensionExponentSetMeasurable
 import Oseledets.Continuous.SuspensionFlowExponentFinal
 import Oseledets.Smooth.DerivativeCocycle
 import Oseledets.Smooth.Expanding
+import Oseledets.Smooth.RokhlinExpanding
 import Oseledets.Examples.Elementary
 import Oseledets.Entropy.Partition
 import Oseledets.Entropy.Join
