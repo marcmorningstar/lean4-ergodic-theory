@@ -159,6 +159,7 @@ import Oseledets.Krieger.RefTower
 import Oseledets.Krieger.StageBuild
 import Oseledets.Krieger.Weave
 import Oseledets.Krieger.Bracket
+import Oseledets.Multifractal
 
 /-!
 # Axiom audit
@@ -2248,3 +2249,42 @@ axioms: [propext, Classical.choice, Quot.sound] -/
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms Oseledets.Krieger.AlignedTowerCastle.codes
+
+-- Issue #16 — coarse-grained multifractal analysis. The finite-resolution core (generalized
+-- partition function `Z_q`, Rényi dimensions `D_q`, the singularity spectrum `f(α)`) and its
+-- measure / flow layer, all sorry-free and depending only on the standard axioms.
+
+/-- info: 'Oseledets.Multifractal.logPartitionFunction_convexOn' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Multifractal.logPartitionFunction_convexOn
+
+/-- info: 'Oseledets.Multifractal.massExponent_concaveOn' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Multifractal.massExponent_concaveOn
+
+/-- info: 'Oseledets.Multifractal.renyiDim_antitone' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Multifractal.renyiDim_antitone
+
+/-- info: 'Oseledets.Multifractal.partitionFunction_equalMeasure' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Multifractal.partitionFunction_equalMeasure
+
+/-- info: 'Oseledets.Multifractal.renyiDimMeasure_antitone' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Multifractal.renyiDimMeasure_antitone
+
+/-- info: 'Oseledets.Multifractal.renyiDimMeasure_one_eq' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Multifractal.renyiDimMeasure_one_eq
+
+/-- info: 'Oseledets.Multifractal.renyiDimFlow_antitone' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Multifractal.renyiDimFlow_antitone
