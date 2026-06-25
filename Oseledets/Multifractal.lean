@@ -11,6 +11,7 @@ import Oseledets.Multifractal.Spectrum
 import Oseledets.Multifractal.Measure
 import Oseledets.Multifractal.RefiningLimit
 import Oseledets.Multifractal.LocalDimension
+import Oseledets.Multifractal.HausdorffDimension
 
 /-!
 # Coarse-grained multifractal analysis of an invariant measure

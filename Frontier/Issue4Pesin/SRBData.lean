@@ -98,32 +98,51 @@ def UnstableJacobianRate {μ : Measure (EuclideanSpace ℝ (Fin d))} [IsProbabil
   ∀ᵐ x ∂μ, χ x = Oseledets.sumPosExp hT hdet
     (Oseledets.measurable_derivativeCocycle T) hint hint'
 
-/-- **The SRB property: absolute continuity along unstable manifolds.**
+/-- **Absolutely continuous conditional measures on unstable manifolds — an opaque marker.**
 
-The Ledrappier–Strelcyn–Young characterization (Contractor §8, Theorem 8.1, Definition 8.2): `μ`
-is an **SRB measure** iff its conditional measures on the unstable manifolds `Wᵘ(x)` are absolutely
-continuous with respect to the leaf (Lebesgue / Riemannian volume) measure. This is the property
-that *upgrades* the Margulis–Ruelle inequality to the equality — Pesin's formula holds **iff** `μ`
-has this property.
+This is the Ledrappier–Strelcyn–Young SRB condition (Contractor §8, Theorem 8.1, Definition 8.2):
+`μ` has conditional measures on the unstable manifolds `Wᵘ(x)` that are absolutely continuous with
+respect to the leaf (Lebesgue / Riemannian volume) measure. It is exposed here as an **`opaque`
+constant** — neither provable nor refutable inside the current library — and that opacity is the
+honest state of the art, for two reasons.
 
-It is packaged here as an **opaque** `Prop`-valued interface `SRBProperty T μ` — the load-bearing
-hypothesis of the equality. Crucially it is *opaque* (a structure with no constructor exposed as a
-`Prop` via `Nonempty`), so it cannot be discharged trivially: a caller must genuinely supply it,
-exactly as Pesin's formula genuinely requires the SRB hypothesis. Volume-preserving (`μ = Lebesgue`)
-and Axiom-A physical measures are the canonical inhabitants (Contractor §8).
+* A *faithful* statement needs three Mathlib-absent objects: the unstable foliation `Wᵘ`
+  (integrating the measurable distribution `Eᵘ`, i.e. Pesin's stable/unstable manifold theorem),
+  the disintegration of `μ` along *that specific* foliation, and the leaf Riemannian-volume measure.
 
-`BLOCKED`: a faithful statement of absolute continuity of conditional measures on unstable
-manifolds requires (i) the unstable foliation `Wᵘ` (integration of the measurable distribution
-`Eᵘ` — Pesin's stable/unstable manifold theorem), (ii) the disintegration of `μ` along that
-foliation, and (iii) the leaf volume measure. Mathlib has none of these for a nonuniformly
-hyperbolic system. The field `acConditionalUnstable` is the placeholder for that content; once
-Pesin theory is in Mathlib it is replaced by the genuine absolute-continuity statement. -/
+* The condition cannot be salvaged by an *existential* over an arbitrary measurable factor
+  `π : E → E` and reference kernel `η`. Such an existential self-trivialises: with `π` constant the
+  conditional distribution is `μ` itself and one may take `η := μ`; with `π = id` the conditionals
+  are Dirac measures, trivially absolutely continuous. So `∃ π η, …` would hold for *every* measure
+  and carry no SRB content. The condition is genuine *only* for the actual geometric unstable
+  foliation, which does not yet exist in Mathlib.
+
+`BLOCKED`: replacing this opaque marker by the real absolute-continuity statement needs the Pesin
+unstable manifold theorem, the leaf-volume measure, and the disintegration of `μ` along `Wᵘ`. -/
+opaque ACConditionalsUnstable (T : EuclideanSpace ℝ (Fin d) → EuclideanSpace ℝ (Fin d))
+    (μ : Measure (EuclideanSpace ℝ (Fin d))) : Prop
+
+/-- **The SRB property**: `μ` has absolutely continuous conditional measures on the unstable
+manifolds of `T` — the Ledrappier–Strelcyn–Young condition that *upgrades* the Margulis–Ruelle
+inequality `h_μ(T) ≤ ∑ λ_i⁺` to Pesin's equality (the formula holds **iff** `μ` has this property).
+
+A genuine, **non-vacuous** hypothesis: its sole field is the opaque, currently-undischargeable
+`ACConditionalsUnstable T μ`, so `SRBProperty T μ` cannot be discharged by `trivial`/`⟨⟩`.
+
+History (both prior versions were vacuous): the field was first `acConditionalUnstable : True`
+(provable by `⟨trivial⟩`); a second attempt used `∃ π η, Kernel.singularPart (condDistrib id π μ)
+η = 0`, which is *also* satisfied by every `μ` (take `η := condDistrib id π μ`, or `π` constant and
+`η := μ`). The `opaque` marker is the honest fix. Do **not** confuse with `μ ≪ volume`: a genuine
+SRB measure is typically *singular* w.r.t. ambient volume (it lives on a fractal attractor); the
+content is absolute continuity of the conditionals *on leaves*. The expanding / volume-preserving
+case (whole space a single unstable leaf) is the one special case where it reduces to `μ ≪ volume`,
+and the expanding track states *that* directly and honestly, without this interface. -/
 structure SRBProperty (T : EuclideanSpace ℝ (Fin d) → EuclideanSpace ℝ (Fin d))
     (μ : Measure (EuclideanSpace ℝ (Fin d))) : Prop where
   /-- **BLOCKED**: `μ` has absolutely continuous conditional measures on the unstable manifolds of
-  `T`. Faithful expression needs the unstable foliation `Wᵘ` (Pesin's manifold theorem), the
-  disintegration of `μ` along it, and the leaf volume measure — none in Mathlib. Kept as an opaque
-  field so `SRBProperty` is a genuine, non-trivial hypothesis. -/
-  acConditionalUnstable : True
+  `T`, held as the opaque `ACConditionalsUnstable T μ` (which the absent Pesin unstable foliation +
+  leaf disintegration would discharge). Keeping it opaque makes this field — and hence
+  `SRBProperty` — a genuine, non-trivially-dischargeable hypothesis. -/
+  acConditionalUnstable : ACConditionalsUnstable T μ
 
 end Frontier.Issue4Pesin
