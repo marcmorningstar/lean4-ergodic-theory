@@ -819,7 +819,12 @@ Assembled from the sharp-rate identity
 `⨆ k, σ((ksJoin ξ k).pullback) = comap T mα` (`strictFuture_eq_comap_of_generating`, using `hgen`),
 and N5.4 (`condEntropy_comap_eq_integral_log_abs_det`). The integrand bridge
 `|det (fderiv ℝ T x)| = |det (derivativeCocycle T x)|` (`det_fderiv_eq_det_derivativeCocycle`) puts
-the right-hand side in the verbatim shape of `sumPosExp_eq_integral_log_abs_det_of_expanding`. -/
+the right-hand side in the verbatim shape of `sumPosExp_eq_integral_log_abs_det_of_expanding`.
+
+Note: like `pesin_formula_expanding`, the *finite generating* injectivity partition this requires
+has no model on the non-compact `EuclideanSpace ℝ (Fin d)`, so this is a correct implication that is
+un-instantiated here; the genuine instance is `rokhlin_equality_doublingMap`
+(`Oseledets/Examples/Rokhlin/DoublingEquality.lean`) on the compact circle. -/
 theorem ksEntropyPartition_eq_integral_log_abs_det {d : ℕ}
     {μ : Measure (EuclideanSpace ℝ (Fin d))} [IsProbabilityMeasure μ]
     [StandardBorelSpace (EuclideanSpace ℝ (Fin d))]
@@ -853,15 +858,28 @@ together with a one-sided generating injectivity partition `ξ` and `μ`-integra
 `log|det DT|`, the Kolmogorov–Sinai entropy equals the sum of the (all positive) Lyapunov exponents:
 `h_μ(T) = ∑ λ⁺ = ∫ log |det Df| dμ`.
 
-This is the honest, **placeholder-free** instance of the Pesin/Margulis–Ruelle entropy formula: the
-SRB property is supplied by the genuine absolute-continuity hypothesis `μ ≪ volume`, not an opaque
-SRB axiom. The proof composes three on-branch theorems:
-`ksEntropy_eq_ksEntropyPartition_of_generating` (the Kolmogorov–Sinai generator theorem),
-`ksEntropyPartition_eq_integral_log_abs_det` (Rokhlin's per-partition formula, N5.5), and
-`sumPosExp_eq_integral_log_abs_det_of_expanding` (the Pesin = Rokhlin right-hand-side identity);
-the two `det` hypotheses are aligned by the bridge `det_fderiv_eq_det_derivativeCocycle`. The
-`StandardBorelSpace (EuclideanSpace ℝ (Fin d))` instance needed by the first two is the derived
-`standardBorel_of_polish` instance — it is not assumed. -/
+This is the **placeholder-free assembly of the implication**: the SRB property is supplied by the
+genuine absolute-continuity hypothesis `μ ≪ volume`, not an opaque SRB axiom. The proof composes
+three on-branch theorems: `ksEntropy_eq_ksEntropyPartition_of_generating` (the Kolmogorov–Sinai
+generator theorem), `ksEntropyPartition_eq_integral_log_abs_det` (Rokhlin's per-partition formula,
+N5.5), and `sumPosExp_eq_integral_log_abs_det_of_expanding` (the Pesin = Rokhlin right-hand-side
+identity); the two `det` hypotheses are aligned by `det_fderiv_eq_det_derivativeCocycle`. The
+`StandardBorelSpace (EuclideanSpace ℝ (Fin d))` instance is the derived `standardBorel_of_polish`
+instance — not assumed.
+
+**Vacuity caveat (honest disclosure).** This is a correct *implication*, but its hypothesis bundle
+has **no model on the non-compact space `EuclideanSpace ℝ (Fin d) = ℝ^d`**, so the theorem is
+**vacuously true** — the EuclideanSpace assembly of the implication, not an exhibited instance.
+A globally uniformly expanding (`K > 1`) self-map of `ℝ^d` admits no ergodic absolutely-continuous
+invariant *probability* measure: e.g. for `T = c • id` (`c > 1`) the nested preimages
+`T⁻ⁿ(closedBall 0 R)` have constant `μ`-mass, forcing an atom at the fixed point `0`, contradicting
+`μ ≪ volume`; in general uniform expansion on a non-compact space forces mass to escape to infinity
+(every existence theorem for a.c. invariant measures of uniformly expanding maps is on a *compact*
+manifold). The intended models live on a torus. A genuinely *instantiated* Pesin/Rokhlin equality
+`h_μ(T) = ∫ log|det DT| dμ = log 2` is `Oseledets.Examples.Rokhlin.rokhlin_equality_doublingMap`, on
+the compact circle `UnitAddCircle`. A non-vacuous EuclideanSpace-style statement would require
+porting the derivative-cocycle / expanding / Lyapunov-exponent layer to the torus (currently
+`EuclideanSpace`-only). -/
 theorem pesin_formula_expanding {d : ℕ} [NeZero d]
     {μ : Measure (EuclideanSpace ℝ (Fin d))} [IsProbabilityMeasure μ]
     {T : EuclideanSpace ℝ (Fin d) → EuclideanSpace ℝ (Fin d)}
