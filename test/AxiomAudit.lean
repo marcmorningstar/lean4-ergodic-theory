@@ -2288,3 +2288,13 @@ axioms: [propext, Classical.choice, Quot.sound] -/
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms Oseledets.Multifractal.renyiDimFlow_antitone
+
+/-- info: 'Oseledets.Multifractal.renyiDim_uniform_eq_dim' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Multifractal.renyiDim_uniform_eq_dim
+
+/-- info: 'Oseledets.Multifractal.renyiDim_uniform_tendsto_dim' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Multifractal.renyiDim_uniform_tendsto_dim

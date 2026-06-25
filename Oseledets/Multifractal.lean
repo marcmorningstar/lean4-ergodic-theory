@@ -9,6 +9,7 @@ import Oseledets.Multifractal.LogConvex
 import Oseledets.Multifractal.Monotone
 import Oseledets.Multifractal.Spectrum
 import Oseledets.Multifractal.Measure
+import Oseledets.Multifractal.RefiningLimit
 
 /-!
 # Coarse-grained multifractal analysis of an invariant measure
@@ -37,7 +38,15 @@ singularity spectrum `f(α)` (the Legendre transform of `τ`), together with the
   invariant probability measure `μ` and a finite `MeasurePartition`, the `q = 1` information
   dimension as Shannon entropy `/ (-log ε)`, and the connector to a `MeasurePreservingFlow`'s
   invariant measure.
+* `Oseledets.Multifractal.RefiningLimit` — the degenerate (uniform / monofractal) case of the
+  refining-partition limit (issue #16, item 6): for a uniform family with `N = ε^{-d}` cells,
+  `D_q(P_ε) = d` at every resolution, so the `ε → 0` limit is `d`.
 
-The finite-resolution core (issue #16, items 1–4) is self-contained and sorry-free. The pointwise
-local dimension and the refining-partition limit (items 5–6) are not part of this layer.
+The finite-resolution core (issue #16, items 1–4) is self-contained and sorry-free, as is the
+uniform case of the refining limit (item 6). The pointwise local dimension and the general
+(non-uniform) refining limit / exact-dimensionality (items 5 and 6-general) are the deep frontier:
+the local dimension is a joint measure-and-metric invariant, so it is not invariant under a general
+measure-preserving map and needs the smooth / bi-Lipschitz dynamics
+(Young; Barreira–Pesin–Schmeling) that this library's setting lacks. They are deliberately not
+formalized in this layer.
 -/
