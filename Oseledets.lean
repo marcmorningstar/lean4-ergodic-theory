@@ -189,6 +189,7 @@ import Oseledets.Examples.RuelleDoubling
 import Oseledets.Examples.CatMapOrbit
 import Oseledets.Examples.CatMapToral
 import Oseledets.Examples.CatMapDerivativeCocycle
+import Oseledets.Examples.CatMapPerPartition
 import Oseledets.Examples.Rokhlin.AbstractEqui
 import Oseledets.Examples.Rokhlin.DoublingCrux
 import Oseledets.Examples.Rokhlin.DoublingEquality

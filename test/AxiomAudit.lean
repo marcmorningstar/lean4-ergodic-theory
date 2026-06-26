@@ -121,6 +121,7 @@ import Oseledets.Examples.RuelleDoubling
 import Oseledets.Examples.CatMapOrbit
 import Oseledets.Examples.CatMapToral
 import Oseledets.Examples.CatMapDerivativeCocycle
+import Oseledets.Examples.CatMapPerPartition
 import Oseledets.Examples.Rokhlin.AbstractEqui
 import Oseledets.Examples.Rokhlin.DoublingCrux
 import Oseledets.Examples.Rokhlin.DoublingEquality
@@ -1681,6 +1682,14 @@ info: 'Oseledets.CatMapToral.catLift_derivativeCocycle_topExponent_pos' depends 
 -/
 #guard_msgs in
 #print axioms Oseledets.CatMapToral.catLift_derivativeCocycle_topExponent_pos
+
+/--
+info: 'Oseledets.CatMapToral.catTorus_ksEntropyPartition_le_logLambda' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+-/
+#guard_msgs in
+#print axioms Oseledets.CatMapToral.catTorus_ksEntropyPartition_le_logLambda
 
 /-- info: 'Oseledets.suspension_perExponent_scaling' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
