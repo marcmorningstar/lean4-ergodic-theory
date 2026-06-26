@@ -120,6 +120,7 @@ import Oseledets.Continuous.SuspensionPartialSumExponent
 import Oseledets.Examples.RuelleDoubling
 import Oseledets.Examples.CatMapOrbit
 import Oseledets.Examples.CatMapToral
+import Oseledets.Examples.CatMapDerivativeCocycle
 import Oseledets.Examples.Rokhlin.AbstractEqui
 import Oseledets.Examples.Rokhlin.DoublingCrux
 import Oseledets.Examples.Rokhlin.DoublingEquality
@@ -1664,6 +1665,22 @@ info: 'Oseledets.singular_perDirection_exponent_eq_lambda_of_mem_stratum' depend
 /-- info: 'Oseledets.CatMapToral.orbit_infinite' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms Oseledets.CatMapToral.orbit_infinite
+
+/-- info: 'Oseledets.CatMapToral.catTorus_constCocycle_topExponent_pos' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.CatMapToral.catTorus_constCocycle_topExponent_pos
+
+/-- info: 'Oseledets.CatMapToral.derivativeCocycle_catLift' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs in
+#print axioms Oseledets.CatMapToral.derivativeCocycle_catLift
+
+/--
+info: 'Oseledets.CatMapToral.catLift_derivativeCocycle_topExponent_pos' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+-/
+#guard_msgs in
+#print axioms Oseledets.CatMapToral.catLift_derivativeCocycle_topExponent_pos
 
 /-- info: 'Oseledets.suspension_perExponent_scaling' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
