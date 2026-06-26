@@ -20,6 +20,7 @@ import Oseledets.Multifractal.BernoulliErgodic
 import Oseledets.Multifractal.BernoulliEntropy
 import Oseledets.Multifractal.BernoulliTwoSided
 import Oseledets.Multifractal.BernoulliTwoSidedEntropy
+import Oseledets.Multifractal.BernoulliTwoSidedErgodic
 import Oseledets.Multifractal.BernoulliHeterogeneous
 import Oseledets.Multifractal.BernoulliSuspensionFlow
 import Oseledets.Multifractal.BernoulliSuspensionFlowErgodic

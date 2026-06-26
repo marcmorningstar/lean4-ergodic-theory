@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Marcel Morgenstern
 -/
 import Oseledets.Multifractal.BernoulliSuspensionFlow
+import Oseledets.Multifractal.BernoulliTwoSidedErgodic
 import Mathlib.Dynamics.Ergodic.Ergodic
 
 /-!
@@ -340,6 +341,19 @@ theorem not_ergodic_bernSuspensionFlow_one :
   rcases hzo with h | h
   · exact (by norm_num : (1 / 2 : ℝ≥0∞) ≠ 0) h
   · exact (by norm_num : (1 / 2 : ℝ≥0∞) ≠ 1) h
+
+/-! ### Unconditional flow ergodicity (the base hypothesis discharged) -/
+
+/-- **The constant-roof Bernoulli suspension flow is ergodic, unconditionally.** Discharges the
+base-ergodicity hypothesis of `ergodic_bernSuspensionFlow` with the proved two-sided Bernoulli
+ergodicity (`ergodic_biShiftEquiv_bernZ`, the mixing/cylinder-approximation keystone): every
+measurable set invariant under *all* time-`t` maps of the flow is null or conull. The time-`1`
+map stays non-ergodic (`not_ergodic_bernSuspensionFlow_one`) — only the full flow is ergodic. -/
+theorem ergodic_bernSuspensionFlow_uncond
+    {A : Set (SuspensionSpace 𝕋 𝕞)} (hA : MeasurableSet A)
+    (hinv : ∀ t : ℝ, (bernSuspensionFlow ν) t ⁻¹' A = A) :
+    suspensionMeasure 𝕋 𝕞 (bernZ ν) A = 0 ∨ suspensionMeasure 𝕋 𝕞 (bernZ ν) A = 1 :=
+  ergodic_bernSuspensionFlow ν (ergodic_biShiftEquiv_bernZ ν) hA hinv
 
 end Multifractal
 

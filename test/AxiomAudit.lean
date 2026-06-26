@@ -2473,3 +2473,15 @@ axioms: [propext, Classical.choice, Quot.sound] -/
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms Oseledets.Multifractal.suspensionMeasure_sectionHalf
+
+/-! ### Issue #19 ext — two-sided Bernoulli ergodicity (keystone) + UNCONDITIONAL flow ergodicity -/
+
+/-- info: 'Oseledets.Multifractal.ergodic_biShiftEquiv_bernZ' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Multifractal.ergodic_biShiftEquiv_bernZ
+
+/-- info: 'Oseledets.Multifractal.ergodic_bernSuspensionFlow_uncond' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Multifractal.ergodic_bernSuspensionFlow_uncond
