@@ -2441,3 +2441,26 @@ axioms: [propext, Classical.choice, Quot.sound] -/
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms Oseledets.Multifractal.ksEntropy_bern_eq
+
+/-! ### Issue #19 — ergodicity of the constant-roof Bernoulli suspension flow
+(the full `ℝ`-flow is ergodic iff the base shift is; its time-`1` map is honestly NOT ergodic) -/
+
+/-- info: 'Oseledets.Multifractal.ergodic_bernSuspensionFlow' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Multifractal.ergodic_bernSuspensionFlow
+
+/-- info: 'Oseledets.Multifractal.not_ergodic_bernSuspensionFlow_one' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Multifractal.not_ergodic_bernSuspensionFlow_one
+
+/-- info: 'Oseledets.Multifractal.suspensionMeasure_eq_bernZ_base_of_flowInvariant' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Multifractal.suspensionMeasure_eq_bernZ_base_of_flowInvariant
+
+/-- info: 'Oseledets.Multifractal.suspensionMeasure_sectionHalf' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Multifractal.suspensionMeasure_sectionHalf
