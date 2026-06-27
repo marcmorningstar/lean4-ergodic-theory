@@ -74,6 +74,16 @@ type), so it must unfold for instance resolution and definitional rewriting. -/
 def generatedSigmaAlgebra (μ : Measure α) (P : MeasurePartition μ ι) : MeasurableSpace α :=
   MeasurableSpace.generateFrom (Set.range P.cells)
 
+/-- **Reindexing leaves the generated σ-algebra unchanged.** The cell family is merely permuted, so
+its range — and hence the σ-algebra it generates — is the same. -/
+lemma generatedSigmaAlgebra_reindex {κ : Type*} [Fintype κ] {μ : Measure α}
+    (P : MeasurePartition μ ι) (e : κ ≃ ι) :
+    generatedSigmaAlgebra μ (P.reindex e) = generatedSigmaAlgebra μ P := by
+  have hr : Set.range (P.reindex e).cells = Set.range P.cells :=
+    e.surjective.range_comp P.cells
+  unfold generatedSigmaAlgebra
+  rw [hr]
+
 /-- `P` is a **generating partition** (a *generator*) for the measure-preserving system `(α, T, μ)`
 when the smallest forward-`T`-pullback-stable σ-algebra containing the generated σ-algebra `σ(P)`
 is the ambient measurable structure `mα`:

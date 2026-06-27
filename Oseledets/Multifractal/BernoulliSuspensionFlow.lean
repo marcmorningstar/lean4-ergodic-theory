@@ -71,24 +71,6 @@ namespace Entropy
 
 variable {α : Type*} [MeasurableSpace α] {ι κ : Type*}
 
-/-- **Reindex a finite measurable partition** `P` along an equivalence `e : κ ≃ ι` of index types:
-the new cell at `k` is the old cell at `e k`. The cells are measurable, pairwise a.e. disjoint and
-cover the space because `e` is a bijection, so this is again a partition. -/
-noncomputable def MeasurePartition.reindex [Fintype ι] [Fintype κ] {μ : Measure α}
-    (P : MeasurePartition μ ι) (e : κ ≃ ι) : MeasurePartition μ κ where
-  cells := fun k => P.cells (e k)
-  measurable := fun k => P.measurable (e k)
-  aedisjoint := by
-    intro k k' hkk'
-    exact P.aedisjoint (fun h => hkk' (e.injective h))
-  cover := by
-    rw [Set.iUnion_congr_of_surjective e e.surjective (fun k => rfl), P.cover]
-
-@[simp]
-lemma MeasurePartition.reindex_cells [Fintype ι] [Fintype κ] {μ : Measure α}
-    (P : MeasurePartition μ ι) (e : κ ≃ ι) :
-    (P.reindex e).cells = fun k => P.cells (e k) := rfl
-
 omit [MeasurableSpace α] in
 /-- The `n`-fold join cells of a reindexed partition are those of the original, reindexed at the
 level of the join index `Fin n → κ ≃ Fin n → ι` by post-composition with `e`. -/

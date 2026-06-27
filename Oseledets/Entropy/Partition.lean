@@ -70,6 +70,24 @@ structure MeasurePartition (μ : Measure α) (ι : Type*) [Fintype ι] where
   /-- The cells cover the whole space. -/
   cover : ⋃ i, cells i = Set.univ
 
+/-- **Reindex a finite measurable partition** `P` along an equivalence `e : κ ≃ ι` of index types:
+the new cell at `k` is the old cell at `e k`. The cells are measurable, pairwise a.e. disjoint and
+cover the space because `e` is a bijection, so this is again a partition. -/
+noncomputable def MeasurePartition.reindex {κ : Type*} [Fintype ι] [Fintype κ] {μ : Measure α}
+    (P : MeasurePartition μ ι) (e : κ ≃ ι) : MeasurePartition μ κ where
+  cells := fun k => P.cells (e k)
+  measurable := fun k => P.measurable (e k)
+  aedisjoint := by
+    intro k k' hkk'
+    exact P.aedisjoint (fun h => hkk' (e.injective h))
+  cover := by
+    rw [Set.iUnion_congr_of_surjective e e.surjective (fun k => rfl), P.cover]
+
+@[simp]
+lemma MeasurePartition.reindex_cells {κ : Type*} [Fintype ι] [Fintype κ] {μ : Measure α}
+    (P : MeasurePartition μ ι) (e : κ ≃ ι) :
+    (P.reindex e).cells = fun k => P.cells (e k) := rfl
+
 /-- Shannon entropy of a finite family of cells is nonnegative for a probability measure, since
 each cell has measure in `[0, 1]` and `negMulLog` is nonnegative there. -/
 lemma entropy_nonneg [Fintype ι] (μ : Measure α) [IsProbabilityMeasure μ] (s : ι → Set α) :

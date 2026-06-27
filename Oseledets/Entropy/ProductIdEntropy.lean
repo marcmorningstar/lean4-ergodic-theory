@@ -67,27 +67,6 @@ noncomputable instance instFintypeCountablePartition [MeasurableSpace α]
     Fintype (MeasurableSpace.countablePartition α n) :=
   (MeasurableSpace.finite_countablePartition α n).fintype
 
-/-- **Reindex a finite measurable partition** along an equivalence `e : κ ≃ ι` of index types: the
-new cell at `k` is the old cell at `e k`. Since `e` is a bijection the family is again measurable,
-pairwise a.e. disjoint and covering. (Named to avoid a clash with `MeasurePartition.reindex` in the
-multifractal layer.) -/
-def MeasurePartition.reindexEquiv {ι κ : Type*} [MeasurableSpace α] [Fintype ι] [Fintype κ]
-    {μ : Measure α} (P : MeasurePartition μ ι) (e : κ ≃ ι) : MeasurePartition μ κ where
-  cells := fun k => P.cells (e k)
-  measurable := fun k => P.measurable (e k)
-  aedisjoint := fun i j hij => P.aedisjoint (e.injective.ne hij)
-  cover := by rw [e.surjective.iUnion_comp P.cells]; exact P.cover
-
-/-- **Reindexing leaves the generated σ-algebra unchanged.** The cell family is merely permuted, so
-its range — and hence the σ-algebra it generates — is the same. -/
-lemma generatedSigmaAlgebra_reindexEquiv {ι κ : Type*} [MeasurableSpace α] [Fintype ι] [Fintype κ]
-    {μ : Measure α} (P : MeasurePartition μ ι) (e : κ ≃ ι) :
-    generatedSigmaAlgebra μ (P.reindexEquiv e) = generatedSigmaAlgebra μ P := by
-  have hr : Set.range (P.reindexEquiv e).cells = Set.range P.cells :=
-    e.surjective.range_comp P.cells
-  unfold generatedSigmaAlgebra
-  rw [hr]
-
 /-- **The countably-generated atom partition of a standard-Borel space**, packaged as a
 `MeasurePartition` indexed by the (finite) set `countablePartition α n` itself. Its cells are the
 atoms (`Subtype.val`); they are measurable, genuinely disjoint and cover the space. -/
@@ -119,7 +98,7 @@ lemma generatedSigmaAlgebra_cgPart (α : Type*) [MeasurableSpace α]
 whose supremum ranges over `Fin`-indexed partitions). -/
 def cgFin (α : Type*) [MeasurableSpace α] [MeasurableSpace.CountablyGenerated α] (μ : Measure α)
     (n : ℕ) : MeasurePartition μ (Fin (Fintype.card ↥(MeasurableSpace.countablePartition α n))) :=
-  (cgPart α μ n).reindexEquiv (Fintype.equivFin _).symm
+  (cgPart α μ n).reindex (Fintype.equivFin _).symm
 
 /-- The `Fin`-reindexed atom partition generates the same σ-algebra as `countablePartition`. -/
 lemma generatedSigmaAlgebra_cgFin (α : Type*) [MeasurableSpace α]
@@ -127,7 +106,7 @@ lemma generatedSigmaAlgebra_cgFin (α : Type*) [MeasurableSpace α]
     generatedSigmaAlgebra μ (cgFin α μ n)
       = MeasurableSpace.generateFrom (MeasurableSpace.countablePartition α n) := by
   unfold cgFin
-  rw [generatedSigmaAlgebra_reindexEquiv, generatedSigmaAlgebra_cgPart]
+  rw [generatedSigmaAlgebra_reindex, generatedSigmaAlgebra_cgPart]
 
 /-- The generated σ-algebras of `countablePartition` are increasing in refinement. -/
 lemma generateFrom_countablePartition_monotone (α : Type*) [MeasurableSpace α]
@@ -193,7 +172,7 @@ partition `ξₙ ⊠ ηₙ` (atom partitions of `X` and `Y`), reindexed to a `Fi
 def prodBPart (μ : Measure X) (ν : Measure Y) [IsProbabilityMeasure μ] [IsProbabilityMeasure ν]
     (n : ℕ) :=
   (joinPartition ((cgFin X μ n).pulledBack (measurePreserving_fst (μ := μ) (ν := ν)))
-    ((cgPart Y ν n).pulledBack (measurePreserving_snd (μ := μ) (ν := ν)))).reindexEquiv
+    ((cgPart Y ν n).pulledBack (measurePreserving_snd (μ := μ) (ν := ν)))).reindex
       (Fintype.equivFin _).symm
 
 variable (μ : Measure X) (ν : Measure Y) [IsProbabilityMeasure μ] [IsProbabilityMeasure ν]
@@ -205,7 +184,7 @@ lemma generatedSigmaAlgebra_prodBPart (n : ℕ) :
           (joinPartition ((cgFin X μ n).pulledBack (measurePreserving_fst (μ := μ) (ν := ν)))
             ((cgPart Y ν n).pulledBack (measurePreserving_snd (μ := μ) (ν := ν)))) := by
   unfold prodBPart
-  exact generatedSigmaAlgebra_reindexEquiv _ _
+  exact generatedSigmaAlgebra_reindex _ _
 
 /-- The rectangle σ-algebra in coordinate form: `comap fst σ(ξₙ) ⊔ comap snd σ(ηₙ)`. -/
 lemma generatedSigmaAlgebra_prodBPart_eq (n : ℕ) :
