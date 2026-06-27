@@ -167,6 +167,8 @@ import Oseledets.Krieger.Bracket
 import Oseledets.Multifractal
 import Oseledets.Entropy.GeneratorTheoremTwoSided
 import Oseledets.Continuous.SuspensionStandardBorel
+import Oseledets.Entropy.ProductIdEntropy
+import Oseledets.Multifractal.BernoulliSuspensionEntropy
 
 /-!
 # Axiom audit
@@ -2516,3 +2518,22 @@ axioms: [propext, Classical.choice, Quot.sound] -/
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms Oseledets.Multifractal.instStandardBorelSpace_suspensionSpace_bern
+
+/-! ### Issue #20 fibre — product/skew entropy `h(T×id)=h(T)` (Walters Thm 4.23) and the
+unconditional Category-C unlock: the constant-roof Bernoulli suspension time-`1` map has
+metric entropy `Hnu`. -/
+
+/-- info: 'Oseledets.Entropy.ksEntropy_prod_id_eq' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Entropy.ksEntropy_prod_id_eq
+
+/-- info: 'Oseledets.Multifractal.ksEntropy_bernSuspensionFlow_one_eq_Hnu' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Multifractal.ksEntropy_bernSuspensionFlow_one_eq_Hnu
+
+/-- info: 'Oseledets.Multifractal.bernSuspensionFlow_ksEntropy_eq_Hnu' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Multifractal.bernSuspensionFlow_ksEntropy_eq_Hnu
