@@ -12,6 +12,7 @@ import Oseledets.OperatorEntropy.Subadditivity
 import Oseledets.OperatorEntropy.DiagonalSpectrum
 import Oseledets.OperatorEntropy.CNT.Refinement
 import Oseledets.OperatorEntropy.CNT.Construction
+import Oseledets.OperatorEntropy.CNT.AbelianCorner
 
 /-!
 # Finite-dimensional operator entropy

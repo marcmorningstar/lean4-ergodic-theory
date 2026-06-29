@@ -2631,3 +2631,22 @@ density matrix, and the `cntDynamicalEntropy` itself. -/
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms Oseledets.OperatorEntropy.CNT.cntDynamicalEntropy
+
+/-! ### Issue #24 — CNT/ALF abelian-corner theorem (the headline)
+The quantum dynamical entropy restricted to the abelian (diagonal) corner equals the classical
+Kolmogorov–Sinai entropy of the induced measure-preserving permutation system. -/
+
+/-- info: 'Oseledets.OperatorEntropy.CNT.cntEntropyPartition_eq_ksEntropyPartition' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.OperatorEntropy.CNT.cntEntropyPartition_eq_ksEntropyPartition
+
+/-- info: 'Oseledets.OperatorEntropy.CNT.cntDynamicalEntropyAbelian_eq_ksEntropy' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.OperatorEntropy.CNT.cntDynamicalEntropyAbelian_eq_ksEntropy
+
+/-- info: 'Oseledets.OperatorEntropy.CNT.ksEntropy_le_cntDynamicalEntropy' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.OperatorEntropy.CNT.ksEntropy_le_cntDynamicalEntropy
