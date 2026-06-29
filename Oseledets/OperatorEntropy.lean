@@ -9,6 +9,9 @@ import Oseledets.OperatorEntropy.KroneckerSpectrum
 import Oseledets.OperatorEntropy.Klein
 import Oseledets.OperatorEntropy.Additivity
 import Oseledets.OperatorEntropy.Subadditivity
+import Oseledets.OperatorEntropy.DiagonalSpectrum
+import Oseledets.OperatorEntropy.CNT.Refinement
+import Oseledets.OperatorEntropy.CNT.Construction
 
 /-!
 # Finite-dimensional operator entropy

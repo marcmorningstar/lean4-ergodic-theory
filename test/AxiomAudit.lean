@@ -2607,3 +2607,27 @@ the Kronecker spectrum, and the scalar Klein inequality. -/
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms Oseledets.OperatorEntropy.DensityMatrix.partialTraceLeft
+
+/-! ### Issue #24 — CNT/ALF quantum dynamical entropy (construction)
+Diagonal von Neumann entropy bridge, the partition-of-unity telescoping, the correlation
+density matrix, and the `cntDynamicalEntropy` itself. -/
+
+/-- info: 'Oseledets.OperatorEntropy.vonNeumannEntropy_diagonal' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.OperatorEntropy.vonNeumannEntropy_diagonal
+
+/-- info: 'Oseledets.OperatorEntropy.CNT.sum_refine_conjTranspose_mul_refine' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.OperatorEntropy.CNT.sum_refine_conjTranspose_mul_refine
+
+/-- info: 'Oseledets.OperatorEntropy.CNT.corrMatrix' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.OperatorEntropy.CNT.corrMatrix
+
+/-- info: 'Oseledets.OperatorEntropy.CNT.cntDynamicalEntropy' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.OperatorEntropy.CNT.cntDynamicalEntropy
