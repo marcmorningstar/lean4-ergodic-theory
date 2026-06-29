@@ -55,11 +55,6 @@ section CrossChangeOfVariables
 variable {α β : Type*} [MeasurableSpace α] [MeasurableSpace β]
   {μ : Measure α} {ν : Measure β} {e : α → β}
 
-/-- Integrability transports along a measure-preserving `e : α → β` by precomposition. -/
-theorem integrable_comp_cross (he : MeasurePreserving e μ ν) {f : β → ℝ} (hf : Integrable f ν) :
-    Integrable (fun ω => f (e ω)) μ :=
-  Integrable.comp_measurable (by rwa [he.map_eq]) he.measurable
-
 /-- Cross-space change of variables: `∫ f(e ω) ∂μ = ∫ f ∂ν` for measure-preserving `e`. -/
 theorem integral_comp_cross (he : MeasurePreserving e μ ν) {f : β → ℝ}
     (hf : AEStronglyMeasurable f ν) :
@@ -127,7 +122,7 @@ theorem condExp_indicator_preimage_comap_cross {e : α → β}
   set g : α → ℝ := fun ω => (ν⟦B | 𝒜β⟧) (e ω) with hg
   have hgSM : StronglyMeasurable[MeasurableSpace.comap e 𝒜β] g :=
     (stronglyMeasurable_condExp).comp_measurable heA
-  have hgint : Integrable g μ := integrable_comp_cross he integrable_condExp
+  have hgint : Integrable g μ := he.integrable_comp_of_integrable integrable_condExp
   have hsfμ : SigmaFinite (μ.trim hcm) := inferInstance
   have hsfν : SigmaFinite (ν.trim hm) := inferInstance
   symm
