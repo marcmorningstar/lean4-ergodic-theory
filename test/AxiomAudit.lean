@@ -169,6 +169,10 @@ import Oseledets.Entropy.GeneratorTheoremTwoSided
 import Oseledets.Continuous.SuspensionStandardBorel
 import Oseledets.Entropy.ProductIdEntropy
 import Oseledets.Multifractal.BernoulliSuspensionEntropy
+import Oseledets.Multifractal.BernoulliSuspensionCondEntropy
+import Oseledets.Entropy.CondProductIdEntropy
+import Oseledets.Entropy.CondChainRuleSup
+import Oseledets.Entropy.CondKSEntropyConjugacy
 import Oseledets.OperatorEntropy
 
 /-!
@@ -2538,6 +2542,31 @@ metric entropy `Hnu`. -/
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms Oseledets.Multifractal.bernSuspensionFlow_ksEntropy_eq_Hnu
+
+/-! ### Issue #21 — the literal conditional-fibre entropy of the constant-roof Bernoulli
+suspension vanishes (`condKsEntropy(time-1 | base factor) = 0`), via the conditional Le Maître
+chain: the A0 chain-rule keystone, the conditional frozen-product vanishing `h(T×id | fst) = 0`
+(D), and conjugacy invariance of the conditional KS entropy (E2). -/
+
+/-- info: 'Oseledets.Multifractal.condKsEntropy_bernSuspensionFlow_one_baseProj_eq_zero' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Multifractal.condKsEntropy_bernSuspensionFlow_one_baseProj_eq_zero
+
+/-- info: 'Oseledets.Entropy.condKsEntropy_prod_id_eq_zero' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Entropy.condKsEntropy_prod_id_eq_zero
+
+/-- info: 'Oseledets.Entropy.condEntropyGivenPartitionCond_eq_condEntropy_sup' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Entropy.condEntropyGivenPartitionCond_eq_condEntropy_sup
+
+/-- info: 'Oseledets.Entropy.condKsEntropy_congr_of_conjugacy' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Entropy.condKsEntropy_congr_of_conjugacy
 
 /-! ### Issue #23 — finite-dimensional operator entropy (foundations)
 `DensityMatrix` / `vonNeumannEntropy`, the partial trace as a positive trace-preserving map,
