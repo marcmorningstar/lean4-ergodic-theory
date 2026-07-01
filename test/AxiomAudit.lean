@@ -174,6 +174,7 @@ import Oseledets.Entropy.CondProductIdEntropy
 import Oseledets.Entropy.CondChainRuleSup
 import Oseledets.Entropy.CondKSEntropyConjugacy
 import Oseledets.OperatorEntropy
+import Oseledets.OperatorEntropy.RelativeEntropy
 
 /-!
 # Axiom audit
@@ -2686,3 +2687,28 @@ Kolmogorov–Sinai entropy of the induced measure-preserving permutation system.
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms Oseledets.OperatorEntropy.CNT.vonNeumannEntropy_corrMatrix_eq_ksEntropySeq
+
+/-! ### Issue #22 — Umegaki relative entropy (feasible foundations layer)
+Klein-inequality nonnegativity of the relative entropy, its vanishing on the diagonal,
+unitary-conjugation invariance, and the DPI/no-recovery-section corollary (whose
+data-processing input is an explicit hypothesis, the Lieb-gated piece staying out). -/
+
+/-- info: 'Oseledets.OperatorEntropy.relEntropy_nonneg' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.OperatorEntropy.relEntropy_nonneg
+
+/-- info: 'Oseledets.OperatorEntropy.relEntropy_self_eq_zero' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.OperatorEntropy.relEntropy_self_eq_zero
+
+/-- info: 'Oseledets.OperatorEntropy.relEntropy_conj_invariant' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.OperatorEntropy.relEntropy_conj_invariant
+
+/-- info: 'Oseledets.OperatorEntropy.no_monotone_section_of_strict_drop' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.OperatorEntropy.no_monotone_section_of_strict_drop

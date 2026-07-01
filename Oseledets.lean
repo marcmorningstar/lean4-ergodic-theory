@@ -234,6 +234,7 @@ import Oseledets.Krieger.Weave
 import Oseledets.Krieger.Bracket
 import Oseledets.Multifractal
 import Oseledets.OperatorEntropy
+import Oseledets.OperatorEntropy.RelativeEntropy
 
 /-!
 # Oseledets
