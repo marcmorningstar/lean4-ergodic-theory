@@ -185,6 +185,7 @@ import Oseledets.OperatorEntropy.Lieb.Perspective
 import Oseledets.OperatorEntropy.Lieb.JointConvexity
 import Oseledets.OperatorEntropy.Lieb.DataProcessing
 import Oseledets.OperatorEntropy.Lieb.DataProcessingGeneral
+import Oseledets.OperatorEntropy.Lieb.DataProcessingCPTP
 
 /-!
 # Axiom audit
@@ -2802,3 +2803,23 @@ data-processing input is an explicit hypothesis, the Lieb-gated piece staying ou
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms Oseledets.OperatorEntropy.Lieb.relEntropyMonotone_partialTrace
+
+/-- info: 'Oseledets.OperatorEntropy.monotonicity_relEntropy_under_CPTP' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.OperatorEntropy.monotonicity_relEntropy_under_CPTP
+
+/-- info: 'Oseledets.OperatorEntropy.no_section_of_strict_relEntropy_drop' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.OperatorEntropy.no_section_of_strict_relEntropy_drop
+
+/-- info: 'Oseledets.OperatorEntropy.no_stinespring_section_of_strict_relEntropy_drop' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.OperatorEntropy.no_stinespring_section_of_strict_relEntropy_drop
+
+/-- info: 'Oseledets.OperatorEntropy.petz_recovery_implies_equality' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.OperatorEntropy.petz_recovery_implies_equality
