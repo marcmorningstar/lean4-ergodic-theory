@@ -65,7 +65,7 @@ def relEntropy (ρ σ : DensityMatrix n) : ℝ :=
 `Tr(ρ · f(τ))` (with `f(τ)` the Hermitian functional calculus of `τ` at `f`) is the real double
 sum `∑ₖ,ₘ pₖ |⟨eₖ|gₘ⟩|² f(qₘ)` with `p, e` the eigendata of `ρ` and `q, g` that of `τ`.  This is
 the workhorse identifying the spectral form of relative entropy with its trace form. -/
-private lemma trace_val_mul_cfc_re (ρ τ : DensityMatrix n) (f : ℝ → ℝ) :
+lemma trace_val_mul_cfc_re (ρ τ : DensityMatrix n) (f : ℝ → ℝ) :
     (ρ.val * τ.posSemidef.1.cfc f).trace.re
       = ∑ k, ∑ m, ρ.eig k * Complex.normSq ((star ρ.eigVec * τ.eigVec) k m) * f (τ.eig m) := by
   have hρ : ρ.val

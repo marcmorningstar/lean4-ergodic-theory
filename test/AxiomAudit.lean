@@ -2746,3 +2746,13 @@ data-processing input is an explicit hypothesis, the Lieb-gated piece staying ou
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms Oseledets.OperatorEntropy.stinespring_relEntropy_monotone
+
+/-- info: 'Oseledets.OperatorEntropy.relEntropy_eq_traceLog' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.OperatorEntropy.relEntropy_eq_traceLog
+
+/-- info: 'Oseledets.OperatorEntropy.KrausChannel.adj_hsAdjoint' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.OperatorEntropy.KrausChannel.adj_hsAdjoint

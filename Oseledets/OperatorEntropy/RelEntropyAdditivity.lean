@@ -136,69 +136,13 @@ variable {n : Type*} [Fintype n] [DecidableEq n]
 
 /-- **Trace–spectral bridge (real part).**  `Tr(ρ · f(τ)) = ∑ₖ,ₘ pₖ |⟨eₖ|gₘ⟩|² f(qₘ)` with
 `p, e` the eigendata of `ρ` and `q, g` that of `τ`, where `f(τ)` is the Hermitian functional
-calculus.  This is a public re-derivation of the (private) `trace_val_mul_cfc_re` bridge of
+calculus.  This is a thin alias of the `trace_val_mul_cfc_re` bridge of
 `RelativeEntropy.lean`, needed to identify the spectral cross term with a matrix trace. -/
 lemma traceBridge (ρ τ : DensityMatrix n) (f : ℝ → ℝ) :
     (ρ.val * τ.posSemidef.1.cfc f).trace.re
       = ∑ k, ∑ m, ρ.eig k
-          * Complex.normSq ((star ρ.eigVec * τ.eigVec) k m) * f (τ.eig m) := by
-  have hρ : ρ.val
-      = ρ.eigVec * diagonal (fun k => (ρ.eig k : ℂ)) * star ρ.eigVec := by
-    have h := ρ.posSemidef.1.spectral_theorem
-    rw [Unitary.conjStarAlgAut_apply] at h
-    have hRC : (RCLike.ofReal ∘ ρ.posSemidef.1.eigenvalues) = fun k => (ρ.eig k : ℂ) := by
-      funext k; rfl
-    rw [hRC] at h
-    exact h
-  have hτ : τ.posSemidef.1.cfc f
-      = τ.eigVec * diagonal (fun m => (f (τ.eig m) : ℂ)) * star τ.eigVec := by
-    have h : τ.posSemidef.1.cfc f
-        = (τ.posSemidef.1.eigenvectorUnitary : Matrix n n ℂ)
-          * diagonal (RCLike.ofReal ∘ f ∘ τ.posSemidef.1.eigenvalues)
-          * star (τ.posSemidef.1.eigenvectorUnitary : Matrix n n ℂ) := by
-      simp only [Matrix.IsHermitian.cfc, Unitary.conjStarAlgAut_apply]
-    have hRC : (RCLike.ofReal ∘ f ∘ τ.posSemidef.1.eigenvalues)
-        = fun m => (f (τ.eig m) : ℂ) := by funext m; rfl
-    rw [hRC] at h
-    exact h
-  have hsQ : star (star ρ.eigVec * τ.eigVec) = star τ.eigVec * ρ.eigVec := by
-    rw [star_mul, star_star]
-  have e1 : ρ.val * τ.posSemidef.1.cfc f
-      = ρ.eigVec
-        * (diagonal (fun k => (ρ.eig k : ℂ)) * star ρ.eigVec * τ.posSemidef.1.cfc f) := by
-    rw [hρ]; simp only [mul_assoc]
-  have e2 : diagonal (fun k => (ρ.eig k : ℂ)) * star ρ.eigVec * τ.posSemidef.1.cfc f * ρ.eigVec
-      = diagonal (fun k => (ρ.eig k : ℂ))
-        * (star ρ.eigVec * τ.posSemidef.1.cfc f * ρ.eigVec) := by
-    simp only [mul_assoc]
-  have e3 : star ρ.eigVec
-        * (τ.eigVec * diagonal (fun m => (f (τ.eig m) : ℂ)) * star τ.eigVec) * ρ.eigVec
-      = star ρ.eigVec * τ.eigVec * diagonal (fun m => (f (τ.eig m) : ℂ))
-        * (star τ.eigVec * ρ.eigVec) := by
-    simp only [mul_assoc]
-  have htrace : (ρ.val * τ.posSemidef.1.cfc f).trace
-      = ∑ k, ∑ m, (ρ.eig k : ℂ) * (Complex.normSq ((star ρ.eigVec * τ.eigVec) k m) : ℂ)
-          * (f (τ.eig m) : ℂ) := by
-    rw [e1, Matrix.trace_mul_comm, e2, hτ, e3, ← hsQ]
-    simp only [Matrix.trace, Matrix.diag_apply]
-    refine Finset.sum_congr rfl fun k _ => ?_
-    have hMkk : (star ρ.eigVec * τ.eigVec * diagonal (fun m => (f (τ.eig m) : ℂ))
-          * star (star ρ.eigVec * τ.eigVec)) k k
-        = ∑ m, (Complex.normSq ((star ρ.eigVec * τ.eigVec) k m) : ℂ) * (f (τ.eig m) : ℂ) := by
-      rw [Matrix.mul_apply]
-      refine Finset.sum_congr rfl fun m _ => ?_
-      rw [Matrix.mul_diagonal, Matrix.star_apply, Complex.star_def, mul_right_comm,
-        Complex.mul_conj]
-    simp only [Matrix.diagonal_mul]
-    rw [hMkk, Finset.mul_sum]
-    refine Finset.sum_congr rfl fun m _ => ?_
-    ring
-  rw [htrace]
-  have hcast : ∀ k m, (ρ.eig k : ℂ) * (Complex.normSq ((star ρ.eigVec * τ.eigVec) k m) : ℂ)
-        * (f (τ.eig m) : ℂ)
-      = ((ρ.eig k * Complex.normSq ((star ρ.eigVec * τ.eigVec) k m) * f (τ.eig m) : ℝ) : ℂ) := by
-    intro k m; push_cast; ring
-  simp only [hcast, ← Complex.ofReal_sum, Complex.ofReal_re]
+          * Complex.normSq ((star ρ.eigVec * τ.eigVec) k m) * f (τ.eig m) :=
+  trace_val_mul_cfc_re ρ τ f
 
 /-- **Spectral–trace form of relative entropy.**  `D(ρ‖σ) = −S(ρ) − Tr(ρ · log σ)`, with
 `S` the von Neumann entropy and `log σ` the Hermitian functional calculus.  This holds
