@@ -186,6 +186,8 @@ import Oseledets.OperatorEntropy.Lieb.JointConvexity
 import Oseledets.OperatorEntropy.Lieb.DataProcessing
 import Oseledets.OperatorEntropy.Lieb.DataProcessingGeneral
 import Oseledets.OperatorEntropy.Lieb.DataProcessingCPTP
+import Oseledets.OperatorEntropy.Lieb.PetzEqualityRecovery28
+import Oseledets.OperatorEntropy.Lieb.PetzEqualitySufficiency
 
 /-!
 # Axiom audit
@@ -2823,3 +2825,13 @@ data-processing input is an explicit hypothesis, the Lieb-gated piece staying ou
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms Oseledets.OperatorEntropy.petz_recovery_implies_equality
+
+/-- info: 'Oseledets.OperatorEntropy.Lieb.petz_equality_recovery' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.OperatorEntropy.Lieb.petz_equality_recovery
+
+/-- info: 'Oseledets.OperatorEntropy.Lieb.partialTrace_equality_imp_intertwinesIt' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.OperatorEntropy.Lieb.partialTrace_equality_imp_intertwinesIt

@@ -246,6 +246,8 @@ import Oseledets.OperatorEntropy.Lieb.JointConvexity
 import Oseledets.OperatorEntropy.Lieb.DataProcessing
 import Oseledets.OperatorEntropy.Lieb.DataProcessingGeneral
 import Oseledets.OperatorEntropy.Lieb.DataProcessingCPTP
+import Oseledets.OperatorEntropy.Lieb.PetzEqualityRecovery28
+import Oseledets.OperatorEntropy.Lieb.PetzEqualitySufficiency
 
 /-!
 # Oseledets
