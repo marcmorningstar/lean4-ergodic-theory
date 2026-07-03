@@ -1,0 +1,610 @@
+\chapter{Quantum relative entropy and its monotonicity}
+\label{chap:entropy}
+
+The multiplicative ergodic machinery of the preceding chapters is built on the continuous
+functional calculus of self-adjoint matrices. That same finite-dimensional matrix and CFC
+infrastructure supports a second, logically independent development: a
+\emph{finite-dimensional quantum-information layer}. This chapter documents its foundational
+half --- the entropies of a finite quantum system and the master inequality controlling how they
+behave under quantum channels.
+
+The objects are \emph{density matrices}: positive semidefinite complex matrices of unit trace,
+the finite-dimensional states of a quantum system. Attached to a state \(\rho\) is its von
+Neumann entropy \(S(\rho)\), and to a pair \(\rho,\sigma\) the Umegaki \emph{relative entropy}
+\(S(\rho\|\sigma) = \Tr\bigl(\rho(\log\rho-\log\sigma)\bigr)\), the finite-dimensional
+distinguishability functional of quantum information theory. The central theorem, the
+\emph{data-processing inequality}, states that no quantum channel can increase relative entropy:
+distinguishability can only degrade under physical processing. We reach it through Lieb's 1973
+theorem on the joint convexity of relative entropy (Lieb 1973), following the modern route of
+Carlen's \emph{Trace Inequalities and Quantum Entropy} via the Effros operator perspective, and
+close with the easy half of Petz's equality theorem (Petz 1986, 2003) --- recovery implies
+saturation --- whose hard converse (saturation implies the existence of a Petz recovery map) is
+treated separately.
+
+Everything in this chapter is formalized sorry-free, on the same matrix/CFC foundations as the
+multiplicative ergodic theorem, and is verified by the guarded axiom audit to rest only on
+\(\{\texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}\}\). Throughout, \(n\) is a
+finite index type, matrices are complex \(n\times n\) acting on \(\C^n\), and \(\Tr\) is the
+matrix trace.
+
+\section{Density matrices and von Neumann entropy}
+
+\begin{definition}[Density matrix]\label{DensityMatrix}
+  \lean{Oseledets.OperatorEntropy.DensityMatrix}\leanok
+  For a finite index type \(n\), a \emph{density matrix} is a structure bundling a matrix
+  \(\rho\in\Matrix_n(\C)\) together with proofs that \(\rho\) is positive semidefinite and has
+  unit trace, \(\Tr\rho = 1\). It is the finite-dimensional state of a quantum system on
+  \(\C^n\).
+\end{definition}
+
+\begin{lemma}[Eigenvalues form a probability vector]\label{DensityMatrix.sum_eigenvalues_eq_one}
+  \lean{Oseledets.OperatorEntropy.DensityMatrix.sum_eigenvalues_eq_one}\leanok
+  \uses{DensityMatrix}
+  The real eigenvalues \(\lambda_i\) of a density matrix \(\rho\) are nonnegative, each at most
+  \(1\), and sum to \(1\): \(\sum_i \lambda_i = \Tr\rho = 1\).
+\end{lemma}
+\begin{proof}\leanok
+  \uses{DensityMatrix}
+  Positive semidefiniteness gives \(\lambda_i\ge 0\). The Hermitian spectral theorem identifies
+  \(\Tr\rho\) with \(\sum_i\lambda_i\) as a complex number; casting the hypothesis \(\Tr\rho = 1\)
+  back to \(\R\) yields \(\sum_i\lambda_i = 1\). Each \(\lambda_i\le 1\) is then a single term
+  bounded by the sum of the nonnegative terms.
+\end{proof}
+
+\begin{definition}[Von Neumann entropy]\label{vonNeumannEntropy}
+  \lean{Oseledets.OperatorEntropy.vonNeumannEntropy}\leanok
+  \uses{DensityMatrix}
+  The \emph{von Neumann entropy} of a density matrix \(\rho\) with eigenvalues \(\lambda_i\) is
+  \[
+    S(\rho) \;=\; \sum_i \operatorname{negMulLog}(\lambda_i) \;=\; -\sum_i \lambda_i\log\lambda_i,
+  \]
+  using Mathlib's \(\operatorname{negMulLog}(x) = -x\log x\), so the convention \(0\log 0 = 0\) is
+  built in.
+\end{definition}
+
+\begin{theorem}[Nonnegativity of entropy]\label{vonNeumannEntropy_nonneg}
+  \lean{Oseledets.OperatorEntropy.vonNeumannEntropy_nonneg}\leanok
+  \(S(\rho)\ge 0\) for every density matrix \(\rho\).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{vonNeumannEntropy, DensityMatrix.sum_eigenvalues_eq_one}
+  Each eigenvalue satisfies \(0\le\lambda_i\le 1\), and on \([0,1]\) one has
+  \(\operatorname{negMulLog}(x) = -x\log x\ge 0\). The entropy is a sum of these nonnegative
+  terms.
+\end{proof}
+
+We record the partial trace here, as it is the elementary operation underlying both the reduced
+states of a bipartite system and the data-processing inequality.
+
+\begin{definition}[Right partial trace]\label{partialTraceRight}
+  \lean{Oseledets.OperatorEntropy.partialTraceRight}\leanok
+  For an operator \(M\) on a bipartite system \(\C^{n_A}\otimes\C^{n_B}\), the \emph{partial
+  trace over the \(B\) factor} is
+  \[
+    (\Tr_B M)_{i,i'} \;=\; \sum_j M_{(i,j),(i',j)},
+  \]
+  an operator on \(\C^{n_A}\). (The left partial trace \(\Tr_A\) is defined symmetrically.)
+\end{definition}
+
+\begin{lemma}[Partial trace preserves the trace]\label{trace_partialTraceRight}
+  \lean{Oseledets.OperatorEntropy.trace_partialTraceRight}\leanok
+  \uses{partialTraceRight}
+  \(\Tr(\Tr_B M) = \Tr M\).
+\end{lemma}
+\begin{proof}\leanok
+  \uses{partialTraceRight}
+  Both sides expand to the full double sum \(\sum_{i,j} M_{(i,j),(i,j)}\) over the product index
+  set; a reindexing of the finite sum finishes.
+\end{proof}
+
+\begin{lemma}[Partial trace is completely positive]\label{PosSemidef.partialTraceRight}
+  \lean{Oseledets.OperatorEntropy.PosSemidef.partialTraceRight}\leanok
+  \uses{partialTraceRight}
+  If \(M\) is positive semidefinite then so is \(\Tr_B M\).
+\end{lemma}
+\begin{proof}\leanok
+  \uses{partialTraceRight}
+  Write the partial trace in Kraus/compression form \(\Tr_B M = \sum_j E_j^{*} M E_j\), the sum
+  of the conjugations of \(M\) by the block-inclusion isometries \(E_j : i\mapsto(i,j)\). Each
+  compression \(E_j^{*} M E_j\) is positive semidefinite, and a finite sum of positive
+  semidefinite matrices is positive semidefinite.
+\end{proof}
+
+\section{Umegaki relative entropy and Klein's inequality}
+
+\begin{definition}[Umegaki relative entropy]\label{relEntropy}
+  \lean{Oseledets.OperatorEntropy.relEntropy}\leanok
+  \uses{DensityMatrix}
+  The \emph{Umegaki relative entropy} of \(\rho\) with respect to \(\sigma\) is
+  \(S(\rho\|\sigma) = \Tr\rho(\log\rho - \log\sigma)\). It is defined in the concrete
+  \emph{spectral/overlap} form
+  \[
+    S(\rho\|\sigma) \;=\; \sum_k p_k\log p_k \;-\; \sum_{k,m}\abs{\langle e_k\mid f_m\rangle}^2\,
+      p_k\log q_m,
+  \]
+  where \((p_k,e_k)\) are the eigenvalues/eigenvectors of \(\rho\) and \((q_m,f_m)\) those of
+  \(\sigma\). The definition is total: with the convention \(\log 0 = 0\) the \(\sigma\)-singular
+  columns contribute \(0\).
+\end{definition}
+
+\begin{theorem}[Trace form of relative entropy]\label{relEntropy_eq_traceLog}
+  \lean{Oseledets.OperatorEntropy.relEntropy_eq_traceLog}\leanok
+  For faithful (positive definite) \(\sigma\), the spectral definition agrees with the textbook
+  trace form
+  \[
+    S(\rho\|\sigma) \;=\; \Re\,\Tr\bigl(\rho\,(\log\rho - \log\sigma)\bigr),
+  \]
+  where \(\log\rho,\log\sigma\) are the Hermitian continuous functional calculus of the real
+  logarithm.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{relEntropy}
+  Expand both eigendecompositions. The trace--spectral bridge
+  \(\Re\,\Tr(\rho\,f(\tau)) = \sum_{k,m} p_k\abs{\langle e_k\mid g_m\rangle}^2 f(q_m)\) (proved
+  once, entrywise, via the spectral theorem and the identity \(z\bar z = \abs z^2\)) identifies
+  \(\Re\,\Tr(\rho\log\rho)\) with \(\sum_k p_k\log p_k\) (the overlap of \(\rho\) with itself is
+  the identity) and \(\Re\,\Tr(\rho\log\sigma)\) with the cross double sum. Distributing over the
+  difference gives the claim.
+\end{proof}
+
+\begin{theorem}[Klein / Gibbs nonnegativity]\label{relEntropy_nonneg}
+  \lean{Oseledets.OperatorEntropy.relEntropy_nonneg}\leanok
+  For faithful (positive definite) \(\sigma\), \(\;0\le S(\rho\|\sigma)\).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{relEntropy, DensityMatrix.sum_eigenvalues_eq_one, klein_scalar}
+  The overlap matrix \(D_{km} = \abs{\langle e_k\mid f_m\rangle}^2\) is doubly stochastic:
+  writing \(Q = \rho.\mathrm{eigVec}^{*}\,\sigma.\mathrm{eigVec}\), both \(QQ^{*} = 1\) and
+  \(Q^{*}Q = 1\) (the eigenvector unitaries cancel), giving unit row and column sums.
+  Faithfulness makes every \(q_m > 0\), so the support side condition is vacuous. Klein's scalar
+  inequality (\Cref{klein_scalar}) then yields
+  \(\sum_{k,m} D_{km}\,p_k\log q_m \le \sum_k p_k\log p_k\), i.e.\ \(0\le S(\rho\|\sigma)\).
+\end{proof}
+
+\begin{theorem}[Vanishing on the diagonal]\label{relEntropy_self_eq_zero}
+  \lean{Oseledets.OperatorEntropy.relEntropy_self_eq_zero}\leanok
+  \(S(\rho\|\rho) = 0\) for every density matrix \(\rho\).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{relEntropy}
+  With \(\sigma = \rho\) the overlap matrix \(Q = \rho.\mathrm{eigVec}^{*}\,\rho.\mathrm{eigVec}
+  = 1\), so \(D_{km} = \delta_{km}\). The cross double sum collapses to \(\sum_k p_k\log p_k\),
+  exactly cancelling the first term.
+\end{proof}
+
+\begin{theorem}[Unitary invariance]\label{relEntropy_conj_invariant}
+  \lean{Oseledets.OperatorEntropy.relEntropy_conj_invariant}\leanok
+  For any unitary \(W\), \(\;S(W\rho W^{*}\,\|\,W\sigma W^{*}) = S(\rho\|\sigma)\), where
+  \(W\rho W^{*}\) denotes the density matrix
+  \lean{Oseledets.OperatorEntropy.DensityMatrix.conj}
+  obtained by conjugating \(\rho\).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{relEntropy_eq_traceLog}
+  Conjugation by \(W\) is a \(*\)-algebra automorphism, so it commutes with the functional
+  calculus: \(\log(W\rho W^{*}) = W(\log\rho)W^{*}\). Hence each trace
+  \(\Tr\bigl((W\rho W^{*})\log(W\tau W^{*})\bigr) = \Tr\bigl(W(\rho\log\tau)W^{*}\bigr)
+  = \Tr(\rho\log\tau)\) by cyclicity of the trace and \(W^{*}W = 1\). Applying this to the two
+  terms of the trace form leaves \(S(\rho\|\sigma)\) unchanged.
+\end{proof}
+
+\begin{theorem}[Ancilla invariance]\label{relEntropy_ancilla_invariant}
+  \lean{Oseledets.OperatorEntropy.relEntropy_ancilla_invariant}\leanok
+  Tensoring both arguments with a common faithful ancilla \(\alpha\) leaves the relative entropy
+  unchanged: for faithful \(\sigma\) and faithful \(\alpha\),
+  \(S(\rho\otimes\alpha\,\|\,\sigma\otimes\alpha) = S(\rho\|\sigma)\).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{relEntropy, relEntropy_self_eq_zero}
+  Relative entropy is additive over Kronecker products,
+  \(S(\rho\otimes\alpha\,\|\,\sigma\otimes\alpha) = S(\rho\|\sigma) + S(\alpha\|\alpha)\), and the
+  self-term vanishes by \Cref{relEntropy_self_eq_zero}.
+\end{proof}
+
+The nonnegativity above is the operator form of \emph{Klein's inequality}; its scalar core, which
+we isolate next, is the combinatorial engine behind both nonnegativity and the subadditivity of
+the von Neumann entropy.
+
+\begin{theorem}[Scalar Klein / Peierls inequality]\label{klein_scalar}
+  \lean{Oseledets.OperatorEntropy.klein_scalar}\leanok
+  Let \(D = (D_{km})\) be a doubly stochastic \(K\times M\) matrix (\(D_{km}\ge 0\), all row sums
+  and all column sums equal to \(1\)), let \(p\ge 0\) on \(K\) and \(s\ge 0\) on \(M\) have equal
+  total mass \(\sum_k p_k = \sum_m s_m\), and assume the support condition
+  \(s_m = 0\Rightarrow D_{km}p_k = 0\). Writing \(a_m = \sum_k D_{km}p_k\) for the column
+  marginal,
+  \[
+    \sum_m a_m\log s_m \;\le\; \sum_k p_k\log p_k.
+  \]
+\end{theorem}
+\begin{proof}\leanok
+  This is the finite scalar core of Klein's inequality (Carlen, \emph{Trace Inequalities and
+  Quantum Entropy}, Thm.~2.11; Peierls, Thm.~2.9). The termwise Peierls bound \(p - s\le p\log p - p\log s\) (valid for
+  \(p\ge 0\), \(s > 0\), from \(\log(s/p)\le s/p - 1\)) is scaled by \(D_{km}\ge 0\) and summed
+  over the double index. Double stochasticity makes the mass-balance term
+  \(\sum_{k,m} D_{km}(p_k - s_m)\) telescope to \(\sum_k p_k - \sum_m s_m = 0\); the columns with
+  \(s_m = 0\) contribute nothing by the support hypothesis (there \(a_m = 0\)). Rearranging the
+  summed inequality yields the claim.
+\end{proof}
+
+\begin{theorem}[Subadditivity of the von Neumann entropy]\label{vonNeumannEntropy_subadditive}
+  \lean{Oseledets.OperatorEntropy.vonNeumannEntropy_subadditive}\leanok
+  For a bipartite density matrix \(\rho\) on \(n_A\otimes n_B\) with reduced density matrices
+  \(\rho_A = \Tr_B\rho\) and \(\rho_B = \Tr_A\rho\), the von Neumann entropy is subadditive:
+  \[
+    S(\rho) \;\le\; S(\rho_A) + S(\rho_B).
+  \]
+\end{theorem}
+\begin{proof}\leanok
+  \uses{klein_scalar, vonNeumannEntropy, partialTraceRight}
+  An elementary route through the scalar Klein inequality, with no matrix logarithm (Carlen,
+  \emph{Trace Inequalities and Quantum Entropy}, Thm.~2.11; Nielsen--Chuang \S11.3). Diagonalize
+  \(\rho = G\,\mathrm{diag}(p)\,G^{*}\), \(\rho_A = U\,\mathrm{diag}(\lambda)\,U^{*}\),
+  \(\rho_B = V\,\mathrm{diag}(\mu)\,V^{*}\) and set \(Q = G^{*}(U\otimes V)\), a unitary. Then
+  \(D_{km} = \abs{Q_{km}}^2\) is doubly stochastic, and the conjugation--partial-trace identity
+  \(\Tr_B\bigl((U\otimes V)^{*}\rho(U\otimes V)\bigr) = U^{*}(\Tr_B\rho)U\) (and its left analogue)
+  identifies the marginals of \(D\) with \(\lambda\) and \(\mu\). Feeding \(D\), the eigenvalue
+  vector \(p\), and the product vector \(s_{(i,j)} = \lambda_i\mu_j\) into \Cref{klein_scalar}
+  gives \(\sum_i\eta(\lambda_i) + \sum_j\eta(\mu_j)\ge\sum_k\eta(p_k)\) (with \(\eta(t) = -t\log t\)),
+  which is the assertion after negation.
+\end{proof}
+
+\section{Lieb's joint-convexity theorem}
+
+The deep content of quantum relative entropy is Lieb's 1973 theorem: the map
+\((\rho,\sigma)\mapsto S(\rho\|\sigma)\) is \emph{jointly convex}. We prove it through the Effros
+operator perspective, whose joint convexity follows in turn from operator convexity of \(-\log\)
+and the Hansen--Pedersen--Jensen operator-Jensen inequality, following Carlen's \emph{Trace
+Inequalities and Quantum Entropy}.
+
+\begin{theorem}[Operator convexity of \(-\log\)]\label{operatorConvexOn_neg_log}
+  \lean{Oseledets.OperatorEntropy.Lieb.operatorConvexOn_neg_log}\leanok
+  The function \(x\mapsto -\log x\) is operator convex on \((0,\infty)\): for every matrix
+  dimension its continuous functional calculus is convex in the Loewner order on the self-adjoint
+  matrices with spectrum in \((0,\infty)\).
+\end{theorem}
+\begin{proof}\leanok
+  Transport the statement along the \(\R\)-linear star-algebra equivalence
+  \(\Matrix\simeq\texttt{CStarMatrix}\) (identity on the shared carrier, order- and
+  cfc-preserving) onto the \(C^{*}\)-algebra where Mathlib's operator concavity of \(\log\) lives.
+  Negating concavity of \(\log\) there and pulling back the Loewner inequality gives convexity of
+  \(-\log\) on \(\Matrix\).
+\end{proof}
+
+\begin{theorem}[Hansen--Pedersen--Jensen operator-Jensen inequality]\label{hpj_affine}
+  \lean{Oseledets.OperatorEntropy.Lieb.hpj_affine}\leanok
+  Let \(f\) be operator convex on an interval \(I\), let \(A,B\) be a contraction pair
+  (\(A^{*}A + B^{*}B = 1\)), and let \(X,Y\) be self-adjoint with spectra in \(I\). Then
+  \[
+    f\bigl(A^{*}XA + B^{*}YB\bigr) \;\le\; A^{*}f(X)A + B^{*}f(Y)B.
+  \]
+\end{theorem}
+\begin{proof}\leanok
+  \uses{operatorConvexOn_neg_log}
+  The Effros / Hansen--Pedersen unitary-dilation method. Work in the doubled algebra
+  \(\Matrix(\Fin 2\times\Fin N)\), form the block diagonal \(D = \mathrm{diag}(X,Y)\), dilate the
+  column isometry \([A;B]\) to a unitary \(U\), and pinch \(M = U^{*}DU\) by the involution
+  \(V = \mathrm{diag}(1,-1)\): \(\tfrac12 M + \tfrac12 VMV = \mathrm{diag}(M_{00},M_{11})\).
+  Operator convexity of \(f\) at dimension \(2N\), applied to \(M\) and \(VMV\), yields
+  \(f(\mathrm{diag}(M_{00},M_{11}))\le\mathrm{diag}(f(M)_{00},f(M)_{11})\) blockwise, whose
+  \((0,0)\)-block is exactly the asserted inequality. (This node is stated for a general
+  operator-convex \(f\) and specialized below to \(f = -\log\).)
+\end{proof}
+
+\begin{definition}[Operator perspective]\label{operatorPerspective}
+  \lean{Oseledets.OperatorEntropy.Lieb.operatorPerspective}\leanok
+  For \(f:\R\to\R\) and matrices \(L,R\) with \(R\) positive definite, the \emph{operator
+  perspective} is
+  \[
+    P_f(L,R) \;=\; R^{1/2}\,f\bigl(R^{-1/2}\,L\,R^{-1/2}\bigr)\,R^{1/2},
+  \]
+  with the functional calculus and real powers supplied by the continuous functional calculus.
+\end{definition}
+
+\begin{theorem}[Effros' theorem: joint convexity of the perspective]\label{operatorPerspective_jointly_convex}
+  \lean{Oseledets.OperatorEntropy.Lieb.operatorPerspective_jointly_convex}\leanok
+  Let \(f\) be operator convex on \(I\), let \(R_1,R_2\) be positive definite with the sandwiched
+  arguments \(R_i^{-1/2}L_iR_i^{-1/2}\) self-adjoint and with spectra in \(I\), and let
+  \(c\in[0,1]\). Then
+  \[
+    P_f\bigl(cL_1 + (1-c)L_2,\;cR_1 + (1-c)R_2\bigr) \;\le\;
+      c\,P_f(L_1,R_1) + (1-c)\,P_f(L_2,R_2).
+  \]
+\end{theorem}
+\begin{proof}\leanok
+  \uses{operatorPerspective, hpj_affine}
+  The Effros argument, a single application of \Cref{hpj_affine}. Writing \(R = cR_1 + (1-c)R_2\),
+  the contraction pair \(A = \sqrt{c}\,R_1^{1/2}R^{-1/2}\), \(B = \sqrt{1-c}\,R_2^{1/2}R^{-1/2}\)
+  satisfies \(A^{*}A + B^{*}B = R^{-1/2}RR^{-1/2} = 1\), and the self-adjoint arguments are
+  \(X = R_1^{-1/2}L_1R_1^{-1/2}\), \(Y = R_2^{-1/2}L_2R_2^{-1/2}\). Applying
+  Hansen--Pedersen--Jensen and conjugating the resulting inequality by \(R^{1/2}\) reproduces
+  exactly the joint-convexity estimate, once the sandwich cancellations \(R^{1/2}R^{-1/2} = 1\)
+  are used on both sides.
+\end{proof}
+
+\begin{definition}[Operator perspective at a general index]\label{opPersp}
+  \lean{Oseledets.OperatorEntropy.Lieb.opPersp}\leanok
+  The same formula \(P_f(L,R) = R^{1/2}f(R^{-1/2}LR^{-1/2})R^{1/2}\) for matrices indexed by an
+  arbitrary finite type \(m\) (rather than \(\Fin N\)).
+\end{definition}
+
+\begin{theorem}[Effros' theorem at a general finite index]\label{opPersp_jointly_convex}
+  \lean{Oseledets.OperatorEntropy.Lieb.opPersp_jointly_convex}\leanok
+  Under the same hypotheses as \Cref{operatorPerspective_jointly_convex}, joint convexity of
+  \(\mathrm{opPersp}\,f\) holds over an arbitrary finite index type \(m\).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{opPersp, operatorPerspective_jointly_convex}
+  Transport along the star-algebra equivalence
+  \(\Matrix(m)\simeq\Matrix(\Fin(\abs m))\) (a reindexing), which preserves positive definiteness,
+  self-adjointness, spectra, the continuous functional calculus, real powers, and the Loewner
+  order. Push the pair through the equivalence, invoke
+  \Cref{operatorPerspective_jointly_convex} on \(\Fin(\abs m)\), and reflect the resulting Loewner
+  inequality back.
+\end{proof}
+
+\begin{lemma}[Logarithm of a Kronecker product]\label{cfc_log_kron}
+  \lean{Oseledets.OperatorEntropy.Lieb.cfc_log_kron}\leanok
+  For positive-definite \(A,B\), \(\ \log(A\otimes B) = \log A\otimes 1 + 1\otimes\log B\).
+\end{lemma}
+\begin{proof}\leanok
+  Simultaneously diagonalize by \(U_A\otimes U_B\); the Kronecker of the two eigenvalue diagonals
+  is \(\mathrm{diag}(a_i b_j)\), and \(\log(a_i b_j) = \log a_i + \log b_j\) splits the diagonal
+  cfc additively across the two factors. Conjugating back by \(U_A\otimes U_B\) gives the stated
+  Kronecker splitting of \(\log\).
+\end{proof}
+
+\begin{lemma}[Effros realization of the relative entropy]\label{opPersp_neg_log_kron}
+  \lean{Oseledets.OperatorEntropy.Lieb.opPersp_neg_log_kron}\leanok
+  For positive-definite \(\rho,\sigma\), the perspective of \(-\log\) at the commuting pair
+  \(L = 1\otimes\sigma^{\top}\), \(R = \rho\otimes 1\) has the closed form
+  \[
+    P_{-\log}\bigl(1\otimes\sigma^{\top},\,\rho\otimes 1\bigr)
+      = \bigl(\rho^{1/2}(\log\rho)\rho^{1/2}\bigr)\otimes 1 - \rho\otimes(\log\sigma)^{\top}.
+  \]
+\end{lemma}
+\begin{proof}\leanok
+  \uses{opPersp, cfc_log_kron}
+  The sandwiched argument is \(R^{-1/2}LR^{-1/2} = \rho^{-1}\otimes\sigma^{\top}\). Apply
+  \Cref{cfc_log_kron} to
+  \(-\log(\rho^{-1}\otimes\sigma^{\top}) = \log\rho\otimes 1 - 1\otimes(\log\sigma)^{\top}\)
+  (using \(\log(\rho^{-1}) = -\log\rho\) and the transpose-commutes-with-cfc identity
+  \((\log\sigma)^{\top} = \log(\sigma^{\top})\)), then conjugate by
+  \(R^{1/2} = \rho^{1/2}\otimes 1\) and cancel with the sandwich to obtain the closed form.
+\end{proof}
+
+\begin{lemma}[Scalar Effros functional]\label{relForm_opPersp_neg_log}
+  \lean{Oseledets.OperatorEntropy.Lieb.relForm_opPersp_neg_log}\leanok
+  The positive linear functional \(M\mapsto\langle\mathrm{vec}\,1,\,M\,\mathrm{vec}\,1\rangle\)
+  recovers the trace-form relative entropy from the perspective:
+  \[
+    \mathrm{relForm}\,P_{-\log}\bigl(1\otimes\sigma^{\top},\,\rho\otimes 1\bigr)
+      = \Tr\bigl(\rho\,(\log\rho - \log\sigma)\bigr).
+  \]
+\end{lemma}
+\begin{proof}\leanok
+  \uses{opPersp_neg_log_kron}
+  Apply \(\mathrm{relForm}\) to the closed form of \Cref{opPersp_neg_log_kron}. On Kronecker
+  products \(\mathrm{relForm}(A\otimes C) = \Tr(AC^{\top})\), so the two terms become
+  \(\Tr(\rho^{1/2}(\log\rho)\rho^{1/2}) = \Tr(\rho\log\rho)\) and \(\Tr(\rho\log\sigma)\); their
+  difference is the trace-form relative entropy.
+\end{proof}
+
+\begin{definition}[Trace-form relative entropy]\label{relEntropyMat}
+  \lean{Oseledets.OperatorEntropy.Lieb.relEntropyMat}\leanok
+  For matrices \(\rho,\sigma\), the trace-form relative entropy is
+  \(\mathrm{relEntropyMat}(\rho,\sigma) = \Re\,\Tr\bigl(\rho\,(\log\rho - \log\sigma)\bigr)\), the
+  logarithms taken through the continuous functional calculus.
+\end{definition}
+
+\begin{theorem}[Lieb's theorem: joint convexity of relative entropy]\label{relEntropyMat_jointly_convex}
+  \lean{Oseledets.OperatorEntropy.Lieb.relEntropyMat_jointly_convex}\leanok
+  For positive-definite \(\rho_1,\rho_2,\sigma_1,\sigma_2\) and \(c\in[0,1]\),
+  \[
+    \mathrm{relEntropyMat}\bigl(c\rho_1 + (1-c)\rho_2,\;c\sigma_1 + (1-c)\sigma_2\bigr)
+      \le c\,\mathrm{relEntropyMat}(\rho_1,\sigma_1) + (1-c)\,\mathrm{relEntropyMat}(\rho_2,\sigma_2).
+  \]
+\end{theorem}
+\begin{proof}\leanok
+  \uses{relEntropyMat, opPersp_jointly_convex, operatorConvexOn_neg_log, relForm_opPersp_neg_log}
+  Lieb's theorem (Lieb 1973; Carlen, \emph{Trace Inequalities and Quantum Entropy}, Thm.~2.12), obtained from
+  Effros' joint convexity of the perspective. The maps \(\rho\mapsto R = \rho\otimes 1\) and
+  \(\sigma\mapsto L = 1\otimes\sigma^{\top}\) are \(\R\)-linear, so applying
+  \Cref{opPersp_jointly_convex} to \(f = -\log\) (operator convex on \((0,\infty)\) by
+  \Cref{operatorConvexOn_neg_log}) gives a Loewner joint-convexity inequality for the perspective.
+  The functional \(\mathrm{relForm}\) is positive and linear; by \Cref{relForm_opPersp_neg_log} it
+  turns that operator inequality into the scalar convexity of
+  \((\rho,\sigma)\mapsto\Tr(\rho(\log\rho - \log\sigma))\), whose real part is
+  \(\mathrm{relEntropyMat}\).
+\end{proof}
+
+\begin{lemma}[Finite Jensen form of Lieb's theorem]\label{relEntropyMat_convex_sum}
+  \lean{Oseledets.OperatorEntropy.Lieb.relEntropyMat_convex_sum}\leanok
+  For a finite convex combination of faithful states --- weights \(w_i\ge 0\) with
+  \(\sum_i w_i = 1\) and positive-definite \(\rho_i,\sigma_i\) ---,
+  \[
+    \mathrm{relEntropyMat}\Bigl(\sum_i w_i\rho_i,\;\sum_i w_i\sigma_i\Bigr)
+      \;\le\; \sum_i w_i\,\mathrm{relEntropyMat}(\rho_i,\sigma_i).
+  \]
+\end{lemma}
+\begin{proof}\leanok
+  \uses{relEntropyMat_jointly_convex}
+  The two-point joint convexity of \Cref{relEntropyMat_jointly_convex} says
+  \(\mathrm{relEntropyMat}\) is a convex function on the set of pairs of positive-definite
+  matrices; Jensen's inequality for a convex function over a finite convex combination upgrades
+  the two-point estimate to the finite-sum form.
+\end{proof}
+
+\begin{theorem}[Bridge to the spectral relative entropy]\label{relEntropyMat_eq_relEntropy}
+  \lean{Oseledets.OperatorEntropy.Lieb.relEntropyMat_eq_relEntropy}\leanok
+  For density matrices \(\rho,\sigma\) with \(\sigma\) faithful (positive definite),
+  \(\mathrm{relEntropyMat}(\rho,\sigma) = S(\rho\|\sigma)\), the Umegaki relative entropy.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{relEntropyMat, relEntropy_eq_traceLog}
+  Both sides expand through the spectral theorem: the trace form
+  \(\Re\,\Tr(\rho(\log\rho - \log\sigma))\) equals the spectral double sum defining
+  \(S(\rho\|\sigma)\) once the Hermitian cfc is written via eigendecompositions
+  (this is \Cref{relEntropy_eq_traceLog} together with the eigenbasis form of the functional
+  calculus). Hence the trace-form joint convexity above transfers to the Umegaki relative entropy
+  on density matrices.
+\end{proof}
+
+\section{The data-processing inequality}
+\label{sec:dpi}
+
+The Umegaki relative entropy is the finite-dimensional distinguishability functional whose
+\emph{monotonicity under quantum channels} is the master inequality of quantum information. We
+derive it from Lieb's joint convexity in three moves: a Weyl-twirl reduction of the partial-trace
+case, a regularization to remove faithfulness, and a Stinespring dilation lifting the
+partial-trace case to every mixed-ancilla channel. We close with the no-recovery obstruction and
+the easy (\(\Leftarrow\)) half of Petz's equality theorem (Petz 1986, 2003).
+
+\begin{definition}[The partial-trace DPI, as a monomorphic \texttt{Prop}]\label{RelEntropyMonotoneUnderPartialTrace}
+  \lean{Oseledets.OperatorEntropy.RelEntropyMonotoneUnderPartialTrace}\leanok
+  \uses{relEntropy, partialTraceRight}
+  \texttt{RelEntropyMonotoneUnderPartialTrace} is the proposition that for all finite index types
+  \(n_A, n_E\) and all states \(\rho,\sigma\) on \(n_A\times n_E\) with \(\sigma\) faithful
+  (positive definite), tracing out the \(E\)-factor does not increase relative entropy,
+  \[
+    S\bigl(\Tr_E\rho\,\big\|\,\Tr_E\sigma\bigr) \;\le\; S(\rho\|\sigma).
+  \]
+  The index types are quantified over \texttt{Type} (universe \(0\)): finite-dimensional quantum
+  information lives in universe \(0\), and pinning the universe lets this \texttt{Prop} be used as
+  a reusable hypothesis whose subsystems unify with any consumer's.
+\end{definition}
+
+\begin{theorem}[Partial-trace DPI, faithful case]\label{relEntropyMonotone_partialTrace_faithful}
+  \lean{Oseledets.OperatorEntropy.Lieb.relEntropyMonotone_partialTrace_faithful}\leanok
+  For positive-definite states \(\rho,\sigma\) on \(n_A\times n_E\),
+  \[
+    S\bigl(\Tr_E\rho\,\big\|\,\Tr_E\sigma\bigr) \;\le\; S(\rho\|\sigma).
+  \]
+\end{theorem}
+\begin{proof}\leanok
+  \uses{relEntropyMat_convex_sum, relEntropy_conj_invariant, relEntropy_ancilla_invariant}
+  Realize the partial trace as a Weyl twirl: with \(d = \#n_E\) and \(\tau = \tfrac1d\mathbf 1\)
+  the maximally mixed ancilla state, averaging \(\rho\) over the \(d^2\) Heisenberg--Weyl unitaries
+  \(W_{ab}\) on the \(E\)-factor gives
+  \(d^{-2}\sum_{a,b}(\mathbf 1\otimes W_{ab})\rho(\mathbf 1\otimes W_{ab})^{*}
+  = (\Tr_E\rho)\otimes\tau\), and likewise for \(\sigma\). Each twirled state
+  \(\rho_{ab} := (\mathbf 1\otimes W_{ab})\rho(\mathbf 1\otimes W_{ab})^{*}\) has
+  \(S(\rho_{ab}\|\sigma_{ab}) = S(\rho\|\sigma)\) by unitary invariance
+  (\Cref{relEntropy_conj_invariant}), and the averaged pair has relative entropy
+  \(S\bigl((\Tr_E\rho)\otimes\tau\,\|\,(\Tr_E\sigma)\otimes\tau\bigr) = S(\Tr_E\rho\|\Tr_E\sigma)\)
+  by ancilla additivity (\Cref{relEntropy_ancilla_invariant}). The finite-sum form of Lieb's joint
+  convexity (\Cref{relEntropyMat_convex_sum}) applied to the weights \(w_{ab} = d^{-2}\) then
+  yields \(S(\Tr_E\rho\|\Tr_E\sigma)\le\sum_{ab} w_{ab}\,S(\rho_{ab}\|\sigma_{ab}) = S(\rho\|\sigma)\).
+\end{proof}
+
+\begin{theorem}[Partial-trace DPI, unconditional]\label{relEntropyMonotone_partialTrace}
+  \lean{Oseledets.OperatorEntropy.Lieb.relEntropyMonotone_partialTrace}\leanok
+  The proposition \texttt{RelEntropyMonotoneUnderPartialTrace} holds: the faithfulness hypothesis
+  on \(\rho\) is unnecessary, so \(S(\Tr_E\rho\|\Tr_E\sigma)\le S(\rho\|\sigma)\) for every
+  \(\rho\) and every faithful \(\sigma\).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{RelEntropyMonotoneUnderPartialTrace, relEntropyMonotone_partialTrace_faithful}
+  Regularize the first argument along the affine path
+  \(\rho_\varepsilon = (1-\varepsilon)\rho + \varepsilon\tau\) towards the maximally mixed state
+  \(\tau\). For \(\varepsilon\in(0,1]\) the state \(\rho_\varepsilon\) is positive definite, so the
+  faithful case (\Cref{relEntropyMonotone_partialTrace_faithful}) gives
+  \(S(\Tr_E\rho_\varepsilon\|\Tr_E\sigma)\le S(\rho_\varepsilon\|\sigma)\). Both sides are
+  continuous in \(\varepsilon\) at \(0\) (continuity of \(M\mapsto S(M\|\sigma)\) on states with
+  \(\sigma\) fixed and faithful, and continuity of the partial trace), and
+  \(\rho_\varepsilon\to\rho\); passing to the limit \(\varepsilon\downarrow 0\) preserves the
+  inequality.
+\end{proof}
+
+\begin{lemma}[Tracing out an adjoined ancilla is the identity]\label{partialTraceRight_kron}
+  \lean{Oseledets.OperatorEntropy.partialTraceRight_kron}\leanok
+  \uses{partialTraceRight}
+  For any state \(\rho\) and any ancilla state \(\alpha\), \(\Tr_E(\rho\otimes\alpha) = \rho\).
+\end{lemma}
+\begin{proof}\leanok
+  \uses{partialTraceRight}
+  Entrywise, \((\Tr_E(\rho\otimes\alpha))_{ii'} = \sum_j\rho_{ii'}\alpha_{jj}
+  = \rho_{ii'}\cdot\Tr\alpha = \rho_{ii'}\), using only \(\Tr\alpha = 1\).
+\end{proof}
+
+\begin{theorem}[Isometric-embedding invariance]\label{relEntropy_embed_invariant}
+  \lean{Oseledets.OperatorEntropy.relEntropy_embed_invariant}\leanok
+  For states \(\rho,\sigma\) on \(n\), a faithful ancilla \(\alpha\) on \(e\), a unitary \(U\) on
+  \(n\times e\), and faithful \(\sigma\),
+  \[
+    S\bigl(U(\rho\otimes\alpha)U^{*}\,\big\|\,U(\sigma\otimes\alpha)U^{*}\bigr) \;=\; S(\rho\|\sigma).
+  \]
+\end{theorem}
+\begin{proof}\leanok
+  \uses{relEntropy_conj_invariant, relEntropy_ancilla_invariant}
+  Unitary conjugation leaves relative entropy invariant (\Cref{relEntropy_conj_invariant}),
+  reducing the claim to \(S(\rho\otimes\alpha\|\sigma\otimes\alpha) = S(\rho\|\sigma)\), which is
+  ancilla additivity (\Cref{relEntropy_ancilla_invariant}) for the faithful ancilla \(\alpha\).
+\end{proof}
+
+\begin{theorem}[Stinespring reduction of the DPI]\label{stinespring_relEntropy_monotone}
+  \lean{Oseledets.OperatorEntropy.stinespring_relEntropy_monotone}\leanok
+  \emph{Given} the partial-trace DPI (\Cref{RelEntropyMonotoneUnderPartialTrace}), every
+  Stinespring-dilated channel \(\Lambda\rho = \Tr_E\bigl(U(\rho\otimes\alpha)U^{*}\bigr)\) ---
+  adjoin a faithful ancilla \(\alpha\), conjugate by a unitary dilation \(U\), then trace out the
+  ancilla --- is relative-entropy monotone on faithful states:
+  \(S(\Lambda\rho\|\Lambda\sigma)\le S(\rho\|\sigma)\).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{RelEntropyMonotoneUnderPartialTrace, relEntropy_embed_invariant}
+  Apply the wall (\Cref{RelEntropyMonotoneUnderPartialTrace}) to the dilated states
+  \(U(\rho\otimes\alpha)U^{*}\) and \(U(\sigma\otimes\alpha)U^{*}\) (the latter faithful, being a
+  unitary conjugate of a Kronecker product of faithful states): tracing out the ancilla gives
+  \(S(\Tr_E U(\rho\otimes\alpha)U^{*}\|\Tr_E U(\sigma\otimes\alpha)U^{*})\le
+  S(U(\rho\otimes\alpha)U^{*}\|U(\sigma\otimes\alpha)U^{*})\). The right-hand side equals
+  \(S(\rho\|\sigma)\) by isometric-embedding invariance (\Cref{relEntropy_embed_invariant}).
+\end{proof}
+
+\begin{theorem}[Data-processing inequality for a mixed-ancilla channel]\label{monotonicity_relEntropy_under_CPTP}
+  \lean{Oseledets.OperatorEntropy.monotonicity_relEntropy_under_CPTP}\leanok
+  Unconditionally, for a faithful ancilla \(\alpha\), a unitary dilation \(U\), and faithful
+  \(\sigma\),
+  \[
+    S\bigl(\Tr_E U(\rho\otimes\alpha)U^{*}\,\big\|\,\Tr_E U(\sigma\otimes\alpha)U^{*}\bigr)
+      \;\le\; S(\rho\|\sigma).
+  \]
+  Every finite-dimensional CPTP channel arises this way (Stinespring), so this is the quantum
+  data-processing inequality.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{stinespring_relEntropy_monotone, relEntropyMonotone_partialTrace}
+  Feed the now-discharged partial-trace DPI (\Cref{relEntropyMonotone_partialTrace}) into the
+  Stinespring reduction (\Cref{stinespring_relEntropy_monotone}), removing its hypothesis.
+\end{proof}
+
+\begin{theorem}[No faithful-monotone recovery section under a strict drop]\label{no_section_of_strict_relEntropy_drop}
+  \lean{Oseledets.OperatorEntropy.no_section_of_strict_relEntropy_drop}\leanok
+  If a map \(R\) satisfies the faithful data-processing inequality and inverts a coarse-graining
+  \(\Lambda\) on the pair \(\rho,\sigma\) (\(R(\Lambda\rho) = \rho\), \(R(\Lambda\sigma) = \sigma\)
+  with \(\Lambda\sigma\) faithful), then a \emph{strict} drop
+  \(S(\Lambda\rho\|\Lambda\sigma) < S(\rho\|\sigma)\) is impossible.
+\end{theorem}
+\begin{proof}\leanok
+  Monotonicity of \(R\) applied to \(\Lambda\rho,\Lambda\sigma\) gives
+  \(S(R(\Lambda\rho)\|R(\Lambda\sigma))\le S(\Lambda\rho\|\Lambda\sigma)\); the section identities
+  rewrite the left side as \(S(\rho\|\sigma)\), so
+  \(S(\rho\|\sigma)\le S(\Lambda\rho\|\Lambda\sigma)\), contradicting the assumed strict drop.
+\end{proof}
+
+\begin{corollary}[No Stinespring recovery under a strict drop]\label{no_stinespring_section_of_strict_relEntropy_drop}
+  \lean{Oseledets.OperatorEntropy.no_stinespring_section_of_strict_relEntropy_drop}\leanok
+  Unconditionally: a strict relative-entropy drop under a coarse-graining \(\Lambda\) (an
+  endomorphism of the input space) rules out \emph{any} Stinespring recovery channel
+  \(R\,x = \Tr_E(U(x\otimes\alpha)U^{*})\) inverting \(\Lambda\) on \(\rho,\sigma\).
+\end{corollary}
+\begin{proof}\leanok
+  \uses{no_section_of_strict_relEntropy_drop, monotonicity_relEntropy_under_CPTP}
+  Specialize \Cref{no_section_of_strict_relEntropy_drop} to the Stinespring recovery map, whose
+  faithful data-processing monotonicity is exactly \Cref{monotonicity_relEntropy_under_CPTP}.
+\end{proof}
+
+The equality case of the data-processing inequality --- that saturation
+\(S(\Lambda\rho\|\Lambda\sigma) = S(\rho\|\sigma)\) is equivalent to the existence of a Petz
+recovery map inverting \(\Lambda\) on \(\rho,\sigma\) --- is \emph{Petz's equality theorem}. Its
+elementary direction (recovery \(\Rightarrow\) saturation) rests only on the monotonicity
+established above; the converse (saturation \(\Rightarrow\) recovery) is the analytic heart of the
+next chapter. Both are treated in full in Chapter~\ref{chap:petz}.

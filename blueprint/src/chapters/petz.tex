@@ -1,0 +1,629 @@
+\chapter{Petz recovery and quantum dynamical entropy}
+\label{chap:petz}
+
+This chapter documents a self-contained finite-dimensional quantum-information layer
+(issues \#22--\#28) that is built on the same matrix / continuous-functional-calculus
+infrastructure as the multiplicative ergodic theorem, but is logically independent of it.
+The objects are density matrices \(\rho,\sigma\) on \(\mathbb{C}^d\) and completely positive
+trace-preserving maps (quantum channels) between matrix algebras. The central quantity is the
+\emph{Umegaki relative entropy}
+\[
+  S(\rho\|\sigma) \;=\; \tr\bigl(\rho\,(\log\rho-\log\sigma)\bigr)
+\]
+(Lean: \texttt{relEntropy}); its defining feature is the \emph{data-processing inequality}
+\(S(\Lambda\rho\|\Lambda\sigma)\le S(\rho\|\sigma)\) for every channel \(\Lambda\), a consequence
+of Lieb's joint-convexity theorem. Two threads are developed here. The first is the
+\emph{Petz recovery theorem} and both directions of Petz's equality theorem: a channel saturates
+the data-processing inequality on a pair of faithful states \emph{if and only if} the input is
+exactly reconstructed by the Petz transpose recovery map. The general saturation \(\Rightarrow\)
+recovery direction (Petz, \emph{Monotonicity of quantum relative entropy revisited},
+Rev.\ Math.\ Phys.\ 15 (2003), Thm~2; via the operator-Jensen / \(-\log\) Loewner route of
+Carlen--Vershynina, \emph{Recovery map stability for the data processing inequality}, 2020) is
+proved with \textbf{no injectivity hypothesis} on the channel, so it covers information-losing
+channels such as the completely depolarising channel. The second thread is the
+Connes--Narnhofer--Thirring quantum dynamical entropy (Connes--Narnhofer--Thirring, \emph{Dynamical
+entropy of \(C^{*}\) algebras and von Neumann algebras}, Comm.\ Math.\ Phys.\ 112 (1987) 691--719,
+in the operational-partition formulation of Alicki--Fannes 1994), whose abelian corner collapses
+onto the classical Kolmogorov--Sinai entropy of the underlying measure-preserving system, tying the
+quantum layer back to the ergodic theory of the core. Every node below is formalized sorry-free and
+audited to depend on exactly \(\{\texttt{propext},\ \texttt{Classical.choice},\ \texttt{Quot.sound}\}\).
+Throughout, \(X^{\dagger}\) denotes the conjugate transpose (Hilbert--Schmidt adjoint) of \(X\).
+
+\section{Kraus channels and the Petz recovery map}
+\label{sec:petz-kraus}
+
+\begin{definition}[Kraus channel]\label{KrausChannel}
+  \lean{Oseledets.OperatorEntropy.KrausChannel}\leanok
+  A \emph{Kraus channel} on \(\Matrix_n(\mathbb{C})\) is a finite family of Kraus operators
+  \(K : \iota\to\Matrix_n(\mathbb{C})\) satisfying the completeness relation
+  \(\sum_i K_i^{\dagger}K_i = 1\). Its \emph{Schr\"odinger action} is
+  \(\Lambda(X)=\sum_i K_i\,X\,K_i^{\dagger}\) (Lean: \texttt{toMat}, restricted to states as
+  \texttt{toDM}), and its \emph{Heisenberg (Hilbert--Schmidt) adjoint} is
+  \(\Lambda^{\dagger}(X)=\sum_i K_i^{\dagger}X\,K_i\) (Lean: \texttt{adj}).
+\end{definition}
+
+\begin{lemma}[Trace preservation]\label{KrausChannel.toMat_trace}
+  \lean{Oseledets.OperatorEntropy.KrausChannel.toMat_trace}\leanok
+  \uses{KrausChannel}
+  A Kraus channel is trace preserving, \(\tr(\Lambda X)=\tr X\) for every \(X\); consequently the
+  adjoint is unital, \(\Lambda^{\dagger}(1)=1\) (Lean: \texttt{adj\_unital}).
+\end{lemma}
+\begin{proof}\leanok
+  \uses{KrausChannel}
+  By trace cyclicity \(\tr(K_i X K_i^{\dagger})=\tr(K_i^{\dagger}K_i\,X)\); summing over \(i\) and
+  applying \(\sum_i K_i^{\dagger}K_i=1\) collapses the sum to \(\tr X\). Unitality of
+  \(\Lambda^{\dagger}\) is the same completeness relation read at \(X=1\).
+\end{proof}
+
+\begin{definition}[Petz recovery map]\label{petz}
+  \lean{Oseledets.OperatorEntropy.petz}\leanok
+  \uses{KrausChannel}
+  For a state \(\sigma\) and a channel \(\Lambda\), the \emph{Petz (transpose) recovery map} is
+  \[
+    P_{\sigma,\Lambda}(X) \;=\;
+      \sqrt{\sigma}\;\Lambda^{\dagger}\!\bigl((\Lambda\sigma)^{-1/2}\,X\,(\Lambda\sigma)^{-1/2}\bigr)\,
+      \sqrt{\sigma},
+  \]
+  realised through the continuous functional calculus (\texttt{CFC.conjSqrt} for the
+  \(\sqrt{\cdot}\)-conjugations and the ring inverse for \((\Lambda\sigma)^{-1/2}\)).
+\end{definition}
+
+\begin{theorem}[Petz recovery identity]\label{petz_recovery}
+  \lean{Oseledets.OperatorEntropy.petz_recovery}\leanok
+  If the channel output \(\Lambda\sigma\) is positive definite, then the Petz map recovers
+  \(\sigma\) from \(\Lambda\sigma\):
+  \[
+    P_{\sigma,\Lambda}(\Lambda\sigma) \;=\; \sigma.
+  \]
+\end{theorem}
+\begin{proof}\leanok
+  \uses{petz, KrausChannel.toMat_trace}
+  Feeding \(X=\Lambda\sigma\) into \(P_{\sigma,\Lambda}\), the inner conjugation
+  \((\Lambda\sigma)^{-1/2}(\Lambda\sigma)(\Lambda\sigma)^{-1/2}=1\) collapses to the identity (this
+  is where positive definiteness of \(\Lambda\sigma\) is used); unitality \(\Lambda^{\dagger}(1)=1\)
+  then leaves \(\sqrt{\sigma}\cdot 1\cdot\sqrt{\sigma}=\sigma\).
+\end{proof}
+
+\section{Petz's equality theorem}
+\label{sec:petz-equality}
+
+The Petz map already recovers \(\sigma\) unconditionally (Theorem~\ref{petz_recovery}); the content
+of the equality theorem is that it recovers the \emph{other} state \(\rho\) exactly when the channel
+loses no relative entropy between \(\rho\) and \(\sigma\). One direction is elementary and rests only
+on monotonicity (the data-processing inequality); the other is the analytic heart of the chapter.
+
+\begin{theorem}[Recovery \(\Rightarrow\) saturation]\label{petz_recovery_implies_equality}
+  \lean{Oseledets.OperatorEntropy.petz_recovery_implies_equality}\leanok
+  Let \(\Lambda\) and \(R\) be maps on states, each monotone under relative entropy (each satisfies
+  the data-processing inequality against positive-definite second arguments). If \(R\) is a recovery
+  section for the pair \(\rho,\sigma\), i.e.\ \(R(\Lambda\rho)=\rho\) and \(R(\Lambda\sigma)=\sigma\)
+  (with \(\sigma,\Lambda\sigma\) positive definite), then the data-processing inequality is
+  saturated:
+  \[
+    S(\Lambda\rho\|\Lambda\sigma) \;=\; S(\rho\|\sigma).
+  \]
+\end{theorem}
+\begin{proof}\leanok
+  Monotonicity of \(\Lambda\) gives \(S(\Lambda\rho\|\Lambda\sigma)\le S(\rho\|\sigma)\). For the
+  reverse inequality, apply monotonicity of \(R\) to the pair \(\Lambda\rho,\Lambda\sigma\) and
+  rewrite through the section identities \(R(\Lambda\rho)=\rho\), \(R(\Lambda\sigma)=\sigma\); this
+  yields \(S(\rho\|\sigma)\le S(\Lambda\rho\|\Lambda\sigma)\). Antisymmetry gives equality.
+\end{proof}
+
+\subsection{The Choi \(-\log\) Loewner inequality}
+
+The engine of the converse is operator convexity of \(-\log\), packaged first as a Loewner
+inequality for a rectangular isometry and then specialised to the Kraus column.
+
+\begin{theorem}[Rectangular isometry \(-\log\) Loewner inequality]\label{rect_isometry_neg_log_loewner}
+  \lean{Oseledets.OperatorEntropy.Lieb.rect_isometry_neg_log_loewner}\leanok
+  Let \(W:\mathbb{C}^q\to\mathbb{C}^p\) be an isometry (\(W^{\dagger}W=1\)) and \(X\) self-adjoint
+  with spectrum in \((0,\infty)\). Then
+  \[
+    (-\log)\bigl(W^{\dagger}X\,W\bigr) \;\le\; W^{\dagger}\,(-\log)(X)\,W .
+  \]
+\end{theorem}
+\begin{proof}\leanok
+  Extend the orthonormal columns of \(W\) to a unitary \(U\); conjugating \(X\) by \(U\) and
+  reindexing, \(W^{\dagger}XW\) is the upper-left corner of \(A=U^{\dagger}XU\). Operator convexity of
+  \(-\log\) gives the corner inequality
+  \((-\log)(\text{corner of }A)\le\text{corner of }(-\log)(A)\) (\texttt{sum\_corner\_loewner}
+  applied to \texttt{operatorConvexOn\_neg\_log}), which is exactly the claim after identifying both
+  corners.
+\end{proof}
+
+\begin{theorem}[Choi \(-\log\) operator inequality]\label{choi_neg_log_loewner}
+  \lean{Oseledets.OperatorEntropy.Lieb.choi_neg_log_loewner}\leanok
+  For Kraus operators \(K\) with \(\sum_i K_i^{\dagger}K_i=1\) and \(X\) self-adjoint with spectrum
+  in \((0,\infty)\),
+  \[
+    (-\log)\!\Bigl(\textstyle\sum_i K_i^{\dagger}X K_i\Bigr)
+      \;\le\; \sum_i K_i^{\dagger}\,(-\log)(X)\,K_i .
+  \]
+\end{theorem}
+\begin{proof}\leanok
+  \uses{rect_isometry_neg_log_loewner}
+  Stack the Kraus operators into the column isometry \(V\) (\texttt{krausCol}) and let
+  \(X_{\mathrm{bd}}\) be the block-diagonal amplification of \(X\). Then
+  \(V^{\dagger}X_{\mathrm{bd}}V=\sum_i K_i^{\dagger}XK_i\) and, since \(-\log\) commutes with block
+  diagonals, \(V^{\dagger}(-\log)(X_{\mathrm{bd}})V=\sum_i K_i^{\dagger}(-\log)(X)K_i\). Apply
+  Theorem~\ref{rect_isometry_neg_log_loewner} to \((V,X_{\mathrm{bd}})\).
+\end{proof}
+
+\subsection{The modular realisation of relative entropy}
+
+\begin{lemma}[Modular form of the relative entropy]\label{kronForm_re_eq_relEntropy}
+  \lean{Oseledets.OperatorEntropy.Lieb.kronForm_re_eq_relEntropy}\leanok
+  For faithful states \(\rho,\sigma\), with (vectorised) relative modular operator
+  \(\Delta=\sigma\otimes(\rho^{-1})^{\top}\) and cyclic vector
+  \(\xi=\operatorname{vec}(\rho^{1/2})\),
+  \[
+    S(\rho\|\sigma) \;=\; \operatorname{Re}\bigl\langle\xi,\ (-\log)(\Delta)\,\xi\bigr\rangle .
+  \]
+\end{lemma}
+\begin{proof}\leanok
+  Compute \((-\log)(\sigma\otimes(\rho^{-1})^{\top})=-(\log\sigma)\otimes 1+1\otimes(\log\rho)^{\top}\)
+  (via \(\log\) of a Kronecker product, \(\log\rho^{-1}=-\log\rho\), and the transpose law). Apply
+  this to \(\operatorname{vec}(\rho^{1/2})\) through the vec/Kronecker rule
+  \((A\otimes B^{\top})\operatorname{vec}X=\operatorname{vec}(AXB)\), read off via the
+  Hilbert--Schmidt inner product \(\langle\operatorname{vec}X,\operatorname{vec}Y\rangle=\tr(X^{\dagger}Y)\),
+  and use \(\rho^{1/2}\rho^{1/2}=\rho\) with trace cyclicity to obtain
+  \(\tr(\rho(\log\rho-\log\sigma))=S(\rho\|\sigma)\).
+\end{proof}
+
+\subsection{The general channel: contraction rigidity (issue \#28, no injectivity)}
+
+For a \emph{general} Kraus channel the vectorised Petz map \(W=\texttt{petzWChanVec}\) is only a
+\emph{contraction} (\(W^{\dagger}W\le 1\)), and the output modular operator
+\(\Delta_{\mathrm{out}}=(\Lambda\sigma)\otimes((\Lambda\rho)^{-1})^{\top}\) is a genuinely separate
+operator: the whole-space Loewner bound \(W^{\dagger}(-\log\Delta)W\succeq-\log\Delta_{\mathrm{out}}\)
+\emph{fails} for a contraction. Two adaptations carry the argument through. The \(-\log\) saturation
+is supplied as a \emph{scalar} equality of quadratic forms, and the compression
+\(Y=W^{\dagger}\Delta W\) is \emph{never inverted}, which is precisely what removes the injectivity
+hypothesis.
+
+\begin{theorem}[Scalar channel \(-\log\) modular gap]\label{channel_modular_gap}
+  \lean{Oseledets.OperatorEntropy.Lieb.channel_modular_gap}\leanok
+  For a Kraus channel \(\Lambda\) with all four states \(\rho,\sigma,\Lambda\rho,\Lambda\sigma\)
+  faithful, if data processing is saturated (\(S(\rho\|\sigma)=S(\Lambda\rho\|\Lambda\sigma)\)), then
+  the two \(-\log\) modular quadratic forms agree at the output cyclic vector
+  \(\xi=\operatorname{vec}((\Lambda\rho)^{1/2})\):
+  \[
+    \operatorname{Re}\bigl\langle\xi,\ W^{\dagger}(-\log\Delta)W\,\xi\bigr\rangle
+      \;=\; \operatorname{Re}\bigl\langle\xi,\ (-\log\Delta_{\mathrm{out}})\,\xi\bigr\rangle,
+  \]
+  with \(W=\texttt{petzWChanVec}\), \(\Delta=\sigma\otimes(\rho^{-1})^{\top}\),
+  \(\Delta_{\mathrm{out}}=(\Lambda\sigma)\otimes((\Lambda\rho)^{-1})^{\top}\).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{kronForm_re_eq_relEntropy}
+  Since \(W\xi=\operatorname{vec}(\rho^{1/2})\) (cyclicity of the channel contraction), the left form
+  is \(S(\rho\|\sigma)\) and the right form is \(S(\Lambda\rho\|\Lambda\sigma)\) by
+  Lemma~\ref{kronForm_re_eq_relEntropy}; the entropy equality is precisely their coincidence.
+\end{proof}
+
+\begin{lemma}[Injectivity-free gap decomposition]\label{contraction_gap_decomp}
+  \lean{Oseledets.OperatorEntropy.Lieb.contraction_gap_decomp}\leanok
+  For a contraction \(W\) with defect \((1-W^{\dagger}W)\xi=0\), positive-definite shifts
+  \(X,\mathrm{Out}\), writing \(\eta=\mathrm{Out}^{-1}\xi\), \(b=X^{-1}(W\xi)-W\eta\),
+  \(Y=W^{\dagger}XW\),
+  \[
+    \bigl\langle\xi,\ (W^{\dagger}X^{-1}W-\mathrm{Out}^{-1})\,\xi\bigr\rangle
+      \;=\; \langle b,\ X\,b\rangle \;+\; \langle\eta,\ (\mathrm{Out}-Y)\,\eta\rangle .
+  \]
+\end{lemma}
+\begin{proof}\leanok
+  A pure matrix identity: the isometric proof's \(Y^{-1}\) bridge is replaced by
+  \(\mathrm{Out}^{-1}Y\mathrm{Out}^{-1}\), which cancels between the two summands, so the compression
+  \(Y\) is never inverted. Expanding \(\langle b,Xb\rangle\) produces \(W^{\dagger}X^{-1}W\), two
+  cross terms \(W^{\dagger}W\mathrm{Out}^{-1}\) and \(\mathrm{Out}^{-1}(W^{\dagger}W)\), and
+  \(\mathrm{Out}^{-1}Y\mathrm{Out}^{-1}\); the contraction defect collapses each cross term (each
+  contains \(W^{\dagger}W\xi=\xi\)) to \(\mathrm{Out}^{-1}\), and the second summand contributes
+  \(\mathrm{Out}^{-1}-\mathrm{Out}^{-1}Y\mathrm{Out}^{-1}\). Adding and simplifying leaves exactly
+  \(W^{\dagger}X^{-1}W-\mathrm{Out}^{-1}\).
+\end{proof}
+
+\begin{lemma}[Per-\(t\) intertwining at gap zero]\label{contraction_perT_intertwine_of_gap_zero}
+  \lean{Oseledets.OperatorEntropy.Lieb.contraction_perT_intertwine_of_gap_zero}\leanok
+  In the setting of Lemma~\ref{contraction_gap_decomp}, with the compression bound
+  \(W^{\dagger}XW\le\mathrm{Out}\), if the total resolvent gap
+  \(\operatorname{Re}\langle\xi,(W^{\dagger}X^{-1}W-\mathrm{Out}^{-1})\xi\rangle\) vanishes, then
+  \(X^{-1}(W\xi)=W(\mathrm{Out}^{-1}\xi)\).
+\end{lemma}
+\begin{proof}\leanok
+  \uses{contraction_gap_decomp}
+  Both summands of Lemma~\ref{contraction_gap_decomp} are nonnegative (\(X\succ 0\) and
+  \(\mathrm{Out}-Y\succeq 0\)), and their real parts sum to the vanishing gap; hence each is zero. In
+  particular \(\operatorname{Re}\langle b,Xb\rangle=0\), and positive definiteness of \(X\) forces
+  \(b=0\), i.e.\ \(X^{-1}(W\xi)=W(\mathrm{Out}^{-1}\xi)\).
+\end{proof}
+
+\begin{theorem}[Scalar-sourced contraction rigidity spine]\label{contraction_resolvent_intertwine_of_re_eq}
+  \lean{Oseledets.OperatorEntropy.Lieb.contraction_resolvent_intertwine_of_re_eq}\leanok
+  Let \(W\) be a contraction (\(W^{\dagger}W\le 1\)), \(\Delta,\Delta_{\mathrm{out}}\) positive
+  definite with compression bound \(W^{\dagger}\Delta W\le\Delta_{\mathrm{out}}\), cyclic-norm
+  condition \(\norm{W\xi}=\norm{\xi}\), and the \emph{scalar} \(-\log\) saturation
+  \(\operatorname{Re}\langle\xi,W^{\dagger}(-\log\Delta)W\xi\rangle
+    =\operatorname{Re}\langle\xi,(-\log\Delta_{\mathrm{out}})\xi\rangle\).
+  Then for every \(t>0\),
+  \[
+    (\Delta+t)^{-1}(W\xi) \;=\; W\bigl((\Delta_{\mathrm{out}}+t)^{-1}\xi\bigr).
+  \]
+\end{theorem}
+\begin{proof}\leanok
+  \uses{contraction_perT_intertwine_of_gap_zero}
+  Represent \(-\log\) by the integral \(\int_0^\infty\bigl((1+t)^{-1}-(\cdot+t)^{-1}\bigr)\,dt\) and
+  let \(F(t)\) be the real resolvent-gap quadratic form at \(\xi\). By the shifted compression bound
+  \(W^{\dagger}(\Delta+t)W\le\Delta_{\mathrm{out}}+t\) and the injectivity-free decomposition,
+  \(F(t)\ge 0\) pointwise; integrating recovers the scalar \(-\log\) gap, which is \(0\) by
+  hypothesis. A nonnegative continuous integrand with zero integral vanishes on \((0,\infty)\), so
+  each \(F(t)=0\); per-\(t\) saturation (Lemma~\ref{contraction_perT_intertwine_of_gap_zero}) gives
+  the resolvent intertwining. (The general finite square index follows by an \texttt{equivFin}
+  reindexing.)
+\end{proof}
+
+\begin{lemma}[Contraction intertwines every continuous function]\label{contraction_cfc_intertwine}
+  \lean{Oseledets.OperatorEntropy.Lieb.contraction_cfc_intertwine}\leanok
+  Under the hypotheses of Theorem~\ref{contraction_resolvent_intertwine_of_re_eq}, for every
+  continuous \(g\),
+  \[
+    W\bigl(g(\Delta_{\mathrm{out}})\,\xi\bigr) \;=\; g(\Delta)\,(W\xi).
+  \]
+\end{lemma}
+\begin{proof}\leanok
+  \uses{contraction_resolvent_intertwine_of_re_eq}
+  On the finite union of the two spectra, \(g\) is a real-coefficient combination of resolvents
+  \(x\mapsto(x+t)^{-1}\) (finite-spectrum resolvent readoff). Both \(g(\Delta_{\mathrm{out}})\) and
+  \(g(\Delta)\) become the corresponding operator-resolvent combinations, and the per-resolvent
+  intertwining of Theorem~\ref{contraction_resolvent_intertwine_of_re_eq} propagates linearly.
+\end{proof}
+
+\begin{theorem}[Channel unitary-power intertwining]\label{channel_upow_intertwine}
+  \lean{Oseledets.OperatorEntropy.Lieb.channel_upow_intertwine}\leanok
+  Under entropy saturation, the channel contraction intertwines the modular unitary power on the
+  output cyclic vector, \(W\bigl(\Delta_{\mathrm{out}}^{it}\,\xi\bigr)=\Delta^{it}\,(W\xi)\), with
+  \(W\xi=\operatorname{vec}(\rho^{1/2})\).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{contraction_cfc_intertwine, channel_modular_gap}
+  Apply Lemma~\ref{contraction_cfc_intertwine} with \(g=\cos(t\log\cdot)\) and \(g=\sin(t\log\cdot)\);
+  the scalar saturation input is Theorem~\ref{channel_modular_gap}. The complex power \(\Delta^{it}\)
+  is the functional-calculus combination \(\cos(t\log\cdot)+i\sin(t\log\cdot)\), so the two
+  intertwinings combine to the unitary-power intertwining.
+\end{proof}
+
+\begin{definition}[Modular \(it\)-intertwining]\label{IntertwinesIt}
+  \lean{Oseledets.OperatorEntropy.Lieb.IntertwinesIt}\leanok
+  The channel adjoint \emph{intertwines the modular \(it\)-flows} if, for all \(t\),
+  \[
+    \Lambda^{\dagger}\bigl((\Lambda\rho)^{it}(\Lambda\sigma)^{-it}\bigr) \;=\; \rho^{it}\,\sigma^{-it}.
+  \]
+\end{definition}
+
+\begin{theorem}[Equality \(\Rightarrow\) modular intertwining (general channel)]\label{channel_equality_imp_intertwinesIt}
+  \lean{Oseledets.OperatorEntropy.Lieb.channel_equality_imp_intertwinesIt}\leanok
+  For any Kraus channel with all four states faithful, saturation
+  \(S(\rho\|\sigma)=S(\Lambda\rho\|\Lambda\sigma)\) implies \texttt{IntertwinesIt}.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{channel_upow_intertwine, IntertwinesIt}
+  From Theorem~\ref{channel_upow_intertwine}, reading off the vec-action
+  \(\Delta^{it}\operatorname{vec}X=\operatorname{vec}(P^{it}XR^{-it})\) turns the vectorised statement
+  into \(\Lambda^{\dagger}\)-form directly (the vectorised Petz map already contains
+  \(\Lambda^{\dagger}\), so no amplification is needed). Cancelling the \((\Lambda\rho)^{\pm 1/2}\)
+  twist on the input column and the \(\rho^{1/2}\) factor, then taking adjoints, yields
+  \(\Lambda^{\dagger}((\Lambda\rho)^{it}(\Lambda\sigma)^{-it})=\rho^{it}\sigma^{-it}\).
+\end{proof}
+
+\begin{theorem}[Modular intertwining \(\Rightarrow\) Petz recovery]\label{intertwinesIt_imp_recovery}
+  \lean{Oseledets.OperatorEntropy.Lieb.intertwinesIt_imp_recovery}\leanok
+  If \texttt{IntertwinesIt} holds (all four states faithful), then the Petz map recovers the input:
+  \(P_{\sigma,\Lambda}(\Lambda\rho)=\rho\).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{IntertwinesIt, petz}
+  Analytic continuation of the \(it\)-intertwining to the value \(t=-i/2\) (a Kadison-type argument on
+  the modular flow) turns the cocycle identity into
+  \(\sqrt{\sigma}\,\Lambda^{\dagger}((\Lambda\sigma)^{-1/2}(\Lambda\rho)(\Lambda\sigma)^{-1/2})\sqrt{\sigma}=\rho\),
+  which is exactly \(P_{\sigma,\Lambda}(\Lambda\rho)=\rho\).
+\end{proof}
+
+\begin{theorem}[General Petz recovery from equality --- issue \#28 headline]\label{petz_equality_recovery_general}
+  \lean{Oseledets.OperatorEntropy.Lieb.petz_equality_recovery_general}\leanok
+  Let \(\Lambda\) be \emph{any} Kraus channel and \(\rho,\sigma\) states with all four of
+  \(\rho,\sigma,\Lambda\rho,\Lambda\sigma\) positive definite. If data processing is saturated,
+  \[
+    S(\rho\|\sigma) \;=\; S(\Lambda\rho\|\Lambda\sigma),
+  \]
+  then the Petz recovery map reconstructs the input state,
+  \[
+    P_{\sigma,\Lambda}(\Lambda\rho) \;=\; \rho .
+  \]
+  No injectivity of the channel (or of the vectorised Petz map) is assumed; the result holds for
+  information-losing channels such as the completely depolarising channel.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{channel_equality_imp_intertwinesIt, intertwinesIt_imp_recovery}
+  Compose Theorem~\ref{channel_equality_imp_intertwinesIt} (entropy equality \(\Rightarrow\) modular
+  \(it\)-intertwining) with Theorem~\ref{intertwinesIt_imp_recovery} (intertwining \(\Rightarrow\)
+  recovery). This is the full-generality form of Petz (2003, Thm~2). Together with
+  Theorem~\ref{petz_recovery_implies_equality} it closes the equivalence: for faithful states,
+  saturation of the data-processing inequality holds if and only if the Petz map recovers the input.
+\end{proof}
+
+\section{The modular-cocycle intertwining and the injectivity-free route}
+\label{sec:petz-intertwine}
+
+The general contraction argument of the previous section is a deformation of a cleaner isometric
+prototype, which is worth recording on its own because it is the analytic heart of the whole
+equality theorem. For the partial-trace channel \(\Lambda=\operatorname{Tr}_B\) on a bipartite system
+with faithful dilated states \(\omega,\tau\) (and faithful marginals
+\(\operatorname{Tr}_B\omega,\operatorname{Tr}_B\tau\)), the vectorised Petz map \(W=\texttt{petzWvec}\)
+is a genuine \emph{isometry}. There the whole-space \(-\log\) Loewner bound
+(Theorem~\ref{rect_isometry_neg_log_loewner}) is available, so the saturation input can be taken as a
+full operator gap rather than a scalar one, and the compression may be inverted freely --- this is
+exactly the injectivity that the general route of \S\ref{sec:petz-equality} had to dispense with,
+replacing the \(Y^{-1}\) bridge by the cancelling decomposition of
+Lemma~\ref{contraction_gap_decomp}.
+
+\begin{theorem}[Partial-trace modular gap]\label{partialTrace_modular_gap}
+  \lean{Oseledets.OperatorEntropy.Lieb.partialTrace_modular_gap}\leanok
+  If the partial-trace relative entropy is preserved,
+  \(S(\operatorname{Tr}_B\omega\|\operatorname{Tr}_B\tau)=S(\omega\|\tau)\), then the rectangular
+  \(-\log\) operator-Jensen gap for the Petz isometry \(W\) annihilates the output cyclic vector
+  \(\xi=\operatorname{vec}((\operatorname{Tr}_B\omega)^{1/2})\):
+  \[
+    \bigl(W^{\dagger}(-\log)(\Delta)\,W\bigr)\,\xi
+      \;=\; (-\log)\bigl(W^{\dagger}\Delta\,W\bigr)\,\xi,
+    \qquad \Delta=\tau\otimes(\omega^{-1})^{\top}.
+  \]
+\end{theorem}
+\begin{proof}\leanok
+  \uses{rect_isometry_neg_log_loewner, kronForm_re_eq_relEntropy}
+  By Theorem~\ref{rect_isometry_neg_log_loewner} the operator \(B-A\ge 0\), where
+  \(B=W^{\dagger}(-\log)(\Delta)W\) and \(A=(-\log)(W^{\dagger}\Delta W)\). Using
+  Lemma~\ref{kronForm_re_eq_relEntropy} on both sides (the compression \(W^{\dagger}\Delta W\) is
+  exactly the output modular operator, and \(W\xi=\operatorname{vec}(\omega^{1/2})\)), the two
+  quadratic forms at \(\xi\) equal \(S(\operatorname{Tr}_B\omega\|\operatorname{Tr}_B\tau)\) and
+  \(S(\omega\|\tau)\); the entropy equality makes
+  \(\operatorname{Re}\langle\xi,(B-A)\xi\rangle=0\). For a positive semidefinite matrix a vanishing
+  real expectation forces \((B-A)\xi=0\).
+\end{proof}
+
+\begin{theorem}[Partial-trace equality \(\Rightarrow\) modular intertwining]\label{partialTrace_equality_imp_intertwinesIt}
+  \lean{Oseledets.OperatorEntropy.Lieb.partialTrace_equality_imp_intertwinesIt}\leanok
+  Under the same entropy-preservation hypothesis, the amplified output modular \(it\)-cocycle equals
+  the input one, for all \(t\in\mathbb{R}\):
+  \[
+    \bigl((\operatorname{Tr}_B\omega)^{it}(\operatorname{Tr}_B\tau)^{-it}\bigr)\otimes 1
+      \;=\; \omega^{it}\,\tau^{-it}.
+  \]
+\end{theorem}
+\begin{proof}\leanok
+  \uses{partialTrace_modular_gap, IntertwinesIt}
+  The gap of Theorem~\ref{partialTrace_modular_gap} is upgraded, first to an intertwining of every
+  resolvent \((\Delta+t)^{-1}\) (the isometric rigidity tail), then --- via a finite-spectrum
+  resolvent readoff --- to the intertwining of \emph{every} continuous function of \(\Delta\) on
+  \(\xi\). Feeding the pair \(\cos(t\log\cdot),\sin(t\log\cdot)\) assembles the unitary power
+  \(\Delta^{it}\), giving \(W(\Delta_A^{it}\xi)=\Delta^{it}(W\xi)\). Reading off the vec-action
+  \(\Delta^{it}\operatorname{vec}X=\operatorname{vec}(P^{it}XR^{-it})\), cancelling the
+  \(\omega_A^{\pm 1/2}\) twist on the input column and the \(\omega^{1/2}\) factor, and taking adjoints
+  yields the stated cocycle identity --- an instance of the general \texttt{IntertwinesIt} property
+  (Definition~\ref{IntertwinesIt}).
+\end{proof}
+
+\section{The Connes--Narnhofer--Thirring dynamical entropy and its abelian corner}
+\label{sec:cnt}
+
+This section documents the finite-dimensional quantum dynamical entropy of
+Connes--Narnhofer--Thirring, in the operational-partition formulation of Alicki--Fannes (see also
+Ohya--Petz, \emph{Quantum Entropy and Its Use}). The dynamics is a unital \(*\)-endomorphism
+\(\Phi\) of the matrix algebra \(\Matrix_d(\mathbb{C})\), the observable is a finite operational
+partition of unity, and the entropy is read off from a family of correlation density matrices. The
+headline is that on the \emph{abelian corner} --- diagonal dynamics on a diagonal state --- the whole
+construction collapses onto the classical Kolmogorov--Sinai entropy of the underlying
+measure-preserving system (Lean: \texttt{Oseledets.Entropy.ksEntropy}), tying the quantum layer back
+to the ergodic theory of the MET core.
+
+\begin{definition}[Unital \(*\)-endomorphism]\label{UnitalStarEndo}
+  \lean{Oseledets.OperatorEntropy.CNT.UnitalStarEndo}\leanok
+  A \emph{finite quantum dynamics} is a map \(\Phi:\Matrix_d(\mathbb{C})\to\Matrix_d(\mathbb{C})\)
+  that is additive, multiplicative, unital (\(\Phi(1)=1\)) and \(*\)-preserving
+  (\(\Phi(x^{\dagger})=\Phi(x)^{\dagger}\)). Additivity is carried as part of the datum: it is
+  automatic for a \(*\)-homomorphism of matrix algebras, and it is exactly what lets \(\Phi\) commute
+  with the finite sums appearing in the telescoping identity below.
+\end{definition}
+
+\begin{definition}[Operational partition of unity]\label{OperationalPartition}
+  \lean{Oseledets.OperatorEntropy.CNT.OperationalPartition}\leanok
+  An \emph{operational partition of unity} of size \(k\) is a family \((x_i)_{i<k}\) of operators in
+  \(\Matrix_d(\mathbb{C})\) satisfying the partition-of-unity relation \(\sum_i x_i^{\dagger}x_i=1\).
+  This is the noncommutative analogue of a measurable partition of the state space.
+\end{definition}
+
+\begin{definition}[Time-ordered refinement]\label{refine}
+  \lean{Oseledets.OperatorEntropy.CNT.refine}\leanok
+  \uses{UnitalStarEndo, OperationalPartition}
+  Given a dynamics \(\Phi\) and an operational partition \(X=(x_i)\), the \emph{time-ordered
+  refinement} of depth \(n\) along a word \(f\in(\Fin k)^{\Fin n}\) is the operator
+  \[
+    \mathrm{refine}\,\Phi\,X\,n\,f \;=\;
+      x_{f_0}\,\Phi(x_{f_1})\,\Phi^{2}(x_{f_2})\cdots\Phi^{n-1}(x_{f_{n-1}}),
+  \]
+  defined by the telescoping recursion
+  \(\mathrm{refine}(n+1,f)=x_{f_0}\cdot\Phi\!\bigl(\mathrm{refine}(n,\mathrm{tail}\,f)\bigr)\) with
+  \(\mathrm{refine}(0,\cdot)=1\). It records the observable measured along the first \(n\) steps of
+  the orbit under \(\Phi\).
+\end{definition}
+
+\begin{lemma}[Telescoping identity]\label{sum_refine_conjTranspose_mul_refine}
+  \lean{Oseledets.OperatorEntropy.CNT.sum_refine_conjTranspose_mul_refine}\leanok
+  The refinement of an operational partition of unity is again an operational partition of unity: for
+  every \(n\),
+  \[
+    \sum_{f\in(\Fin k)^{\Fin n}}
+      \bigl(\mathrm{refine}\,\Phi\,X\,n\,f\bigr)^{\dagger}\,
+      \bigl(\mathrm{refine}\,\Phi\,X\,n\,f\bigr) \;=\; 1 .
+  \]
+\end{lemma}
+\begin{proof}\leanok
+  \uses{refine, OperationalPartition, UnitalStarEndo}
+  Induct on \(n\). Splitting the word as \(f=(i,g)\) with \(i=f_0\), the summand factors as
+  \(\Phi(\mathrm{refine}(n,g))^{\dagger}\,(x_i^{\dagger}x_i)\,\Phi(\mathrm{refine}(n,g))\); summing over
+  the leading letter \(i\) and applying \(\sum_i x_i^{\dagger}x_i=1\) removes it. What remains is
+  \(\sum_g\Phi\!\bigl(\mathrm{refine}(n,g)^{\dagger}\mathrm{refine}(n,g)\bigr)\); pulling \(\Phi\) out of
+  the finite sum (its additivity, Definition~\ref{UnitalStarEndo}) and applying the inductive
+  hypothesis leaves \(\Phi(1)=1\).
+\end{proof}
+
+\begin{definition}[Correlation density matrix]\label{corrMatrix}
+  \lean{Oseledets.OperatorEntropy.CNT.corrMatrix}\leanok
+  \uses{refine, sum_refine_conjTranspose_mul_refine}
+  For a dynamics \(\Phi\), a state \(\rho\) (a density matrix on \(\mathbb{C}^d\)) and an operational
+  partition \(X\), the depth-\(n\) \emph{correlation density matrix}
+  \(\mathrm{corrMatrix}\,\Phi\,\rho\,X\,n\) is the matrix on the classical index set
+  \((\Fin k)^{\Fin n}\) with entries
+  \[
+    (g,f)\;\longmapsto\;
+      \tr\!\bigl(\rho\,(\mathrm{refine}\,\Phi\,X\,n\,g)^{\dagger}\,\mathrm{refine}\,\Phi\,X\,n\,f\bigr).
+  \]
+  It is a genuine density matrix: its trace is \(1\) by the telescoping identity
+  (Lemma~\ref{sum_refine_conjTranspose_mul_refine}) together with \(\tr\rho=1\), and it is positive
+  semidefinite because the quadratic form \(x^{\dagger}Mx\) equals \(\tr(T\rho T^{\dagger})\ge 0\) for
+  \(T=\sum_f x_f\,\mathrm{refine}(n,f)\).
+\end{definition}
+
+\begin{definition}[CNT/ALF dynamical entropy]\label{cntDynamicalEntropy}
+  \lean{Oseledets.OperatorEntropy.CNT.cntDynamicalEntropy}\leanok
+  \uses{corrMatrix}
+  The \emph{entropy of a partition} is the infimum von Neumann entropy rate
+  \[
+    h_\Phi(\rho,X)\;=\;\inf_{n\ge 1}\ \frac{S\!\bigl(\mathrm{corrMatrix}\,\Phi\,\rho\,X\,n\bigr)}{n},
+    \qquad S(\tau)=-\tr(\tau\log\tau),
+  \]
+  and the \emph{CNT dynamical entropy} of \(\Phi\) in the state \(\rho\) is the supremum over all
+  finite operational partitions, \(h_\Phi(\rho)=\sup_{k,X}h_\Phi(\rho,X)\) (valued in
+  \(\overline{\R}\)). The \(\inf_n\) form is the honest analogue of the subadditive limit
+  \(\lim_n S(\cdot)/n\) and sidesteps an operator-Fekete argument.
+\end{definition}
+
+\begin{definition}[Diagonal state]\label{densityOfPMF}
+  \lean{Oseledets.OperatorEntropy.CNT.densityOfPMF}\leanok
+  For a probability vector \(\mu:\Fin d\to\R_{\ge 0}\) (\(\sum_i\mu_i=1\)), the associated diagonal
+  state is \(\rho_\mu=\operatorname{diag}\mu\), a density matrix on \(\mathbb{C}^d\).
+\end{definition}
+
+\begin{definition}[Projection partition]\label{projPartition}
+  \lean{Oseledets.OperatorEntropy.CNT.projPartition}\leanok
+  \uses{OperationalPartition}
+  For a cell map \(c:\Fin d\to\Fin k\), the diagonal \emph{projection partition} is
+  \(\{\operatorname{diag}\mathbf 1_{c^{-1}(i)}\}_{i<k}\); it is an operational partition of unity
+  encoding the measurable partition \(c^{-1}(\cdot)\) of \(\Fin d\).
+\end{definition}
+
+\begin{definition}[The permutation dynamics (abelian corner)]\label{adPerm}
+  \lean{Oseledets.OperatorEntropy.CNT.adPerm}\leanok
+  \uses{UnitalStarEndo}
+  For a permutation \(\sigma\in\mathfrak{S}_d\), the \emph{permutation dynamics}
+  \(\mathrm{adPerm}\,\sigma\) is conjugation \(x\mapsto P_\sigma\,x\,P_\sigma^{\dagger}\) by the
+  permutation matrix, a unital \(*\)-endomorphism; on diagonal matrices it acts by
+  \((\mathrm{adPerm}\,\sigma)(\operatorname{diag}v)=\operatorname{diag}(v\circ\sigma)\). Paired with a
+  \(\sigma\)-invariant diagonal state \(\rho_\mu\) (\(\mu\circ\sigma=\mu\),
+  Definition~\ref{densityOfPMF}) and a projection partition (Definition~\ref{projPartition}), this is
+  the abelian corner: it mirrors the classical system \((\Fin d,\mu,\sigma)\) with the measurable
+  partition \(c^{-1}(\cdot)\).
+\end{definition}
+
+\begin{theorem}[Per-resolution diagonal collapse]\label{vonNeumannEntropy_corrMatrix_eq_ksEntropySeq}
+  \lean{Oseledets.OperatorEntropy.CNT.vonNeumannEntropy_corrMatrix_eq_ksEntropySeq}\leanok
+  On the abelian corner the correlation matrix is diagonal, carrying the masses of the classical
+  \(n\)-fold join on its diagonal; hence its von Neumann entropy equals the classical iterated-join
+  Shannon entropy of the system \((\Fin d,\mu,\sigma)\):
+  \[
+    S\!\bigl(\mathrm{corrMatrix}\,(\mathrm{adPerm}\,\sigma)\,\rho_\mu\,(\mathrm{projPartition}\,c)\,n\bigr)
+      \;=\; H\!\Bigl(\textstyle\bigvee_{l<n}\sigma^{-l}\,c^{-1}(\cdot)\Bigr).
+  \]
+\end{theorem}
+\begin{proof}\leanok
+  \uses{corrMatrix, adPerm, refine, projPartition, densityOfPMF}
+  Because \(\mathrm{adPerm}\,\sigma\) preserves diagonal matrices, the refinement of a projection
+  partition is again diagonal, and the depth-\(n\) refinement product along a word \(f\) is exactly
+  the indicator of the classical join cell \(\bigcap_{l<n}\sigma^{-l}c^{-1}(f_l)\). Feeding these into
+  the correlation entries and using that \(\rho_\mu\) is diagonal, the off-diagonal entries vanish
+  (two distinct words disagree in some slot, forcing an orthogonal pair of indicators) and the
+  \((f,f)\) entry is the mass \(\mu(\bigcap_{l<n}\sigma^{-l}c^{-1}(f_l))\) of the join cell. The
+  correlation matrix is therefore \(\operatorname{diag}\) of the join distribution, so by
+  \(S(\operatorname{diag}p)=-\sum_j p_j\log p_j\) its von Neumann entropy is the Shannon entropy of the
+  join --- the classical join entropy at resolution \(n\).
+\end{proof}
+
+\emph{Non-vacuity.} The per-resolution collapse is not the trivial \(0=0\): for the two-level uniform
+state \(\mu\equiv\tfrac12\) on \(\Fin 2\), the identity dynamics, and the identity cell map, the
+resolution-\(1\) correlation matrix has von Neumann entropy \(\log 2>0\). (The library records this as
+an executable positivity certificate, so the equality genuinely relates a positive quantum entropy to a
+positive classical join entropy.)
+
+\begin{theorem}[Per-partition equality of entropy rates]\label{cntEntropyPartition_eq_ksEntropyPartition}
+  \lean{Oseledets.OperatorEntropy.CNT.cntEntropyPartition_eq_ksEntropyPartition}\leanok
+  For each projection partition \(\mathrm{projPartition}\,c\), the CNT partition entropy in the
+  abelian corner equals the classical Kolmogorov--Sinai partition entropy of the corresponding
+  measurable partition \(c^{-1}(\cdot)\):
+  \[
+    h_{\mathrm{adPerm}\,\sigma}(\rho_\mu,\mathrm{projPartition}\,c)
+      \;=\; h_\sigma(\mu, c^{-1}(\cdot)) .
+  \]
+\end{theorem}
+\begin{proof}\leanok
+  \uses{vonNeumannEntropy_corrMatrix_eq_ksEntropySeq, cntDynamicalEntropy}
+  Both sides are the subadditive limit of the same sequence divided by \(n\): the quantum partition
+  rate is \(\inf_n S(\mathrm{corrMatrix}\,n)/n\) and the classical partition entropy is the
+  corresponding limit of \(H(\bigvee_{l<n}\sigma^{-l}c^{-1})/n\). The per-resolution collapse
+  (Theorem~\ref{vonNeumannEntropy_corrMatrix_eq_ksEntropySeq}) identifies the two defining sequences
+  term by term, so the limits agree.
+\end{proof}
+
+\begin{definition}[Abelian-corner CNT entropy]\label{cntDynamicalEntropyAbelian}
+  \lean{Oseledets.OperatorEntropy.CNT.cntDynamicalEntropyAbelian}\leanok
+  \uses{cntDynamicalEntropy}
+  The \emph{abelian-corner CNT dynamical entropy} of \(\mathrm{adPerm}\,\sigma\) in the state
+  \(\rho_\mu\) is the supremum of the partition rate over all \emph{projection} operational
+  partitions, \(h^{\mathrm{ab}}_{\mathrm{adPerm}\,\sigma}(\rho_\mu)
+  =\sup_{k,c}h_{\mathrm{adPerm}\,\sigma}(\rho_\mu,\mathrm{projPartition}\,c)\).
+\end{definition}
+
+\begin{theorem}[Abelian corner \(=\) Kolmogorov--Sinai entropy]\label{cntDynamicalEntropyAbelian_eq_ksEntropy}
+  \lean{Oseledets.OperatorEntropy.CNT.cntDynamicalEntropyAbelian_eq_ksEntropy}\leanok
+  Suppose every state carries positive mass (\(\mu_i>0\) for all \(i\)). Then the abelian-corner CNT
+  dynamical entropy equals the classical Kolmogorov--Sinai entropy of the permutation system:
+  \[
+    h^{\mathrm{ab}}_{\mathrm{adPerm}\,\sigma}(\rho_\mu)
+      \;=\; h_\mu(\sigma) \;=\; \texttt{ksEntropy} .
+  \]
+\end{theorem}
+\begin{proof}\leanok
+  \uses{cntEntropyPartition_eq_ksEntropyPartition, cntDynamicalEntropyAbelian}
+  Two inequalities. For \(\le\), each projection partition's rate equals a classical partition
+  entropy (Theorem~\ref{cntEntropyPartition_eq_ksEntropyPartition}), which is dominated by the
+  classical KS entropy (a supremum over all measurable partitions); take the supremum. For \(\ge\),
+  positivity of every \(\mu_i\) forces the cells of any measurable partition \(P\) to be genuinely
+  disjoint (not merely a.e.), so \(P\) is realized by an honest cell map \(c\) with
+  \(c^{-1}(\cdot)=P\); its projection partition then has the same rate as \(P\), and this rate is one
+  of the terms of the abelian supremum. Antisymmetry gives the equality.
+\end{proof}
+
+\begin{theorem}[Full CNT entropy dominates KS entropy]\label{ksEntropy_le_cntDynamicalEntropy}
+  \lean{Oseledets.OperatorEntropy.CNT.ksEntropy_le_cntDynamicalEntropy}\leanok
+  Under the same positivity hypothesis, the \emph{full} CNT dynamical entropy of
+  \(\mathrm{adPerm}\,\sigma\) in the state \(\rho_\mu\) --- the supremum over \emph{all} operational
+  partitions --- dominates the classical Kolmogorov--Sinai entropy:
+  \[
+    h_\mu(\sigma)\;\le\; h_{\mathrm{adPerm}\,\sigma}(\rho_\mu).
+  \]
+\end{theorem}
+\begin{proof}\leanok
+  \uses{cntDynamicalEntropyAbelian_eq_ksEntropy, cntDynamicalEntropy}
+  The abelian dynamical entropy is a supremum over the sub-family of projection partitions, hence is
+  \(\le\) the full CNT dynamical entropy taken over all operational partitions. Rewriting the left
+  endpoint by the corner equality (Theorem~\ref{cntDynamicalEntropyAbelian_eq_ksEntropy}) turns this
+  into the claimed bound.
+\end{proof}
