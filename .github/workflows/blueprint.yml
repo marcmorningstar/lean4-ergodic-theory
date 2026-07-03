@@ -68,22 +68,20 @@ jobs:
           enablement: true
 
       - name: Compile blueprint and documentation
-        uses: leanprover-community/docgen-action@deed0cdc44dd8e5de07a300773eb751d33e32fc8 # 2025-10-26
+        uses: leanprover-community/docgen-action@10db47458f91456d87804787d3dfcd914b9a19e3 # 2026-06-07
         with:
           blueprint: true
           # Skip the doc-gen4 API reference: it rebuilds HTML for the ENTIRE Mathlib import
           # closure (~22k modules, ~4 s each) from scratch every run — >2 h, which blows the job
-          # timeout so NOTHING (not even the ~2.5 min blueprint) ever deployed to Pages. The
+          # timeout so NOTHING (not even the ~11 min blueprint) ever deployed to Pages. The
           # blueprint is this project's documentation deliverable; full-Mathlib API docs are
           # redundant with the official Mathlib doc site.
           #
-          # NB: we set the DEPRECATED `api_docs` (underscore), not `api-docs`. In this action
-          # version (deed0cd, 2025-10-26) the deprecation shim `dist/deprecation.js` computes
-          # `API_DOCS = getInputWithDeprecation("api-docs","api_docs") || "true"`, and the
-          # hyphenated `api-docs: false` does not reach it (verified: the doc-gen4 build still ran
-          # and hit the timeout), so `API_DOCS` fell back to "true". The underscore input feeds the
-          # shim's `oldName` path directly and correctly yields `API_DOCS=false`.
-          api_docs: false
+          # NB: requires docgen-action > e42d2e1 (2026-04-03, "pass inputs as INPUT_* env vars to
+          # deprecation handler"). Before that fix the deprecation shim never received the inputs,
+          # so `API_DOCS = getInput(...) || "true"` always fell back to "true" and this flag was
+          # silently ignored (doc-gen4 ran and timed out). The pin above (2026-06-07) includes it.
+          api-docs: false
           homepage: home_page
           # Only publish to GitHub Pages from `main` (on push or a manual re-deploy via
           # workflow_dispatch). On PRs and other branches the blueprint/docs are still built as a
