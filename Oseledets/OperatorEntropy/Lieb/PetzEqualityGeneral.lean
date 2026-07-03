@@ -22,7 +22,7 @@ whence the Petz recovery map reconstructs the input state (`petz σ Λ (Λρ) = 
 ## Contraction vs. isometry
 
 The isometric spine `RigidityTail.isometry_resolvent_intertwine_of_neg_log_eq` is replaced by the
-contraction spine `ContractionRigiditySkeleton.contraction_resolvent_intertwine_of_neg_log_eq`.  Two
+inlined contraction spine `contraction_resolvent_intertwine_of_re_eq` (below).  Two
 structural adaptations are needed relative to the isometric clone:
 
 * The compression is an **inequality** `Wᴴ Δ W ≤ Δout` (`petzWChanVec_modular_le`), not the exact
@@ -184,8 +184,8 @@ lemma contraction_total_gap_nonneg (W : Matrix (Fin M) (Fin N) ℂ)
     (Complex.nonneg_iff.mp (hBps.dotProduct_mulVec_nonneg _)).1
   exact add_nonneg hApos hBpos
 
-/-- **Per-`t` recovery intertwining, injectivity-free** (replaces
-`ContractionRigiditySkeleton.contraction_resolvent_perT_intertwine` in the scalar spine).  If the
+/-- **Per-`t` recovery intertwining, injectivity-free** (the per-`t` saturation step of the
+inlined scalar spine).  If the
 whole gap vanishes at `ξ`, then the first summand `⟪b, X b⟫` of `contraction_gap_decomp`
 vanishes, whence `X.PosDef` forces `b = 0`, i.e. `X⁻¹(Wξ) = W(Out⁻¹ξ)` — the intertwining
 conclusion *directly*, with no `Y⁻¹` bridge. -/
@@ -216,8 +216,8 @@ lemma contraction_perT_intertwine_of_gap_zero (W : Matrix (Fin M) (Fin N) ℂ)
 
 /-! ### The scalar-sourced spine, now injectivity-free -/
 
-/-- **Contraction rigidity tail (scalar-sourced resolvent form).**  Identical to
-`ContractionRigiditySkeleton.contraction_resolvent_intertwine_of_neg_log_eq`, except the `-log`
+/-- **Contraction rigidity tail (scalar-sourced resolvent form).**  The inlined contraction spine;
+like the isometric `RigidityTail.isometry_resolvent_intertwine_of_neg_log_eq`, except the `-log`
 saturation is supplied as the *scalar* equality of the two `-log` modular quadratic forms at `ξ`
 (`hReEq`) rather than the vector equation `(Wᴴ (−log Δ) W) ξ = (−log Δout) ξ`.  The scalar suffices
 because the spine only ever used the vector saturation to certify that the resolvent-gap integral
