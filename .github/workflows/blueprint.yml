@@ -26,7 +26,9 @@ jobs:
   build_project:
     runs-on: ubuntu-latest
     name: Build project
-    timeout-minutes: 120
+    # Blueprint-only path is ~6–10 min (lake build w/ cache ~3.5 min + leanblueprint ~2.5 min +
+    # deploy). 60 min is generous headroom yet fails fast if the API-doc build ever creeps back in.
+    timeout-minutes: 60
     steps:
       - name: Cleanup to free disk space
         uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be # v1.3.0
@@ -69,6 +71,13 @@ jobs:
         uses: leanprover-community/docgen-action@deed0cdc44dd8e5de07a300773eb751d33e32fc8 # 2025-10-26
         with:
           blueprint: true
+          # Skip the doc-gen4 API reference: it rebuilds HTML for the ENTIRE Mathlib import
+          # closure (~26k modules, ~4 s each) from scratch every run — ~2 h, which blows the job
+          # timeout so NOTHING (not even the ~2.5 min blueprint) ever deployed to Pages. The
+          # blueprint is this project's documentation deliverable; full-Mathlib API docs are
+          # redundant with the official Mathlib doc site. (Re-enable with caching + a 360-min
+          # timeout if a self-hosted API reference is ever wanted.)
+          api-docs: false
           homepage: home_page
           # Only publish to GitHub Pages from `main` (on push or a manual re-deploy via
           # workflow_dispatch). On PRs and other branches the blueprint/docs are still built as a
