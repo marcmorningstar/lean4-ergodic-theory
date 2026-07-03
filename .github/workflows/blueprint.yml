@@ -72,12 +72,18 @@ jobs:
         with:
           blueprint: true
           # Skip the doc-gen4 API reference: it rebuilds HTML for the ENTIRE Mathlib import
-          # closure (~26k modules, ~4 s each) from scratch every run — ~2 h, which blows the job
+          # closure (~22k modules, ~4 s each) from scratch every run — >2 h, which blows the job
           # timeout so NOTHING (not even the ~2.5 min blueprint) ever deployed to Pages. The
           # blueprint is this project's documentation deliverable; full-Mathlib API docs are
-          # redundant with the official Mathlib doc site. (Re-enable with caching + a 360-min
-          # timeout if a self-hosted API reference is ever wanted.)
-          api-docs: false
+          # redundant with the official Mathlib doc site.
+          #
+          # NB: we set the DEPRECATED `api_docs` (underscore), not `api-docs`. In this action
+          # version (deed0cd, 2025-10-26) the deprecation shim `dist/deprecation.js` computes
+          # `API_DOCS = getInputWithDeprecation("api-docs","api_docs") || "true"`, and the
+          # hyphenated `api-docs: false` does not reach it (verified: the doc-gen4 build still ran
+          # and hit the timeout), so `API_DOCS` fell back to "true". The underscore input feeds the
+          # shim's `oldName` path directly and correctly yields `API_DOCS=false`.
+          api_docs: false
           homepage: home_page
           # Only publish to GitHub Pages from `main` (on push or a manual re-deploy via
           # workflow_dispatch). On PRs and other branches the blueprint/docs are still built as a
