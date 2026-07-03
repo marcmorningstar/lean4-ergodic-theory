@@ -46,12 +46,21 @@ not printed). The `Oseledets` library is built with `linter.mathlibStandardSet` 
 warnings promoted to errors (`lakefile.toml`), so `lake build` — and hence CI — fails on any
 style-lint regression. See `docs/progress/STATE.md` for the final composition.
 
+A **finite-dimensional quantum-information layer** (`Oseledets/OperatorEntropy/`, issues
+#22–#28) has since been added on the same matrix/CFC infrastructure: the von Neumann and
+Umegaki relative entropies, Klein's inequality and **Lieb's joint-convexity theorem**, the
+**CPTP data-processing inequality**, the **CNT dynamical entropy** (whose abelian corner
+recovers the classical Kolmogorov–Sinai entropy), and **both directions of Petz's equality
+theorem** (Petz recovery ⟺ saturation of the data-processing inequality) — all sorry-free and
+guarded in `test/AxiomAudit.lean` to the same axiom set.
+
 ## Layout
 
 | Path | Purpose |
 |---|---|
 | `Oseledets.lean` | Library root; imports every module of the formalization. |
 | `Oseledets/` | Library modules: `Cocycle/`, `Ergodic/`, `Lyapunov/` (incl. `Lyapunov/Extensions/` for the post-theorem corollaries), `MultiplicativeErgodic.lean` (the proved target theorem), `TwoSided/`, `Continuous/`. |
+| `Oseledets/OperatorEntropy/` | Finite-dim quantum-information layer (issues #22–#28): von Neumann & Umegaki relative entropy, Klein/Lieb joint convexity, the CPTP data-processing inequality, CNT dynamical entropy (abelian corner = classical KS entropy), and the Petz recovery + equality theorem (both directions). |
 | `test/AxiomAudit.lean` | The guarded axiom-check (separate `AxiomAudit` lib; not part of the `Oseledets` library). |
 | `lakefile.toml` | Package config: the `Oseledets` lib + the `AxiomAudit` test lib (both default targets), depends on Mathlib. |
 | `lean-toolchain` | Pinned Lean version (`leanprover/lean4:v4.30.0-rc2`). |

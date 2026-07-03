@@ -31,6 +31,9 @@ realisation of the relative entropy in *this* convention is `kronForm_re_eq_relE
 * `kronForm_re_eq_relEntropy` — the `modArgVec`-convention modular realisation of relative entropy.
 * `partialTrace_modular_gap` — the `−log` operator-Jensen gap for `petzWvec ω` annihilates the
   output cyclic vector `vec((Tr_B ω)^{1/2})` under the entropy equality (the analytic linchpin).
+* `partialTrace_equality_imp_intertwinesIt` — the terminal audited headline: preservation of the
+  Umegaki relative entropy under `Tr_B` forces the channel to intertwine the modular `it`-flows,
+  `((Tr_B ω)^{it}(Tr_B τ)^{-it}) ⊗ₖ 1 = ω^{it} τ^{-it}`.
 -/
 
 open Matrix Real

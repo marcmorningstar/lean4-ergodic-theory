@@ -320,10 +320,6 @@ the Lieb-concavity WALL of issue #22; here it is an explicit, honest hypothesis.
 def IsRelEntropyMonotone (Λ : DensityMatrix n → DensityMatrix m) : Prop :=
   ∀ ρ σ : DensityMatrix n, relEntropy (Λ ρ) (Λ σ) ≤ relEntropy ρ σ
 
-/-- Interface non-vacuity: the identity map is trivially relative-entropy monotone. -/
-theorem isRelEntropyMonotone_id : IsRelEntropyMonotone (id : DensityMatrix n → DensityMatrix n) :=
-  fun _ _ => le_refl _
-
 /-- **No monotone section under a strict relative-entropy drop.**
 If a recovery map `R : m → n` is relative-entropy monotone (DPI) and is a perfect section of a
 coarse-graining `Λ : n → m` on the states `ρ, σ` (`R (Λ ρ) = ρ`, `R (Λ σ) = σ`), then a STRICT

@@ -28,6 +28,16 @@ spectrum, exponent sums, the trace–determinant identity, exterior/wedge growth
 spectrum, restriction to invariant subbundles, the non-ergodic spectrum, regularity of the
 exponents, and singular one-sided bounds).
 
+The library also includes a finite-dimensional **quantum-information layer**
+(`Oseledets/OperatorEntropy/`, issues #22–#28), built on the same matrix/CFC infrastructure:
+the von Neumann and Umegaki relative entropies, Klein's inequality and **Lieb's joint-convexity
+theorem**, the **CPTP data-processing inequality** (`monotonicity_relEntropy_under_CPTP`), the
+**CNT dynamical entropy** (whose abelian corner recovers the classical Kolmogorov–Sinai entropy,
+`cntDynamicalEntropyAbelian_eq_ksEntropy`), and **both directions of Petz's equality theorem** —
+recovery ⟹ saturation (`petz_recovery_implies_equality`) and, fully general, saturation ⟹
+recovery (`petz_equality_recovery_general`, for every faithful-state `KrausChannel`). All
+sorry-free and axiom-audited.
+
 The library builds sorry-free, is enforced linter-clean under Mathlib's
 `linter.mathlibStandardSet` (warnings are promoted to errors), and a guarded axiom audit
 (`test/AxiomAudit.lean`) confirms every headline result and its corollaries depend on exactly
@@ -46,6 +56,10 @@ Oseledets/
   MultiplicativeErgodic.lean  -- the one-sided MET (filtration form)
   TwoSided/           -- the two-sided splitting
   Continuous/         -- the continuous-flow MET
+  OperatorEntropy/    -- finite-dim quantum-information layer (issues #22–#28): von Neumann &
+                      --   Umegaki relative entropy, Klein/Lieb joint convexity, the CPTP
+                      --   data-processing inequality, CNT dynamical entropy, Petz recovery +
+                      --   equality theorem (both directions)
 test/
   AxiomAudit.lean     -- guarded #print-axioms regression (separate lib; not upstreamable source)
 blueprint/            -- leanblueprint LaTeX source (web + PDF; \lean-linked to declarations)

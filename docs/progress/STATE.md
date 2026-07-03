@@ -2,7 +2,9 @@
 
 > **Status: COMPLETE.** The one-sided Oseledets multiplicative ergodic theorem is proved
 > sorry-free, together with its companion corollaries, ten additive extensions, the two-sided
-> splitting, and the continuous-flow version. The whole library builds clean, is enforced
+> splitting, the continuous-flow version, and a finite-dimensional **quantum-information layer**
+> (operator entropy, Lieb joint convexity, the CPTP data-processing inequality, CNT dynamical
+> entropy, and Petz recovery + equality — issues #22–#28). The whole library builds clean, is enforced
 > linter-clean under `linter.mathlibStandardSet` (warnings promoted to errors in `lakefile.toml`,
 > so `lake build` and CI fail on any lint regression), and every headline result is guarded in
 > `test/AxiomAudit.lean` (a separate `AxiomAudit` lib, so the library source carries no
@@ -60,6 +62,28 @@ preserving-ℝ-flow version: exponents, a measurable **flow-equivariant** filtra
 map (`Flow.lean` reduction identity, `Reduction.lean`), upgrading integer-time growth to the
 continuous parameter via a between-times sandwich (`BetweenTimes.lean`), and proving real-time
 equivariance via a discrete-limsup shift-invariance (`Equivariance.lean`).
+
+## Quantum-information layer (`Oseledets/OperatorEntropy/`)
+
+A self-contained finite-dimensional quantum-information cluster added on top of the MET core
+(issues #22–#28), reusing the repo's matrix / continuous-functional-calculus infrastructure.
+All results are sorry-free, linter-clean, and guarded in `test/AxiomAudit.lean`.
+
+* **Foundations** (`Basic.lean`, `RelativeEntropy.lean`, `Klein.lean`) — `DensityMatrix`, the von
+  Neumann entropy, the Umegaki relative entropy `S(ρ‖σ) = Tr ρ(log ρ − log σ)`, and the scalar
+  Klein / Peierls inequality.
+* **Subadditivity & Lieb** (`Lieb/`) — Klein's inequality ⟹ subadditivity, and **Lieb's theorem**,
+  the joint convexity of the quantum relative entropy (`relEntropyMat_jointly_convex`).
+* **Data processing** (`Lieb/DataProcessingCPTP.lean`) — the **CPTP data-processing inequality**
+  `S(Λρ‖Λσ) ≤ S(ρ‖σ)` (`monotonicity_relEntropy_under_CPTP`) and the no-section obstruction.
+* **Petz recovery + equality** (`Lieb/`) — the **Petz recovery map** and **both directions of
+  Petz's equality theorem**: recovery ⟹ saturation of the DPI (`petz_recovery_implies_equality`,
+  #22) and, fully general (#28), saturation ⟹ recovery (`petz_equality_recovery_general`, for
+  every faithful-state `KrausChannel`), whose analytic heart is the modular-cocycle intertwining
+  `partialTrace_equality_imp_intertwinesIt`.
+* **Dynamical entropy** (`CNT/`) — the CNT / ALF quantum dynamical entropy, whose **abelian corner
+  recovers the classical Kolmogorov–Sinai entropy** (`cntDynamicalEntropyAbelian_eq_ksEntropy`) —
+  the bridge back to the MET core's ergodic theory.
 
 ## Conventions (pinned)
 

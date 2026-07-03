@@ -199,9 +199,6 @@ def sgn (q r : Type*) : q ⊕ r → ℂ := Sum.elim (fun _ => 1) (fun _ => -1)
 omit [Fintype q] [DecidableEq q] [Fintype r] [DecidableEq r] in
 @[simp] lemma sgn_inl (j : q) : sgn q r (Sum.inl j) = 1 := rfl
 
-omit [Fintype q] [DecidableEq q] [Fintype r] [DecidableEq r] in
-@[simp] lemma sgn_inr (j : r) : sgn q r (Sum.inr j) = -1 := rfl
-
 omit [Fintype q] [Fintype r] in
 /-- The involution `V = diag(1, -1)` is self-adjoint. -/
 lemma diagonal_sgn_star : star (diagonal (sgn q r)) = diagonal (sgn q r) := by

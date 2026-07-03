@@ -28,9 +28,10 @@ This module wires the three named deliverables of issue #22:
   faithful-monotone recovery map `R` inverts a faithful-monotone channel `Λ` on `ρ, σ`, then the
   DPI is TIGHT, `D(Λ ρ ‖ Λ σ) = D(ρ ‖ σ)`.  Two applications of monotonicity + `le_antisymm`.
 
-The converse `⟹` direction (equality in DPI `⟹` Petz recoverability) requires the Araki relative
-modular operator / an operator-mean fixed-point analysis and is the remaining follow-up; it is NOT
-proved here.
+The converse `⟹` direction (equality in DPI `⟹` Petz recoverability) is now discharged in-repo
+without the Araki modular operator: `partialTrace_equality_imp_intertwinesIt`
+(`Lieb.PetzEqualitySufficiency`, partial-trace channel) and `petz_equality_recovery_general`
+(`Lieb.PetzEqualityGeneral`, general Kraus channel), both axiom-audited.
 
 All index types are `Type` (universe `0`), matching the monomorphic wall `Prop`
 `RelEntropyMonotoneUnderPartialTrace`: finite-dimensional quantum information lives in universe `0`.
@@ -105,8 +106,9 @@ a faithful second argument) and `R` inverts `Λ` on `ρ, σ` (`R (Λ ρ) = ρ`, 
 DPI is TIGHT: `D(Λ ρ ‖ Λ σ) = D(ρ ‖ σ)`.  Monotonicity of `Λ` gives `≤`; monotonicity of `R`
 composed with the section identities gives `≥`; `le_antisymm` closes it.
 
-The converse `⟹` direction (equality in the DPI `⟹` a Petz recovery map exists) needs the Araki
-relative modular operator and is the remaining follow-up — it is NOT established here. -/
+The converse `⟹` direction (equality in the DPI `⟹` a Petz recovery map exists) is established
+in-repo — see `partialTrace_equality_imp_intertwinesIt` (`Lieb.PetzEqualitySufficiency`) and
+`petz_equality_recovery_general` (`Lieb.PetzEqualityGeneral`), both axiom-audited. -/
 theorem petz_recovery_implies_equality {n m : Type}
     [Fintype n] [DecidableEq n] [Fintype m] [DecidableEq m]
     (Λ : DensityMatrix n → DensityMatrix m) (R : DensityMatrix m → DensityMatrix n)

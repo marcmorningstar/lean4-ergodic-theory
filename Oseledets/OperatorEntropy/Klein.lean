@@ -1,5 +1,12 @@
 import Mathlib
 
+/-!
+# Klein's inequality (scalar / Peierls form)
+
+The scalar Klein–Peierls bound `p - s ≤ p·log p - p·log s` (for `0 ≤ p`, `0 < s`), the termwise
+core powering the subadditivity of the operator (von Neumann) entropy.
+-/
+
 open Real
 
 noncomputable section

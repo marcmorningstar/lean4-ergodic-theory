@@ -7,7 +7,6 @@ import Mathlib
 import Oseledets.OperatorEntropy.Lieb.ChoiLoewner
 import Oseledets.OperatorEntropy.Lieb.ModularOperator
 import Oseledets.OperatorEntropy.Lieb.PetzEqualityM3sc
-import Oseledets.OperatorEntropy.Lieb.PetzEqualityM3
 
 /-!
 # Petz equality — sufficiency assembly (issue #28)
@@ -46,7 +45,7 @@ Fully closing `equality_imp_intertwinesIt` reduces to two research-level steps n
    The correct object is the ρ-twisted Petz isometry `W(X) = (X ω_A^{-1/2} ⊗ 1) ω^{1/2}` with
    `W⋆ Δ_{τ,ω} W = Δ_{τ_A,ω_A}` (Carlen–Vershynina (2.3)); a ρ-independent compression fails.
 2. **Rigidity.** From the gap annihilating the cyclic vector, deduce the `it`-intertwining — via the
-   resolvent route (`contraction_adjoint_eq` + `exists_resolvent_combo`) or the strict-convexity
+   resolvent route (the readoff `exists_resolvent_combo`) or the strict-convexity
    route (needs the unproved operator strict convexity of `-log`).
 -/
 
@@ -138,8 +137,8 @@ annihilate the cyclic vector `vec 1`.
 
 This is the clean interface to the *one remaining wall*: supplying the concrete Loewner pair
 `A ≤ B` (the ρ-twisted Petz reconciliation `W⋆ Δ_{τ,ω} W = Δ_out`), after which the gap-vanishing
-is delivered here, and the subsequent rigidity (gap-vanishing ⟹ `it`-intertwining) via
-`contraction_adjoint_eq` / `exists_resolvent_combo` closes `equality_imp_intertwinesIt`. -/
+is delivered here, and the subsequent rigidity (gap-vanishing ⟹ `it`-intertwining) via the
+resolvent readoff `exists_resolvent_combo` closes `equality_imp_intertwinesIt`. -/
 lemma gap_mulVec_vecOne_zero_of_reconciliation (ρ σ : DensityMatrix n) (Λ : KrausChannel n)
     {A B : Matrix (n × n) (n × n) ℂ} (hle : A ≤ B)
     (hA : (relForm A).re = relEntropy (Λ.toDM ρ) (Λ.toDM σ))

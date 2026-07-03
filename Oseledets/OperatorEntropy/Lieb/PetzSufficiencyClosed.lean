@@ -171,32 +171,12 @@ goals):
   `Λ.adj ((Λρ)^{it} (Λσ)^{-it}) = ρ^{it} σ^{-it}`.
 -/
 
-/-- **STEP 1 (wired).**  The vectorisation bridge discharges, sorry-free, exactly the algebraic
-hypotheses of the abstract spine `resolvent_intertwine_of_form_re_eq` for the concrete Petz data:
-`W = petzWvec ω`, `Δ = modArgVec τ ω`, output compression `Δ_A = τ_A ⊗ₖ (ω_A⁻¹)ᵀ`, and cyclic
-vector `petzWvec ω · vec (ω_A^{1/2}) = vec (ω^{1/2})`.  The only spine hypothesis *not* supplied
-here is the form-equality `hform` (STEP 0), and the objects still require the `Fin`-reindex adapter
-before literally feeding the spine. -/
-theorem petzWvec_spine_inputs {nA nB : Type*} [Fintype nA] [DecidableEq nA] [Fintype nB]
-    [DecidableEq nB] (ω τ : Matrix (nA × nB) (nA × nB) ℂ) (hω : ω.PosDef) (hτ : τ.PosDef)
-    (hωA : (partialTraceRight ω).PosDef) :
-    (petzWvec ω)ᴴ * petzWvec ω = 1 ∧
-      (modArgVec τ ω).PosDef ∧
-      spectrum ℝ (modArgVec τ ω) ⊆ Set.Ioi 0 ∧
-      (petzWvec ω)ᴴ * modArgVec τ ω * petzWvec ω
-        = (partialTraceRight τ) ⊗ₖ ((partialTraceRight ω) ^ (-1 : ℝ))ᵀ ∧
-      petzWvec ω *ᵥ vec ((partialTraceRight ω) ^ (1 / 2 : ℝ)) = vec (ω ^ (1 / 2 : ℝ)) :=
-  ⟨petzWvec_isometry ω hω hωA, modArgVec_posDef hτ hω, modArgVec_spectrum hτ hω,
-    petzWvec_modular_compression τ ω hω hωA, petzWvec_cyclic ω hωA⟩
+/-! ## Isometric-compression quadratic-form helpers
 
-/-! ## Racer-B connector: the modular gap-vanishing at the output cyclic vector
-
-The following block is the *modular-picture* connector (racer B).  It consumes a vectorised
-reconciliation isometry `W` on the Hilbert–Schmidt spaces — in the `relModularArg` convention of
-`relEntropy_eq_modularForm` — together with the Stinespring entropy invariance and the equality
-hypothesis, and delivers the operator-Jensen saturation (`hgap`) fed to
-`RigidityTail.isometry_resolvent_intertwine_of_neg_log_eq`.  It lives directly over the product
-index types `d × d` / `n × n` (no `Fin`-reindex), matching `relEntropy_eq_modularForm`. -/
+Two general readoff lemmas for a rectangular isometric compression `Wᴴ M W`: the quadratic form
+transports along `W` (`qform_conj`), and a positive-semidefinite matrix whose expectation on `ξ`
+has vanishing real part annihilates `ξ` (`posSemidef_vec_expectation_re_zero`). They feed the
+reconciliation/rigidity assembly in `PetzEqualitySufficiency` and `PetzEqualityGeneral`. -/
 
 /-- **Isometric-compression quadratic form.** For any (rectangular) `W`, matrix `M`, and vector `ξ`,
 the quadratic form of the compression `Wᴴ M W` at `ξ` equals the quadratic form of `M` at `W ξ`:
@@ -220,81 +200,6 @@ lemma posSemidef_vec_expectation_re_zero {ι : Type*} [Fintype ι]
     · simp only [Complex.zero_re]; exact hre
     · simpa using him.symm
   exact posSemidef_vec_expectation_zero hG hz
-
-section RacerB
-
-variable {n d : Type*} [Fintype n] [DecidableEq n] [Fintype d] [DecidableEq d]
-
-/-- **Modular gap-vanishing at the output cyclic vector** (racer B).  Let `ρ, σ : DensityMatrix n`
-be the input states of a Kraus channel `Λ`, with faithful outputs `Λρ, Λσ`, and let
-`ω, τ : DensityMatrix d` be faithful *dilated* states.  Suppose a vectorised reconciliation isometry
-`W : Matrix (d × d) (n × n) ℂ` satisfies
-
-* `Wᴴ W = 1`                                   (isometry),
-* `Wᴴ Δ_{ω,τ} W = Δ_{Λρ,Λσ}`                    (`hWcomp`, the modular compression, with
-  `Δ = relModularArg`),
-* `W ξ_out = ξ_dil`                             (`hWcyc`, carrying the output cyclic vector
-  `ξ_out = vec((Λρ)^{1/2})` to the dilated one `ξ_dil = vec(ω^{1/2})`),
-
-together with the Stinespring entropy invariance `D(ω‖τ) = D(ρ‖σ)` and the equality hypothesis
-`D(ρ‖σ) = D(Λρ‖Λσ)`.  Then the rectangular `-log` operator-Jensen gap annihilates the output cyclic
-vector:
-
-`(Wᴴ (−log Δ_{ω,τ}) W) ξ_out = (−log)(Wᴴ Δ_{ω,τ} W) ξ_out`.
-
-This is precisely the saturation hypothesis (`hgap`) fed to
-`RigidityTail.isometry_resolvent_intertwine_of_neg_log_eq`. -/
-theorem modular_gap_intertwines_at_output_cyclic
-    (ρ σ : DensityMatrix n) (Λ : KrausChannel n) (ω τ : DensityMatrix d)
-    (hΛρ : (Λ.toDM ρ).val.PosDef) (hΛσ : (Λ.toDM σ).val.PosDef)
-    (hω : ω.val.PosDef) (hτ : τ.val.PosDef)
-    (W : Matrix (d × d) (n × n) ℂ)
-    (hWiso : Wᴴ * W = 1)
-    (hWcomp : Wᴴ * relModularArg ω.val τ.val * W
-      = relModularArg (Λ.toDM ρ).val (Λ.toDM σ).val)
-    (hWcyc : W *ᵥ (CFC.rpow ((Λ.toDM ρ).val ⊗ₖ (1 : Matrix n n ℂ)) (1 / 2) *ᵥ vecOne n)
-      = CFC.rpow (ω.val ⊗ₖ (1 : Matrix d d ℂ)) (1 / 2) *ᵥ vecOne d)
-    (hStep0 : relEntropy ω τ = relEntropy ρ σ)
-    (hEq : relEntropy ρ σ = relEntropy (Λ.toDM ρ) (Λ.toDM σ)) :
-    (Wᴴ * cfc (fun x => -Real.log x) (relModularArg ω.val τ.val) * W)
-        *ᵥ (CFC.rpow ((Λ.toDM ρ).val ⊗ₖ (1 : Matrix n n ℂ)) (1 / 2) *ᵥ vecOne n)
-      = cfc (fun x => -Real.log x) (Wᴴ * relModularArg ω.val τ.val * W)
-        *ᵥ (CFC.rpow ((Λ.toDM ρ).val ⊗ₖ (1 : Matrix n n ℂ)) (1 / 2) *ᵥ vecOne n) := by
-  classical
-  set ξo : (n × n) → ℂ :=
-    CFC.rpow ((Λ.toDM ρ).val ⊗ₖ (1 : Matrix n n ℂ)) (1 / 2) *ᵥ vecOne n with hξo
-  set ξd : (d × d) → ℂ :=
-    CFC.rpow (ω.val ⊗ₖ (1 : Matrix d d ℂ)) (1 / 2) *ᵥ vecOne d with hξd
-  set Δd : Matrix (d × d) (d × d) ℂ := relModularArg ω.val τ.val with hΔd
-  -- self-adjointness and positive spectrum of the dilated modular operator
-  have hΔpd : Δd.PosDef := by
-    rw [hΔd, ← relModularArg_eq_perspArg hω τ.val]; exact perspArg_posDef hω hτ
-  have hΔsa : IsSelfAdjoint Δd := by
-    rw [isSelfAdjoint_iff, Matrix.star_eq_conjTranspose]; exact hΔpd.1
-  have hΔsp : spectrum ℝ Δd ⊆ Set.Ioi 0 := by
-    rw [hΔd, ← relModularArg_eq_perspArg hω τ.val]; exact perspArg_spectrum hω hτ
-  -- the rectangular operator-Jensen Loewner pair `A ≤ B`
-  have hle := rect_isometry_neg_log_loewner W Δd hWiso hΔsa hΔsp
-  set A : Matrix (n × n) (n × n) ℂ := cfc (fun x => -Real.log x) (Wᴴ * Δd * W) with hA
-  set B : Matrix (n × n) (n × n) ℂ := Wᴴ * cfc (fun x => -Real.log x) Δd * W with hB
-  have hps : (B - A).PosSemidef := Matrix.le_iff.mp hle
-  -- expectation of `A` at `ξo` is the OUTPUT relative entropy
-  have hAexp : (star ξo ⬝ᵥ A *ᵥ ξo).re = relEntropy (Λ.toDM ρ) (Λ.toDM σ) := by
-    rw [hA, hWcomp, hξo]
-    exact (relEntropy_eq_modularForm (Λ.toDM ρ) (Λ.toDM σ) hΛρ hΛσ).symm
-  -- expectation of `B` at `ξo` is the DILATED relative entropy (= the input entropy via `hStep0`)
-  have hBexp : (star ξo ⬝ᵥ B *ᵥ ξo).re = relEntropy ω τ := by
-    rw [hB, qform_conj W (cfc (fun x => -Real.log x) Δd) ξo, hWcyc, hΔd, hξd]
-    exact (relEntropy_eq_modularForm ω τ hω hτ).symm
-  -- the gap's expectation at `ξo` vanishes under the entropy hypotheses
-  have hre : (star ξo ⬝ᵥ (B - A) *ᵥ ξo).re = 0 := by
-    rw [sub_mulVec, dotProduct_sub, Complex.sub_re, hBexp, hAexp, hStep0, hEq, sub_self]
-  -- positive-semidefinite gap with zero real expectation annihilates `ξo`
-  have hzero : (B - A) *ᵥ ξo = 0 := posSemidef_vec_expectation_re_zero hps hre
-  have hfinal : B *ᵥ ξo - A *ᵥ ξo = 0 := by rw [← sub_mulVec]; exact hzero
-  exact sub_eq_zero.mp hfinal
-
-end RacerB
 
 end Oseledets.OperatorEntropy.Lieb
 

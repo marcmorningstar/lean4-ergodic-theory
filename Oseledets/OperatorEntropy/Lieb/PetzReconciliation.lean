@@ -46,8 +46,8 @@ pair `A ≤ B` consumed by `gap_mulVec_vecOne_zero_of_reconciliation` in `PetzSu
    `Wᴴ · relModularArg ω τ · W = relModularArg ω_A τ_A` reads off from the operator identity (iii)
    here.  The operator-level content is complete; only the vec/`⊗ₖ` reshuffle is outstanding.
 2. **Rigidity tail (STEP 5–6).** From the gap annihilating the cyclic vector to the
-   `it`-intertwining `IntertwinesIt`, via `contraction_adjoint_eq` + `exists_resolvent_combo`
-   (resolvent route) or the unproved operator strict convexity of `-log`.
+   `it`-intertwining `IntertwinesIt`, via the resolvent readoff `exists_resolvent_combo`
+   or the unproved operator strict convexity of `-log`.
 -/
 
 open Matrix Real

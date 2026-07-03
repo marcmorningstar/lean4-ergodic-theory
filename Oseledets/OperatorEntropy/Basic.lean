@@ -1,5 +1,13 @@
 import Mathlib
 
+/-!
+# Density matrices and von Neumann entropy
+
+The foundational layer of the operator-entropy cluster: the `DensityMatrix` structure (a
+positive-semidefinite, unit-trace complex matrix) and its von Neumann entropy
+`S(ρ) = ∑ᵢ negMulLog(λᵢ)` over the real eigenvalues.
+-/
+
 open Matrix Real
 open scoped ComplexOrder Kronecker
 

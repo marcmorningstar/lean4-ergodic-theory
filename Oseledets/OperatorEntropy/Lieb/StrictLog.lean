@@ -4,7 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Marcel Morgenstern
 -/
 import Mathlib
-import Oseledets.OperatorEntropy.Lieb.StrictOperatorConvex
 
 /-!
 # Strict operator convexity of `-log` (Petz equality, keystone B)

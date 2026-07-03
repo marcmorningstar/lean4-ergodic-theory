@@ -80,11 +80,6 @@ lemma blockDiag2_submatrix₀₀ (P Q : Matrix (Fin N) (Fin N) ℂ) :
   ext i j
   simp [Matrix.submatrix_apply, blockDiag2]
 
-lemma blockDiag2_add (P Q P' Q' : Matrix (Fin N) (Fin N) ℂ) :
-    blockDiag2 (P + P') (Q + Q') = blockDiag2 P Q + blockDiag2 P' Q' := by
-  ext ⟨a, i⟩ ⟨c, k⟩
-  fin_cases a <;> fin_cases c <;> simp [blockDiag2]
-
 lemma blockDiag2_isSelfAdjoint {P Q : Matrix (Fin N) (Fin N) ℂ}
     (hP : IsSelfAdjoint P) (hQ : IsSelfAdjoint Q) : IsSelfAdjoint (blockDiag2 P Q) := by
   rw [isSelfAdjoint_iff, blockDiag2_star, isSelfAdjoint_iff.mp hP, isSelfAdjoint_iff.mp hQ]
