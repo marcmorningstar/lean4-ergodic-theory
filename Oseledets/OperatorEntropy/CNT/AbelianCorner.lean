@@ -45,7 +45,7 @@ variable {d k : ℕ}
 def probMeasure (μ : Fin d → ℝ≥0∞) : Measure (Fin d) :=
   Measure.sum (fun i => μ i • Measure.dirac i)
 
-instance probMeasure_isProb (μ : Fin d → ℝ≥0∞) (hμ : ∑ i, μ i = 1) :
+theorem probMeasure_isProb (μ : Fin d → ℝ≥0∞) (hμ : ∑ i, μ i = 1) :
     IsProbabilityMeasure (probMeasure μ) := by
   constructor
   rw [probMeasure, Measure.sum_apply _ MeasurableSet.univ]

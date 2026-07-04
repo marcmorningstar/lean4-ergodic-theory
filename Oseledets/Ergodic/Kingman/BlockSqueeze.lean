@@ -168,7 +168,7 @@ theorem limsup_ecdiv_eq_block {g : ℕ → X → ℝ} (hsub : IsSubadditiveCocyc
           rw [hcz]
           exact div_le_div_of_nonneg_right hsand (by positivity) |>.trans_eq (by ring)
       _ ≤ Filter.limsup (fun j => ((z j : ℝ) : EReal)) atTop :=
-          ereal_ratio_le_limsup hzle hc1 hctend
+          ereal_ratio_le_limsup hzle hctend
       _ ≤ Filter.limsup (fun k => usub g x (k * M)) atTop := by
           have hkdiv : Tendsto (fun j : ℕ => j / M) atTop atTop := tendsto_div_const_atTop_nat hM
           have hzeq : (fun j => ((z j : ℝ) : EReal))
@@ -263,7 +263,7 @@ theorem liminf_ecdiv_eq_block {g : ℕ → X → ℝ} (hsub : IsSubadditiveCocyc
           rw [hweq] at hstep
           exact hstep
       _ ≤ Filter.liminf (fun j => ((c' j * w' j : ℝ) : EReal)) atTop :=
-          ereal_liminf_le_ratio hw'le hc'1 hc'tend
+          ereal_liminf_le_ratio hw'le hc'tend
       _ ≤ Filter.liminf (fun j => usub g x j) atTop := by
           refine Filter.liminf_le_liminf ?_ (Filter.isBounded_ge_of_bot)
             (Filter.isCobounded_ge_of_top)
@@ -439,7 +439,7 @@ null. The argument:
   `(∫_X vM g M (n+1))/(n+1) → M·Λ − ∫ g M ≥ −Mε` and `vM ≤ 0` (so `∫_E ≥ ∫_X`) give the matching
   lower bound `↑(−Mε)`. Hence `α·(μ E).toReal ≤ ε`; letting `ε → 0` forces `μ E = 0 = μ Bα`. -/
 theorem measure_gap_set_eq_zero [IsFiniteMeasure μ]
-    (hT : MeasurePreserving T μ μ) (_hTm : Measurable T) {g : ℕ → X → ℝ}
+    (hT : MeasurePreserving T μ μ) {g : ℕ → X → ℝ}
     (hsub : IsSubadditiveCocycle T g) (hint : ∀ n, Integrable (g n) μ)
     (hnonpos : ∀ n x, g (n + 1) x ≤ 0) {Λ : ℝ}
     (hΛ : Tendsto (fun n : ℕ => (∫ x, g (n + 1) x ∂μ) / (n + 1)) atTop (𝓝 Λ))
@@ -660,8 +660,8 @@ theorem measure_gap_set_eq_zero [IsFiniteMeasure μ]
 The unconditional `liminf ≤ limsup` reduces this to `μ {liminf < limsup} = 0`, and that bad set is
 the countable union over `ℚ⁺` of the gap sets `Bα`, each null by `measure_gap_set_eq_zero`
 (Karlsson §3.3, the `E_α` contradiction). -/
-theorem ae_ereal_limsup_le_liminf_nonpos [IsFiniteMeasure μ]
-    (hT : MeasurePreserving T μ μ) (hTm : Measurable T) {g : ℕ → X → ℝ}
+theorem ae_ereal_liminf_eq_limsup_nonpos [IsFiniteMeasure μ]
+    (hT : MeasurePreserving T μ μ) {g : ℕ → X → ℝ}
     (hsub : IsSubadditiveCocycle T g) (hint : ∀ n, Integrable (g n) μ)
     (hnonpos : ∀ n x, g (n + 1) x ≤ 0)
     (hbdd : BddBelow (Set.range fun n : ℕ => (∫ x, g (n + 1) x ∂μ) / (n + 1))) :
@@ -674,7 +674,7 @@ theorem ae_ereal_limsup_le_liminf_nonpos [IsFiniteMeasure μ]
   have hgap : ∀ α : ℝ, 0 < α →
       μ {x | Filter.liminf (fun n => ecdiv g n x) atTop + (α : EReal)
         < Filter.limsup (fun n => ecdiv g n x) atTop} = 0 :=
-    fun α hα => measure_gap_set_eq_zero hT hTm hsub hint hnonpos hΛ hα
+    fun α hα => measure_gap_set_eq_zero hT hsub hint hnonpos hΛ hα
   -- The bad set `{liminf < limsup}` is a countable union of null gap sets over `ℚ⁺`.
   set L : X → EReal := fun x => Filter.liminf (fun n => ecdiv g n x) atTop with hLdef
   set U : X → EReal := fun x => Filter.limsup (fun n => ecdiv g n x) atTop with hUdef
@@ -726,7 +726,7 @@ theorem ae_ereal_limsup_le_liminf_nonpos [IsFiniteMeasure μ]
 normalized cocycle equals its `EReal` `limsup`, proved by the Riesz/Derriennic "leaders" route
 (Karlsson, *A proof of the subadditive ergodic theorem*).
 
-Reduced here to the non-positive case `ae_ereal_limsup_le_liminf_nonpos` applied to the
+Reduced here to the non-positive case `ae_ereal_liminf_eq_limsup_nonpos` applied to the
 companion `vcoc g` (`vcoc_subadditive`, `vcoc_nonpos`, `vcoc_integrable`, `vcoc_bddBelow`): the
 normalized gap `ecdiv g − ecdiv (vcoc g) = ↑(birkhoffAverage (g 1) (·+1))` converges a.e.
 (Birkhoff) to the *finite* `μ[g 1 | invariants T]`, and adding an a.e.-convergent
@@ -736,8 +736,8 @@ Ingredients:
 * `sum_leaders_nonpos` — Riesz's combinatorial leader lemma (Karlsson Lemma 3.2).
 * `sum_leaders_cocycle_nonpos` / `sum_psiCoc_comp_nonpos` — pointwise leader inequality.
 * `limsup_setIntegral_div_nonpos` — *Derriennic's maximal inequality* (Karlsson Lemma 3.4). -/
-theorem ae_ereal_limsup_le_liminf [IsFiniteMeasure μ]
-    (hT : MeasurePreserving T μ μ) (hTm : Measurable T) {g : ℕ → X → ℝ}
+theorem ae_ereal_liminf_eq_limsup [IsFiniteMeasure μ]
+    (hT : MeasurePreserving T μ μ) {g : ℕ → X → ℝ}
     (hsub : IsSubadditiveCocycle T g) (hint : ∀ n, Integrable (g n) μ)
     (hbdd : BddBelow (Set.range fun n : ℕ => (∫ x, g (n + 1) x ∂μ) / (n + 1))) :
     ∀ᵐ x ∂μ, Filter.liminf (fun n => ecdiv g n x) atTop
@@ -749,7 +749,7 @@ theorem ae_ereal_limsup_le_liminf [IsFiniteMeasure μ]
   have hvnonpos : ∀ n x, v (n + 1) x ≤ 0 := fun n x => vcoc_nonpos hsub n x
   have hvbdd : BddBelow (Set.range fun n : ℕ => (∫ x, v (n + 1) x ∂μ) / (n + 1)) :=
     vcoc_bddBelow hT hint hbdd
-  have hveq := ae_ereal_limsup_le_liminf_nonpos hT hTm hvsub hvint hvnonpos hvbdd
+  have hveq := ae_ereal_liminf_eq_limsup_nonpos hT hvsub hvint hvnonpos hvbdd
   -- Birkhoff: `birkhoffAverage (g 1) (·+1) x → B x := μ[g 1 | I] x` a.e. (reindexed).
   have hbirk : ∀ᵐ x ∂μ, Tendsto (fun n : ℕ => birkhoffAverage ℝ T (g 1) (n + 1) x) atTop
       (𝓝 ((μ[g 1 | MeasurableSpace.invariants T]) x)) := by

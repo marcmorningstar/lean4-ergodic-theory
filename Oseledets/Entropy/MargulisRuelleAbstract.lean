@@ -88,7 +88,7 @@ variable {d : ℕ} [NeZero d]
 
 /-- **The Margulis–Ruelle inequality, conditional on the geometric atom-counting bound.**
 
-For an ergodic, differentiable self-map `T` of `EuclideanSpace ℝ (Fin d)` with everywhere
+For an ergodic self-map `T` of `EuclideanSpace ℝ (Fin d)` with everywhere
 nonsingular derivative cocycle (`hdet`) and integrable log-derivative data (`hint`, `hint'`), the
 Kolmogorov–Sinai entropy of the system is bounded above by the sum of the strictly positive
 Lyapunov exponents of the derivative (tangent) cocycle `A := derivativeCocycle T`:
@@ -102,7 +102,7 @@ estimate (see the module `## gap`). -/
 theorem margulisRuelle_le_sumPosExp
     {μ : Measure (EuclideanSpace ℝ (Fin d))} [IsProbabilityMeasure μ]
     {T : EuclideanSpace ℝ (Fin d) → EuclideanSpace ℝ (Fin d)}
-    (hT : Ergodic T μ) (hdiff : Differentiable ℝ T)
+    (hT : Ergodic T μ)
     (hdet : ∀ x, (derivativeCocycle T x).det ≠ 0)
     (hint : IntegrableLogNorm (derivativeCocycle T) μ)
     (hint' : IntegrableLogNorm (fun x => (derivativeCocycle T x)⁻¹) μ)
@@ -111,9 +111,6 @@ theorem margulisRuelle_le_sumPosExp
           ≤ ((sumPosExp hT hdet (measurable_derivativeCocycle T) hint hint' : ℝ) : EReal)) :
     Entropy.ksEntropy hT.toMeasurePreserving
       ≤ ((sumPosExp hT hdet (measurable_derivativeCocycle T) hint hint' : ℝ) : EReal) := by
-  -- `hdiff` enters only to identify the cocycle as the genuine tangent cocycle (recorded by
-  -- `oseledets_filtration_derivativeCocycle`); the entropy bound itself is the abstract reduction.
-  let _ := hdiff
   rw [Entropy.ksEntropy]
   refine iSup_le (fun n => iSup_le (fun P => hgeo n P))
 
