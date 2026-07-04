@@ -5,6 +5,7 @@ Authors: Marcel Morgenstern
 -/
 import Oseledets.Examples.Rokhlin.AbstractEqui
 import Oseledets.Examples.Rokhlin.DoublingCrux
+import Oseledets.Smooth.DerivativeCocycle
 
 /-!
 # Rokhlin's entropy equality for the doubling map
@@ -23,8 +24,12 @@ abstract uniform-join reduction `ksEntropyPartition_of_uniform`. The integral si
 `doublingGen.det = 2` (`det_doublingGen`, a `1 × 1` determinant), the Jacobian is the constant `2`
 — the doubling map is uniformly expanding — so `log|det DT| = log 2` integrates against the
 probability measure to `log 2`. Their agreement is the headline `rokhlin_equality_doublingMap`,
-which therefore genuinely reads `h(α, T) = ∫ log|det DT|`: replacing the integrand by an arbitrary
-constant would break it, because the constant `2` is fixed by the derivative `det`.
+which therefore genuinely reads `h(α, T) = ∫ log|det DT|`. That `doublingGen` really *is* the
+derivative matrix `DT` — not an arbitrary `1 × 1` matrix of determinant `2` — is pinned down
+formally by `derivativeCocycle_doublingLift` (`doublingGen` is the Fréchet derivative of the
+doubling map's ℝ-linear lift) together with `circleProj_comp_doublingLift` (that lift genuinely
+covers the doubling map). The numerical entropy-`= log 2` identity itself consumes only
+`doublingGen.det = 2`.
 
 Unlike the `EuclideanSpace`-framed Margulis–Ruelle *inequality* `h ≤ ∑ λᵢ⁺`, this is the genuine
 Pesin/Rokhlin *equality* `h = ∫ log|det DT|`, realized on a real expanding system.
@@ -32,6 +37,10 @@ Pesin/Rokhlin *equality* `h = ∫ log|det DT|`, realized on a real expanding sys
 ## Main results
 
 * `Oseledets.Examples.Rokhlin.ksEntropyPartition_doublingMap_eq_log_two`: `h(α, T) = log 2`.
+* `Oseledets.Examples.Rokhlin.derivativeCocycle_doublingLift`: `doublingGen` is the Fréchet
+  derivative of the doubling map's ℝ-linear lift (so it genuinely is `DT`, not a bare constant).
+* `Oseledets.Examples.Rokhlin.circleProj_comp_doublingLift`: the covering projection `ℝ → 𝕋¹`
+  intertwines that lift with the doubling map.
 * `Oseledets.Examples.Rokhlin.integral_log_det_doublingMap_eq_log_two`:
   `∫ log|det doublingGen| dμ = log 2`.
 * `Oseledets.Examples.Rokhlin.rokhlin_equality_doublingMap`: the two sides agree.
@@ -43,7 +52,7 @@ Pesin/Rokhlin *equality* `h = ∫ log|det DT|`, realized on a real expanding sys
 -/
 
 open MeasureTheory Function Set
-open scoped ENNReal
+open scoped ENNReal Matrix
 
 namespace Oseledets.Examples.Rokhlin
 
@@ -124,6 +133,61 @@ theorem ksEntropyPartition_doublingMap_eq_log_two :
     uniform_binJoin, Fintype.card_fin]
   norm_num
 
+/-! ### The generator `doublingGen` is the derivative of the doubling map's lift
+
+The doubling map `y ↦ 2 • y` lifts to the universal cover `ℝ` (here `EuclideanSpace ℝ (Fin 1)`) as
+the genuine `ℝ`-linear map `doublingLift = x ↦ 2x`, whose matrix through `Matrix.toEuclideanCLM` is
+exactly `doublingGen = !![2]`. The covering projection `ℝ → 𝕋¹` intertwines `doublingLift` with the
+doubling map (`circleProj_comp_doublingLift`), and the Fréchet derivative of `doublingLift` is
+`doublingGen` at every point (`derivativeCocycle_doublingLift`) — so `doublingGen` genuinely is the
+matrix of `DT`, not an arbitrary `1 × 1` constant of the right determinant. -/
+
+/-- The **universal-cover lift** of the doubling map: the `ℝ`-linear map `x ↦ 2x` on
+`EuclideanSpace ℝ (Fin 1)`, i.e. the continuous linear map with matrix `doublingGen = !![2]`
+through the star-algebra equivalence `Matrix.toEuclideanCLM`. -/
+noncomputable def doublingLift : EuclideanSpace ℝ (Fin 1) → EuclideanSpace ℝ (Fin 1) :=
+  ⇑(Matrix.toEuclideanCLM (𝕜 := ℝ) (n := Fin 1) doublingGen)
+
+/-- The Fréchet derivative of the doubling map's lift is its own linear map at every point:
+`fderiv ℝ doublingLift x = toEuclideanCLM doublingGen`. -/
+theorem fderiv_doublingLift (x : EuclideanSpace ℝ (Fin 1)) :
+    fderiv ℝ doublingLift x = Matrix.toEuclideanCLM (𝕜 := ℝ) (n := Fin 1) doublingGen :=
+  (Matrix.toEuclideanCLM (𝕜 := ℝ) (n := Fin 1) doublingGen).fderiv
+
+/-- **`doublingGen` is the repo's derivative-cocycle generator of the doubling map's lift.**  Since
+`doublingLift` is a continuous linear map, its Fréchet derivative at every point is itself
+(`fderiv_doublingLift`); transporting back along `toEuclideanCLM.symm` recovers `doublingGen`.  So
+`doublingGen = !![2]` genuinely is the matrix of `D(doublingLift)`, in the repo's exact
+`DerivativeCocycle` framework. -/
+@[simp] theorem derivativeCocycle_doublingLift (x : EuclideanSpace ℝ (Fin 1)) :
+    Oseledets.derivativeCocycle doublingLift x = doublingGen := by
+  rw [Oseledets.derivativeCocycle, fderiv_doublingLift x]
+  exact (Matrix.toEuclideanCLM (𝕜 := ℝ) (n := Fin 1)).symm_apply_apply doublingGen
+
+/-- The **covering projection** `ℝ → 𝕋¹`, sending a point of `EuclideanSpace ℝ (Fin 1)` to the class
+in `UnitAddCircle` of its single real coordinate (modulo `1`). -/
+noncomputable def circleProj (x : EuclideanSpace ℝ (Fin 1)) : UnitAddCircle :=
+  ((WithLp.ofLp x 0 : ℝ) : UnitAddCircle)
+
+/-- **The covering projection intertwines the lift with the doubling map:
+`mk ∘ doublingLift = doublingMap ∘ mk`.**  The universal-cover projection `circleProj : ℝ → 𝕋¹`
+conjugates the genuine ℝ-linear lift `doublingLift = x ↦ 2x` into the genuine doubling map
+`doublingMap = y ↦ 2 • y`.  This is the formal content behind `doublingLift` being a *lift* of the
+doubling map, so that `doublingGen` — its Fréchet derivative (`derivativeCocycle_doublingLift`) — is
+the genuine Jacobian matrix `DT` of the doubling map. -/
+theorem circleProj_comp_doublingLift (x : EuclideanSpace ℝ (Fin 1)) :
+    circleProj (doublingLift x) = doublingMap (circleProj x) := by
+  have hlift : WithLp.ofLp (doublingLift x) = doublingGen *ᵥ WithLp.ofLp x :=
+    Matrix.ofLp_toEuclideanCLM doublingGen x
+  change ((WithLp.ofLp (doublingLift x) 0 : ℝ) : UnitAddCircle)
+      = (2 : ℕ) • ((WithLp.ofLp x 0 : ℝ) : UnitAddCircle)
+  rw [congrFun hlift 0]
+  have h00 : doublingGen 0 0 = 2 := by simp [doublingGen]
+  have hmv : (doublingGen *ᵥ WithLp.ofLp x) 0 = 2 * WithLp.ofLp x 0 := by
+    simp only [Matrix.mulVec, dotProduct, Fin.sum_univ_one, h00]
+  rw [hmv, show (2 : ℝ) * WithLp.ofLp x 0 = (2 : ℕ) • WithLp.ofLp x 0 by
+        rw [nsmul_eq_mul, Nat.cast_ofNat], AddCircle.coe_nsmul]
+
 /-! ### The integral side: `∫ log|det DT| dμ = log 2` -/
 
 /-- **The determinant of the doubling map's derivative generator is `2`.** The matrix of `DT` for
@@ -134,7 +198,8 @@ theorem det_doublingGen : doublingGen.det = 2 := by
 
 /-- **Rokhlin equality, integral side: `∫ log|det DT| dμ = log 2`.** The integrand is the genuine
 log-determinant `Real.log |doublingGen.det|` of the doubling map's derivative generator
-`doublingGen = !![2]` (the matrix of `DT`). Since `doublingGen.det = 2` (`det_doublingGen`) the
+`doublingGen = !![2]` (the matrix of `DT`; formally the Fréchet derivative of the doubling map's
+lift, `derivativeCocycle_doublingLift`). Since `doublingGen.det = 2` (`det_doublingGen`) the
 Jacobian `|det DT| = 2` is the constant `2` — the doubling map is uniformly expanding — so the
 integrand is `log 2`. Integrating that constant against the probability measure `volume` on the
 unit circle gives `(volume univ).real • log 2 = 1 · log 2 = log 2`. -/
@@ -153,9 +218,11 @@ generator `doublingGen = !![2]` (the matrix of `DT`). Both sides are `Real.log 2
 `log 2` by the dyadic uniform-join count, and the Jacobian `|det DT| = 2` is the constant `2`
 (`det_doublingGen`) because the doubling map is uniformly expanding. This is the concrete
 realization of Pesin's *equality* `h = ∫ log|det DT|` on a real expanding system that the
-`EuclideanSpace`-framed Margulis–Ruelle *inequality* cannot give; because the integrand is a
-genuine determinant of the derivative, the statement is **not** invariant under replacing it by an
-arbitrary constant. -/
+`EuclideanSpace`-framed Margulis–Ruelle *inequality* cannot give. The integrand
+`Real.log |doublingGen.det|` is the honest log-Jacobian: `doublingGen` is proved to be the genuine
+derivative matrix `DT` of the doubling map by `derivativeCocycle_doublingLift` together with the
+covering intertwining `circleProj_comp_doublingLift`, not an arbitrary constant of the right
+determinant. (The numerical `log 2` on both sides is fixed by `doublingGen.det = 2` alone.) -/
 theorem rokhlin_equality_doublingMap :
     ksEntropyPartition ergodic_doublingMap.toMeasurePreserving binPartition
       = ∫ _ : UnitAddCircle, Real.log |doublingGen.det| ∂(volume : Measure UnitAddCircle) := by

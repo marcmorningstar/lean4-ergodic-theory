@@ -62,6 +62,9 @@ identity derivative).
   `log((3 + √5)/2) > 0`.
 * `Oseledets.CatMapToral.catLift` — the genuine ℝ²-linear lift of the cat map to the universal
   cover, with matrix `catℝ`.
+* `Oseledets.CatMapToral.coverProj_comp_catLift` — the covering projection `ℝ² → 𝕋²` intertwines
+  `catLift` with `catTorus` (`mk ∘ catLift = catTorus ∘ mk`): the formal proof that `catLift` is a
+  lift of the genuine cat map.
 * `Oseledets.CatMapToral.derivativeCocycle_catLift` — the repo's derivative cocycle of `catLift`
   is the constant matrix `catℝ` at every point.
 * `Oseledets.CatMapToral.catLift_derivativeCocycle_topExponent_pos` — the top Lyapunov exponent of
@@ -160,8 +163,9 @@ theorem catTorus_constCocycle_topExponent_pos :
 /-- **The universal-cover lift of the Arnold cat map.**  The cat map `catTorus : 𝕋² → 𝕋²` lifts to
 the universal cover `ℝ² = EuclideanSpace ℝ (Fin 2)` as the genuine `ℝ`-linear map with matrix
 `catℝ`, acting through the star-algebra equivalence `Matrix.toEuclideanCLM`.  The covering
-projection `ℝ² → 𝕋²` intertwines `catLift` with `catTorus`, and is a local diffeomorphism with
-identity derivative, so `catLift` and `catTorus` have the same derivative everywhere. -/
+projection `ℝ² → 𝕋²` intertwines `catLift` with `catTorus` (formally, `coverProj_comp_catLift`), and
+is a local diffeomorphism with identity derivative, so `catLift` and `catTorus` have the same
+derivative everywhere. -/
 noncomputable def catLift : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2) :=
   ⇑(Matrix.toEuclideanCLM (𝕜 := ℝ) (n := Fin 2) catℝ)
 
@@ -170,6 +174,47 @@ derivative at every point is that very map: `fderiv ℝ catLift x = toEuclideanC
 theorem fderiv_catLift (x : EuclideanSpace ℝ (Fin 2)) :
     fderiv ℝ catLift x = Matrix.toEuclideanCLM (𝕜 := ℝ) (n := Fin 2) catℝ :=
   (Matrix.toEuclideanCLM (𝕜 := ℝ) (n := Fin 2) catℝ).fderiv
+
+/-! ### The covering projection intertwines `catLift` with `catTorus`
+
+This formalizes the bridge asserted in `catLift`'s docstring: the universal-cover projection
+`ℝ² → 𝕋²` genuinely conjugates the ℝ²-linear lift `catLift` into the toral automorphism `catTorus`.
+-/
+
+/-- The **covering projection** `ℝ² → 𝕋²` of the universal cover, sending a point of
+`EuclideanSpace ℝ (Fin 2)` to its class in `𝕋² = Fin 2 → UnitAddCircle` coordinatewise (each real
+coordinate modulo `1`). -/
+noncomputable def coverProj (x : EuclideanSpace ℝ (Fin 2)) : T2 :=
+  fun i => ((WithLp.ofLp x i : ℝ) : UnitAddCircle)
+
+/-- Componentwise identity underlying the intertwining: the class of `(catℝ *ᵥ v) i` in
+`UnitAddCircle` equals the `i`-th coordinate of the integer toral action `torusMap catℤ` applied to
+the classes of `v`.  This is the covering projection turning the *real* matrix action `catℝ` into
+the *integer* toral action `catℤ`, via `catℝ = catℤ.map (Int.cast)` and the additivity of the
+quotient map `ℝ → UnitAddCircle`. -/
+theorem coverProj_mulVec (v : Fin 2 → ℝ) (i : Fin 2) :
+    (((catℝ *ᵥ v) i : ℝ) : UnitAddCircle) = ∑ j, catℤ i j • ((v j : ℝ) : UnitAddCircle) := by
+  have hsum : (catℝ *ᵥ v) i = ∑ j, (catℤ i j) • v j := by
+    rw [catℝ_eq_map_catℤ]
+    simp only [Matrix.mulVec, dotProduct, Matrix.map_apply, zsmul_eq_mul]
+  rw [hsum, Fin.sum_univ_two, Fin.sum_univ_two, AddCircle.coe_add, AddCircle.coe_zsmul,
+    AddCircle.coe_zsmul]
+
+/-- **The covering projection intertwines the lift with the cat map:
+`mk ∘ catLift = catTorus ∘ mk`.**
+The universal-cover projection `coverProj : ℝ² → 𝕋²` conjugates the genuine ℝ²-linear lift `catLift`
+into the genuine toral automorphism `catTorus`.  This is the formal content behind `catLift` being a
+*lift* of `catTorus` (asserted only in prose until now): the two maps share the same derivative
+everywhere because the covering projection is a local diffeomorphism with identity derivative. -/
+theorem coverProj_comp_catLift (x : EuclideanSpace ℝ (Fin 2)) :
+    coverProj (catLift x) = catTorus (coverProj x) := by
+  funext i
+  have hlift : WithLp.ofLp (catLift x) = catℝ *ᵥ WithLp.ofLp x :=
+    Matrix.ofLp_toEuclideanCLM catℝ x
+  change ((WithLp.ofLp (catLift x) i : ℝ) : UnitAddCircle)
+      = ∑ j, catℤ i j • ((WithLp.ofLp x j : ℝ) : UnitAddCircle)
+  rw [congrFun hlift i]
+  exact coverProj_mulVec (WithLp.ofLp x) i
 
 /-- **Grade 2a.  The repo's derivative cocycle of `catLift` is the constant matrix `catℝ`.**  Since
 `catLift` is a continuous linear map, its Fréchet derivative at every point is itself
@@ -197,7 +242,9 @@ This closes the *EuclideanSpace ↔ torus adapter gap*: the generator is no long
 matrix — it is the genuine Fréchet derivative `derivativeCocycle catLift` of the cat map's ℝ²-linear
 lift to the universal cover (the repo's `DerivativeCocycle.derivativeCocycle`), evaluated as a
 constant cocycle over the genuine hyperbolic toral automorphism, and its top Lyapunov exponent is
-positive. -/
+positive.  That `catLift` genuinely lifts the cat map — rather than merely sharing the matrix
+`catℝ` — is the formal fact `coverProj_comp_catLift` (`mk ∘ catLift = catTorus ∘ mk`), so the
+derivative computed here is the derivative of an honest lift of `catTorus`. -/
 theorem catLift_derivativeCocycle_topExponent_pos :
     0 < Oseledets.topExponent ergodic_catTorus
         (Oseledets.const_det_ne_zero derivativeCocycle_catLift_det_ne_zero)

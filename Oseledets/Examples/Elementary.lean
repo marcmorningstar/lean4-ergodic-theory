@@ -46,12 +46,17 @@ the headline spectra are stated directly in terms of the eigenvalues of `M`.
 
 ## Implementation notes
 
-The genuine Arnold cat map is the toral automorphism of `𝕋²` induced by `!![2,1;1,1]`. Mathlib has
-no `n`-torus type and no proof that hyperbolic toral automorphisms are ergodic, so the cat-map
-*dynamics* is not yet formalizable here. We therefore realize the cat-map *matrix* as a constant
-cocycle over an arbitrary ergodic base (we reuse the doubling map); the Lyapunov exponents depend
-only on `M`, so they coincide with the cat-map exponents even though the underlying dynamics
-differs. See the docstring of `catMapMatrix_exponents` for the precise caveat.
+The genuine Arnold cat map is the toral automorphism of `𝕋²` induced by `!![2,1;1,1]`, and its
+ergodicity **is** formalized in this repository: see `Oseledets.CatMapToral.ergodic_catTorus`
+(`Oseledets/Examples/CatMapToral.lean`), built on Mathlib's `UnitAddTorus (Fin 2)` and the
+multivariate Fourier basis `mFourier`/`mFourierBasis` of `Mathlib.Analysis.Fourier.AddCircleMulti`.
+The examples in *this* file are deliberately elementary: we realize the cat-map *matrix* as a
+constant cocycle over the (simpler) doubling-map base, since the Lyapunov exponents depend only on
+`M` and so coincide with the cat-map exponents regardless of the base dynamics. The upgrade to the
+genuine ergodic toral base — and to the genuine Fréchet-derivative cocycle of the cat map's
+ℝ²-linear lift — is carried out in `Oseledets/Examples/CatMapToral.lean` and
+`Oseledets/Examples/CatMapDerivativeCocycle.lean`. See the docstring of `catMapMatrix_exponents`
+for the precise caveat attached to the constant-cocycle realization used here.
 
 ## References
 
@@ -130,11 +135,21 @@ For the two circle examples the phase space is `UnitAddCircle = AddCircle (1 : �
 its `volume` measure, which is a probability measure (`UnitAddCircle.measure_univ`). We record the
 two instances needed by the constant-cocycle machinery. -/
 
-/-- The unit circle has length `1 > 0`, the standing fact for `AddCircle (1 : ℝ)`. -/
-instance : Fact ((0 : ℝ) < 1) := ⟨one_pos⟩
-
 /-- The `volume` on `UnitAddCircle` is a probability measure (total mass `1`,
-`UnitAddCircle.measure_univ`). -/
+`UnitAddCircle.measure_univ`).
+
+**Measure convention.**  This uses Mathlib's *default* `AddCircle.measureSpace (1 : ℝ)`, whose
+`volume` is `ENNReal.ofReal 1 • addHaarMeasure ⊤` — the convention the circle-ergodicity API
+(`AddCircle.ergodic_nsmul`, `AddCircle.ergodic_add_left`) is stated for, hence the one used by the
+doubling-map and rotation examples below. The `Fact ((0 : ℝ) < 1)` that this measure space needs is
+already supplied globally by Mathlib (`ZeroLEOneClass.factZeroLtOne`), so no local `Fact` instance
+is declared here. The companion cat-map modules (`Oseledets/Examples/CatMapToral.lean`,
+`CatMapDerivativeCocycle.lean`, `CatMapPerPartition.lean`) instead install a *local* mass-`1`
+`MeasureSpace UnitAddCircle := ⟨AddCircle.haarAddCircle⟩`, the convention the multivariate Fourier
+API (`Mathlib.Analysis.Fourier.AddCircleMulti`) is stated for. Both are probability measures of
+total mass `1` and agree (`volume = 1 • haarAddCircle`); they are distinct instance *terms*, but no
+instance diamond arises because each module works under exactly one of them — the cat-map files'
+local instance shadows this default within their own file scope. -/
 instance : IsProbabilityMeasure (volume : Measure UnitAddCircle) :=
   ⟨UnitAddCircle.measure_univ⟩
 
@@ -285,9 +300,10 @@ theorem irrationalRotation_exponents_eq_zero (i : Fin (Fintype.card (Fin 1))) :
 /-! ## Example 3 — the Arnold cat-map matrix
 
 The Arnold cat map is the toral automorphism of `𝕋²` induced by the matrix `!![2,1;1,1]`. Its
-ergodicity (hyperbolicity of toral automorphisms) is not available in Mathlib, so we realize the
-cat-map *matrix* as a constant cocycle over an ergodic base — concretely, the doubling map. The
-Lyapunov exponents depend only on the generator, so they are the genuine cat-map exponents.
+ergodicity is formalized separately as `Oseledets.CatMapToral.ergodic_catTorus`
+(`Oseledets/Examples/CatMapToral.lean`); here we keep the example elementary and realize the cat-map
+*matrix* as a constant cocycle over the simpler doubling-map base. The Lyapunov exponents depend
+only on the generator, so they are the genuine cat-map exponents.
 
 The matrix is symmetric and positive definite with trace `3` and determinant `1`. If `a ≥ b` are
 its (sorted) eigenvalues, then `a + b = 3` and `a b = 1`, hence `(a - b)² = (a+b)² - 4ab = 5`, so
@@ -386,8 +402,13 @@ matrix.
 **Honesty caveat.** The cocycle here is the *constant* matrix `M = !![2,1;1,1]`, **not** the
 derivative cocycle of the genuine Arnold cat map (the hyperbolic toral automorphism of `𝕋²`). The
 exponents nonetheless coincide with the cat-map exponents, because they are determined by `M`. The
-genuine toral-automorphism dynamics requires the ergodicity of hyperbolic toral automorphisms,
-which is not yet available in Mathlib (there is no `n`-torus type and no `ℤ²` Fourier basis). -/
+genuine toral-automorphism dynamics — ergodicity of the hyperbolic toral automorphism, and its
+genuine Fréchet-derivative cocycle — *is* formalized elsewhere in this repository, on Mathlib's
+`UnitAddTorus (Fin 2)` and multivariate `ℤ²` Fourier basis: see
+`Oseledets.CatMapToral.ergodic_catTorus`, `Oseledets.CatMapToral.catTorus_constCocycle_exponents`,
+and `Oseledets.CatMapToral.catLift_derivativeCocycle_topExponent_pos`
+(`Oseledets/Examples/CatMapToral.lean`, `Oseledets/Examples/CatMapDerivativeCocycle.lean`). This
+elementary constant-cocycle version is retained as the simplest illustration. -/
 theorem catMapMatrix_exponents :
     exponents ergodic_catMapBase (const_det_ne_zero catMapGen_det_ne_zero)
         (const_measurable catMapGen) (const_integrableLogNorm catMapGen)
