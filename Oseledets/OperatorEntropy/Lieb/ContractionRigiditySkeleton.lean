@@ -3,7 +3,6 @@ Copyright (c) 2026 Marcel Morgenstern. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Marcel Morgenstern
 -/
-import Mathlib
 import Oseledets.OperatorEntropy.Lieb.RigidityTail
 import Oseledets.OperatorEntropy.Lieb.PetzEqualityM3sc
 
@@ -89,3 +88,4 @@ lemma compression_shift_le (W : Matrix (Fin M) (Fin N) ℂ)
 end Oseledets.OperatorEntropy.Lieb
 
 end
+

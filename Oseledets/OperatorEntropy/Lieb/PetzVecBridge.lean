@@ -3,7 +3,6 @@ Copyright (c) 2026 Marcel Morgenstern. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Marcel Morgenstern
 -/
-import Mathlib
 import Oseledets.OperatorEntropy.Lieb.PetzReconciliation
 import Oseledets.OperatorEntropy.Lieb.ModularOperator
 
@@ -291,3 +290,4 @@ theorem petzWvec_modular_compression (τ ω : Matrix (nA × nB) (nA × nB) ℂ) 
 end Oseledets.OperatorEntropy.Lieb
 
 end
+

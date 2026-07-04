@@ -3,7 +3,6 @@ Copyright (c) 2026 Marcel Morgenstern. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Marcel Morgenstern
 -/
-import Mathlib
 import Oseledets.OperatorEntropy.Lieb.PetzVecBridge
 import Oseledets.OperatorEntropy.Lieb.PetzKadison
 
@@ -384,3 +383,4 @@ theorem petzWChanVec_modular_le (Λ : KrausChannel n) (ρ σ : DensityMatrix n)
 end Oseledets.OperatorEntropy.Lieb
 
 end
+
