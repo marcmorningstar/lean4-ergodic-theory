@@ -14,7 +14,7 @@ The `⟸` direction of Petz's equality theorem (`petz_recovery_implies_equality`
 `Lieb/DataProcessingCPTP.lean`) is fed by the **data-processing inequality** for the on-main
 *faithful-ancilla Stinespring family*
 
-`Λ_{α,U} ρ = Tr_e (U (ρ ⊗ α) Uᴴ) = ((ρ ⊗ α)ᵁ)_A`   (`monotonicity_relEntropy_under_CPTP`).
+`Λ_{α,U} ρ = Tr_e (U (ρ ⊗ α) Uᴴ) = ((ρ ⊗ α)ᵁ)_A`   (`monotonicity_relEntropy_under_stinespring`).
 
 STEP 0 packages that dilation into reusable named pieces:
 
@@ -25,7 +25,7 @@ STEP 0 packages that dilation into reusable named pieces:
 * `dilatedState_posDef` — **(iii) faithfulness is transported**: `ω(ρ)` is `PosDef` when `ρ, α`
   are (from `Matrix.PosDef.kronecker` + `Matrix.IsUnit.posDef_star_right_conjugate_iff`).
 * `relEntropy_dilationChannel_le` — the DPI for the channel, i.e.
-  `monotonicity_relEntropy_under_CPTP` re-exported in the `dilationChannel` naming.
+  `monotonicity_relEntropy_under_stinespring` re-exported in the `dilationChannel` naming.
 
 For the **channel-realization** part (i) `Tr_e (ω ρ) = Λ.toDM ρ` we realize the two families that
 *are* faithfully realizable exactly:
@@ -194,11 +194,11 @@ variable {n e : Type} [Fintype n] [DecidableEq n] [Fintype e] [DecidableEq e]
 
 /-- **The data-processing inequality for the dilation channel** (unconditional): the faithful-
 ancilla Stinespring channel never increases relative entropy, `D(Λ_{α,U} ρ ‖ Λ_{α,U} σ) ≤ D(ρ ‖ σ)`.
-This is `monotonicity_relEntropy_under_CPTP` in the `dilationChannel` naming. -/
+This is `monotonicity_relEntropy_under_stinespring` in the `dilationChannel` naming. -/
 theorem relEntropy_dilationChannel_le (α : DensityMatrix e) (U : Matrix.unitaryGroup (n × e) ℂ)
     (hα : α.val.PosDef) (ρ σ : DensityMatrix n) (hσ : σ.val.PosDef) :
     relEntropy (dilationChannel α U ρ) (dilationChannel α U σ) ≤ relEntropy ρ σ :=
-  monotonicity_relEntropy_under_CPTP α U hα ρ σ hσ
+  monotonicity_relEntropy_under_stinespring α U hα ρ σ hσ
 
 end Mono
 

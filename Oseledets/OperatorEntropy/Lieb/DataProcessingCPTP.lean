@@ -15,15 +15,17 @@ With the partial-trace data-processing wall now *discharged*
 `StinespringReduction.lean` upgrades from *conditional* (hypothesis `hwall`) to **unconditional**.
 This module wires the three named deliverables of issue #22:
 
-* `monotonicity_relEntropy_under_CPTP` — **the data-processing inequality (DPI) for a general
-  mixed-ancilla Stinespring channel**, UNCONDITIONAL.  Adjoin a faithful ancilla `α`, conjugate by
+* `monotonicity_relEntropy_under_stinespring` — **the data-processing inequality (DPI) for the
+  faithful-ancilla mixed-Stinespring channel family**, UNCONDITIONAL.  Adjoin `α`, conjugate by
   a unitary dilation `U`, then trace out the ancilla: `D(Λ ρ ‖ Λ σ) ≤ D(ρ ‖ σ)`.  This is
   `stinespring_relEntropy_monotone` applied to the now-proved `relEntropyMonotone_partialTrace`.
+  (Not a general-`KrausChannel` DPI: the faithful-ancilla family excludes some CPTP maps, e.g.
+  amplitude damping — see `Step0Dilation`.)
 * `no_section_of_strict_relEntropy_drop` / `no_stinespring_section_of_strict_relEntropy_drop` —
   **the no-recovery obstruction**: a STRICT relative-entropy drop under a coarse-graining forbids
   any faithful-monotone (in particular, any Stinespring) recovery section.  The Stinespring
-  corollary discharges the monotonicity hypothesis via `monotonicity_relEntropy_under_CPTP`, hence
-  is UNCONDITIONAL.
+  corollary discharges the monotonicity hypothesis via
+  `monotonicity_relEntropy_under_stinespring`, hence is UNCONDITIONAL.
 * `petz_recovery_implies_equality` — **the `⟸` direction of Petz's equality theorem**: if a
   faithful-monotone recovery map `R` inverts a faithful-monotone channel `Λ` on `ρ, σ`, then the
   DPI is TIGHT, `D(Λ ρ ‖ Λ σ) = D(ρ ‖ σ)`.  Two applications of monotonicity + `le_antisymm`.
@@ -46,18 +48,29 @@ namespace Oseledets.OperatorEntropy
 
 /-! ## Deliverable 1 — the DPI for a mixed-ancilla Stinespring channel (unconditional) -/
 
-/-- **Data-processing inequality for a general (mixed-ancilla) Stinespring channel.**
-UNCONDITIONAL: adjoining a faithful ancilla `α`, conjugating by a unitary dilation `U`, then
-tracing out the ancilla never increases the Umegaki relative entropy of two faithful states,
+/-- **Data-processing inequality for the faithful-ancilla mixed-Stinespring channel family**
+`Λ ρ = Tr_e(U(ρ ⊗ α)Uᴴ)`, with a **PosDef (faithful) ancilla** `α` and PosDef `σ`.
+UNCONDITIONAL on this family: adjoining `α`, conjugating by a unitary dilation `U`, then tracing
+out the ancilla never increases the Umegaki relative entropy of two faithful states,
 `D(Λ ρ ‖ Λ σ) ≤ D(ρ ‖ σ)`.  This is `stinespring_relEntropy_monotone` fed the now-proved
-partial-trace wall `relEntropyMonotone_partialTrace`. -/
-theorem monotonicity_relEntropy_under_CPTP {n e : Type}
+partial-trace wall `relEntropyMonotone_partialTrace`.
+
+Scope (honesty): this is **not** a DPI for a general `KrausChannel`.  The faithful-ancilla
+Stinespring family does not contain every CPTP map — amplitude damping lies outside it, as the
+`Step0Dilation` module docstring proves in prose (an exact dilation of a general Kraus channel
+needs a *pure*, non-faithful ancilla) — and no in-repo DPI covers an arbitrary Kraus channel.
+This is exactly why `petz_recovery_implies_equality` takes monotonicity as an explicit hypothesis
+rather than discharging it. -/
+theorem monotonicity_relEntropy_under_stinespring {n e : Type}
     [Fintype n] [DecidableEq n] [Fintype e] [DecidableEq e]
     (α : DensityMatrix e) (U : Matrix.unitaryGroup (n × e) ℂ) (hα : α.val.PosDef)
     (ρ σ : DensityMatrix n) (hσ : σ.val.PosDef) :
     relEntropy (((ρ.kron α).conj U).partialTraceRight) (((σ.kron α).conj U).partialTraceRight)
       ≤ relEntropy ρ σ :=
   stinespring_relEntropy_monotone Lieb.relEntropyMonotone_partialTrace α U hα ρ σ hσ
+
+@[deprecated (since := "2026-07-04")]
+alias monotonicity_relEntropy_under_CPTP := monotonicity_relEntropy_under_stinespring
 
 /-! ## Deliverable 3 — the no-recovery obstruction (unconditional for Stinespring maps) -/
 
@@ -68,7 +81,7 @@ perfect section of a coarse-graining `Λ : n → m` on the states `ρ, σ` (`R (
 
 This is the faithful-restricted analogue of `no_monotone_section_of_strict_drop`; the recovery
 monotonicity is supplied only for a faithful second argument, matching what
-`monotonicity_relEntropy_under_CPTP` delivers. -/
+`monotonicity_relEntropy_under_stinespring` delivers. -/
 theorem no_section_of_strict_relEntropy_drop {n m : Type}
     [Fintype n] [DecidableEq n] [Fintype m] [DecidableEq m]
     (Λ : DensityMatrix n → DensityMatrix m) (R : DensityMatrix m → DensityMatrix n)
@@ -83,7 +96,8 @@ theorem no_section_of_strict_relEntropy_drop {n m : Type}
 /-- **No Stinespring recovery section under a strict relative-entropy drop** (UNCONDITIONAL).
 Specialises `no_section_of_strict_relEntropy_drop` to a Stinespring recovery channel
 `R x = ((x ⊗ α)ᵁ)_A`, whose faithful data-processing monotonicity is
-`monotonicity_relEntropy_under_CPTP`.  Hence a strict relative-entropy drop under a coarse-graining
+`monotonicity_relEntropy_under_stinespring`.  Hence a strict relative-entropy drop under a
+coarse-graining
 `Λ` rules out *any* Stinespring CP map inverting `Λ` on `ρ, σ`.  The Stinespring recovery is an
 endomorphism of the input space, so the coarse-graining `Λ` is taken here as an endomorphism of the
 same space `n` (e.g. a pinching / dephasing channel). -/
@@ -96,7 +110,8 @@ theorem no_stinespring_section_of_strict_relEntropy_drop {n e : Type}
     (hsecσ : (((Λ σ).kron α).conj U).partialTraceRight = σ)
     (hstrict : relEntropy (Λ ρ) (Λ σ) < relEntropy ρ σ) : False :=
   no_section_of_strict_relEntropy_drop Λ (fun x => ((x.kron α).conj U).partialTraceRight)
-    (fun x y hy => monotonicity_relEntropy_under_CPTP α U hα x y hy) ρ σ hΛσ hsecρ hsecσ hstrict
+    (fun x y hy => monotonicity_relEntropy_under_stinespring α U hα x y hy)
+    ρ σ hΛσ hsecρ hsecσ hstrict
 
 /-! ## Deliverable 2 — recovery `⟹` equality in DPI (the `⟸` of Petz's theorem) -/
 

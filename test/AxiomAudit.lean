@@ -2754,10 +2754,10 @@ data-processing input is an explicit hypothesis, the Lieb-gated piece staying ou
 #guard_msgs (whitespace := lax) in
 #print axioms Oseledets.OperatorEntropy.Lieb.relEntropyMonotone_partialTrace
 
-/-- info: 'Oseledets.OperatorEntropy.monotonicity_relEntropy_under_CPTP' depends on axioms:
+/-- info: 'Oseledets.OperatorEntropy.monotonicity_relEntropy_under_stinespring' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.OperatorEntropy.monotonicity_relEntropy_under_CPTP
+#print axioms Oseledets.OperatorEntropy.monotonicity_relEntropy_under_stinespring
 
 /-- info: 'Oseledets.OperatorEntropy.no_section_of_strict_relEntropy_drop' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
