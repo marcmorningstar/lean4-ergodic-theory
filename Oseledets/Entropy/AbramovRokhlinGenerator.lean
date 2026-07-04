@@ -56,6 +56,10 @@ variable [mα : MeasurableSpace α] [mβ : MeasurableSpace β] [StandardBorelSpa
 `π : (α, T, μ) → (β, S, ν)`:
 `h(T) = h(S) + h(T | comap π 𝓑_Y)`.
 
+This is the **unconditional** version (the analytic residual W3 is discharged here). For the
+conditional form that instead takes the partition-level identity (B6a) as a hypothesis, see
+`abramov_rokhlin`; for the intermediate form supplying only W3, see `abramov_rokhlin_of_W3`.
+
 This is the sharpest form: instead of supplying the partition-level identity (B6a) as the
 hypothesis `hBA` of `abramov_rokhlin`, it consumes the natural structural hypothesis
 `hgenR : IsGenerating ν S R` (the base partition `R` generates `(β, S, ν)`). The saturation

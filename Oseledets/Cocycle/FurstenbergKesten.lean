@@ -316,7 +316,11 @@ theorem integrable_logNorm_inv_cocycle (hT : MeasurePreserving T μ μ) [IsFinit
 /-- **Furstenberg–Kesten, top exponent.** For an ergodic measure-preserving `T`, an
 everywhere-invertible measurable cocycle generator with `log⁺‖A‖, log⁺‖A⁻¹‖ ∈ L¹`, the
 normalized log operator norm of the cocycle converges `μ`-a.e. to a constant `λ₁` (the
-top Lyapunov exponent). -/
+top Lyapunov exponent).
+
+Only *existence* of the `μ`-a.e.-constant limit is proved; the constant is not characterized —
+neither the classical infimum formula `λ₁ = ⨅ n, (1/n) ∫ log‖A⁽ⁿ⁾‖` nor `L¹` convergence is
+included. -/
 theorem furstenbergKesten_norm
     [IsProbabilityMeasure μ] (hT : Ergodic T μ)
     {A : X → Matrix (Fin d) (Fin d) ℝ} (hA : ∀ x, (A x).det ≠ 0) (hAmeas : Measurable A)
@@ -352,10 +356,13 @@ theorem furstenbergKesten_norm
     push_cast at hmono ⊢
     nlinarith [hmono]
 
-/-- **Furstenberg–Kesten, bottom exponent.** With the additional `log⁺‖A⁻¹‖ ∈ L¹`
-hypothesis (so the cocycle is in `GL`), the normalized log norm of the inverse cocycle
+/-- **Furstenberg–Kesten, bottom exponent.** For the same GL cocycle — invertibility comes from
+`hA : det ≠ 0` — with `log⁺‖A‖, log⁺‖A⁻¹‖ ∈ L¹`, the normalized log norm of the inverse cocycle
 converges `μ`-a.e. to a constant; equivalently the bottom Lyapunov exponent
-`λ_k = -lim (1/n) log‖A⁽ⁿ⁾(x)⁻¹‖` exists and is finite. -/
+`λ_k = -lim (1/n) log‖A⁽ⁿ⁾(x)⁻¹‖` exists and is finite.
+
+As with the top exponent, only *existence* of the `μ`-a.e.-constant limit is proved — the
+constant is not characterized (no infimum formula, no `L¹` convergence). -/
 theorem furstenbergKesten_norm_inv
     [IsProbabilityMeasure μ] (hT : Ergodic T μ)
     {A : X → Matrix (Fin d) (Fin d) ℝ} (hA : ∀ x, (A x).det ≠ 0) (hAmeas : Measurable A)

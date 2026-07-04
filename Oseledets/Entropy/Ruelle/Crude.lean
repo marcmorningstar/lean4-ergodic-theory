@@ -144,6 +144,11 @@ variable {d : ℕ}
 
 /-- **The crude Ruelle bound.**
 
+*Despite the name, `B` is a free real parameter: no derivative, differentiability, or integral
+appears in the statement. The reading `B ≈ log⁺‖D_x T‖` is only the intended interpretation; the
+formal content is the atom-count reduction below (`ksEntropyPartition_le_of_atomCount_growth` at
+`R = d · B`).*
+
 For a measure-preserving self-map `T` of `EuclideanSpace ℝ (Fin d)`, a rate `B` (intended to be a
 uniform bound `log⁺‖D_x T‖ ≤ B` on the derivative), and a finite partition `P` whose `n`-fold
 refinement `⋁ₖ₌₀ⁿ⁻¹ T⁻ᵏ P` has at most `C · exp(n · d · B)` non-empty atoms (the geometric
