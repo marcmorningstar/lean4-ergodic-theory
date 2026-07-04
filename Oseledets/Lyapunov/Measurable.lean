@@ -6,6 +6,7 @@ Authors: Marcel Morgenstern
 import Oseledets.Lyapunov.Filtration
 import Oseledets.Lyapunov.MeasurableSubspace
 import Mathlib.Analysis.InnerProductSpace.PiL2
+import Mathlib.Analysis.Normed.Lp.MeasurableSpace
 import Mathlib.MeasureTheory.Constructions.BorelSpace.Order
 import Mathlib.MeasureTheory.Constructions.BorelSpace.Metrizable
 import Mathlib.Analysis.Matrix.HermitianFunctionalCalculus
@@ -58,20 +59,21 @@ namespace Oseledets
 
 variable {X : Type*} [MeasurableSpace X] {μ : Measure X} {T : X → X} {d : ℕ}
 
-/-- The Borel measurable structure on `EuclideanSpace ℝ (Fin d)` (a metric space). Used to make
-sense of `EuclideanSpace`-valued measurable maps below.
+/- The measurable and Borel structures on `EuclideanSpace ℝ (Fin d)` used by the
+`EuclideanSpace`-valued measurable maps below are Mathlib's **canonical** ones,
+`WithLp.measurableSpace` and `PiLp.borelSpace` (from `Mathlib.Analysis.Normed.Lp.MeasurableSpace`,
+imported above).
 
-Implementation note: this is the `borel _` σ-algebra. It is *propositionally* equal to — but a
-syntactically different term from — Mathlib's own `WithLp.measurableSpace` on the same type. We
-therefore register `borel _` explicitly here and pin the `BorelSpace` witness as `⟨rfl⟩` below (the
-`rfl` is exactly the definitional `MeasurableSpace = borel _` this instance makes hold by fiat), so
-that downstream `MeasurableSpace`/`BorelSpace` typeclass resolution stays on a single coherent term
-and the Borel-measurability lemmas apply without coercion friction. -/
-instance instMeasurableSpaceEuclideanSpace :
-    MeasurableSpace (EuclideanSpace ℝ (Fin d)) := borel _
-
-instance instBorelSpaceEuclideanSpace :
-    BorelSpace (EuclideanSpace ℝ (Fin d)) := ⟨rfl⟩
+Historically this module declared its own `MeasurableSpace (EuclideanSpace ℝ (Fin d)) := borel _`
+(with the `BorelSpace` witness `⟨rfl⟩`). That term is only *propositionally* — not syntactically —
+equal to Mathlib's `WithLp.measurableSpace` (which is `MeasurableSpace.comap ofLp inferInstance`);
+their agreement is exactly the content of `PiLp.borelSpace`. Since some downstream modules also
+import Mathlib measure-theory files that transitively provide `WithLp.measurableSpace`, keeping the
+local `borel _` instance created a genuine (propositional-not-syntactic) instance diamond on this
+type. We therefore use Mathlib's single canonical instance everywhere, which removes the diamond at
+its root: `MeasurableSpace`/`BorelSpace` typeclass resolution can no longer land on two distinct
+terms in mixed contexts. All the Borel-measurability lemmas used below only need
+`BorelSpace (EuclideanSpace ℝ (Fin d))`, which `PiLp.borelSpace` supplies. -/
 
 /-! ### Scalar measurability -/
 
