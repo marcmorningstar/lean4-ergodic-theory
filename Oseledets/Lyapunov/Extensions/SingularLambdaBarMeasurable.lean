@@ -25,10 +25,13 @@ unconditionally for singular cocycles.
 
 ## The reduction (sorry-free, det-free)
 
-The finite-step slow approximants `vSlowSingularStep A T c n x` — the range of the slow `qpow`
-spectral projector `cfc (𝟙_{(-∞,c]}) (qpow A T n x)`, where `qpow A T n x = (Gₙ)^{1/(2n)}` is the
+The finite-step slow approximants `vSlowSingularStep A T s n x` — the range of the slow `qpow`
+spectral projector `cfc (𝟙_{(-∞,s]}) (qpow A T n x)`, where `qpow A T n x = (Gₙ)^{1/(2n)}` is the
 renormalized Gram (`SingularSlowSpace.lean`) — are **everywhere measurable in `x`**, per fixed `n`
-(`measurableSubspace_vSlowSingularStep`), unconditionally. If those finite-step *projector matrices*
+(`measurableSubspace_vSlowSingularStep`), unconditionally. Here the multiplier threshold `s` cuts
+the `qpow` eigenvalues `σᵢ(cocycle n x)^{1/n}` (limits `e^{λᵢ}`), so to converge to the **exponent**
+sublevel `{v : lambdaBar A T x v ≤ c}` the finite-step cut must sit at `s = Real.exp c`
+(`σᵢ^{1/n} ≤ exp c ⟺ (1/n) log σᵢ ≤ c ⟶ λᵢ ≤ c`). If those finite-step *projector matrices*
 converge — for every `x` — to the projector matrix of the `lambdaBar`-sublevel, then the limit is
 measurable as a pointwise limit of measurable matrix-valued maps
 (`measurable_of_tendsto_metrizable`, entrywise). We package:
@@ -40,7 +43,8 @@ measurable as a pointwise limit of measurable matrix-valued maps
   `Oseledets.measurable_orthProjMatrix_eventualKer`.)
 
 * `Oseledets.measurableSubspace_lambdaSublevel_of_tendsto` — the **det-free reduction**: if for
-  every `x` the slow projectors `orthProjMatrix (vSlowSingularStep A T c n x)` converge to
+  every `x` the slow projectors `orthProjMatrix (vSlowSingularStep A T (Real.exp c) n x)` (the
+  multiplier cut at `Real.exp c`, the honest scale for the exponent sublevel at `c`) converge to
   `orthProjMatrix (lambdaSublevel A T x c)`, then
   `MeasurableSubspace (fun x => lambdaSublevel A T x c)`. No `det ≠ 0`. The measurability of
   `{v : lambdaBar A T x v ≤ c}` is thereby reduced **exactly** to the convergence-to-the-right-limit
@@ -86,8 +90,9 @@ stratum where the limsup growth is `0`, not `−∞`).
 * `Oseledets.measurableSubspace_of_tendsto_orthProjMatrix` — soft pointwise-limit measurability of a
   subspace family (general, reusable).
 * `Oseledets.measurableSubspace_lambdaSublevel_of_tendsto` — the det-free reduction of
-  `{v : lambdaBar ≤ c}` measurability to the slow-projector convergence-to-the-sublevel `hconv`.
-* `Oseledets.orthProjMatrix_vSlowSingularStep_tendsto_iff_lambdaSublevel` — `hconv` is equivalent to
+  `{v : lambdaBar ≤ c}` measurability to the slow-projector convergence-to-the-sublevel `hconv` (the
+  finite-step multiplier cut at `Real.exp c`, matching the exponent sublevel at `c`).
+* `Oseledets.orthProjMatrix_vSlowSingularStep_tendsto_iff_bandProjector` — `hconv` is equivalent to
   the convergence of the finite-step slow projectors to `orthProjMatrix (lambdaSublevel A T x c)`,
   re-stated through the complement bridge `1 − bandProjector` to expose the aperture wall.
 
@@ -140,17 +145,27 @@ theorem measurableSubspace_of_tendsto_orthProjMatrix
 
 /-! ## The det-free reduction for the `lambdaBar`-sublevel slow space
 
-The finite-step slow approximants `vSlowSingularStep A T c n x` have everywhere-measurable projector
-matrices (`measurableSubspace_vSlowSingularStep`, unconditional). Feeding them into the soft lemma
-reduces measurability of `{v : lambdaBar A T x v ≤ c} = lambdaSublevel A T x c` to a **single**
-hypothesis: that those finite-step projectors converge, for every `x`, to the projector of the
-sublevel. -/
+The finite-step slow approximants `vSlowSingularStep A T (Real.exp c) n x` — the multiplier cut at
+`Real.exp c`, whose `qpow` eigenvalues `σᵢ^{1/n}` limit to `e^{λᵢ}`, so that the cut matches the
+**exponent** sublevel at `c` — have everywhere-measurable projector matrices
+(`measurableSubspace_vSlowSingularStep`, unconditional). Feeding them into the soft lemma reduces
+measurability of `{v : lambdaBar A T x v ≤ c} = lambdaSublevel A T x c` to a **single** hypothesis:
+that those finite-step projectors converge, for every `x`, to the projector of the sublevel. -/
 
 /-- **Det-free reduction of `{lambdaBar ≤ c}` measurability.** If, for every `x`, the finite-step
-slow projectors `orthProjMatrix (vSlowSingularStep A T c n x)` converge to
+slow projectors `orthProjMatrix (vSlowSingularStep A T (Real.exp c) n x)` converge to
 `orthProjMatrix (lambdaSublevel A T x c)`, then `x ↦ lambdaSublevel A T x c` — the
 `lambdaBar`-sublevel slow space `{v : lambdaBar A T x v ≤ c}` — is a `MeasurableSubspace`. **No
-`det ≠ 0`.** The finite-step projectors are measurable per `n` unconditionally
+`det ≠ 0`.**
+
+**The scales match honestly.** `vSlowSingularStep A T s` cuts the `qpow` eigenvalues
+`σᵢ(cocycle n x)^{1/n}` (the *multiplier* scale, whose limits are `e^{λᵢ}`) at the threshold `s`,
+whereas `lambdaSublevel A T x c` cuts the *exponents* `λ = lambdaBar A T x` at `c`. The finite-step
+multiplier cut therefore has to sit at `s = Real.exp c` to converge to the exponent sublevel at `c`:
+`σᵢ^{1/n} ≤ Real.exp c ⟺ (1/n) log σᵢ ≤ c ⟶ λᵢ ≤ c`. Hence `hconv` pairs
+`vSlowSingularStep A T (Real.exp c)` with `lambdaSublevel A T x c`.
+
+The finite-step projectors are measurable per `n` unconditionally
 (`measurableSubspace_vSlowSingularStep`), so the conclusion follows from the pointwise-limit soft
 lemma `measurableSubspace_of_tendsto_orthProjMatrix`. The convergence hypothesis `hconv` is the
 genuine residual: it is the band-projector convergence (the aperture wall,
@@ -158,12 +173,12 @@ genuine residual: it is the band-projector convergence (the aperture wall,
 upper bound `limsup_le_of_mem_vslow`); both are supplied only on the tempered class. -/
 theorem measurableSubspace_lambdaSublevel_of_tendsto [NeZero d]
     {A : X → Matrix (Fin d) (Fin d) ℝ} (hA : Measurable A) {T : X → X} (hT : Measurable T) (c : ℝ)
-    (hconv : ∀ x, Tendsto (fun n => orthProjMatrix (vSlowSingularStep A T c n x)) atTop
+    (hconv : ∀ x, Tendsto (fun n => orthProjMatrix (vSlowSingularStep A T (Real.exp c) n x)) atTop
       (𝓝 (orthProjMatrix (lambdaSublevel A T x c)))) :
     MeasurableSubspace (fun x => lambdaSublevel A T x c) := by
   refine measurableSubspace_of_tendsto_orthProjMatrix _
-    (fun n x => orthProjMatrix (vSlowSingularStep A T c n x)) (fun n => ?_) hconv
-  exact measurableSubspace_vSlowSingularStep hA hT c n
+    (fun n x => orthProjMatrix (vSlowSingularStep A T (Real.exp c) n x)) (fun n => ?_) hconv
+  exact measurableSubspace_vSlowSingularStep hA hT (Real.exp c) n
 
 /-! ## Exposing the aperture wall inside `hconv`
 
@@ -176,35 +191,38 @@ increment is the aperture between consecutive top-`k` singular frames
 single step) is load-bearing for. -/
 
 /-- **`hconv` through the complement bridge.** For every `x`, the finite-step slow projectors
-converge to `orthProjMatrix (lambdaSublevel A T x c)` iff the complements `1 − bandProjector A T
-(𝟙_{(c,∞)}) n x` do — i.e. iff the fast band projectors converge to
+`orthProjMatrix (vSlowSingularStep A T (Real.exp c) n x)` converge to
+`orthProjMatrix (lambdaSublevel A T x c)` iff the complements
+`1 − bandProjector A T (𝟙_{(exp c,∞)}) n x` do — i.e. iff the fast band projectors converge to
 `1 − orthProjMatrix (lambdaSublevel A T x c)`. This re-expresses the residual convergence input of
-`measurableSubspace_lambdaSublevel_of_tendsto` directly on the fast band, where its per-step
-increment is the aperture `bandProjector_increment_eq_aperture` governed by the condition number of
-the step `B = A(Tⁿx)` (the inverse), pinning why it is not summable for a singular step. -/
+`measurableSubspace_lambdaSublevel_of_tendsto` directly on the fast band (at the matching multiplier
+threshold `Real.exp c`, the honest scale for the exponent sublevel at `c`; see that theorem), where
+its per-step increment is the aperture `bandProjector_increment_eq_aperture` governed by the
+condition number of the step `B = A(Tⁿx)` (the inverse), pinning why it is not summable for a
+singular step. -/
 theorem orthProjMatrix_vSlowSingularStep_tendsto_iff_bandProjector [NeZero d]
     (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (c : ℝ) (x : X) :
-    Tendsto (fun n => orthProjMatrix (vSlowSingularStep A T c n x)) atTop
+    Tendsto (fun n => orthProjMatrix (vSlowSingularStep A T (Real.exp c) n x)) atTop
         (𝓝 (orthProjMatrix (lambdaSublevel A T x c)))
-      ↔ Tendsto (fun n => bandProjector A T (Set.indicator (Set.Ioi c) 1) n x) atTop
+      ↔ Tendsto (fun n => bandProjector A T (Set.indicator (Set.Ioi (Real.exp c)) 1) n x) atTop
           (𝓝 (1 - orthProjMatrix (lambdaSublevel A T x c))) := by
   constructor
   · intro h
     -- `bandProjector = 1 − (1 − bandProjector) = 1 − orthProjMatrix (vSlow …)`.
-    have hcompl : (fun n => bandProjector A T (Set.indicator (Set.Ioi c) 1) n x)
-        = fun n => 1 - orthProjMatrix (vSlowSingularStep A T c n x) := by
+    have hcompl : (fun n => bandProjector A T (Set.indicator (Set.Ioi (Real.exp c)) 1) n x)
+        = fun n => 1 - orthProjMatrix (vSlowSingularStep A T (Real.exp c) n x) := by
       funext n
       rw [orthProjMatrix_vSlowSingularStep]; abel
     rw [hcompl]
     exact tendsto_const_nhds.sub h
   · intro h
-    have hcompl : (fun n => orthProjMatrix (vSlowSingularStep A T c n x))
-        = fun n => 1 - bandProjector A T (Set.indicator (Set.Ioi c) 1) n x := by
-      funext n; exact orthProjMatrix_vSlowSingularStep A T c n x
+    have hcompl : (fun n => orthProjMatrix (vSlowSingularStep A T (Real.exp c) n x))
+        = fun n => 1 - bandProjector A T (Set.indicator (Set.Ioi (Real.exp c)) 1) n x := by
+      funext n; exact orthProjMatrix_vSlowSingularStep A T (Real.exp c) n x
     rw [hcompl]
     -- `1 − band → 1 − (1 − orthProj) = orthProj`.
     have hsub : Tendsto (fun n => (1 : Matrix (Fin d) (Fin d) ℝ)
-        - bandProjector A T (Set.indicator (Set.Ioi c) 1) n x) atTop
+        - bandProjector A T (Set.indicator (Set.Ioi (Real.exp c)) 1) n x) atTop
         (𝓝 (1 - (1 - orthProjMatrix (lambdaSublevel A T x c)))) :=
       tendsto_const_nhds.sub h
     have hsimp : (1 : Matrix (Fin d) (Fin d) ℝ) - (1 - orthProjMatrix (lambdaSublevel A T x c))

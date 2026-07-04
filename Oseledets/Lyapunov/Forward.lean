@@ -698,69 +698,6 @@ open scoped InnerProductSpace
 
 variable (T : X → X)
 
-/-- **Helper (log of a finite sum).** Let `s` be a finite index type and `t : s → ℕ → ℝ` with
-`t m n ≥ 0`. If for every `m` and every `ε > 0`, eventually `t m n ≤ exp (n (L + ε))`, and the total
-sum is eventually positive, then `limsup_n (1/n) log (∑_m t m n) ≤ L`. -/
-theorem limsup_inv_mul_log_sum_le {s : Type*} [Fintype s] [Nonempty s]
-    (t : s → ℕ → ℝ) (L : ℝ) (_htnn : ∀ m n, 0 ≤ t m n)
-    (hbound : ∀ m, ∀ ε > 0, ∀ᶠ n : ℕ in atTop, t m n ≤ Real.exp ((n : ℝ) * (L + ε)))
-    (hpos : ∀ᶠ n : ℕ in atTop, 0 < ∑ m, t m n)
-    (hcobdd : IsCoboundedUnder (· ≤ ·) atTop
-      (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (∑ m, t m n))) :
-    limsup (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (∑ m, t m n)) atTop ≤ L := by
-  set u : ℕ → ℝ := fun n => (n : ℝ)⁻¹ * Real.log (∑ m, t m n) with hu
-  have hkey : ∀ ε > 0, ∀ᶠ n : ℕ in atTop, u n ≤ L + ε +
-      (n : ℝ)⁻¹ * Real.log (Fintype.card s) := by
-    intro ε hε
-    have hall : ∀ᶠ n : ℕ in atTop, ∀ m, t m n ≤ Real.exp ((n : ℝ) * (L + ε)) :=
-      eventually_all.mpr (fun m => hbound m ε hε)
-    filter_upwards [hall, hpos, eventually_ge_atTop 1] with n hn hsum_pos hn1
-    have hnpos : (0 : ℝ) < (n : ℝ) := by exact_mod_cast Nat.lt_of_lt_of_le Nat.zero_lt_one hn1
-    have hninv0 : (0 : ℝ) < (n : ℝ)⁻¹ := by positivity
-    have hsum_le : ∑ m, t m n ≤ (Fintype.card s : ℝ) * Real.exp ((n : ℝ) * (L + ε)) := by
-      calc ∑ m, t m n ≤ ∑ _m : s, Real.exp ((n : ℝ) * (L + ε)) :=
-            Finset.sum_le_sum (fun m _ => hn m)
-        _ = (Fintype.card s : ℝ) * Real.exp ((n : ℝ) * (L + ε)) := by
-            rw [Finset.sum_const, Finset.card_univ, nsmul_eq_mul]
-    have hcard_pos : (0 : ℝ) < (Fintype.card s : ℝ) := by
-      exact_mod_cast Fintype.card_pos
-    have hlog_le : Real.log (∑ m, t m n)
-        ≤ Real.log ((Fintype.card s : ℝ) * Real.exp ((n : ℝ) * (L + ε))) :=
-      Real.log_le_log hsum_pos hsum_le
-    rw [Real.log_mul (ne_of_gt hcard_pos) (Real.exp_ne_zero _), Real.log_exp] at hlog_le
-    rw [hu]
-    have hmul : (n : ℝ)⁻¹ * Real.log (∑ m, t m n)
-        ≤ (n : ℝ)⁻¹ * (Real.log (Fintype.card s) + (n : ℝ) * (L + ε)) :=
-      mul_le_mul_of_nonneg_left hlog_le (le_of_lt hninv0)
-    calc (n : ℝ)⁻¹ * Real.log (∑ m, t m n)
-        ≤ (n : ℝ)⁻¹ * (Real.log (Fintype.card s) + (n : ℝ) * (L + ε)) := hmul
-      _ = L + ε + (n : ℝ)⁻¹ * Real.log (Fintype.card s) := by
-          field_simp; ring
-  have hcorr : Tendsto (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (Fintype.card s)) atTop (𝓝 0) := by
-    have hinv : Tendsto (fun n : ℕ => (n : ℝ)⁻¹) atTop (𝓝 0) :=
-      tendsto_natCast_atTop_atTop.inv_tendsto_atTop
-    simpa using hinv.mul_const (Real.log (Fintype.card s))
-  have hbdd : IsBoundedUnder (· ≤ ·) atTop u := by
-    obtain ⟨N, hN⟩ := (Filter.eventually_atTop.mp ((hkey 1 one_pos).and
-      (hcorr.eventually (gt_mem_nhds (show (0:ℝ) < 1 by norm_num)))))
-    refine ⟨L + 1 + 1, ?_⟩
-    rw [Filter.eventually_map, Filter.eventually_atTop]
-    refine ⟨N, fun n hn => ?_⟩
-    obtain ⟨h1, h2⟩ := hN n hn
-    have : (n : ℝ)⁻¹ * Real.log (Fintype.card s) < 1 := by
-      simpa using h2
-    linarith
-  rw [limsup_le_iff' hcobdd hbdd]
-  intro y hy
-  set ε := (y - L) / 2 with hεdef
-  have hεpos : 0 < ε := by rw [hεdef]; linarith
-  filter_upwards [hkey ε hεpos,
-    hcorr.eventually (gt_mem_nhds (show (0:ℝ) < ε from hεpos))] with n h1 h2
-  have hcorr_lt : (n : ℝ)⁻¹ * Real.log (Fintype.card s) < ε := by simpa using h2
-  calc u n ≤ L + ε + (n : ℝ)⁻¹ * Real.log (Fintype.card s) := h1
-    _ ≤ L + ε + ε := by linarith
-    _ = y := by rw [hεdef]; ring
-
 /-- **Helper (limsup ⟹ exp envelope).** If `a n ≥ 0` and `limsup_n (1/n) log (a n) ≤ M`, then for
 every `ε > 0` eventually `a n ≤ exp (n (M + ε))`. -/
 theorem eventually_le_exp_of_limsup_le {a : ℕ → ℝ} (hann : ∀ n, 0 ≤ a n) {M : ℝ}
