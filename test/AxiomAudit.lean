@@ -192,14 +192,26 @@ import Oseledets.OperatorEntropy.Lieb.PetzEqualityGeneral
 /-!
 # Axiom audit
 
-A guarded audit that the target theorem `Oseledets.oseledets_filtration` and its companion
-corollaries depend only on Lean/Mathlib's three standard axioms `propext`, `Classical.choice`,
-`Quot.sound` — in particular on no `sorryAx` and no extra axioms.
+A guarded audit that the target theorem `Oseledets.oseledets_filtration` and every other
+headline of the formalization depend only on Lean/Mathlib's standard axioms — in particular on
+no `sorryAx` and no extra axioms. The audited declarations now span the whole development: the
+Oseledets filtration and its companion corollaries, the additive/exterior/inverse/singular
+Lyapunov extensions, the two-sided splitting and continuous-flow MET, and the entropy,
+Krieger-generator, multifractal and finite-dimensional quantum operator-entropy layers (von
+Neumann/Umegaki relative entropy, Klein/Lieb joint convexity, the CPTP data-processing
+inequality, CNT dynamical entropy, and both directions of Petz's equality theorem).
 
-Each `#guard_msgs in #print axioms` block below compares the declaration's axiom set against
-the expected `[propext, Classical.choice, Quot.sound]` and **fails the build if it ever
-differs**, so this module is a continuously-checked regression test rather than an
-informational dump (it produces no output on success).
+Each `#guard_msgs in #print axioms` block below pins a declaration's axiom set and **fails the
+build if it ever differs**. Almost every block expects `[propext, Classical.choice, Quot.sound]`;
+a few (e.g. `Oseledets.Krieger.sentinelEncodeList_injective`) honestly expect a smaller set. This
+`AxiomAudit` library is a `defaultTargets` entry (see `lakefile.toml`), so the check runs on every
+`lake build` as a continuously-enforced regression test rather than an informational dump (it
+produces no output on success).
+
+Scope caveat: `#print axioms` certifies axiom cleanliness only. It does **not** certify that a
+guarded declaration states what its name suggests, nor that its hypotheses are satisfiable — a
+number of audited headlines are honestly hypothesis-carrying (documented at their definition
+sites).
 -/
 
 /-- info: 'Oseledets.oseledets_filtration' depends on axioms: [propext, Classical.choice, Quot.sound] -/

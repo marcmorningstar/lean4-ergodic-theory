@@ -310,7 +310,10 @@ def cntDynamicalEntropyAbelian (μ : Fin d → ℝ≥0∞) (hμ : ∑ i, μ i = 
 
 /-- **System-level abelian-corner equality.** Over projection operational partitions, the CNT
 dynamical entropy of `adPerm σ` in the diagonal state `densityOfPMF μ` equals the classical
-Kolmogorov–Sinai entropy of `⇑σ`, provided every state has positive mass. -/
+Kolmogorov–Sinai entropy of `⇑σ`, provided every state has positive mass. On a finite state
+space the KS entropy of a permutation is always `0`, so both sides here are `0` and this
+system-level identity is the trivial `0 = 0`. The genuinely non-vacuous content lives one level
+down, in the per-resolution identity `vonNeumannEntropy_corrMatrix_eq_ksEntropySeq`. -/
 theorem cntDynamicalEntropyAbelian_eq_ksEntropy
     (μ : Fin d → ℝ≥0∞) (hμ : ∑ i, μ i = 1)
     (σ : Equiv.Perm (Fin d)) (hinv : ∀ i, μ (σ i) = μ i) (hpos : ∀ i, 0 < μ i) :

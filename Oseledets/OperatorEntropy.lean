@@ -43,7 +43,8 @@ Lieb-concavity layer.
   per-partition entropy rate over all, resp. all projection, operational partitions).
 * `Oseledets.OperatorEntropy.CNT.cntDynamicalEntropyAbelian_eq_ksEntropy` — on the abelian
   (diagonal-subalgebra) corner the CNT dynamical entropy of `adPerm σ` equals the classical
-  Kolmogorov–Sinai entropy `h(⇑σ)`.
+  Kolmogorov–Sinai entropy `h(⇑σ)`. A permutation of a finite set has KS entropy `0`, so this
+  system-level identity is `0 = 0`; the substantive content is the per-resolution identity below.
 * `Oseledets.OperatorEntropy.CNT.vonNeumannEntropy_corrMatrix_eq_ksEntropySeq` — the substantive
   per-resolution identity `S(corrMatrix n) = ksEntropySeq n` underlying that collapse.
 -/

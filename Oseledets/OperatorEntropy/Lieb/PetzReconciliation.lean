@@ -42,15 +42,19 @@ operator-Jensen inequality `rect_isometry_neg_log_loewner` to produce the reconc
 pair `A ≤ B` consumed by the gap-vanishing keystone `gap_mulVec_vecOne_zero_of_relForm_re_eq`
 (`PetzEqualityM3sc`).
 
-## What is *not* done here (the two remaining walls of issue #28)
+## Downstream of this module (both steps were subsequently discharged)
 
-1. **Vectorisation bridge.** Re-expressing `petzW` as a *rectangular matrix* on the vectorised HS
-   space `ℂ^{A×A} → ℂ^{(A×B)×(A×B)}` (an ampliation composed with the two right-twists) so that
-   `Wᴴ · relModularArg ω τ · W = relModularArg ω_A τ_A` reads off from the operator identity (iii)
-   here.  The operator-level content is complete; only the vec/`⊗ₖ` reshuffle is outstanding.
-2. **Rigidity tail (STEP 5–6).** From the gap annihilating the cyclic vector to the
-   `it`-intertwining `IntertwinesIt`, via the resolvent readoff `exists_resolvent_combo`
-   or the unproved operator strict convexity of `-log`.
+This module supplies the operator-level reconciliation identities. The two steps once outstanding
+past this point of issue #28 are now both proved elsewhere in this layer:
+
+1. **Vectorisation bridge** — re-expressing `petzW` as a *rectangular matrix* on the vectorised
+   Hilbert–Schmidt space so that `Wᴴ · relModularArg ω τ · W = relModularArg ω_A τ_A`. Done in
+   `PetzVecBridge.lean` (`petzWvec_isometry`, `petzWvec_cyclic`, `petzWvec_modular_compression`).
+2. **Rigidity tail (STEP 5–6)** — from the gap annihilating the cyclic vector to the
+   `it`-intertwining, via the resolvent readoff. Done in `PetzEqualitySufficiency.lean`
+   (`partialTrace_equality_imp_intertwinesIt`), then closed at channel level in
+   `PetzEqualityGeneral.lean` by `channel_equality_imp_intertwinesIt` and
+   `petz_equality_recovery_general`.
 -/
 
 open Matrix Real
