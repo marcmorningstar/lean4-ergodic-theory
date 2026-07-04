@@ -3,7 +3,10 @@ Copyright (c) 2026 Marcel Morgenstern. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Marcel Morgenstern
 -/
-import Mathlib
+import Mathlib.Algebra.Polynomial.Roots
+import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.LinearAlgebra.Dual.Lemmas
+import Mathlib.RingTheory.SimpleRing.Principal
 
 /-!
 # Petz equality — sufficiency: the resolvent readoff (module M3, route B)

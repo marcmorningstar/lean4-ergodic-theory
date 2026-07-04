@@ -3,7 +3,19 @@ Copyright (c) 2026 Marcel Morgenstern. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Marcel Morgenstern
 -/
-import Mathlib
+import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.Analysis.CStarAlgebra.Matrix
+import Mathlib.Analysis.Matrix.HermitianFunctionalCalculus
+import Mathlib.Analysis.Matrix.Order
+import Mathlib.Analysis.Matrix.PosDef
+import Mathlib.Data.Real.StarOrdered
+import Mathlib.LinearAlgebra.Complex.FiniteDimensional
+import Mathlib.LinearAlgebra.FreeModule.PID
+import Mathlib.MeasureTheory.Integral.IntegralEqImproper
+import Mathlib.MeasureTheory.SpecificCodomains.Pi
+import Mathlib.RingTheory.Flat.FaithfullyFlat.Algebra
+import Mathlib.RingTheory.Flat.TorsionFree
+import Mathlib.RingTheory.SimpleRing.Principal
 
 /-!
 # Strict operator convexity of `-log` (Petz equality, keystone B)

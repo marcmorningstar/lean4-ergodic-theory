@@ -1,4 +1,5 @@
-import Mathlib
+import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.LinearAlgebra.Matrix.PosDef
 
 open Matrix
 open scoped ComplexOrder Kronecker

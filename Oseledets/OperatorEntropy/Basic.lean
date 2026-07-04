@@ -1,4 +1,8 @@
-import Mathlib
+import Mathlib.AlgebraicTopology.SimplexCategory.Basic
+import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.Analysis.Matrix.PosDef
+import Mathlib.Analysis.SpecialFunctions.Log.NegMulLog
+import Mathlib.Data.Real.StarOrdered
 
 /-!
 # Density matrices and von Neumann entropy

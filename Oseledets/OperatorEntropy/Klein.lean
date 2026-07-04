@@ -1,4 +1,4 @@
-import Mathlib
+import Mathlib.Analysis.SpecialFunctions.Log.Basic
 
 /-!
 # Klein's inequality (scalar / Peierls form)

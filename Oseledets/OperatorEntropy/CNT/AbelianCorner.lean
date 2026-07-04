@@ -1,6 +1,8 @@
 import Oseledets.OperatorEntropy.CNT.Construction
 import Oseledets.OperatorEntropy.DiagonalSpectrum
 import Oseledets.Entropy.KSEntropySystem
+import Mathlib.LinearAlgebra.Matrix.Permutation
+import Mathlib.MeasureTheory.Measure.Dirac
 
 /-!
 # The abelian corner: CNT dynamical entropy = Kolmogorov–Sinai entropy

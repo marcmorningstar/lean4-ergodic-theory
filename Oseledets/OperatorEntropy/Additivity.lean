@@ -1,5 +1,6 @@
 import Oseledets.OperatorEntropy.Basic
 import Oseledets.OperatorEntropy.KroneckerSpectrum
+import Mathlib.Analysis.Matrix.Order
 
 /-!
 # Additivity of von Neumann entropy under the tensor (Kronecker) product

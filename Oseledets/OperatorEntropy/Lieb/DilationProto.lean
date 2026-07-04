@@ -3,7 +3,9 @@ Copyright (c) 2026 Marcel Morgenstern. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Marcel Morgenstern
 -/
-import Mathlib
+import Mathlib.AlgebraicTopology.SimplexCategory.Basic
+import Mathlib.Analysis.CStarAlgebra.Module.Constructions
+import Mathlib.RingTheory.PicardGroup
 
 /-!
 # S1: Unitary dilation of a column-isometric block pair (Lieb keystone prototype)

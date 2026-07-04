@@ -1,4 +1,6 @@
-import Mathlib
+import Mathlib.Analysis.CStarAlgebra.Classes
+import Mathlib.Analysis.Matrix.Spectrum
+import Mathlib.RingTheory.SimpleRing.Principal
 
 /-!
 # Spectrum of a Kronecker product of Hermitian matrices

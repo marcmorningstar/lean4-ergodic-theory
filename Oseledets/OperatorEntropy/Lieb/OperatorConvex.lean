@@ -3,7 +3,9 @@ Copyright (c) 2026 Marcel Morgenstern. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Marcel Morgenstern
 -/
-import Mathlib
+import Mathlib.Analysis.CStarAlgebra.CStarMatrix
+import Mathlib.Analysis.Matrix.Order
+import Mathlib.Analysis.SpecialFunctions.ContinuousFunctionalCalculus.ExpLog.Order
 
 /-!
 # Operator convexity of `-log` (Lieb foundations)

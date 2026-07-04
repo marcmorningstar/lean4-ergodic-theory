@@ -6,6 +6,7 @@ Authors: Marcel Morgenstern
 import Oseledets.OperatorEntropy.RelativeEntropy
 import Oseledets.OperatorEntropy.Additivity
 import Oseledets.OperatorEntropy.KroneckerSpectrum
+import Mathlib.LinearAlgebra.Lagrange
 
 /-!
 # Additivity of Umegaki relative entropy under the tensor (Kronecker) product
