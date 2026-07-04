@@ -221,8 +221,7 @@ single tower gives only a `1 - ε` set, not a μ-conull one). We isolate exactly
 `ColumnLayoutData`, whose only non-structural field `recovers_tiled` is the a.e. recovery the
 tiling produces. The structural assembly into `SentinelColumnCodeAt` (hence `CodesTwoSidedMod0c`) is
 sorry-free — the measurable parser, code symbol, and decoder are all supplied; only the dynamical
-a.e. correctness is carried, exactly as `Oseledets.Krieger.ColumnCodeData` /
-`Oseledets.Krieger.CodeMapData` carry theirs. -/
+a.e. correctness is carried, exactly as `Oseledets.Krieger.ColumnCodeData` carries theirs. -/
 
 /-- **The column-layout residual bundle.** Bundles the genuinely-dynamical inputs left after the
 position-aware parser and the column-tiling alignment are discharged:
@@ -237,8 +236,8 @@ position-aware parser and the column-tiling alignment are discharged:
   off a μ-null set the itinerary of `code` is two-sided column-tiled (the refining-tower limit),
   and on that set `sentinelParseAt_itin_eq` makes the parser recover the `Q`-cell of `x`.
 
-This is the column-tiling analogue of `Oseledets.Krieger.SentinelColumnCode` /
-`Oseledets.Krieger.ColumnCodeData`: it is exactly the `SentinelColumnCodeAt` data, named here so
+This is the column-tiling analogue of `Oseledets.Krieger.ColumnCodeData`: it is exactly the
+`SentinelColumnCodeAt` data, named here so
 the honest reduction (alignment discharged, parser discharged, only a.e. tiling residual carried) is
 explicit. -/
 structure ColumnLayoutData [Countable κ] [MeasurableSpace κ] [MeasurableSingletonClass κ]

@@ -11,8 +11,8 @@ import Oseledets.Krieger.RokhlinTower
 
 This file repairs and sharpens the bi-infinite sentinel parser of
 `Oseledets.Krieger.ColumnCode`. The parser there, `sentinelParse s dec w = dec (blockContent s w)`,
-decodes the **content** of the sentinel block containing coordinate `0`. The dynamical-recovery
-field that `SentinelColumnCode` then demands is
+decodes the **content** of the sentinel block containing coordinate `0`. A naive sentinel-column
+recovery field built on it would demand
 
 `recovers : ∀ j, Q j =ᵐ[μ] {x | sentinelParse s decode (itin e code x) = j}`,
 
@@ -58,7 +58,7 @@ uses it, and `SentinelColumnCodeAt.toColumnCodeData` shows it yields a full
 
 * `sentinelParse_shift_eq` — **the obstruction**: the old parser is shift-invariant inside a block.
 * `parse_event_cannot_separate` — the old parser returns the same label at `x` and `e x` (the reason
-  `SentinelColumnCode.recovers` is unsatisfiable for a generic generator).
+  a naive position-blind sentinel-column recovery field is unsatisfiable for a generic generator).
 * `blockOffset_shift` — the offset increases by one under the shift (the repaired position channel).
 * `measurable_sentinelParseAt` — the position-aware parser is measurable.
 * `sentinelParseAt_can_separate` — the position-aware parser *can* distinguish `x` from `e x`.
@@ -229,8 +229,8 @@ forward and backward sentinel exist) and whose coordinate `0` is not a sentinel,
 *position-blind* parser returns the **same** label at `x` and at `e x`:
 `sentinelParse s dec (itin e c (e x)) = sentinelParse s dec (itin e c x)`. Since the floors `x` and
 `e x` of one tower column lie in genuinely different cells of a generator `Q`, the parser event
-`{x | sentinelParse s dec (itin e c x) = j}` cannot equal `Q j` a.e. for a generic generator — the
-`recovers` field of `Oseledets.Krieger.SentinelColumnCode` is **unsatisfiable**. -/
+`{x | sentinelParse s dec (itin e c x) = j}` cannot equal `Q j` a.e. for a generic generator — a
+naive position-blind sentinel-column recovery field is **unsatisfiable**. -/
 theorem parse_event_cannot_separate (s : Fin k) (dec : List (Fin k) → κ) (e : α ≃ᵐ α)
     (c : α → Fin k) (x : α)
     (h0 : itin e c x 0 ≠ s)
@@ -334,12 +334,12 @@ theorem sentinelParseAt_can_separate (s : Fin k) (dec : List (Fin k) → ℕ →
 
 /-! ### The repaired residual bundle -/
 
-/-- **The repaired column-code residual.** Identical to `Oseledets.Krieger.SentinelColumnCode`
-except that the decoder is **position-aware** — `decode : List (Fin k) → ℕ → κ` reads both the block
-content and the within-block offset of coordinate `0`. The recovery field uses the position-aware
-parser `sentinelParseAt`, and is *satisfiable* by the floor-address column code (the floors of a
-column carry distinct offsets, so `decode block offset` can return the genuine `Q`-cell of `x`),
-unlike `SentinelColumnCode.recovers`. -/
+/-- **The repaired column-code residual.** Bundles a code symbol with a **position-aware** decoder
+`decode : List (Fin k) → ℕ → κ` reading the block content and the within-block offset of coordinate
+`0`. The recovery field uses the position-aware parser `sentinelParseAt`, and is *satisfiable* by
+the floor-address column code — the floors of a column carry distinct offsets, so
+`decode block offset` can return the genuine `Q`-cell of `x`, unlike a naive position-blind
+`sentinelParse`-based recovery field, which is unsatisfiable (`parse_event_cannot_separate`). -/
 structure SentinelColumnCodeAt [Countable κ] [MeasurableSpace κ] [MeasurableSingletonClass κ]
     (e : α ≃ᵐ α) (μ : Measure α) (Q : κ → Set α) (k : ℕ) where
   /-- The reserved sentinel letter of the `Fin k` alphabet. -/

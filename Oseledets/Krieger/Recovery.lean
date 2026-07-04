@@ -63,7 +63,7 @@ The single irreducible **dynamical/combinatorial heart** — the *existence* of 
 `c` and one decoder `D` whose two-sided itinerary recovers each `Q`-cell a.e., obtained as the
 `m → ∞` / `ε m ↓ 0` limit of the per-tower sentinel column codes (the refining-tower Borel–Cantelli
 assembly) — is isolated as the named hypothesis bundle `ColumnCodeData`, mirroring the repo's
-honest-reduction pattern (`Oseledets.Krieger.CodeMapData`, `Oseledets.Krieger.KeaneSerafinData`).
+honest-reduction pattern (as with `Oseledets.Krieger.KeaneSerafinData`).
 This is the documented residual of sub-problem B (C3). See the module note at the bottom for the
 precise minimal symbolic-dynamics infrastructure Mathlib lacks for a single-shot discharge.
 
@@ -170,8 +170,8 @@ theorem eventually_mem_of_summable_compl {C : ℕ → Set α}
 The genuine content of sub-problem B (C3) is the *existence* of one fixed code symbol
 `c : α → Fin k` and one decoder `D : (ℤ → Fin k) → κ` whose two-sided itinerary recovers each
 generator cell `Q j` a.e. We isolate this as the hypothesis bundle `ColumnCodeData`, exactly
-mirroring the repo's honest-reduction pattern (`Oseledets.Krieger.CodeMapData` for the `Fintype`
-layer, `Oseledets.Krieger.KeaneSerafinData` for sub-problem A). The structural / measurable backbone
+mirroring the repo's honest-reduction pattern (as with `Oseledets.Krieger.KeaneSerafinData` for
+sub-problem A). The structural / measurable backbone
 — that this data yields the cross-layer countable mod-0 code — is then proved unconditionally
 below. -/
 
@@ -190,7 +190,7 @@ file:
   across *all* integer shifts (two-sided Poincaré recurrence, `twoSided_recurrence`); the `ε`/`N`
   residual is absorbed mod 0 by the refining-tower limit.
 
-This is the `Countable`-indexed analogue of `Oseledets.Krieger.CodeMapData`. -/
+This bundles the code-symbol-plus-decoder residual for the `Countable` coding layer. -/
 structure ColumnCodeData [Countable κ] [MeasurableSpace κ] [MeasurableSingletonClass κ]
     (e : α ≃ᵐ α) (μ : Measure α) (Q : κ → Set α) (k : ℕ) where
   /-- The measurable code symbol `c : α → Fin k` of the column coding. -/
@@ -221,8 +221,8 @@ partition `codePartition c hc` **codes the countable family `Q` two-sidedly mod 
 The decoder event `{x | D (itin e c x) = j} = (D ∘ itin e c)⁻¹ {j}` is `twoSidedSat e P`-measurable
 because `itin e c` is `twoSidedSat e P`-measurable (`Oseledets.Krieger.measurable_itin`) and `D` is
 product-measurable; the a.e. recovery then discharges
-`Oseledets.Krieger.codesTwoSidedMod0c_of_aeRecovery`. This is the `Countable`-indexed analogue of
-`Oseledets.Krieger.codesTwoSidedMod0_of_codeMapData`. -/
+`Oseledets.Krieger.codesTwoSidedMod0c_of_aeRecovery`, using the itinerary-measurability backbone
+`Oseledets.Krieger.measurable_itin` (`CodeMap.lean`). -/
 theorem codesTwoSidedMod0c_of_columnCode [Countable κ] [MeasurableSpace κ]
     [MeasurableSingletonClass κ] {e : α ≃ᵐ α} {Q : κ → Set α}
     (c : α → Fin k) (hc : Measurable c)
@@ -237,8 +237,7 @@ theorem codesTwoSidedMod0c_of_columnCode [Countable κ] [MeasurableSpace κ]
   exact (hD.comp (measurable_itin e c hc)) (measurableSet_singleton j)
 
 /-- The bundled form: a `ColumnCodeData` yields the cross-layer countable mod-0 code of the
-generator `Q` by its code partition. This is the `Countable`-indexed analogue of
-`Oseledets.Krieger.CodeMapData.codes`; it slots directly into the headline assembly, supplying the
+generator `Q` by its code partition. It slots directly into the headline assembly, supplying the
 mod-0 coding hypothesis once the dynamical heart (the `ColumnCodeData` itself) is produced. -/
 theorem ColumnCodeData.codes [Countable κ] [MeasurableSpace κ] [MeasurableSingletonClass κ]
     {e : α ≃ᵐ α} {Q : κ → Set α} (data : ColumnCodeData e μ Q k) :
