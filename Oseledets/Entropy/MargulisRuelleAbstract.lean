@@ -61,9 +61,15 @@ under the dynamics, an atom of a partition of small diameter refines under `T^[n
 `≈ exp(n · ∑ λᵢ⁺)` atoms, because the volume of an image ball grows like the product of the
 *positive* singular-value growth rates, i.e. `|det D(T^[n])|⁺ ≈ exp(n · ∑ λᵢ⁺)`. Dividing the
 `log`-cardinality by `n` and passing to the Fekete limit turns this `log⁺|det Df|` atom-count into
-the displayed bound on the partition-relative entropy `h(α, T)`. It is **not** a restatement of the
-conclusion: it is a single-partition, finite-`n` estimate, whereas the conclusion is the supremum
-over all partitions.
+the displayed bound on the partition-relative entropy `h(α, T)`.
+
+The informal atom-count above is a *single-partition, finite-`n`* estimate — but that is **not**
+what the formal `hgeo` says. As stated, `hgeo` quantifies over **all** partitions `P` and bounds
+the full per-partition Fekete limit `ksEntropyPartition` (not a finite-`n` count), so it is
+lattice-equivalent — via `iSup_le` / `le_iSup` in `EReal` — to the conclusion. What this module
+proves is therefore the **abstract reduction**: the twofold `iSup_le` folding the per-partition
+bounds into the system-entropy supremum. The genuinely geometric content is the informal
+single-partition estimate above, whose formalization is the gap discussed next.
 
 Formalizing `hgeo` itself requires smooth-manifold ergodic theory absent from Mathlib — Lyapunov
 charts and the Mañé/Katok covering–counting argument (how a partition refines under `T^[n]`,

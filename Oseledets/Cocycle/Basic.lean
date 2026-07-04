@@ -82,7 +82,11 @@ theorem cocycle_add (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (m n : 
     rw [← Nat.add_assoc, cocycle_succ, cocycle_succ, ih (T x),
       Function.iterate_succ_apply, mul_assoc]
 
-/-- The one-sided integrability hypothesis: `log⁺‖A‖ ∈ L¹(μ)`. -/
+/-- The one-sided integrability hypothesis: `log⁺‖A‖ ∈ L¹(μ)`.
+
+Despite the name (`LogNorm`), the integrand is the **positive part**
+`log⁺‖A‖ = Real.posLog ‖A‖`, not `log‖A‖`; this is strictly weaker than two-sided
+`log‖A‖ ∈ L¹(μ)`. -/
 def IntegrableLogNorm [MeasurableSpace X] (A : X → Matrix (Fin d) (Fin d) ℝ)
     (μ : Measure X) : Prop :=
   Integrable (fun x => Real.posLog ‖A x‖) μ

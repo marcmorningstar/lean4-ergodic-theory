@@ -62,6 +62,11 @@ variable [mα : MeasurableSpace α] [mβ : MeasurableSpace β] [StandardBorelSpa
 where `comap π 𝓑_Y = MeasurableSpace.comap π mβ` is the factor (invariant) sub-σ-algebra of the
 source pulled back from the target.
 
+This is the **conditional** version: it takes the partition-level Abramov–Rokhlin identity (B6a)
+as the hypothesis `hBA`. For the forms where that identity is *proved* rather than assumed, see
+`abramov_rokhlin_of_W3` (supplies only the W3 σ-convergence) and `abramov_rokhlin_of_generator`
+(supplies a base generator `IsGenerating ν S R`, discharging W3 entirely).
+
 The formula is assembled from:
 
 * `hfac : IsFactorMap π T S μ ν` — the factor map, supplying that `π` is measure preserving, the
