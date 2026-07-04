@@ -2402,6 +2402,26 @@ axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms Oseledets.Multifractal.renyiDimFlow_bernSuspension_q_dependent
 
+/-- info: 'Oseledets.Multifractal.renyiDimMeasure_zero_ne_one_bern' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Multifractal.renyiDimMeasure_zero_ne_one_bern
+
+/-- info: 'Oseledets.Multifractal.renyiDimFlow_bernSuspension_zero_ne_one' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Multifractal.renyiDimFlow_bernSuspension_zero_ne_one
+
+/-- info: 'Oseledets.Multifractal.dimH_bern_eq_Hnu_div_log_two' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Multifractal.dimH_bern_eq_Hnu_div_log_two
+
+/-- info: 'Oseledets.Multifractal.hasFlowExponent_of_tendsto_finiteTimeFlowExponent' depends on
+axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms Oseledets.Multifractal.hasFlowExponent_of_tendsto_finiteTimeFlowExponent
+
 /-- info: 'Oseledets.Multifractal.isHeterogeneous_bernSuspensionWitness' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in

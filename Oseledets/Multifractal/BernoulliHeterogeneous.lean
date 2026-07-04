@@ -41,7 +41,12 @@ The chain is:
 * `Oseledets.Multifractal.measure_coordPartition_cell_bern`: the marginal identity
   `(bern ν) ((coordPartition (bern ν)).cells i) = ν {i}`.
 * `Oseledets.Multifractal.isHeterogeneous_coordPartition_bern`: base heterogeneity of `bern ν`.
-* `Oseledets.Multifractal.renyiDimMeasure_q_dependent_bern`: the non-vacuous `q`-dependence witness.
+* `Oseledets.Multifractal.renyiDimMeasure_coordPartition_bern_zero` /
+  `renyiDimMeasure_coordPartition_bern_one`: the explicit dimension values `log 2 / (-log ε)` and
+  `Hnu ν / (-log ε)` at `q = 0, 1`.
+* `Oseledets.Multifractal.renyiDimMeasure_zero_ne_one_bern`: the explicit non-vacuity witness
+  `D₀ ≠ D₁` at the exhibited exponents `q = 0, 1`.
+* `Oseledets.Multifractal.renyiDimMeasure_q_dependent_bern`: its `∃`-corollary.
 -/
 
 open MeasureTheory Real Function Set
@@ -164,14 +169,70 @@ theorem partitionFunctionMeasure_coordPartition_bern_zero {ν : Measure α₀} [
   rw [hmass i, hmass j, if_pos hi, if_pos hj, Real.rpow_zero, Real.rpow_zero]
   norm_num
 
-/-- **The non-vacuity core: genuine `q`-dependence of the Rényi spectrum of a biased Bernoulli
-measure.** For a scale `0 < ε < 1` and a biased 2-symbol law `ν` (exactly two symbols `i ≠ j`, both
-of positive mass, with `(ν {i}).toReal ≠ (ν {j}).toReal`), the Rényi (generalized) dimension of
-`bern ν` for the coordinate partition takes *different* values at `q = 0` and `q = 1`. Concretely
-`D₀ = log 2 / (-log ε)` (both atoms occupied, so `Z₀` counts the two cells) and
-`D₁ = -Hnu ν / log ε = Hnu ν / (-log ε)` (the information dimension), and these differ precisely
-because `Hnu ν < log 2` — the strict bound `Hnu_lt_log_two` (item 1). This is a **non-vacuous**
-witness: the inequality is not a bare existential, it is driven by the genuine bias of `ν`. -/
+/-- **The Rényi dimension of `bern ν` at `q = 0` (explicit value).** For a scale `0 < ε < 1` and a
+biased 2-symbol law `ν` (exactly two symbols `i ≠ j`, both of positive mass), the `q = 0` Rényi
+(generalized) dimension of `bern ν` for the coordinate partition is the box-counting value
+`D₀ = log 2 / (-log ε)`: both atoms are occupied, so the partition function `Z₀` counts the two
+cells (`partitionFunctionMeasure_coordPartition_bern_zero`). -/
+theorem renyiDimMeasure_coordPartition_bern_zero {ν : Measure α₀} [IsProbabilityMeasure ν]
+    {i j : α₀} (hij : i ≠ j) (huniv : (Finset.univ : Finset α₀) = {i, j})
+    (hi : 0 < (ν {i}).toReal) (hj : 0 < (ν {j}).toReal) {ε : ℝ} (hε0 : 0 < ε) (hε1 : ε < 1) :
+    renyiDimMeasure (bern ν) (coordPartition (bern ν)) ε 0 = Real.log 2 / (-Real.log ε) := by
+  have hlogε_neg : Real.log ε < 0 := Real.log_neg hε0 hε1
+  have hlogε_ne : Real.log ε ≠ 0 := ne_of_lt hlogε_neg
+  -- `D₀ = massExponent / (0 - 1) = - massExponent`; with `Z₀ = 2`, `massExponent = log 2 / log ε`.
+  have hZ0 : partitionFunction
+      (fun k => ((bern ν) ((coordPartition (bern ν)).cells k)).toReal) 0 = 2 :=
+    partitionFunctionMeasure_coordPartition_bern_zero hij huniv hi hj
+  rw [renyiDimMeasure, renyiDim, if_neg (by norm_num : (0 : ℝ) ≠ 1), massExponent, hZ0]
+  field_simp
+  ring
+
+omit [DecidableEq α₀] in
+/-- **The Rényi dimension of `bern ν` at `q = 1` (explicit value, information dimension).** The
+`q = 1` Rényi (generalized) dimension of `bern ν` for the coordinate partition is
+`D₁ = Hnu ν / (-log ε)`: the `q = 1` branch is the Shannon entropy of the partition divided by
+`-log ε` (`renyiDimMeasure_one_eq`), and the coordinate partition's entropy is the single-symbol
+entropy `Hnu ν` (the marginal identity `measure_coordPartition_cell_bern`). -/
+theorem renyiDimMeasure_coordPartition_bern_one {ν : Measure α₀} [IsProbabilityMeasure ν] {ε : ℝ} :
+    renyiDimMeasure (bern ν) (coordPartition (bern ν)) ε 1 = Hnu ν / (-Real.log ε) := by
+  have hentropy : Oseledets.Entropy.entropy (bern ν) (coordPartition (bern ν)).cells = Hnu ν := by
+    rw [Oseledets.Entropy.entropy_def, Hnu]
+    refine Finset.sum_congr rfl fun k _ => ?_
+    rw [measure_coordPartition_cell_bern ν k]
+  rw [renyiDimMeasure_one_eq, hentropy, neg_div, div_neg]
+
+/-- **The non-vacuity core (explicit witnesses `q = 0, 1`): the Rényi dimension of a biased
+Bernoulli measure differs at `q = 0` and `q = 1`.** For a scale `0 < ε < 1` and a biased 2-symbol
+law `ν` (two symbols `i ≠ j`, both of positive mass, with `(ν {i}).toReal ≠ (ν {j}).toReal`),
+the two *explicit* values `D₀ = log 2 / (-log ε)` (box counting,
+`renyiDimMeasure_coordPartition_bern_zero`) and `D₁ = Hnu ν / (-log ε)` (information dimension,
+`renyiDimMeasure_coordPartition_bern_one`) are **distinct**: they share the nonzero denominator
+`-log ε`, and their numerators differ because `Hnu ν < log 2` (the strict bias bound
+`Hnu_lt_log_two`, item 1). This is the honest, non-vacuous `q`-dependence — the exponents `q = 0, 1`
+and the inequality are exhibited, not merely existentially asserted. -/
+theorem renyiDimMeasure_zero_ne_one_bern {ν : Measure α₀} [IsProbabilityMeasure ν] {i j : α₀}
+    (hij : i ≠ j) (huniv : (Finset.univ : Finset α₀) = {i, j})
+    (hbias : (ν {i}).toReal ≠ (ν {j}).toReal)
+    (hi : 0 < (ν {i}).toReal) (hj : 0 < (ν {j}).toReal) {ε : ℝ} (hε0 : 0 < ε) (hε1 : ε < 1) :
+    renyiDimMeasure (bern ν) (coordPartition (bern ν)) ε 0
+      ≠ renyiDimMeasure (bern ν) (coordPartition (bern ν)) ε 1 := by
+  rw [renyiDimMeasure_coordPartition_bern_zero hij huniv hi hj hε0 hε1,
+    renyiDimMeasure_coordPartition_bern_one]
+  -- The two values share the nonzero denominator `-log ε`, so they agree iff `log 2 = Hnu ν`.
+  intro hcontra
+  have hlogε_neg : Real.log ε < 0 := Real.log_neg hε0 hε1
+  have hnegε_ne : -Real.log ε ≠ 0 := neg_ne_zero.2 (ne_of_lt hlogε_neg)
+  have hne : Real.log 2 = Hnu ν := (div_left_inj' hnegε_ne).1 hcontra
+  exact absurd hne.symm (ne_of_lt (Hnu_lt_log_two hij huniv hbias hi hj))
+
+/-- **The non-vacuity core (existential form).** The `∃`-corollary of the explicit
+`renyiDimMeasure_zero_ne_one_bern`: for a scale `0 < ε < 1` and a biased 2-symbol law `ν`, the Rényi
+(generalized) dimension of `bern ν` for the coordinate partition takes different values at the
+*explicit* exponents `q₁ = 0` and `q₂ = 1` — the box-counting `D₀ = log 2 / (-log ε)` versus the
+information dimension `D₁ = Hnu ν / (-log ε)`, which differ precisely because `Hnu ν < log 2`. This
+is a **non-vacuous** witness: the exhibited exponents `0, 1` and the driving bias bound are recorded
+in `renyiDimMeasure_zero_ne_one_bern`, not left implicit. -/
 theorem renyiDimMeasure_q_dependent_bern {ν : Measure α₀} [IsProbabilityMeasure ν] {i j : α₀}
     (hij : i ≠ j) (huniv : (Finset.univ : Finset α₀) = {i, j})
     (hbias : (ν {i}).toReal ≠ (ν {j}).toReal)
@@ -179,32 +240,7 @@ theorem renyiDimMeasure_q_dependent_bern {ν : Measure α₀} [IsProbabilityMeas
     {ε : ℝ} (hε0 : 0 < ε) (hε1 : ε < 1) :
     ∃ q₁ q₂ : ℝ,
       renyiDimMeasure (bern ν) (coordPartition (bern ν)) ε q₁
-        ≠ renyiDimMeasure (bern ν) (coordPartition (bern ν)) ε q₂ := by
-  have hlogε_neg : Real.log ε < 0 := Real.log_neg hε0 hε1
-  have hlogε_ne : Real.log ε ≠ 0 := ne_of_lt hlogε_neg
-  refine ⟨0, 1, ?_⟩
-  -- `D₀ = massExponent / (0 - 1) = - massExponent`; with `Z₀ = 2`, `massExponent = log 2 / log ε`.
-  have hZ0 : partitionFunction
-      (fun k => ((bern ν) ((coordPartition (bern ν)).cells k)).toReal) 0 = 2 :=
-    partitionFunctionMeasure_coordPartition_bern_zero hij huniv hi hj
-  have hD0 : renyiDimMeasure (bern ν) (coordPartition (bern ν)) ε 0
-      = Real.log 2 / (-Real.log ε) := by
-    rw [renyiDimMeasure, renyiDim, if_neg (by norm_num : (0 : ℝ) ≠ 1), massExponent, hZ0]
-    field_simp
-    ring
-  -- `D₁ = - entropy / log ε`; the entropy of the coordinate partition of `bern ν` is `Hnu ν`.
-  have hentropy : Oseledets.Entropy.entropy (bern ν) (coordPartition (bern ν)).cells = Hnu ν := by
-    rw [Oseledets.Entropy.entropy_def, Hnu]
-    refine Finset.sum_congr rfl fun k _ => ?_
-    rw [measure_coordPartition_cell_bern ν k]
-  have hD1 : renyiDimMeasure (bern ν) (coordPartition (bern ν)) ε 1
-      = Hnu ν / (-Real.log ε) := by
-    rw [renyiDimMeasure_one_eq, hentropy, neg_div, div_neg]
-  rw [hD0, hD1]
-  -- The two values share the nonzero denominator `-log ε`, so they agree iff `log 2 = Hnu ν`.
-  intro hcontra
-  have hnegε_ne : -Real.log ε ≠ 0 := neg_ne_zero.2 hlogε_ne
-  have hne : Real.log 2 = Hnu ν := (div_left_inj' hnegε_ne).1 hcontra
-  exact absurd hne.symm (ne_of_lt (Hnu_lt_log_two hij huniv hbias hi hj))
+        ≠ renyiDimMeasure (bern ν) (coordPartition (bern ν)) ε q₂ :=
+  ⟨0, 1, renyiDimMeasure_zero_ne_one_bern hij huniv hbias hi hj hε0 hε1⟩
 
 end Oseledets.Multifractal

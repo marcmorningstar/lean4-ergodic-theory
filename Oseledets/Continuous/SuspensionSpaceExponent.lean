@@ -164,18 +164,17 @@ theorem tendsto_exponent_iff_of_suspensionAct [NeZero d] (hc : ∀ x, c ≤ τ x
 
 /-- **Orbit-class invariance of the flow exponent.** If two cover points are connected by a forward
 orbit step `suspensionAct (n : ℤ) (x, s) = (x₂, s₂)` (so `suspensionMk (x, s) = suspensionMk
-(x₂, s₂)`), then — under base-cocycle invertibility and eventual strict positivity of both
-cover-cocycle norms — the growth rate `L` computed at the representative `(x, s)` certifies the
+(x₂, s₂)`), then the growth rate `L` computed at the representative `(x, s)` certifies the
 flow exponent of the orbit class of `(x₂, s₂)`: it produces a `HasFlowExponent (suspensionMk
 (x₂, s₂)) L` witness. This is the well-definedness of the flow exponent under (forward) orbit
 equivalence: the exponent is a property of the class, read off from any representative.
 
 The orbit step `hxs` is used to identify the two orbit classes (`suspensionMk` of orbit-equivalent
 points agree); the growth rate at `(x, s)` then directly witnesses the exponent of the common
-class. (No invertibility is needed for *this* direction — `(x, s)` itself serves as the witness;
-invertibility enters only in `tendsto_exponent_iff_of_suspensionAct`, which guarantees the *same*
-`L` is obtained from the *other* representative `(x₂, s₂)`.) -/
-theorem hasFlowExponent_of_suspensionAct [NeZero d] (hc : ∀ x, c ≤ τ x) (hcpos : 0 < c)
+class. (No invertibility — nor even `NeZero d` — is needed for *this* direction: `(x, s)` itself
+serves as the witness; invertibility enters only in `tendsto_exponent_iff_of_suspensionAct`, which
+guarantees the *same* `L` is obtained from the *other* representative `(x₂, s₂)`.) -/
+theorem hasFlowExponent_of_suspensionAct (hc : ∀ x, c ≤ τ x) (hcpos : 0 < c)
     (n : ℕ) (x : X) (s : ℝ) {x₂ : X} {s₂ : ℝ}
     (hxs : suspensionAct T hτ (n : ℤ) (x, s) = (x₂, s₂))
     {L : ℝ}

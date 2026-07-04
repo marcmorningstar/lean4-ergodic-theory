@@ -51,8 +51,11 @@ The first equality is `(measurePreserving_suspensionBaseProj ν).measure_preimag
 * `Oseledets.Multifractal.measure_bernSuspensionWitness_cell`: the cell-mass identity
   `(μ̂ (P.cells j)).toReal = (ν {(Fintype.equivFin α₀).symm j}).toReal`.
 * `Oseledets.Multifractal.isHeterogeneous_bernSuspensionWitness`: heterogeneity of `P`.
-* `Oseledets.Multifractal.renyiDimFlow_bernSuspension_q_dependent`: the headline non-vacuous
-  `q`-dependence of the flow's Rényi spectrum, reduced to the biased fact `Hnu ν < log 2`.
+* `Oseledets.Multifractal.renyiDimFlow_bernSuspension_eq_base`: the flow Rényi spectrum equals the
+  one-sided base spectrum at every `q` (the transfer).
+* `Oseledets.Multifractal.renyiDimFlow_bernSuspension_zero_ne_one`: the headline non-vacuous
+  `q`-dependence at the *explicit* exponents `q = 0, 1`, reduced to the biased fact `Hnu ν < log 2`.
+* `Oseledets.Multifractal.renyiDimFlow_bernSuspension_q_dependent`: its `∃`-corollary.
 -/
 
 open MeasureTheory Real Function Set
@@ -161,21 +164,71 @@ theorem partitionFunctionMeasure_bernSuspensionWitness_eq (q : ℝ) :
   rw [measure_bernSuspensionWitness_cell_toReal, Equiv.symm_apply_apply,
     measure_coordPartition_cell_bern]
 
-/-- **THE HEADLINE (deliverable (ii)): genuine `q`-dependence of the Bernoulli suspension flow's
-Rényi spectrum.** For a scale `0 < ε < 1` and a biased 2-symbol law `ν` (exactly two symbols
-`i ≠ j`, both of positive mass, with `(ν {i}).toReal ≠ (ν {j}).toReal`), the Rényi (generalized)
-dimension of the **flow's invariant measure** `μ̂` for the witness partition takes *different*
-values at two explicit exponents. Concretely `D₀ = log 2 / (-log ε)` (both atoms occupied) and
-`D₁ = Hnu ν / (-log ε)` (the information dimension), and these differ precisely because
-`Hnu ν < log 2` — the strict bias bound `Hnu_lt_log_two`. This is the **non-vacuous** witness:
-the inequality is driven by the genuine bias of `ν`, not satisfied trivially.
+/-- **The flow witness's Rényi spectrum equals the one-sided base spectrum, at every `q`.** Since
+`renyiDimFlow (bernSuspensionFlow ν) P ε q` unfolds to `renyiDimMeasure μ̂ P ε q`, and
+`renyiDimMeasure` depends only on the cell masses — which agree with those of `bern ν` up to the
+`α₀ ≃ Fin` reindex (`partitionFunctionMeasure_bernSuspensionWitness_eq` for the `q ≠ 1` mass
+exponent, and the matching entropy-numerator reindex for `q = 1`) — the flow Rényi dimension equals
+the one-sided base Rényi dimension `renyiDimMeasure (bern ν) (coordPartition (bern ν)) ε q` at every
+`q`. This is the transfer that carries every explicit base value/inequality to the flow. -/
+theorem renyiDimFlow_bernSuspension_eq_base {ε : ℝ} (q : ℝ) :
+    renyiDimFlow (bernSuspensionFlow ν) (bernSuspensionWitness ν) ε q
+      = renyiDimMeasure (bern ν) (coordPartition (bern ν)) ε q := by
+  rw [renyiDimFlow, renyiDimMeasure, renyiDimMeasure, renyiDim, renyiDim]
+  -- The two `q = 1` numerators `∑ i, p i log p i` agree (reindex the masses by `equivFin`).
+  have hnum : (∑ k, ((suspensionMeasure (biShiftEquiv (α₀ := α₀)) measurable_oneRoof (bernZ ν))
+        ((bernSuspensionWitness ν).cells k)).toReal
+        * Real.log (((suspensionMeasure (biShiftEquiv (α₀ := α₀)) measurable_oneRoof (bernZ ν))
+          ((bernSuspensionWitness ν).cells k)).toReal))
+      = ∑ a, ((bern ν) ((coordPartition (bern ν)).cells a)).toReal
+          * Real.log (((bern ν) ((coordPartition (bern ν)).cells a)).toReal) := by
+    rw [← Equiv.sum_comp (Fintype.equivFin α₀)
+        (fun k => ((suspensionMeasure (biShiftEquiv (α₀ := α₀))
+          measurable_oneRoof (bernZ ν)) ((bernSuspensionWitness ν).cells k)).toReal
+          * Real.log (((suspensionMeasure (biShiftEquiv (α₀ := α₀))
+          measurable_oneRoof (bernZ ν)) ((bernSuspensionWitness ν).cells k)).toReal))]
+    refine Finset.sum_congr rfl fun a _ => ?_
+    rw [measure_bernSuspensionWitness_cell_toReal, Equiv.symm_apply_apply,
+      measure_coordPartition_cell_bern]
+  -- The mass exponents agree (their partition functions agree, by the same reindex).
+  have hmass : massExponent (fun k => ((suspensionMeasure (biShiftEquiv (α₀ := α₀))
+        measurable_oneRoof (bernZ ν)) ((bernSuspensionWitness ν).cells k)).toReal) ε q
+      = massExponent (fun a => ((bern ν) ((coordPartition (bern ν)).cells a)).toReal) ε q := by
+    rw [massExponent, massExponent]
+    congr 2
+    exact partitionFunctionMeasure_bernSuspensionWitness_eq ν q
+  by_cases hq : q = 1
+  · rw [if_pos hq, if_pos hq, hnum]
+  · rw [if_neg hq, if_neg hq, hmass]
 
-The proof **transfers** to the already-established one-sided base witness
-`renyiDimMeasure_q_dependent_bern`: since `renyiDimFlow (bernSuspensionFlow ν) P ε q` unfolds
-definitionally to `renyiDimMeasure μ̂ P ε q`, and `renyiDimMeasure` depends only on the cell-mass
-family — which agrees with that of `bern ν` up to the `α₀ ≃ Fin` reindex
-(`partitionFunctionMeasure_bernSuspensionWitness_eq`, hence equal `renyiDimMeasure` at every `q`) —
-the flow `q`-dependence is exactly the base `q`-dependence. -/
+/-- **THE HEADLINE (deliverable (ii)), explicit witnesses `q = 0, 1`.** For a scale `0 < ε < 1` and
+a biased 2-symbol law `ν` (exactly two symbols `i ≠ j`, both of positive mass, with
+`(ν {i}).toReal ≠ (ν {j}).toReal`), the Rényi (generalized) dimension of the **flow's invariant
+measure** `μ̂` for the witness partition takes *different* values at the **explicit** exponents
+`q = 0` and `q = 1`. Concretely `D₀ = log 2 / (-log ε)` (both atoms occupied) and
+`D₁ = Hnu ν / (-log ε)` (the information dimension); they differ precisely because `Hnu ν < log 2`
+— the strict bias bound `Hnu_lt_log_two`. This is the **non-vacuous** witness: the inequality at the
+exhibited exponents is driven by the genuine bias of `ν`, not satisfied trivially.
+
+The proof **transfers** the explicit one-sided base inequality `renyiDimMeasure_zero_ne_one_bern`
+through `renyiDimFlow_bernSuspension_eq_base` (the flow and base Rényi dimensions coincide at every
+`q`). -/
+theorem renyiDimFlow_bernSuspension_zero_ne_one [DecidableEq α₀] {i j : α₀} (hij : i ≠ j)
+    (huniv : (Finset.univ : Finset α₀) = {i, j})
+    (hbias : (ν {i}).toReal ≠ (ν {j}).toReal)
+    (hi : 0 < (ν {i}).toReal) (hj : 0 < (ν {j}).toReal)
+    {ε : ℝ} (hε0 : 0 < ε) (hε1 : ε < 1) :
+    renyiDimFlow (bernSuspensionFlow ν) (bernSuspensionWitness ν) ε 0
+      ≠ renyiDimFlow (bernSuspensionFlow ν) (bernSuspensionWitness ν) ε 1 := by
+  rw [renyiDimFlow_bernSuspension_eq_base ν 0, renyiDimFlow_bernSuspension_eq_base ν 1]
+  exact renyiDimMeasure_zero_ne_one_bern hij huniv hbias hi hj hε0 hε1
+
+/-- **The headline (deliverable (ii)), existential form.** The `∃`-corollary of the explicit
+`renyiDimFlow_bernSuspension_zero_ne_one`: for a scale `0 < ε < 1` and a biased 2-symbol law `ν`,
+the flow's Rényi dimension takes different values at the *explicit* exponents `q₁ = 0` and `q₂ = 1`
+(the box-counting `D₀ = log 2 / (-log ε)` versus the information dimension `D₁ = Hnu ν / (-log ε)`),
+which differ precisely because `Hnu ν < log 2`. Non-vacuous — the exhibited exponents `0, 1` and the
+driving bias bound are recorded in `renyiDimFlow_bernSuspension_zero_ne_one`, not left implicit. -/
 theorem renyiDimFlow_bernSuspension_q_dependent [DecidableEq α₀] {i j : α₀} (hij : i ≠ j)
     (huniv : (Finset.univ : Finset α₀) = {i, j})
     (hbias : (ν {i}).toReal ≠ (ν {j}).toReal)
@@ -183,42 +236,7 @@ theorem renyiDimFlow_bernSuspension_q_dependent [DecidableEq α₀] {i j : α₀
     {ε : ℝ} (hε0 : 0 < ε) (hε1 : ε < 1) :
     ∃ q₁ q₂ : ℝ,
       renyiDimFlow (bernSuspensionFlow ν) (bernSuspensionWitness ν) ε q₁
-        ≠ renyiDimFlow (bernSuspensionFlow ν) (bernSuspensionWitness ν) ε q₂ := by
-  -- `renyiDimFlow … P ε q` unfolds to `renyiDimMeasure μ̂ P ε q`, and `renyiDimMeasure` is built
-  -- from the partition function, which agrees with the one-sided base witness at every `q`.
-  have htransfer : ∀ q : ℝ,
-      renyiDimFlow (bernSuspensionFlow ν) (bernSuspensionWitness ν) ε q
-        = renyiDimMeasure (bern ν) (coordPartition (bern ν)) ε q := by
-    intro q
-    rw [renyiDimFlow, renyiDimMeasure, renyiDimMeasure, renyiDim, renyiDim]
-    -- The two `q = 1` numerators `∑ i, p i log p i` agree (reindex the masses by `equivFin`).
-    have hnum : (∑ k, ((suspensionMeasure (biShiftEquiv (α₀ := α₀)) measurable_oneRoof (bernZ ν))
-          ((bernSuspensionWitness ν).cells k)).toReal
-          * Real.log (((suspensionMeasure (biShiftEquiv (α₀ := α₀)) measurable_oneRoof (bernZ ν))
-            ((bernSuspensionWitness ν).cells k)).toReal))
-        = ∑ a, ((bern ν) ((coordPartition (bern ν)).cells a)).toReal
-            * Real.log (((bern ν) ((coordPartition (bern ν)).cells a)).toReal) := by
-      rw [← Equiv.sum_comp (Fintype.equivFin α₀)
-          (fun k => ((suspensionMeasure (biShiftEquiv (α₀ := α₀))
-            measurable_oneRoof (bernZ ν)) ((bernSuspensionWitness ν).cells k)).toReal
-            * Real.log (((suspensionMeasure (biShiftEquiv (α₀ := α₀))
-            measurable_oneRoof (bernZ ν)) ((bernSuspensionWitness ν).cells k)).toReal))]
-      refine Finset.sum_congr rfl fun a _ => ?_
-      rw [measure_bernSuspensionWitness_cell_toReal, Equiv.symm_apply_apply,
-        measure_coordPartition_cell_bern]
-    -- The mass exponents agree (their partition functions agree, by the same reindex).
-    have hmass : massExponent (fun k => ((suspensionMeasure (biShiftEquiv (α₀ := α₀))
-          measurable_oneRoof (bernZ ν)) ((bernSuspensionWitness ν).cells k)).toReal) ε q
-        = massExponent (fun a => ((bern ν) ((coordPartition (bern ν)).cells a)).toReal) ε q := by
-      rw [massExponent, massExponent]
-      congr 2
-      exact partitionFunctionMeasure_bernSuspensionWitness_eq ν q
-    by_cases hq : q = 1
-    · rw [if_pos hq, if_pos hq, hnum]
-    · rw [if_neg hq, if_neg hq, hmass]
-  -- Pull the base `q`-dependence witness and rewrite through the transfer.
-  obtain ⟨q₁, q₂, hne⟩ :=
-    renyiDimMeasure_q_dependent_bern hij huniv hbias hi hj hε0 hε1
-  exact ⟨q₁, q₂, by rw [htransfer q₁, htransfer q₂]; exact hne⟩
+        ≠ renyiDimFlow (bernSuspensionFlow ν) (bernSuspensionWitness ν) ε q₂ :=
+  ⟨0, 1, renyiDimFlow_bernSuspension_zero_ne_one ν hij huniv hbias hi hj hε0 hε1⟩
 
 end Oseledets.Multifractal
