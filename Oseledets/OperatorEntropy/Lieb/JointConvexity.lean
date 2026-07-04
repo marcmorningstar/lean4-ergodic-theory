@@ -53,9 +53,9 @@ def relEntropyMat (ρ σ : Matrix n n ℂ) : ℝ :=
 
 /-- Bridge: the trace-form relative entropy agrees with the spectral `relEntropy` on density
 matrices (faithful `σ`), via `relEntropy_eq_traceLog` and `Matrix.IsHermitian.cfc_eq`. -/
-theorem relEntropyMat_eq_relEntropy (ρ σ : DensityMatrix n) (hσ : σ.val.PosDef) :
+theorem relEntropyMat_eq_relEntropy (ρ σ : DensityMatrix n) (_hσ : σ.val.PosDef) :
     relEntropyMat ρ.val σ.val = relEntropy ρ σ := by
-  rw [relEntropy_eq_traceLog ρ σ hσ, relEntropyMat,
+  rw [relEntropy_eq_traceLog ρ σ, relEntropyMat,
     Matrix.IsHermitian.cfc_eq ρ.posSemidef.1, Matrix.IsHermitian.cfc_eq σ.posSemidef.1]
 
 /-! ## The Effros realization functional -/

@@ -559,16 +559,18 @@ the easy (\(\Leftarrow\)) half of Petz's equality theorem (Petz 1986, 2003).
   \(S(\rho\|\sigma)\) by isometric-embedding invariance (\Cref{relEntropy_embed_invariant}).
 \end{proof}
 
-\begin{theorem}[Data-processing inequality for a mixed-ancilla channel]\label{monotonicity_relEntropy_under_CPTP}
-  \lean{Oseledets.OperatorEntropy.monotonicity_relEntropy_under_CPTP}\leanok
+\begin{theorem}[Data-processing inequality for the faithful-ancilla mixed-Stinespring family]\label{monotonicity_relEntropy_under_stinespring}
+  \lean{Oseledets.OperatorEntropy.monotonicity_relEntropy_under_stinespring}\leanok
   Unconditionally, for a faithful ancilla \(\alpha\), a unitary dilation \(U\), and faithful
   \(\sigma\),
   \[
     S\bigl(\Tr_E U(\rho\otimes\alpha)U^{*}\,\big\|\,\Tr_E U(\sigma\otimes\alpha)U^{*}\bigr)
       \;\le\; S(\rho\|\sigma).
   \]
-  Every finite-dimensional CPTP channel arises this way (Stinespring), so this is the quantum
-  data-processing inequality.
+  This is the data-processing inequality for the faithful-ancilla mixed-Stinespring family; that
+  family does \emph{not} contain every CPTP channel (amplitude damping lies outside it, since its
+  exact dilation needs a pure, non-faithful ancilla), so it is not an in-repo DPI for a general
+  Kraus channel.
 \end{theorem}
 \begin{proof}\leanok
   \uses{stinespring_relEntropy_monotone, relEntropyMonotone_partialTrace}
@@ -597,9 +599,9 @@ the easy (\(\Leftarrow\)) half of Petz's equality theorem (Petz 1986, 2003).
   \(R\,x = \Tr_E(U(x\otimes\alpha)U^{*})\) inverting \(\Lambda\) on \(\rho,\sigma\).
 \end{corollary}
 \begin{proof}\leanok
-  \uses{no_section_of_strict_relEntropy_drop, monotonicity_relEntropy_under_CPTP}
+  \uses{no_section_of_strict_relEntropy_drop, monotonicity_relEntropy_under_stinespring}
   Specialize \Cref{no_section_of_strict_relEntropy_drop} to the Stinespring recovery map, whose
-  faithful data-processing monotonicity is exactly \Cref{monotonicity_relEntropy_under_CPTP}.
+  faithful data-processing monotonicity is exactly \Cref{monotonicity_relEntropy_under_stinespring}.
 \end{proof}
 
 The equality case of the data-processing inequality --- that saturation

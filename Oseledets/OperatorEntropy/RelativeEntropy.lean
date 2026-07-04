@@ -18,9 +18,14 @@ The headline keystone `relEntropy_nonneg` is a DIRECT application of `klein_scal
 simpler than `vonNeumannEntropy_subadditive`, because it involves ONE change of basis between
 ρ's and σ's eigenbases (no partial trace, no Kronecker).
 
-WALL (documented, NOT attempted): `monotonicity_relEntropy_under_CPTP` / `petz_equality_recovery`
-require Lieb concavity / joint convexity, which is Mathlib-absent (months-scale). Those are
-localized into the explicit `IsRelEntropyMonotone` hypothesis of the consumer corollary.
+HISTORICAL NOTE: the data-processing inequality and Petz's equality theorem — once documented
+here as an unattempted, Mathlib-absent wall — are now both proved and axiom-audited elsewhere in
+this layer.  The DPI is `monotonicity_relEntropy_under_stinespring` (for the faithful-ancilla
+mixed-Stinespring channel family; a general-`KrausChannel` DPI is still not in repo), resting on
+Lieb's joint convexity `Lieb.relEntropyMat_jointly_convex`.  Both directions of Petz's equality
+theorem are proved: `Lieb.petz_equality_recovery_general` (DPI saturation ⟹ Petz recovery) and
+`petz_recovery_implies_equality` (recovery ⟹ saturation).  The explicit `IsRelEntropyMonotone`
+hypothesis of the consumer corollary below is the honest interface for a general monotone map.
 -/
 
 open Matrix Real
@@ -151,8 +156,10 @@ private lemma relEntropy_eq_trace (ρ σ : DensityMatrix n) :
 /-- Recognizability bridge: the spectral form equals the trace form `Tr (ρ · (log ρ − log σ))`
 built from the matrix logarithm via the Hermitian continuous functional calculus
 `Matrix.IsHermitian.cfc Real.log` (purpose-built for matrices).  Provides the textbook
-identification with the Umegaki definition `D(ρ‖σ) = Tr ρ (log ρ − log σ)`. -/
-theorem relEntropy_eq_traceLog (ρ σ : DensityMatrix n) (_hσ : σ.val.PosDef) :
+identification with the Umegaki definition `D(ρ‖σ) = Tr ρ (log ρ − log σ)`.  It holds
+unconditionally — no faithfulness hypothesis on `σ` is needed (the `Real.log 0 = 0` convention
+makes both traces total). -/
+theorem relEntropy_eq_traceLog (ρ σ : DensityMatrix n) :
     relEntropy ρ σ
       = (ρ.val * (ρ.posSemidef.1.cfc Real.log - σ.posSemidef.1.cfc Real.log)).trace.re := by
   rw [relEntropy_eq_trace, mul_sub, Matrix.trace_sub, Complex.sub_re]
