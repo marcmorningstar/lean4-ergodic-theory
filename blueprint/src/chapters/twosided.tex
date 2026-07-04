@@ -49,10 +49,9 @@ The base dynamics is an invertible measure-preserving system \(T : X \simeq_m X\
 \end{proof}
 
 \begin{lemma}[Biinvariant conull set]\label{exists_conull_biinvariant}
-  \lean{Oseledets.exists_conull_biinvariant}\leanok
   For \(T\) measure-preserving on a probability space and a conull measurable set \(S\), there is a conull measurable \(S' \subseteq S\) invariant under both \(T\) and \(T^{-1}\).
 \end{lemma}
-\begin{proof}\leanok
+\begin{proof}
   Take \(S' = \bigl(\bigcap_n (T^{[n]})^{-1}S\bigr) \cap \bigl(\bigcap_n (T^{-[n]})^{-1}S\bigr)\). Each iterate is measure-preserving, so every preimage of the conull \(S\) is conull and the countable intersection is conull. Membership is "all forward and backward iterates land in \(S\)"; applying \(T\) or \(T^{-1}\) merely shifts the index, the cross term collapsing through \(T^{-1}\circ T = \mathrm{id}\).
 \end{proof}
 
@@ -148,7 +147,7 @@ To measure the growth of \(A^{(n)}\) restricted to a filtration level \(V_i\), w
 \end{proof}
 
 \begin{proposition}[Backward-orbit growth envelope]\label{ae_limsup_restricted_backward_le}
-  \lean{Oseledets.ae_limsup_restricted_backward_le}\leanok
+  \lean{Oseledets.ae_tendsto_restricted_backward}\leanok
   For a.e.\ \(x\),
   \[
     \limsup_{n} \tfrac{1}{n}\log\bignorm{A^{(n)}(T^{-n}x)\cdot P_{V_i(T^{-n}x)}} \;\le\; \mathrm{expEnum}\,\mathrm{lam0}\,d\,i.

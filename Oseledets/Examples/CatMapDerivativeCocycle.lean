@@ -95,17 +95,11 @@ namespace Oseledets.CatMapToral
 /-- The real cat-map matrix `catℝ = !![2,1;1,1]` is literally `Elementary`'s `catMapGen`. -/
 theorem catℝ_eq_catMapGen : catℝ = Oseledets.catMapGen := rfl
 
-/-- `catℝ` is symmetric (inherited from `catMapGen`). -/
-theorem catℝ_transpose' : catℝᵀ = catℝ := Oseledets.catMapGen_transpose
-
 /-- `catℝ` is positive semidefinite (inherited from `catMapGen`). -/
 theorem catℝ_posSemidef : catℝ.PosSemidef := Oseledets.catMapGen_posSemidef
 
 /-- `det catℝ = 1 ≠ 0` (inherited from `catMapGen`). -/
 theorem catℝ_det_ne_zero : catℝ.det ≠ 0 := Oseledets.catMapGen_det_ne_zero
-
-/-- The Hermitian witness for `catℝ`, reused from `catMapGen`. -/
-theorem catℝ_isHermitian : catℝ.IsHermitian := Oseledets.catMapGen_isHermitian
 
 /-! ## Grade 1 — the constant cat-map cocycle over the genuine ergodic torus base -/
 
@@ -137,11 +131,11 @@ theorem catTorus_constCocycle_exponents :
       (Oseledets.eigenvalues₀_congr catℝ_posSemidef.isHermitian Oseledets.catMapGen_isHermitian
         catℝ_eq_catMapGen i)
   refine ⟨?_, ?_⟩
-  · have key := Oseledets.exponents_const ergodic_catTorus catℝ_transpose' catℝ_det_ne_zero
+  · have key := Oseledets.exponents_const ergodic_catTorus catℝ_transpose catℝ_det_ne_zero
       (0 : Fin (Fintype.card (Fin 2)))
     rw [hbridge 0, h0] at key
     exact key
-  · have key := Oseledets.exponents_const ergodic_catTorus catℝ_transpose' catℝ_det_ne_zero
+  · have key := Oseledets.exponents_const ergodic_catTorus catℝ_transpose catℝ_det_ne_zero
       (1 : Fin (Fintype.card (Fin 2)))
     rw [hbridge 1, h1] at key
     exact key
@@ -177,10 +171,6 @@ theorem fderiv_catLift (x : EuclideanSpace ℝ (Fin 2)) :
     fderiv ℝ catLift x = Matrix.toEuclideanCLM (𝕜 := ℝ) (n := Fin 2) catℝ :=
   (Matrix.toEuclideanCLM (𝕜 := ℝ) (n := Fin 2) catℝ).fderiv
 
-/-- `catLift` is differentiable (it is a continuous linear map). -/
-theorem differentiable_catLift : Differentiable ℝ catLift :=
-  (Matrix.toEuclideanCLM (𝕜 := ℝ) (n := Fin 2) catℝ).differentiable
-
 /-- **Grade 2a.  The repo's derivative cocycle of `catLift` is the constant matrix `catℝ`.**  Since
 `catLift` is a continuous linear map, its Fréchet derivative at every point is itself
 (`fderiv_catLift`); transporting back along `toEuclideanCLM.symm` recovers the matrix `catℝ`.  So
@@ -190,11 +180,6 @@ the genuine tangent cocycle of the cat map's linear lift, in the repo's exact
     Oseledets.derivativeCocycle catLift x = catℝ := by
   rw [Oseledets.derivativeCocycle, fderiv_catLift x]
   exact (Matrix.toEuclideanCLM (𝕜 := ℝ) (n := Fin 2)).symm_apply_apply catℝ
-
-/-- The derivative cocycle of `catLift` is the **constant** generator `fun _ => catℝ`. -/
-theorem derivativeCocycle_catLift_eq_const :
-    Oseledets.derivativeCocycle catLift = fun _ : EuclideanSpace ℝ (Fin 2) => catℝ :=
-  funext derivativeCocycle_catLift
 
 /-- The determinant of the constant derivative-cocycle generator `derivativeCocycle catLift 0` is
 nonzero (it equals `catℝ`, whose determinant is `1`). -/

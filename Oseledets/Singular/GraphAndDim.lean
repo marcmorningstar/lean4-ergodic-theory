@@ -37,20 +37,6 @@ generator). Under it the graph is literally
 * `Oseledets.measurableSet_graph_lambdaSublevel`: the graph
   `{p : X × EuclideanSpace ℝ (Fin d) | p.2 ∈ lambdaSublevel A T p.1 c}` is measurable (given the
   everywhere `IsUltrametricGrowth` gate `hUM`).
-* `Oseledets.ae_dim_lambdaSublevel_eq_const`: for ergodic measure-preserving `T` and an
-  invertible measurable generator, there is a single `k : ℕ` with
-  `Module.finrank ℝ (lambdaSublevel A T x c) = k` for `μ`-a.e. `x`.
-
-## Proof outline of the a.e.-constant dimension
-
-The action `A x` maps the level-`c` space at `x` onto the level-`c` space at `T x`, a.e.
-(`Oseledets.vflag_equivariant`). As `A x` is injective (`det A ≠ 0`), `Submodule.map`
-preserves `finrank` (`Submodule.equivMapOfInjective`), so the integer-valued
-`x ↦ finrank ℝ (lambdaSublevel A T x c)` is a.e. `T`-invariant. It is also measurable
-(`Oseledets.MeasurableSubspace.measurable_finrank` applied to a threaded
-`MeasurableSubspace` witness), so ergodicity forces it a.e. constant
-(`Ergodic.ae_eq_const_of_ae_eq_comp₀`; `ℕ` is a countably-separated measurable space).
-
 ## References
 
 * D. Ruelle, *Ergodic theory of differentiable dynamical systems*, Publ. Math. IHÉS **50**
@@ -102,52 +88,5 @@ theorem measurableSet_graph_lambdaSublevel
     exact measurableSet_le (jointMeasurable_lambdaBar hA hT) measurable_const
 
 end Graph
-
-/-! ## A.e.-constant dimension of the sublevel filtration -/
-
-section Dimension
-
-variable {X : Type*} [MeasurableSpace X] {T : X → X} {d : ℕ} {μ : Measure X}
-
-/-- **The level dimension of the Lyapunov sublevel filtration is `μ`-a.e. constant.** For an
-ergodic measure-preserving `T` and an invertible (`det A ≠ 0`) measurable generator with the
-forward and inverse log-norm integrability of the invertible MET, the function
-`x ↦ Module.finrank ℝ (lambdaSublevel A T x c)` equals a single `k : ℕ` for `μ`-a.e. `x`.
-
-The map `A x` carries the level-`c` space at `x` onto that at `T x` a.e.
-(`Oseledets.vflag_equivariant`), and is injective by `det A ≠ 0`, so `Submodule.map` preserves
-`finrank` (`Submodule.equivMapOfInjective`); hence the dimension is a.e. `T`-invariant. With a
-`MeasurableSubspace` witness `hVmeas` for the level family the dimension is measurable
-(`Oseledets.MeasurableSubspace.measurable_finrank`), and ergodicity makes an a.e.-invariant
-measurable `ℕ`-valued function a.e. constant (`Ergodic.ae_eq_const_of_ae_eq_comp₀`). -/
-theorem ae_dim_lambdaSublevel_eq_const [IsProbabilityMeasure μ]
-    (hT : Ergodic T μ) {A : X → Matrix (Fin d) (Fin d) ℝ}
-    (hA : ∀ x, (A x).det ≠ 0) (hAmeas : Measurable A)
-    (hint : IntegrableLogNorm A μ) (hint' : IntegrableLogNorm (fun x => (A x)⁻¹) μ)
-    (c : ℝ) (hVmeas : MeasurableSubspace fun x => lambdaSublevel A T x c) :
-    ∃ k : ℕ, ∀ᵐ x ∂μ, Module.finrank ℝ (lambdaSublevel A T x c) = k := by
-  -- The dimension of the level is a.e. `T`-invariant, by equivariance + injectivity of `A x`.
-  have hinv : (fun x => Module.finrank ℝ (lambdaSublevel A T x c)) ∘ T
-      =ᵐ[μ] fun x => Module.finrank ℝ (lambdaSublevel A T x c) := by
-    filter_upwards [vflag_equivariant hT hA hAmeas hint hint'] with x hx
-    have hmap := hx c
-    -- injectivity of `A x` (via `toEuclideanLin`, since `det A x ≠ 0`)
-    have hinj : Function.Injective
-        ((Matrix.toEuclideanCLM (𝕜 := ℝ) (A x)).toLinearMap :
-          EuclideanSpace ℝ (Fin d) →ₗ[ℝ] EuclideanSpace ℝ (Fin d)) := by
-      have h1 : ((Matrix.toEuclideanCLM (𝕜 := ℝ) (A x)).toLinearMap :
-          EuclideanSpace ℝ (Fin d) →ₗ[ℝ] EuclideanSpace ℝ (Fin d))
-          = Matrix.toEuclideanLin (A x) :=
-        Matrix.coe_toEuclideanCLM_eq_toEuclideanLin (A x)
-      rw [h1]
-      exact injective_toEuclideanLin (hA x)
-    -- `finrank (map (A x) (level x)) = finrank (level x)`, and `map = level (T x)` by `hmap`.
-    have heq := (Submodule.equivMapOfInjective _ hinj (lambdaSublevel A T x c)).finrank_eq
-    rw [Function.comp_apply, ← hmap]
-    exact heq.symm
-  -- Ergodic constancy of the measurable, a.e.-invariant `ℕ`-valued dimension.
-  exact hT.ae_eq_const_of_ae_eq_comp₀ hVmeas.measurable_finrank.nullMeasurable hinv
-
-end Dimension
 
 end Oseledets

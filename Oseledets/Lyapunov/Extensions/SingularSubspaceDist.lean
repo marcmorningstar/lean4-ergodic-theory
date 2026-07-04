@@ -18,21 +18,15 @@ into a **subspace-convergence tool** keyed on the differences of those orthogona
 matrices.
 
 The metric we attach to a pair of subspaces is the operator-norm distance between their
-orthogonal projectors,
-`subspaceDist U V = ‖orthProjMatrix U - orthProjMatrix V‖`,
+orthogonal projectors, `‖orthProjMatrix U - orthProjMatrix V‖`,
 which is the standard gap (aperture) distance on the Grassmannian. A sequence of subspaces
 whose consecutive projector gaps are summable then has a convergent projector sequence, and the
 limit is again an orthogonal projector — self-adjoint and idempotent. This is exactly the soft
 analysis needed to extract a limiting flag space from a Cauchy sequence of finite-step subspaces
 (e.g. the eventual-kernel / Oseledets filtration constructions for singular cocycles).
 
-## Main definitions
-
-* `Oseledets.subspaceDist`: the orthogonal-projector operator-norm distance between two subspaces.
-
 ## Main results
 
-* `Oseledets.subspaceDist_self`: the distance of a subspace to itself is `0`.
 * `Oseledets.cauchySeq_of_summable_subspaceDist`: summable consecutive projector gaps give a
   Cauchy projector sequence.
 * `Oseledets.exists_tendsto_orthProjMatrix_of_summable`: such a sequence converges to a matrix `P`
@@ -46,19 +40,6 @@ open Filter Topology
 namespace Oseledets
 
 variable {d : ℕ}
-
-/-- The **orthogonal-projector gap distance** between two subspaces of
-`EuclideanSpace ℝ (Fin d)`: the operator-norm distance between the matrices of their orthogonal
-projections. This is the aperture (gap) metric on the Grassmannian, the natural distance under
-which subspace-valued families converge in this formalization. -/
-noncomputable def subspaceDist (U V : Submodule ℝ (EuclideanSpace ℝ (Fin d)))
-    [U.HasOrthogonalProjection] [V.HasOrthogonalProjection] : ℝ :=
-  ‖orthProjMatrix U - orthProjMatrix V‖
-
-/-- The gap distance of a subspace to itself is `0`. -/
-theorem subspaceDist_self (U : Submodule ℝ (EuclideanSpace ℝ (Fin d)))
-    [U.HasOrthogonalProjection] : subspaceDist U U = 0 := by
-  rw [subspaceDist, sub_self, norm_zero]
 
 /-- **Self-adjointness of the orthogonal-projection matrix.** `orthProjMatrix K` is the image of
 the (self-adjoint) orthogonal projection `K.starProjection` under the star algebra equivalence

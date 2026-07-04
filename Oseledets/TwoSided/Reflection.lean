@@ -40,9 +40,8 @@ core:
 * `Oseledets.sum_lam0_eq_integral_log_abs_det` — forward determinant sum identity.
 * `Oseledets.sum_mu0_eq_neg_sum_lam0` — backward sum is the negation of the forward sum.
 * `Oseledets.reflect_of_counting_and_sum` — pure combinatorial reflection lemma.
-* `Oseledets.numExp_eq_of_counting`, `Oseledets.expEnum_eq_neg_rev_of_counting`,
-  `Oseledets.backward_dim_count_of_counting` — the reflection corollaries (number of
-  distinct exponents, reflected-negated enumeration, backward dimension formula), each
+* `Oseledets.numExp_eq_of_counting`, `Oseledets.expEnum_eq_neg_rev_of_counting` — the
+  reflection corollaries (number of distinct exponents, reflected-negated enumeration), each
   consuming the counting bound as a hypothesis.
 -/
 
@@ -345,22 +344,6 @@ theorem backward_count_eq_of_counting {p q : ℕ → ℝ} {d : ℕ}
     · rintro ⟨hi, h⟩; exact ⟨hi, h hi⟩
   rw [hcompl, Finset.card_sdiff_of_subset (Finset.filter_subset _ _), Finset.card_range]
 
-/-- **Backward dimension formula (robust strict-sublevel form).** Specializing
-`backward_count_eq_of_counting` at the forward Lyapunov exponent `λᵢ = expEnum lam0 d i`:
-the backward interior dimension count at `−λᵢ` is `d` minus the number of forward
-exponents strictly below `λᵢ`:
-`#{j < d | mu0 j ≤ −λᵢ} = d − #{j < d | lam0 j < λᵢ}`.
-
-This is the load-bearing reflection of the dimension counts.  The blueprint's
-`λ_{i+1}` form is obtained from this by `forward_strict_count_eq_succ_of_counting`, which
-identifies `#{lam0 j < λᵢ}` with `#{lam0 j ≤ λ_{i+1}}` using the gap between consecutive
-distinct exponents. -/
-theorem backward_dim_count_of_counting {p q : ℕ → ℝ} {d : ℕ}
-    (hrefl : ∀ j : ℕ, j < d → q j = - p (d - 1 - j)) (i : Fin (numExp p d)) :
-    ((Finset.range d).filter (fun j => q j ≤ - expEnum p d i)).card
-      = d - ((Finset.range d).filter (fun j => p j < expEnum p d i)).card :=
-  backward_count_eq_of_counting hrefl (expEnum p d i)
-
 /-- **Consecutive-exponent gap.** For consecutive distinct forward exponents
 `λᵢ = expEnum p d i` and `λ_{i+1} = expEnum p d i.succ`, the forward exponents strictly
 below `λᵢ` are exactly those at or below `λ_{i+1}` (no distinct value lies strictly between
@@ -391,18 +374,6 @@ theorem forward_strict_count_eq_succ {p : ℕ → ℝ} {d : ℕ}
   · intro hle
     -- `p j ≤ λ_{i+1} < λᵢ`.
     exact lt_of_le_of_lt hle (expEnum_strictAnti p d (by rw [Fin.lt_def]; simp))
-
-/-- **Backward dimension formula (blueprint `λ_{i+1}` form).** For consecutive forward
-exponents, the backward interior dimension count at `−λᵢ` is `d` minus the number of
-forward exponents at or below the *next* exponent `λ_{i+1}`:
-`#{j < d | mu0 j ≤ −λᵢ} = d − #{j < d | lam0 j ≤ λ_{i+1}}`. -/
-theorem backward_dim_count_succ_of_counting {p q : ℕ → ℝ} {d : ℕ}
-    (hrefl : ∀ j : ℕ, j < d → q j = - p (d - 1 - j))
-    (i : Fin (numExp p d)) (hi : (i : ℕ) + 1 < numExp p d) :
-    ((Finset.range d).filter (fun j => q j ≤ - expEnum p d i)).card
-      = d - ((Finset.range d).filter
-          (fun j => p j ≤ expEnum p d ⟨(i : ℕ) + 1, hi⟩)).card := by
-  rw [backward_dim_count_of_counting hrefl i, forward_strict_count_eq_succ i hi]
 
 end Corollaries
 

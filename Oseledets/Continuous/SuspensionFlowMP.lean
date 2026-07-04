@@ -32,8 +32,6 @@ scalar passes through `Measure.map_smul`.
 
 * `Oseledets.suspensionTranslateEquiv`: the vertical translation `S t` packaged as a measurable
   equivalence on `X × ℝ` (used to take measurable images of the fundamental domain).
-* `Oseledets.isAddFundamentalDomain_image_translate`: the translated box `S t '' 𝓕` is again a
-  fundamental domain for the suspension `ℤ`-action.
 * `Oseledets.suspensionFlowMap_comp_mk`: the descent commutation `ζ_t ∘ π = π ∘ S t`.
 * `Oseledets.map_suspensionFlowMap_suspensionMeasure₀`: `(ζ_t)_* μ̂₀ = μ̂₀` for the raw
   (unnormalised) suspension measure.
@@ -69,33 +67,6 @@ def suspensionTranslateEquiv (t : ℝ) : (X × ℝ) ≃ᵐ (X × ℝ) where
     (suspensionTranslateEquiv t).symm p = suspensionTranslate (-t) p := rfl
 
 end TranslateEquiv
-
-section FundamentalDomainImage
-
-variable (T : X ≃ᵐ X) {τ : X → ℝ} (hτ : Measurable τ)
-
-include hτ in
-/-- The translated box `S t '' 𝓕` is again a fundamental domain for the suspension `ℤ`-action
-with respect to `μ × volume`. It is the image of the fundamental box `𝓕 = suspensionDomain τ`
-under the `ν`-preserving translation `S t`, which commutes with the action
-(`suspensionAct_translate`); `IsAddFundamentalDomain.image_of_equiv` transports the
-fundamental-domain property along such an equivalence. -/
-theorem isAddFundamentalDomain_image_translate {μ : Measure X} [SFinite μ]
-    {c : ℝ} (hc : ∀ x, c ≤ τ x) (hcpos : 0 < c) (t : ℝ) :
-    letI := (suspensionAddAction T hτ).toVAdd
-    IsAddFundamentalDomain ℤ (suspensionTranslate t '' suspensionDomain τ) (μ.prod volume) := by
-  letI := suspensionAddAction T hτ
-  have hfund := isAddFundamentalDomain_suspensionDomain T hτ (μ := μ) hc hcpos
-  have hqmp : MeasureTheory.MeasurePreserving
-      (suspensionTranslate (X := X) (-t)) (μ.prod volume) (μ.prod volume) :=
-    measurePreserving_translate μ (-t)
-  refine hfund.image_of_equiv (suspensionTranslateEquiv t).toEquiv
-    hqmp.quasiMeasurePreserving (Equiv.refl ℤ) (fun n p => ?_)
-  change suspensionTranslate t (suspensionAct T hτ n p)
-    = suspensionAct T hτ n (suspensionTranslate t p)
-  rw [suspensionAct_translate T hτ n t p]
-
-end FundamentalDomainImage
 
 section ActionInvariance
 

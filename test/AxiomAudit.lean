@@ -736,10 +736,6 @@ informational dump (it produces no output on success).
 #guard_msgs in
 #print axioms Oseledets.cocycle_backwardGen
 
-/-- info: 'Oseledets.exists_conull_biinvariant' depends on axioms: [propext, Classical.choice, Quot.sound] -/
-#guard_msgs in
-#print axioms Oseledets.exists_conull_biinvariant
-
 -- Two-sided splitting, P1 (forward dimension formula) and P7 (intersection measurability).
 
 /-- info: 'Oseledets.ae_finrank_vslow' depends on axioms: [propext, Classical.choice, Quot.sound] -/
@@ -799,10 +795,6 @@ informational dump (it produces no output on success).
 /-- info: 'Oseledets.restricted_const_eq' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms Oseledets.restricted_const_eq
-
-/-- info: 'Oseledets.ae_limsup_restricted_backward_le' depends on axioms: [propext, Classical.choice, Quot.sound] -/
-#guard_msgs in
-#print axioms Oseledets.ae_limsup_restricted_backward_le
 
 -- Two-sided splitting, P5 (transversality crux + counting bound).
 
