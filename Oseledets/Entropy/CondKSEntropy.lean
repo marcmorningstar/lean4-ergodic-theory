@@ -28,8 +28,8 @@ followed by the joint pull-back `condEntropy_comap_pullback`, which evaluates
 `H(T⁻ⁿ(m-join) | comap (Tⁿ) 𝒜) = H(m-join | 𝒜)`. This route needs only the **one-sided
 forward-invariance** hypothesis `comap T 𝒜 ≤ 𝒜` (iterated to `comap (Tⁿ) 𝒜 ≤ 𝒜` via
 `comap_iterate_le`), which is therefore the single invariance hypothesis threaded through everything
-from subadditivity onward — strictly weaker than the two-sided hypotheses of
-`condEntropy_pullback_iterate`.
+from subadditivity onward — strictly weaker than the two-sided hypotheses that a fixed-`𝒜` iterated
+pull-back would require.
 
 ## Main definitions
 

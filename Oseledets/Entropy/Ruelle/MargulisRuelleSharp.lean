@@ -104,9 +104,7 @@ directions), the genuinely geometric per-step input.  It is **proved in-tree** b
 `Oseledets.Entropy.Ruelle.SharpCovering` (`Oseledets.coveringCount_image_ball_le_volProd`, via a
 constructive SVD ellipsoid domination); `sharpLocalCovering_of_coveringCount` instantiates that
 count at the differential `D_x(T^[n])` to discharge this packaging, so it is not a hypothesis.
-The weaker isotropic count `≤ (2‖L‖+1)^d` (the project lemma
-`Metric.coveringCount_image_ball_linear_le` in `Oseledets.Entropy.Ruelle.LocalCovering`) is
-subsumed by it. -/
+The weaker isotropic count `≤ (2‖L‖+1)^d` (which sees only `σ₀ = ‖L‖`) is subsumed by it. -/
 def SharpLocalCovering (T : EuclideanSpace ℝ (Fin d) → EuclideanSpace ℝ (Fin d)) (C : ℝ) (ε : ℝ≥0)
     (x : EuclideanSpace ℝ (Fin d)) : Prop :=
   ∀ n : ℕ,
