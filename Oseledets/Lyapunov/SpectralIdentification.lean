@@ -356,7 +356,7 @@ theorem ae_tendsto_bandProjector_cfc_indicator
 
 /-- A.e., for every `t`, the `lambdaBar`-sublevel at `t` is contained in the
 Λ-slow space `vslow (e^t)`.  This is the inclusion consumed by
-`Oseledets.oseledets_filtration_of_upper`. -/
+`Oseledets.oseledets_filtration_of_upper'`. -/
 theorem ae_lambdaSublevel_le_vslow
     {μ : Measure X} [IsProbabilityMeasure μ] {T : X → X} (hT : Ergodic T μ)
     {A : X → Matrix (Fin d) (Fin d) ℝ} (hA : ∀ x, (A x).det ≠ 0) (hAmeas : Measurable A)

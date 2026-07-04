@@ -70,7 +70,7 @@ the compound *inverse* `cBi = ‖compound k (A(Tⁿx))⁻¹‖` through the fact
 `compound k M = compound k B⁻¹ · compound k (B·M)` (`compoundMatrix_eq_inv_mul`). That bound is
 what makes the spectral-gap denominator `μ̃₀ − ν` of the Davis–Kahan sin-Θ step positive and large
 enough for the increment to decay. The det-free `RuelleCore` engine (`SVDData.oneStep_sandwich`,
-`chain_leakage_exp`) only delivers a one-sided **upper** mass envelope (a `limsup` spectral bound on
+the leakage chain) only delivers a one-sided **upper** mass envelope (a `limsup` spectral bound on
 a *fixed* slow space, e.g. `Oseledets.limsup_le_of_mem_vslow`); it does **not** lower-bound the
 perturbed top eigenvalue, hence cannot, by itself, bound the *projector increment* / aperture
 distance that the Cauchy construction of `Vⱼ` consumes. See the `cruxStatus` of the report.

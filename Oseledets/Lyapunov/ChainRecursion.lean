@@ -16,10 +16,9 @@ Deterministic engine for the uniform-in-`m` fast-band-mass envelope appearing in
 proof of the multiplicative ergodic theorem (the proof of Lemma 1.4 in [Ruelle, *Ergodic
 theory of differentiable dynamical systems*]): the slow/fast orthogonal decomposition over
 an `SVDData`, the one-step band-leakage recursion (`oneStep_recursion`, an application of
-`oneStep_sandwich`), the contraction-free chain solver (`chain_geometric_sum`), and the
-band↔SVD adapter identifying `bandProjector` with the explicit fast projection
-(`toEuclideanLin_bandProjector_eq_fastProj`), plus band-mass monotonicity in the cut and
-the lower-bound lemma `bandProjector_mass_ge_abs_inner_of_fix`.
+`oneStep_sandwich`), and the band↔SVD adapter identifying `bandProjector` with the explicit
+fast projection (`toEuclideanLin_bandProjector_eq_fastProj`), plus the lower-bound lemma
+`bandProjector_mass_ge_abs_inner_of_fix`.
 
 NOTE: the lower-bound lemma shows the envelope at an *arbitrary* cut
 `c₀ ∈ (exp λ_a, exp λ_e)` is unprovable when an intermediate stratum
@@ -32,11 +31,8 @@ corrected envelope.
 
 * `Oseledets.RuelleCofactor.SVDData.oneStep_recursion`: the deterministic one-step band-leakage
   recursion for the fast-band mass along an SVD chain.
-* `Oseledets.RuelleCofactor.SVDData.chain_geometric_sum`: the contraction-free chain solver — a
-  recursion `a (i+1) ≤ a i + R·ρ^i` with `a 0 = 0` is bounded by `R/(1−ρ)` uniformly in the index.
 * `Oseledets.toEuclideanLin_bandProjector_eq_fastProj`: the band projector equals the
   explicit fast projection over the SVD chain `Oseledets.chainSVD`.
-* `Oseledets.norm_bandProjector_mono`: band mass is monotone in the cut.
 * `Oseledets.bandProjector_mass_ge_abs_inner_of_fix`: a uniform band-mass bound dominates
   the overlap with any unit vector fixed by the limit projector (the obstruction lemma for
   the arbitrary-cut envelope).
@@ -92,7 +88,7 @@ improvement: the *slow part of `u` at time `t`* — not all of `u` — feeds the
 one-step recursion (his displayed computation) is, with `a_k := ‖fastProj(n+k) u‖`:
   `a_{k+1} ≤ exp(−γ̄)·a_k + R·exp(−k γ')`,
 where `γ̄ = λ_e − λ_a − δ*` is the per-step gap survival and `R·exp(−kγ')` the
-freshly-injected slow leakage.  `chain_leakage_exp` solves this:
+freshly-injected slow leakage.  The leakage chain solves this:
   `a_k ≤ exp(−kγ̄)·a_0 + R·k·exp(−(k−1)·min γ̄ γ')`.
 With `a_0 = 0` (at `m = n`, `u_a(n)` is orthogonal to the fast band, since eventually
 `σ_a(n)^{1/n} < c₀`), `a_k ≤ R·k·exp(−(k−1)·min γ̄ γ')`, and since `a_k` is measured
@@ -101,7 +97,7 @@ the `exp(−kγ̄)` tail give a constant uniform in `k = m − n`.
 
 The `δ*`/stratum-gap and `c₀`-endpoint subtleties are handled where this engine is
 consumed.  The deterministic recursion engine itself (`oneStep_sandwich`,
-`chain_leakage_exp`) is proved in `Oseledets.Lyapunov.RuelleCore`; this file builds the
+`geometric_recursion`) is proved in `Oseledets.Lyapunov.RuelleCore`; this file builds the
 band / SVDData adapter on top of it.
 
 ## References
@@ -206,37 +202,6 @@ theorem oneStep_recursion (t : ℕ) (hiT hiT1 : Finset (Fin D)) (s tt b : ℝ)
     calc ‖S.fastProj (t + 1) hiT1 w‖ * tt
         = tt * ‖S.fastProj (t + 1) hiT1 w‖ := by ring
       _ ≤ b * s * ‖w‖ := hsand
-
-/-- **Contraction-free chain solution.**  If `a 0 = 0` and `a (i+1) ≤ a i + R·ρ^i` for all
-`i` with `0 ≤ R`, `0 ≤ ρ < 1`, then `a k ≤ R/(1−ρ)` for every `k` — uniformly in `k`.
-(Geometric series; no per-step contraction needed because the source already decays.) -/
-theorem chain_geometric_sum (a : ℕ → ℝ) (R ρ : ℝ) (hR : 0 ≤ R) (hρ0 : 0 ≤ ρ)
-    (hρ1 : ρ < 1)
-    (h0 : a 0 = 0) (hrec : ∀ i, a (i + 1) ≤ a i + R * ρ ^ i) (k : ℕ) :
-    a k ≤ R / (1 - ρ) := by
-  have hmain := geometric_recursion a (fun i => R * ρ ^ i) 1 (by norm_num) (by
-    intro i; have := hrec i; simpa using this) k
-  rw [h0, one_pow, mul_zero, zero_add] at hmain
-  refine hmain.trans ?_
-  -- ∑_{i<k} 1^{k-1-i}·(R ρ^i) = R·∑_{i<k} ρ^i ≤ R/(1-ρ)
-  have hsimp : ∑ i ∈ Finset.range k, (1:ℝ) ^ (k - 1 - i) * (R * ρ ^ i)
-      = R * ∑ i ∈ Finset.range k, ρ ^ i := by
-    rw [Finset.mul_sum]
-    refine Finset.sum_congr rfl (fun i _ => ?_)
-    rw [one_pow, one_mul]
-  rw [hsimp]
-  have hgeo : ∑ i ∈ Finset.range k, ρ ^ i ≤ (1 - ρ)⁻¹ := by
-    have h1ρ : (0:ℝ) < 1 - ρ := by linarith
-    have hpownn : 0 ≤ ρ ^ k := pow_nonneg hρ0 k
-    have heq : ∑ i ∈ Finset.range k, ρ ^ i = (1 - ρ ^ k) / (1 - ρ) := by
-      rw [geom_sum_eq (by linarith : ρ ≠ 1)]
-      rw [div_eq_div_iff (by linarith : ρ - 1 ≠ 0) (by linarith : (1:ℝ) - ρ ≠ 0)]
-      ring
-    rw [heq, div_le_iff₀ h1ρ, inv_mul_cancel₀ (by linarith : (1:ℝ) - ρ ≠ 0)]
-    linarith
-  calc R * ∑ i ∈ Finset.range k, ρ ^ i ≤ R * (1 - ρ)⁻¹ := by
-        apply mul_le_mul_of_nonneg_left hgeo hR
-    _ = R / (1 - ρ) := by rw [div_eq_mul_inv]
 
 end SVDData
 end Oseledets.RuelleCofactor
@@ -370,36 +335,6 @@ theorem toEuclideanLin_bandProjector_eq_fastProj [NeZero d]
     rw [hχ, Set.indicator_of_mem (show ev j ∈ Set.Ioi c₀ from hj.2) 1, Pi.one_apply]
   rw [hχ1, one_smul, hb]
 
-/-- **Band monotonicity in the cut.**  If `c₁ ≤ c₀` then the higher-cut band mass is
-dominated by the lower-cut band mass:  `‖P^{>c₀}_m u‖ ≤ ‖P^{>c₁}_m u‖`.  (Higher cut ⟹
-smaller fast index set ⟹ smaller projection.) -/
-theorem norm_bandProjector_mono [NeZero d]
-    (A : X → Matrix (Fin d) (Fin d) ℝ) (m : ℕ) (x : X) {c₁ c₀ : ℝ} (hc : c₁ ≤ c₀)
-    (u : EuclideanSpace ℝ (Fin d)) :
-    ‖Matrix.toEuclideanLin (bandProjector A T (Set.indicator (Set.Ioi c₀) 1) m x) u‖
-      ≤ ‖Matrix.toEuclideanLin
-          (bandProjector A T (Set.indicator (Set.Ioi c₁) 1) m x) u‖ := by
-  classical
-  rw [toEuclideanLin_bandProjector_eq_fastProj, toEuclideanLin_bandProjector_eq_fastProj]
-  -- ‖fastProj hi₀‖² = Σ_{hi₀} ⟪⟫², monotone in the index set since hi₀ ⊆ hi₁.
-  set S := chainSVD A T x with hS
-  have hsub : hiBand A T m x c₀ ⊆ hiBand A T m x c₁ := by
-    intro j hj
-    simp only [hiBand, Finset.mem_filter, Finset.mem_univ, true_and] at hj ⊢
-    linarith
-  have h0 : ‖S.fastProj m (hiBand A T m x c₀) u‖ ^ 2
-      = ∑ j ∈ hiBand A T m x c₀, ⟪S.e m j, u⟫ ^ 2 := S.normSq_fastProj m _ u
-  have h1 : ‖S.fastProj m (hiBand A T m x c₁) u‖ ^ 2
-      = ∑ j ∈ hiBand A T m x c₁, ⟪S.e m j, u⟫ ^ 2 := S.normSq_fastProj m _ u
-  have hle : ∑ j ∈ hiBand A T m x c₀, ⟪S.e m j, u⟫ ^ 2
-      ≤ ∑ j ∈ hiBand A T m x c₁, ⟪S.e m j, u⟫ ^ 2 := by
-    apply Finset.sum_le_sum_of_subset_of_nonneg hsub
-    intro j _ _; positivity
-  have hsq : ‖S.fastProj m (hiBand A T m x c₀) u‖ ^ 2
-      ≤ ‖S.fastProj m (hiBand A T m x c₁) u‖ ^ 2 := by rw [h0, h1]; exact hle
-  nlinarith [norm_nonneg (S.fastProj m (hiBand A T m x c₀) u),
-    norm_nonneg (S.fastProj m (hiBand A T m x c₁) u), hsq]
-
 /-! ## Obstruction: the arbitrary-cut envelope is too strong under intermediate strata
 
 The deterministic chain (above) shows the fast-band mass `‖P^{>c₀}_m u_a(n)‖` decays at the
@@ -419,7 +354,7 @@ including an intermediate-stratum limit eigenvector `b'_c` (which `Pinf` fixes b
     |⟪b'_c, u_a(n)⟫|  ≤  C · exp(−n(λ_e − λ_a − δ)) .
 
 But the genuine graded-overlap rate between the *adjacent* strata `λ_a < λ_c` is only
-`λ_c − λ_a` (this is exactly the conclusion `forward_graded_overlap` proves for the pair
+`λ_c − λ_a` (this is exactly what the graded-overlap bound gives for the pair
 `(a,c)`, and the overlap is generically of that exact order — nonzero leading coefficient).
 Whenever the adjacent overlap is non-degenerate (the generic case),
 `|⟪b'_c, u_a(n)⟫| ≍ exp(−n(λ_c − λ_a))`, which exceeds `C·exp(−n(λ_e − λ_a − δ))` for all
@@ -427,7 +362,7 @@ large `n` (take `δ < λ_e − λ_c`).  Hence the arbitrary-cut envelope is **no
 general: it is a strictly stronger claim than the band mass actually satisfies at cuts
 `c₀ ∈ (exp λ_a, exp λ_c)` whenever a third stratum `λ_c ∈ (λ_a, λ_e)` exists.
 
-NOTE.  The conclusion of `forward_graded_overlap` is *still correct* (the
+NOTE.  The graded-overlap conclusion is *still correct* (the
 `λ_e`-eigenvector overlap `|⟪b'_e, u_a(n)⟫|` does decay at `λ_e − λ_a`); only the route
 through the arbitrary-cut envelope — bounding that overlap by the band mass at an
 arbitrary cut and claiming the band mass also decays at `λ_e − λ_a` — is unsound when

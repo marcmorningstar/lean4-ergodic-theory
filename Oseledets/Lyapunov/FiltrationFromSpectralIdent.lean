@@ -9,8 +9,8 @@ import Oseledets.Lyapunov.SpectrumResiduals
 /-!
 # The Oseledets filtration from the spectral-identification hypothesis
 
-This file proves a variant of `Oseledets.oseledets_filtration_of_upper` in which the
-band-projector convergence hypothesis `hband` is replaced by the spectral-identification
+This file proves the Oseledets filtration theorem `Oseledets.oseledets_filtration_of_upper'`, in
+which the band-projector convergence hypothesis `hband` is replaced by the spectral-identification
 hypothesis `hident`, and the lower-bound step `hlb` is accordingly obtained from
 `specList_le_liminf_inv_mul_log_norm_cocycle_apply_of_slowflag` (fed `hident` and the slow-flag
 datum `hslowflag` computed earlier in the proof) instead of
@@ -32,7 +32,7 @@ variable {X : Type*} [MeasurableSpace X] {d : ℕ} [NeZero d]
 
 /-- **Oseledets filtration theorem, via the spectral-identification hypothesis.**
 
-Same as `oseledets_filtration_of_upper`, but with the band-projector hypothesis `hband`
+The Oseledets filtration theorem with the band-projector hypothesis `hband`
 replaced by the spectral-identification hypothesis `hident`, consumed by
 `specList_le_liminf_inv_mul_log_norm_cocycle_apply_of_slowflag`. -/
 theorem oseledets_filtration_of_upper'

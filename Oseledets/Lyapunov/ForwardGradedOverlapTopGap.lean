@@ -188,7 +188,7 @@ In this envelope the cut `c₀` is restricted to the top gap below `λ_e`, i.e. 
 lies in `(log c₀, λ_e)`. It is stated here as the single isolated analytic hypothesis
 `TopGapMassEnvelope`, established by Ruelle's band-distance strong induction over strata
 (eqns (1.3)/(1.4)); the deterministic engine
-`Oseledets.RuelleCofactor.SVDData.{oneStep_recursion, chain_geometric_sum}` and the
+`Oseledets.RuelleCofactor.SVDData.oneStep_recursion` and the
 σ-localization layer above are its ingredients. Everything downstream (Step B) is discharged
 from it. -/
 

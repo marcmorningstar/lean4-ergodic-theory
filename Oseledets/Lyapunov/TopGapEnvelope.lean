@@ -129,37 +129,6 @@ theorem geom_partial_sum_le {r K : ℝ} (hr0 : 0 ≤ r) (hr1 : r < 1) (hK : 0 �
   calc K * ∑ i ∈ Finset.range k, r ^ i ≤ K * (1 - r)⁻¹ := mul_le_mul_of_nonneg_left hgeo hK
     _ = K / (1 - r) := by rw [div_eq_mul_inv]
 
-/-- **A3 — single-source geometric envelope at a shifted base.**  This is the per-stratum
-source shape produced by PART B.  Given the chain `a 0 = 0`, `a (k+1) ≤ a k + src k`, with
-each source term controlled by a geometric tail starting at absolute time `n`:
-`src k ≤ M · ρ ^ (n + k)` for `0 ≤ ρ < 1`, `0 ≤ M`, then for all `k`,
-`a k ≤ (M / (1 - ρ)) · ρ ^ n`.
-
-This is the m-uniform (here k-uniform) envelope: the same `n` (hence same `ρ^n` prefactor)
-controls every `k`, i.e. every absolute time `m = n + k ≥ n`.  Proof: A1 then A2 after
-factoring `ρ^n` out of `ρ^(n+k) = ρ^n · ρ^k`. -/
-theorem single_source_envelope (a src : ℕ → ℝ) {M ρ : ℝ} (n : ℕ)
-    (hM : 0 ≤ M) (hρ0 : 0 ≤ ρ) (hρ1 : ρ < 1)
-    (h0 : a 0 = 0) (hrec : ∀ k, a (k + 1) ≤ a k + src k)
-    (hsrc : ∀ k, src k ≤ M * ρ ^ (n + k)) (k : ℕ) :
-    a k ≤ (M / (1 - ρ)) * ρ ^ n := by
-  refine (chain_le_partial_sum a src h0 hrec k).trans ?_
-  -- ∑_{i<k} src i ≤ ∑_{i<k} M·ρ^(n+i) = ρ^n · ∑_{i<k} M·ρ^i ≤ ρ^n · M/(1-ρ)
-  have hstep1 : ∑ i ∈ Finset.range k, src i ≤ ∑ i ∈ Finset.range k, M * ρ ^ (n + i) :=
-    Finset.sum_le_sum (fun i _ => hsrc i)
-  refine hstep1.trans ?_
-  have hfac : ∑ i ∈ Finset.range k, M * ρ ^ (n + i)
-      = ρ ^ n * ∑ i ∈ Finset.range k, M * ρ ^ i := by
-    rw [Finset.mul_sum]
-    refine Finset.sum_congr rfl (fun i _ => ?_)
-    rw [pow_add]; ring
-  rw [hfac]
-  have hgeo := geom_partial_sum_le hρ0 hρ1 hM k
-  calc ρ ^ n * ∑ i ∈ Finset.range k, M * ρ ^ i
-      ≤ ρ ^ n * (M / (1 - ρ)) :=
-        mul_le_mul_of_nonneg_left hgeo (pow_nonneg hρ0 n)
-    _ = (M / (1 - ρ)) * ρ ^ n := by ring
-
 /-- **A4 — multi-source geometric envelope.**  PART B's recursion has the multi-source form
 `a (k+1) ≤ a k + ∑_{w ∈ W} srcw w k` with finitely many strata `W`, each source geometric:
 `srcw w k ≤ Mw w · (ρw w) ^ (n + k)` with `0 ≤ ρw w < 1`, `0 ≤ Mw w`.  Then, with

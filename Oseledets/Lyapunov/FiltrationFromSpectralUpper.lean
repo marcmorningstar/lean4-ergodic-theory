@@ -10,7 +10,8 @@ import Oseledets.Lyapunov.StratumLogGrowthBounds
 /-!
 # The Oseledets filtration theorem from the spectral upper bound
 
-This file assembles the Oseledets filtration theorem `oseledets_filtration_of_upper` from a
+This file provides the slow-flag and per-stratum growth lemmas used to assemble the Oseledets
+filtration theorem `oseledets_filtration_of_upper'` (in `FiltrationFromSpectralIdent`) from a
 single analytic input `hupper` — the per-vector spectral upper bound: every nonzero vector of
 the slow space `vslow A T (Real.exp t) x` has upper growth exponent at most `t` — together
 with a minimized set of precisely typed residual hypotheses capturing the spectral
@@ -51,8 +52,6 @@ derivable from `hupper` alone.
   `limsup` upper bound, almost everywhere.
 * `Oseledets.vslow_eq_lambdaSublevel_of_upper`: the slow-flag identification
   `vslow (exp t) = lambdaSublevel t` from the spectral upper bound and the reverse inclusion.
-* `Oseledets.oseledets_filtration_of_upper`: the Oseledets filtration theorem, assembled from
-  the spectral upper bound and the residual spectral-identification hypotheses.
 -/
 
 open MeasureTheory Filter Topology Matrix
@@ -135,95 +134,5 @@ theorem vslow_eq_lambdaSublevel_of_upper
     with x hx hupperx hrevx
   intro t
   exact le_antisymm (vslow_subset_lambdaSublevel_of_upper hx (hupperx) t) (hrevx t)
-
-/-! ## The composed filtration theorem -/
-
-/-- **Oseledets filtration theorem, composed from the spectral upper bound `hupper`.**
-
-The complete Oseledets measurable-filtration conclusion, assembled through
-`oseledets_filtration_of_slowflag` from the per-vector spectral upper bound `hupper`.  The
-deterministic exponent data `lam0` is taken from `exists_lam_tendsto_singularValue`.  The
-three a.e. interfaces are discharged as follows:
-
-* `hslowflag` — forward inclusion derived from `hupper`
-  (`vslow_eq_lambdaSublevel_of_upper`), reverse inclusion the residual `hslowrev`;
-* `hgrowth` — `hub` derived from `vflag` membership
-  (`limsup_log_norm_cocycle_apply_le_specList_of_mem_stratum`), `hbdd` from
-  `isBoundedUnder_inv_mul_log_norm_cocycle_apply_of_mem_stratum`, `hlb` from
-  `specList_le_liminf_inv_mul_log_norm_cocycle_apply_of_bandProjector` fed the residual band
-  datum `hband`;
-* `hspec` — `specList_eq_expEnum_of_subsets_standing` fed the two residual `Finset` spectrum
-  inclusions `hub_spec` / `hlb_spec`.
-
-The residual hypotheses `hslowrev`, `hband`, `hub_spec`, `hlb_spec` capture exactly the
-spectral identification of the Oseledets limit operator; see the module docstring. -/
-theorem oseledets_filtration_of_upper
-    {μ : Measure X} [IsProbabilityMeasure μ] {T : X → X}
-    (hT : Ergodic T μ) (hTmeas : Measurable T)
-    {A : X → Matrix (Fin d) (Fin d) ℝ}
-    (hA : ∀ x, (A x).det ≠ 0) (hAmeas : Measurable A)
-    (hint : IntegrableLogNorm A μ) (hint' : IntegrableLogNorm (fun x => (A x)⁻¹) μ)
-    -- The per-vector spectral upper bound.
-    (hupper : ∀ᵐ x ∂μ, ∀ t : ℝ, ∀ v ∈ vslow A T (Real.exp t) x, v ≠ 0 →
-      Filter.limsup (fun n : ℕ => (n : ℝ)⁻¹ *
-        Real.log ‖Matrix.toEuclideanLin (cocycle A T n x) v‖) Filter.atTop ≤ t)
-    -- Residual 1: the reverse slow-flag inclusion (slow growth implies slow-space membership).
-    (hslowrev : ∀ᵐ x ∂μ, ∀ t : ℝ, lambdaSublevel A T x t ≤ vslow A T (Real.exp t) x)
-    -- Residual 2: spectrum upper Finset inclusion (every realized exponent is deterministic).
-    (hub_spec : ∀ lam0 : ℕ → ℝ,
-      (∀ i : ℕ, i < d → ∀ᵐ x ∂μ, Tendsto
-        (fun n : ℕ => (n : ℝ)⁻¹ *
-          Real.log ((Matrix.toEuclideanLin (cocycle A T n x)).singularValues i))
-        atTop (𝓝 (lam0 i))) →
-      ∀ᵐ x ∂μ, lyapunovSpectrum A T x ⊆ distinctExp lam0 d)
-    -- Residual 3: spectrum lower Finset inclusion (every deterministic exponent is attained).
-    (hlb_spec : ∀ lam0 : ℕ → ℝ,
-      (∀ i : ℕ, i < d → ∀ᵐ x ∂μ, Tendsto
-        (fun n : ℕ => (n : ℝ)⁻¹ *
-          Real.log ((Matrix.toEuclideanLin (cocycle A T n x)).singularValues i))
-        atTop (𝓝 (lam0 i))) →
-      ∀ᵐ x ∂μ, distinctExp lam0 d ⊆ lyapunovSpectrum A T x)
-    -- Residual 4: the band-projector convergence datum feeding the liminf lower bound.
-    (hband : ∀ᵐ x ∂μ, ∀ i : Fin (specCard A T x),
-      ∀ v ∈ (vflag A T x i.castSucc : Set (EuclideanSpace ℝ (Fin d))),
-        v ∉ vflag A T x i.succ →
-        ∃ P : Matrix (Fin d) (Fin d) ℝ,
-          Tendsto (fun n => bandProjector A T
-            (Set.indicator (Set.Ioi (Real.exp (specList A T x i))) 1) n x) atTop (𝓝 P) ∧
-          Matrix.toEuclideanLin P v ≠ 0) :
-    ∃ (k : ℕ) (lam : Fin k → ℝ)
-      (V : Fin (k + 1) → X → Submodule ℝ (EuclideanSpace ℝ (Fin d))),
-      StrictAnti lam ∧
-      (∀ i, MeasurableSubspace fun x => V i x) ∧
-      ∀ᵐ x ∂μ,
-        V 0 x = ⊤ ∧ V (Fin.last k) x = ⊥ ∧
-        (∀ i : Fin k, V i.succ x < V i.castSucc x) ∧
-        (∀ i : Fin (k + 1),
-          Submodule.map (Matrix.toEuclideanCLM (𝕜 := ℝ) (A x)).toLinearMap (V i x) =
-            V i (T x)) ∧
-        (∀ i : Fin k, ∀ v ∈ (V i.castSucc x : Set (EuclideanSpace ℝ (Fin d))),
-            v ∉ V i.succ x →
-            Tendsto
-              (fun n : ℕ => (n : ℝ)⁻¹ *
-                Real.log ‖Matrix.toEuclideanCLM (𝕜 := ℝ) (cocycle A T n x) v‖)
-              atTop (𝓝 (lam i))) := by
-  classical
-  -- The deterministic singular-value exponents.
-  obtain ⟨lam0, _hmono, hlam0⟩ :=
-    exists_lam_tendsto_singularValue hT hA hAmeas hint hint'
-  -- `hspec` from the two residual spectrum inclusions.
-  have hspec := specList_eq_expEnum_of_subsets_standing hT A hA hAmeas hint hint' lam0
-    (hub_spec lam0 hlam0) (hlb_spec lam0 hlam0)
-  -- `hslowflag` from `hupper` and the reverse inclusion.
-  have hslowflag := vslow_eq_lambdaSublevel_of_upper hT hA hAmeas hint hint' hupper hslowrev
-  -- `hgrowth` from upper (`vflag`) + lower (band) + boundedness (Furstenberg–Kesten).
-  have hbdd :=
-    isBoundedUnder_inv_mul_log_norm_cocycle_apply_of_mem_stratum hT A hA hAmeas hint hint'
-  have hub := limsup_log_norm_cocycle_apply_le_specList_of_mem_stratum hT hA hAmeas hint hint'
-  have hlb := specList_le_liminf_inv_mul_log_norm_cocycle_apply_of_bandProjector A hA hband hbdd
-  have hgrowth := tendsto_inv_mul_log_norm_cocycle_apply_of_upper_lower A hub hlb hbdd
-  -- Assemble through `oseledets_filtration_of_slowflag`.
-  exact oseledets_filtration_of_slowflag hT A hA hAmeas hTmeas hint hint' lam0
-    hspec hslowflag hgrowth
 
 end Oseledets
