@@ -3,6 +3,8 @@ Copyright (c) 2026 Marcel Morgenstern. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Marcel Morgenstern
 -/
+import Mathlib.Analysis.SpecialFunctions.Complex.CircleAddChar
+import Mathlib.NumberTheory.LegendreSymbol.AddCharacter
 import Oseledets.OperatorEntropy.StinespringReduction
 import Oseledets.OperatorEntropy.Lieb.JointConvexity
 

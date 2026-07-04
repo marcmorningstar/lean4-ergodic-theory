@@ -3,7 +3,8 @@ Copyright (c) 2026 Marcel Morgenstern. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Marcel Morgenstern
 -/
-import Mathlib
+import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
+import Mathlib.Analysis.Convex.Contractible
 import Oseledets.OperatorEntropy.PetzRecovery
 import Oseledets.OperatorEntropy.Lieb.PetzEqualityIntertwine
 
