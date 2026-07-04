@@ -8,61 +8,39 @@ import Oseledets.Entropy.Ruelle.VolumeDistortion
 import Mathlib.Analysis.Normed.Module.Ball.Pointwise
 
 /-!
-# The one-step local covering count (geometric heart of the sharp Margulis–Ruelle bound)
+# Volume-geometry building blocks for the sharp Margulis–Ruelle covering count
 
-This module bounds the **covering number of the image of a small ball** under a continuous linear
-map on Euclidean space.  It is the geometric heart of the *sharp* Margulis–Ruelle inequality
-(Liao–Qiu, *Margulis–Ruelle inequality for general manifolds*, §3, Lemmas 3.2–3.3): the entropy
-contribution of one dynamical step is controlled by how many balls of radius `~ε` are needed to
-cover `g '' B(x, ε)`, and Liao–Qiu's Lemma 3.3 shows this count is `≲ ‖(D_x g)^∧‖`, i.e. the
-**positive-part singular-value product** `∏ᵢ max(1, σᵢ(D_x g))`.
+This module records the elementary volume-geometry facts about the **image of a small ball** under a
+continuous linear map on Euclidean space, together with an abstract positive-part comparison.  They
+are the building blocks of the *volume → covering* route to the Margulis–Ruelle one-step covering
+count (Liao–Qiu, *Margulis–Ruelle inequality for general manifolds*, §3, Lemmas 3.2–3.3): the
+entropy contribution of one dynamical step is controlled by how many balls of radius `~ε` are needed
+to cover `g '' B(x, ε)`, which Liao–Qiu bound by the **positive-part singular-value product**
+`∏ᵢ max(1, σᵢ(D_x g))`.
 
-## The route taken here
+## Contents
 
-We use the *volume → covering* route named in the design:
-
-* `Oseledets.MeasureTheory.CoveringFromVolume` turns a bound on the volume of the **closed
-  thickening** of a set into a bound on its covering number:
-  `coveringNumber ε S ≤ V / ((ε/2) ^ d * μ (ball 0 1))` once `μ (cthickening (ε/2) S) ≤ V`.
 * The image `L '' closedBall x ε` of a ball under a continuous linear map `L` lies in the ball
-  `closedBall (L x) (‖L‖ * ε)` (operator-norm bound), so its `ε/2`-thickening is exactly
-  `closedBall (L x) (ε/2 + ‖L‖ ε)` (`Metric.cthickening_closedBall`), of Haar volume
-  `(ε/2 + ‖L‖ ε) ^ d · μ (ball 0 1)`.
+  `closedBall (L x) (‖L‖ * ε)` (operator-norm bound), so its `δ`-thickening lies in
+  `closedBall (L x) (δ + ‖L‖ ε)` (`cthickening_image_closedBall_subset`), of Haar volume
+  `(δ + ‖L‖ ε) ^ d · μ (ball 0 1)` (`addHaar_cthickening_image_closedBall_le`).  Fed into
+  `Oseledets.MeasureTheory.CoveringFromVolume` these give the *isotropic* covering count
+  `≲ (2 ‖L‖ + 1) ^ d`, the `k = d` (top) truncation of the positive-part product that sees only
+  `σ₀ = ‖L‖`.
+* `Oseledets.prod_max_one_le_one_add_top_pow` records the abstract comparison
+  `∏ᵢ max(1, σᵢ) ≤ (1 + σ₀) ^ d`, placing the positive-part product below the isotropic count.
 
-Dividing, the dimensional constant `μ (ball 0 1)` cancels and one obtains the clean **isotropic**
-covering count
-`coveringNumber ε (L '' closedBall x ε) ≤ (2 ‖L‖ + 1) ^ d`,
-with **no smallness hypothesis on `ε`** beyond positivity and **no `C¹` linearisation error**, since
-`L` is genuinely linear.  This is the `k = d` (top) truncation of the positive-part product
-`∏ᵢ max(1, σᵢ) = ⨆_{k≤d} ∏_{i<k} σᵢ` (`Oseledets.Entropy.Ruelle.VolumeDistortion`): writing `σ₀ =
-‖L‖`,
-`∏ᵢ max(1, σᵢ) ≤ (1 + σ₀) ^ d`, so the isotropic bound is a *valid but non-sharp* upper bound for
-the positive-part product (`Oseledets.prod_max_one_le_one_add_top_pow`).
-
-## The isotropic count here vs. the sharp anisotropic count
-
-The genuinely **sharp** count `≲ ∏ᵢ max(1, σᵢ(L))` (anisotropic: a thin pancake needs *few* balls
-along its thin directions) cannot be reached by the *isotropic* volume bound above, which only sees
-`‖L‖ = σ₀`.  The sharp count instead goes through a **constructive SVD diagonalisation**
-`L = U Σ Vᵀ` with `U, V` orthogonal: covering `L '' ball = U (Σ '' ball)` reduces, by
-isometry-invariance of covering numbers, to covering the *axis-aligned* ellipsoid `Σ '' ball`, an
-explicit product box of sides `σᵢ ε` covered by `∏ᵢ ⌈…⌉ ≲ ∏ᵢ max(1, σᵢ)` boxes (Mañé's Lemma 12.5).
-
-That sharp anisotropic count is **fully proved in-tree** in the sibling module
+The genuinely **sharp anisotropic** count `≲ ∏ᵢ max(1, σᵢ(L))` (a thin pancake needs *few* balls
+along its thin directions) is proved in the sibling module
 `Oseledets.Entropy.Ruelle.SharpCovering` (`Oseledets.coveringCount_image_ball_le_volProd`, via the
 constructive `Oseledets.svd_exists` + an ellipsoid-domination volume bound, with dimensional
-constant `6^d`).  The present module records the simpler **isotropic** specialisation
-`(2 ‖L‖ + 1) ^ d`
-together with the explicit `∏ᵢ max(1, σᵢ) ≤ (1 + ‖L‖) ^ d` comparison that locates it as the `k = d`
-extreme of the positive-part product; the sharp track uses the `SharpCovering` count.
+constant `6^d`), which is the count the sharp Margulis–Ruelle track uses.
 
 ## Main results
 
 * `Metric.cthickening_image_closedBall_subset` — the thickened linear image lies in a single ball:
   `cthickening δ (L '' closedBall x ε) ⊆ closedBall (L x) (δ + ‖L‖ * ε)`.
 * `MeasureTheory.addHaar_cthickening_image_closedBall_le` — its Haar volume bound.
-* `Metric.coveringCount_image_ball_linear_le` — the **isotropic one-step covering count**:
-  `coveringNumber ε (L '' closedBall x ε) ≤ ENNReal.ofReal ((2 * ‖L‖ + 1) ^ d)`.
 * `Oseledets.prod_max_one_le_one_add_top_pow` — the comparison
   `∏ᵢ max(1, σᵢ(L)) ≤ (1 + ‖L‖) ^ d`, placing the sharp positive-part product below the
   isotropic count.
@@ -123,58 +101,6 @@ theorem addHaar_cthickening_image_closedBall_le
 
 end MeasureTheory
 
-namespace Metric
-
-open MeasureTheory
-
-variable {d : ℕ}
-
-/-- **The isotropic one-step covering count (linear version).**  For a continuous linear map `L` on
-`EuclideanSpace ℝ (Fin d)` and `ε > 0`, the `ε`-covering number of the image `L '' closedBall x ε`
-is bounded by `(2 ‖L‖ + 1) ^ d`.
-
-This is the linear instance of Liao–Qiu's one-step covering count (§3, Lemma 3.3) obtained by the
-*volume → covering* route: the `ε/2`-thickening of the image fits inside
-`closedBall (L x) (ε/2 + ‖L‖ ε)` (`cthickening_image_closedBall_subset`), of Haar volume
-`(ε/2 + ‖L‖ ε) ^ d · μ (ball 0 1)`, and `coveringNumber_le_addHaar_div_of_addHaar_le` divides by
-`(ε/2) ^ d · μ (ball 0 1)`.  The dimensional constant `μ (ball 0 1)` cancels and
-`(ε/2 + ‖L‖ ε) / (ε/2) = 2 ‖L‖ + 1`.
-
-It is the `k = d` (isotropic, top) truncation of the sharp positive-part product
-`∏ᵢ max(1, σᵢ(L))`; see `Oseledets.prod_max_one_le_one_add_top_pow` for the
-comparison `∏ᵢ max(1, σᵢ) ≤ (1 + ‖L‖) ^ d ≤ (2 ‖L‖ + 1) ^ d`. -/
-theorem coveringCount_image_ball_linear_le
-    (μ : Measure (EuclideanSpace ℝ (Fin d))) [μ.IsAddHaarMeasure]
-    (L : EuclideanSpace ℝ (Fin d) →L[ℝ] EuclideanSpace ℝ (Fin d))
-    (x : EuclideanSpace ℝ (Fin d)) {ε : ℝ≥0} (hε : 0 < ε) :
-    coveringNumber ε (L '' closedBall x (ε : ℝ))
-      ≤ ENNReal.ofReal ((2 * ‖L‖ + 1) ^ d) := by
-  have hεr : (0 : ℝ) < (ε : ℝ) := by exact_mod_cast hε
-  have hε0 : (0 : ℝ) ≤ (ε : ℝ) := hεr.le
-  set V : ℝ≥0∞ := ENNReal.ofReal (((ε : ℝ) / 2 + ‖L‖ * ε) ^ d) * μ (ball 0 1) with hV
-  -- Volume of the (ε/2)-thickening of the image.
-  have hVbound : μ (cthickening ((ε : ℝ) / 2) (L '' closedBall x (ε : ℝ))) ≤ V :=
-    addHaar_cthickening_image_closedBall_le μ L x hε0 (by positivity)
-  -- Apply the volume → covering bound.
-  have hcov := coveringNumber_le_addHaar_div_of_addHaar_le (S := L '' closedBall x (ε : ℝ))
-    μ hε hVbound
-  refine hcov.trans (le_of_eq ?_)
-  -- Now compute the division: V / ((ε/2)^d * μ(ball 1)) = (2‖L‖ + 1)^d.
-  have hμpos : 0 < μ (ball (0 : EuclideanSpace ℝ (Fin d)) 1) :=
-    measure_ball_pos μ 0 (by norm_num)
-  have hμtop : μ (ball (0 : EuclideanSpace ℝ (Fin d)) 1) ≠ ⊤ := measure_ball_lt_top.ne
-  have hpow : (0 : ℝ) < ((ε : ℝ) / 2) ^ d := pow_pos (by positivity) d
-  -- Cancel `μ (ball 0 1)` in numerator and denominator, then divide the `ofReal`s.
-  rw [hV, ENNReal.mul_div_mul_right _ _ hμpos.ne' hμtop, ← ENNReal.ofReal_div_of_pos hpow]
-  congr 1
-  -- `(ε/2 + ‖L‖ ε)^d / (ε/2)^d = (2‖L‖ + 1)^d`.
-  rw [← div_pow]
-  congr 1
-  field_simp
-  ring
-
-end Metric
-
 namespace Oseledets
 
 open Finset
@@ -185,7 +111,7 @@ nonnegative sequence `σ` (the singular values are such), every term satisfies `
 
 Applied to the singular values of a continuous linear map `L` with `σ₀ = ‖L‖`, this locates the
 sharp anisotropic count `∏ᵢ max(1, σᵢ)` (Liao–Qiu Lemma 3.3) *below* the isotropic count
-`(2 ‖L‖ + 1) ^ d` of `Metric.coveringCount_image_ball_linear_le`:
+`(2 ‖L‖ + 1) ^ d`:
 `∏ᵢ max(1, σᵢ) ≤ (1 + σ₀) ^ d ≤ (2 σ₀ + 1) ^ d`.  This is the abstract antitone-sequence form, so it
 needs no operator-norm/singular-value bridge (`σ₀ = ‖L‖`) and keeps the import footprint light. -/
 theorem prod_max_one_le_one_add_top_pow {σ : ℕ → ℝ} (hanti : Antitone σ) (hpos : ∀ i, 0 ≤ σ i)

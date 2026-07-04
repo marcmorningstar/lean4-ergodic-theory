@@ -1504,10 +1504,6 @@ info: 'Oseledets.Entropy.MeasurePartition.sum_toReal_measure_eq_one' depends on 
 #guard_msgs in
 #print axioms Oseledets.Entropy.sum_posLog_singularValues_toEuclideanLin_eq
 
-/-- info: 'Oseledets.margulisRuelle_le_sumPosExp'' depends on axioms: [propext, Classical.choice, Quot.sound] -/
-#guard_msgs in
-#print axioms Oseledets.margulisRuelle_le_sumPosExp'
-
 -- Issue #6 (det-free genuine singular Lyapunov spectrum): the −∞-aware per-direction exponent is
 -- deterministically antitone + measurable + a.e. finite; cut-threshold ladder for the slow-space flag.
 
@@ -1768,10 +1764,6 @@ info: 'Oseledets.Examples.Rokhlin.ksEntropyPartition_doublingMap_eq_log_two' dep
 /-- info: 'Oseledets.Entropy.condEntropy_join_eq' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms Oseledets.Entropy.condEntropy_join_eq
-
-/-- info: 'Oseledets.Entropy.condEntropy_pullback' depends on axioms: [propext, Classical.choice, Quot.sound] -/
-#guard_msgs in
-#print axioms Oseledets.Entropy.condEntropy_pullback
 
 /-- info: 'Oseledets.Entropy.condEntropy_comap_pullback' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in

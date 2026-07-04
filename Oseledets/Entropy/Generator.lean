@@ -18,14 +18,12 @@ The classical **Kolmogorov–Sinai theorem** then asserts the entropy reduction
 attained on a single generating partition. Proving that theorem is a substantial undertaking; this
 file deliberately does **not** prove it. Following the verified design plan for the
 Abramov–Rokhlin assembly (issue #13), the M6 conditional-entropy layer ships under *supplied*
-generator-reduction equalities rather than a generator theorem. Accordingly this file provides:
-
-* the `IsGenerating` **predicate**, stated in the honest exact-equality σ-algebra form, together
-  with cheap, true API (`σ(P) ≤ the generated σ-algebra`, refinement monotonicity);
-* a thin **hypothesis-form wrapper** `ksEntropy_eq_ksEntropyPartition_of_reduction` that names and
-  exposes the generator-reduction equality `h(T) = h(P, T)` in exactly the shape the
-  Abramov–Rokhlin assembly consumes, and a bundling structure `IsGeneratingWithReduction` carrying
-  a generator together with its (supplied) reduction equality.
+generator-reduction equalities rather than a generator theorem. Accordingly this file provides the
+`IsGenerating` **predicate**, stated in the honest exact-equality σ-algebra form, together with
+cheap, true API (`σ(P) ≤ the generated σ-algebra`, refinement monotonicity). The generator-reduction
+equality `h(T) = h(P, T)` itself is supplied by
+`Oseledets.Entropy.ksEntropy_eq_ksEntropyPartition_of_generating`
+(`Oseledets.Entropy.GeneratorTheorem`).
 
 ## Design note: which σ-algebra equation?
 
@@ -41,8 +39,6 @@ saturation), so the predicate is genuinely a hypothesis, not a triviality.
 
 * `Oseledets.Entropy.IsGenerating`: `P` generates the dynamics — the smallest forward-`T`-invariant
   σ-algebra containing `σ(P)` is the ambient σ-algebra.
-* `Oseledets.Entropy.IsGeneratingWithReduction`: a generator bundled with its supplied
-  generator-reduction equality `h(T) = h(P, T)`.
 
 ## Main results
 
@@ -50,8 +46,6 @@ saturation), so the predicate is genuinely a hypothesis, not a triviality.
   cheap inclusion of the static generating σ-algebra into the forward-saturated one.
 * `Oseledets.Entropy.IsGenerating.le`: a generating partition's forward-saturated σ-algebra is the
   ambient σ-algebra (unfolded form).
-* `Oseledets.Entropy.ksEntropy_eq_ksEntropyPartition_of_reduction`: the hypothesis-form wrapper
-  exposing a supplied generator reduction `h(T) = h(P, T)`.
 
 ## References
 
@@ -148,37 +142,5 @@ lemma IsGenerating.mono_refine {μ : Measure α} {T : α → α}
   -- Use `hP.ge : mα ≤ ⨆ comap σ(P)` directly (rewriting `mα` would break the `Measure α` type
   -- dependency, since `μ : @Measure α mα`).
   exact le_antisymm hsup_le (le_trans hP.ge (generated_mono hPQ))
-
-/-- A **generator bundled with its supplied reduction equality.** Carries a `Fin n`-indexed
-generating partition `P` together with the (externally supplied) Kolmogorov–Sinai reduction
-`h(T) = h(P, T)` for the system. The Abramov–Rokhlin assembly (issue #13, M6) consumes one of these
-for each of the two systems `T`, `S` instead of invoking a generator theorem — exactly the
-supplied-generator interface mandated by the design plan. -/
-structure IsGeneratingWithReduction (μ : Measure α) [IsProbabilityMeasure μ] (T : α → α)
-    (hT : MeasurePreserving T μ μ) (n : ℕ) where
-  /-- The candidate generating partition. -/
-  partition : MeasurePartition μ (Fin n)
-  /-- The partition generates the dynamics. -/
-  generating : IsGenerating μ T partition
-  /-- The supplied Kolmogorov–Sinai entropy-reduction equality `h(T) = h(P, T)`. -/
-  reduction : ksEntropy hT = ((ksEntropyPartition hT partition : ℝ) : EReal)
-
-/-- **Hypothesis-form generator reduction.** Given the Kolmogorov–Sinai reduction
-`h(T) = h(P, T)` as a hypothesis, this lemma simply names and re-exposes it in the form the
-Abramov–Rokhlin assembly consumes. It does *not* prove the reduction (the generator theorem is not
-formalized here); it is the consumable interface for a supplied generator-reduction equality. -/
-lemma ksEntropy_eq_ksEntropyPartition_of_reduction {μ : Measure α} [IsProbabilityMeasure μ]
-    {T : α → α} (hT : MeasurePreserving T μ μ) {n : ℕ} {P : MeasurePartition μ (Fin n)}
-    (hred : ksEntropy hT = ((ksEntropyPartition hT P : ℝ) : EReal)) :
-    ksEntropy hT = ((ksEntropyPartition hT P : ℝ) : EReal) :=
-  hred
-
-/-- Extract the reduction equality from a bundled generator-with-reduction in the consumable form.
-A trivial projection, provided so the Abramov–Rokhlin assembly can take an
-`IsGeneratingWithReduction` and immediately obtain `h(T) = h(P, T)`. -/
-lemma IsGeneratingWithReduction.ksEntropy_eq {μ : Measure α} [IsProbabilityMeasure μ] {T : α → α}
-    {hT : MeasurePreserving T μ μ} {n : ℕ} (G : IsGeneratingWithReduction μ T hT n) :
-    ksEntropy hT = ((ksEntropyPartition hT G.partition : ℝ) : EReal) :=
-  G.reduction
 
 end Oseledets.Entropy

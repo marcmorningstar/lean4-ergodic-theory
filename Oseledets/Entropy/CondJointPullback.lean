@@ -19,7 +19,7 @@ H(S⁻¹P | S⁻¹𝒜) = H(P | 𝒜),
 ```
 where `S⁻¹𝒜` is the comap σ-algebra `MeasurableSpace.comap S 𝒜`.
 
-This is distinct from `condEntropy_pullback` (`Oseledets.Entropy.CondPullback`), which fixes the
+This is distinct from a fixed-`𝒜` pull-back, which fixes the
 conditioning σ-algebra `𝒜` and therefore needs the *two-sided* invariance hypotheses
 (`𝒜/𝒜`-measurability of `T` and the pull-back surjectivity). Here, conditioning on the *pulled
 back* σ-algebra `comap S 𝒜` makes every hypothesis automatic: a `comap S 𝒜`-set is *literally*
@@ -60,7 +60,7 @@ omit [StandardBorelSpace α] in
 μ⟦S ⁻¹' B | comap S 𝒜⟧  =ᵐ[μ]  (μ⟦B | 𝒜⟧) ∘ S.
 ```
 
-Unlike `condExp_indicator_preimage_comp`, this needs NO two-sided invariance hypothesis: a
+Unlike a fixed-`𝒜` equivariance, this needs NO two-sided invariance hypothesis: a
 `comap S 𝒜`-set is *literally* `S ⁻¹' A'` for an `𝒜`-set `A'`
 (`MeasurableSpace.measurableSet_comap`), so the set-integral identity that characterises the
 conditional expectation holds by the measure-preserving change of variables alone. The candidate
@@ -195,7 +195,7 @@ H(T⁻ⁿP | comap (T^[n]) 𝒜) = H(P | 𝒜).
 ```
 
 This is `condEntropy_comap_preimage` applied to the measure-preserving iterate `T^[n]`
-(`MeasurePreserving.iterate`). Unlike `condEntropy_pullback_iterate`, no two-sided invariance
+(`MeasurePreserving.iterate`). Unlike a fixed-`𝒜` iterated pull-back, no two-sided invariance
 hypothesis (`𝒜/𝒜`-measurability or pull-back surjectivity of `T`) is required, because the
 conditioning σ-algebra is itself pulled back along `T^[n]`. -/
 theorem condEntropy_comap_pullback [Fintype ι] {μ : Measure α} [IsProbabilityMeasure μ]

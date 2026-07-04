@@ -379,7 +379,7 @@ of a small ball is bounded by `6^d · ∏ᵢ max(1, σᵢ(L))`, the dimensional 
 
 This is the genuinely **sharp anisotropic** Liao–Qiu one-step count (§3, Lemmas 3.2–3.3): a thin
 pancake (`σᵢ ≪ 1`) needs *few* balls along its thin directions, in contrast to the isotropic
-`(2‖L‖ + 1)^d` of `Metric.coveringCount_image_ball_linear_le` which sees only `σ₀ = ‖L‖`.
+`(2‖L‖ + 1)^d` count which sees only `σ₀ = ‖L‖`.
 
 The proof: at origin, the SVD (`svd_exists`) + ellipsoid domination + determinant volume law give
 `volume(cthickening (ε/2) (L '' B(0,ε))) ≤ ∏ᵢ 2(ε σᵢ + ε/2) · volume(B 0 1)`

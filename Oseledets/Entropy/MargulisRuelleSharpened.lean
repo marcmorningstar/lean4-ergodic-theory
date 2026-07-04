@@ -9,12 +9,12 @@ import Mathlib.Analysis.SpecialFunctions.Log.PosLog
 /-!
 # Sharpening the Margulis–Ruelle reduction: the positive-part singular-value product
 
-This module sharpens the abstract Margulis–Ruelle reduction of
-`Oseledets.Entropy.MargulisRuelleAbstract` along two independent, honest, sorry-free axes. It does
-**not** discharge the genuinely geometric atom-counting hypothesis `hgeo` — that needs Lyapunov /
-Pesin charts and a dynamical covering-count argument absent from Mathlib (see the module-level
-`## The minimal absent geometric atom` below). Instead it lands the two reachable atoms *around*
-that wall.
+This module establishes the **positive-part singular-value product identity** underlying the
+right-hand side of the abstract Margulis–Ruelle reduction of
+`Oseledets.Entropy.MargulisRuelleAbstract`. It does **not** discharge the genuinely geometric
+atom-counting hypothesis `hgeo` — that needs Lyapunov / Pesin charts and a dynamical covering-count
+argument absent from Mathlib (see the module-level `## The minimal absent geometric atom` below). It
+lands the reachable algebraic atom *around* that wall.
 
 ## The positive-part singular-value product (part A)
 
@@ -35,24 +35,12 @@ The key Mathlib input is `Real.posLog_eq_log_max_one : 0 ≤ x → log⁺ x = lo
 because singular values are nonnegative (`LinearMap.singularValues_nonneg`), combined with
 `Real.log_prod` (each factor `max 1 (σ i) ≥ 1 > 0`).
 
-## The sharpened reduction (part B)
-
-We also restate `Oseledets.margulisRuelle_le_sumPosExp` with the opaque per-partition hypothesis
-`hgeo` repackaged through the already-proved entropy plumbing. The sharpened corollary
-`margulisRuelle_le_sumPosExp'` is *definitionally the same statement* — it merely renames the
-geometric input as `hcount`, the per-partition Ruelle counting bound, to make explicit that the
-single remaining open input is a finite-`n`, per-partition estimate (not the supremum conclusion).
-It is an honest cosmetic clarification: no new mathematical content is created, and crucially no
-`sorry` is introduced.
-
 ## Main results
 
 * `Oseledets.Entropy.sum_posLog_singularValues_eq_log_prod_max_one` — the abstract positive-part
   singular-value product identity for `LinearMap.singularValues`.
 * `Oseledets.Entropy.sum_posLog_singularValues_toEuclideanLin_eq` — its `Matrix.toEuclideanLin`
   specialization (the form the derivative cocycle uses).
-* `Oseledets.margulisRuelle_le_sumPosExp'` — the sharpened restatement of the Margulis–Ruelle
-  reduction with the geometric input renamed to the per-partition counting bound `hcount`.
 
 ## The minimal absent geometric atom
 
@@ -120,39 +108,3 @@ theorem sum_posLog_singularValues_toEuclideanLin_eq {d : ℕ} (M : Matrix (Fin d
   sum_posLog_singularValues_eq_log_prod_max_one (Matrix.toEuclideanLin M) s
 
 end Oseledets.Entropy
-
-/-! ## The sharpened Margulis–Ruelle reduction (part B) -/
-
-namespace Oseledets
-
-variable {d : ℕ} [NeZero d]
-
-/-- **The Margulis–Ruelle inequality, sharpened restatement.** This is `EReal`-for-`EReal` the
-same conclusion as `margulisRuelle_le_sumPosExp`, but with the geometric input renamed to
-`hcount` to make explicit that the single remaining open hypothesis is a *finite-`n`,
-per-partition* Ruelle counting bound — the entropy of the `n`-fold refinement of each partition,
-relative to `T`, is bounded by the (deterministic, ergodic-constant) positive-exponent sum. The
-conclusion `h(T) ≤ Σ λᵢ⁺` then follows by the abstract supremum reduction
-(`margulisRuelle_le_sumPosExp`), which is purely lattice-theoretic.
-
-The renaming clarifies the wall: `hcount` is *not* a restatement of the conclusion (which is a
-supremum over all partitions); it is the per-partition covering estimate produced — for a fixed
-partition `P` — by the dynamical covering-count lemma described in the module `## The minimal
-absent geometric atom`. The positive-part singular-value product `∏ᵢ max(1, σᵢ(D T^[n]))`, whose
-log is `sum_posLog_singularValues_toEuclideanLin_eq` (part A), is precisely the per-step volume
-factor that bound counts. -/
-theorem margulisRuelle_le_sumPosExp'
-    {μ : Measure (EuclideanSpace ℝ (Fin d))} [IsProbabilityMeasure μ]
-    {T : EuclideanSpace ℝ (Fin d) → EuclideanSpace ℝ (Fin d)}
-    (hT : Ergodic T μ) (hdiff : Differentiable ℝ T)
-    (hdet : ∀ x, (derivativeCocycle T x).det ≠ 0)
-    (hint : IntegrableLogNorm (derivativeCocycle T) μ)
-    (hint' : IntegrableLogNorm (fun x => (derivativeCocycle T x)⁻¹) μ)
-    (hcount : ∀ (n : ℕ) (P : Entropy.MeasurePartition μ (Fin n)),
-        ((Entropy.ksEntropyPartition hT.toMeasurePreserving P : ℝ) : EReal)
-          ≤ ((sumPosExp hT hdet (measurable_derivativeCocycle T) hint hint' : ℝ) : EReal)) :
-    Entropy.ksEntropy hT.toMeasurePreserving
-      ≤ ((sumPosExp hT hdet (measurable_derivativeCocycle T) hint hint' : ℝ) : EReal) :=
-  margulisRuelle_le_sumPosExp hT hdiff hdet hint hint' hcount
-
-end Oseledets
