@@ -30,7 +30,7 @@ The `n`-step slow approximant at a Lyapunov gap value `c` is
 
 the orthogonal complement of the **fast** band (the span of `qpow` eigenvectors with eigenvalue
 `> c`). Equivalently it is the span of the `qpow` eigenvectors with eigenvalue `≤ c`, i.e. the
-singular directions with `σᵢ(cocycle n x)^{1/n} ≤ exp c` (the *slow / Lyapunov-subthreshold* side).
+singular directions with `σᵢ(cocycle n x)^{1/n} ≤ c` (the *slow / sub-`c`-multiplier* side).
 
 ## The structural finding (det-free, unconditional)
 
@@ -140,7 +140,7 @@ theorem one_sub_bandProjector_mul_self (A : X → Matrix (Fin d) (Fin d) ℝ) (T
 /-- The **`n`-step slow approximant** at the Lyapunov gap value `c`: the range of the complement
 `1 − bandProjector A T (𝟙_{(c,∞)}) n x` of the fast band, transported to a subspace of
 `EuclideanSpace ℝ (Fin d)`. It is the orthogonal complement of the span of the `qpow` eigenvectors
-with eigenvalue `> c`, i.e. the span of the singular directions with `σᵢ^{1/n} ≤ exp c` — the
+with eigenvalue `> c`, i.e. the span of the singular directions with `σᵢ^{1/n} ≤ c` — the
 finite-step approximant of an intermediate slow space `Vⱼ(ω)` of the singular Oseledets flag (Quas,
 *MET and Applications*, 2013, Theorem 2). -/
 noncomputable def vSlowSingularStep (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (c : ℝ) (n : ℕ)

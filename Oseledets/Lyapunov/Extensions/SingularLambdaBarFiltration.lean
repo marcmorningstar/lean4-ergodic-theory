@@ -48,9 +48,10 @@ It is strictly weaker than `det A ≠ 0`.
 
 ## Main results
 
-* `Oseledets.lambdaBar_step`: the cocycle-step identity
-  `lambdaBar A T (T x) (A x · v) = lambdaBar A T x v` (the `(n+1)/n → 1` reindexing); fully
-  elementary, carrying only the finiteness hypothesis at the image point.
+* `Oseledets.lambdaBar_step_le`: the **floored** det-free cocycle-step inequality
+  `lambdaBar A T (T x) (A x · v) ≤ max (lambdaBar A T x v) 0` (the `(n+1)/n → 1` reindexing);
+  fully elementary, carrying only the finiteness hypothesis `HasFiniteTopGrowth A T x`. The full
+  identity `= lambdaBar A T x v` would need invertibility (see the section prose above).
 * `Oseledets.lambdaBar_add_le_max_zero`: the floored non-Archimedean inequality.
 * `Oseledets.isUltrametricGrowth_max_lambdaBar`: `v ↦ max (lambdaBar A T x v) 0` is an
   `IsUltrametricGrowth` function.

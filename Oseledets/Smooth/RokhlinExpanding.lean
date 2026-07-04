@@ -14,13 +14,20 @@ import Oseledets.Krieger.SMBSharp
 import Oseledets.Smooth.Expanding
 
 /-!
-# Foundation for Rokhlin's formula for an expanding map
+# Rokhlin's and Pesin's entropy formula for an expanding map
 
-This module freezes the **interface** on which the proof of Rokhlin's entropy formula
+This module proves **Rokhlin's entropy formula**
 `h_μ(T, ξ) = ∫ log |det Dₓ T| dμ` for an absolutely continuous, uniformly expanding self-map
-`T : EuclideanSpace ℝ (Fin d) → EuclideanSpace ℝ (Fin d)` rests. It contains two small,
-near-trivial pieces that later (harder) nodes consume verbatim, so the signatures here are
-chosen to match exactly the hypotheses those nodes need.
+`T : EuclideanSpace ℝ (Fin d) → EuclideanSpace ℝ (Fin d)`, and — chaining it with the
+Kolmogorov–Sinai generator theorem and the exponent-sum identity — the corresponding **Pesin
+entropy formula** `h_μ(T) = ∑ λ⁺`. It builds up through the nodes N5.1–N5.5: an
+absolutely-continuous density layer (N5.1), the injectivity-partition predicate (N5.2), the per-cell
+Jacobian–measure identity (N5.3), the conditional-entropy = Jacobian-integral identity (N5.4), and
+their assembly into the per-partition formula (N5.5) and the unconditional Pesin formula.
+
+The two lowest layers (N5.1/N5.2) are small, near-trivial pieces whose signatures are chosen to
+match exactly the hypotheses the harder nodes consume; they are documented in the two subsections
+below.
 
 ## The absolutely-continuous density layer
 
@@ -55,8 +62,17 @@ cells) — the conditional-expectation argument needs only injectivity — and w
 ## Main results
 
 * `Oseledets.withDensity_rnDeriv_volume_eq` — `volume.withDensity (μ.rnDeriv volume) = μ` for an
-  absolutely continuous finite measure.
-* `Oseledets.rnDeriv_volume_pos` — the Radon–Nikodym density is `μ`-a.e. strictly positive.
+  absolutely continuous finite measure (N5.1).
+* `Oseledets.rnDeriv_volume_pos` — the Radon–Nikodym density is `μ`-a.e. strictly positive (N5.1).
+* `Oseledets.measure_cell_inter_preimage_eq_setLIntegral_transfer` (N5.3) — the per-cell
+  change-of-variables identity recovering `μ (ξᵢ ∩ T⁻¹' B)` from the branch transfer density.
+* `Oseledets.condEntropy_comap_eq_integral_log_abs_det` (N5.4) — the partition-independent
+  identity `H(ξ | comap T mα) = ∫ log|det DT| dμ` (Coudène Prop 12.1).
+* `Oseledets.ksEntropyPartition_eq_integral_log_abs_det` (N5.5) — the per-partition Rokhlin formula
+  `h(T, ξ) = ∫ log|det DT| dμ` for a generating injectivity partition.
+* `Oseledets.pesin_formula_expanding` — the unconditional expanding-map Pesin formula
+  `h_μ(T) = ∑ λ⁺ = ∫ log|det DT| dμ`. A correct implication that is **vacuous on `EuclideanSpace`**
+  (see its docstring); the instantiated equality lives on the compact circle.
 -/
 
 open MeasureTheory Function
@@ -804,9 +820,11 @@ and N5.4 (`condEntropy_comap_eq_integral_log_abs_det`). The integrand bridge
 `|det (fderiv ℝ T x)| = |det (derivativeCocycle T x)|` (`det_fderiv_eq_det_derivativeCocycle`) puts
 the right-hand side in the verbatim shape of `sumPosExp_eq_integral_log_abs_det_of_expanding`.
 
-Note: like `pesin_formula_expanding`, the *finite generating* injectivity partition this requires
-has no model on the non-compact `EuclideanSpace ℝ (Fin d)`, so this is a correct implication that is
-un-instantiated here; the genuine instance is `rokhlin_equality_doublingMap`
+Note: no instance of this hypothesis bundle (m.p. + a.c. + everywhere-nonsingular derivative +
+finite *generating* injectivity partition) is exhibited here on `EuclideanSpace ℝ (Fin d)`. Unlike
+`pesin_formula_expanding`, N5.5 carries **no** expansion hypothesis, so the escaping-mass
+obstruction of the Pesin caveat does not apply and **no `no-model` claim is made** — only that no
+instance is exhibited here. The genuine instantiated equality is `rokhlin_equality_doublingMap`
 (`Oseledets/Examples/Rokhlin/DoublingEquality.lean`) on the compact circle. -/
 theorem ksEntropyPartition_eq_integral_log_abs_det {d : ℕ}
     {μ : Measure (EuclideanSpace ℝ (Fin d))} [IsProbabilityMeasure μ]
@@ -834,8 +852,11 @@ section Pesin
 
 open Oseledets.Entropy
 
-/-- **Pesin's entropy formula for an absolutely-continuous uniformly-expanding map.** For an
-ergodic, absolutely-continuous (`μ ≪ volume`), differentiable, uniformly expanding self-map `T` of
+/-- **Pesin's entropy formula for an absolutely-continuous uniformly-expanding map** — a correct
+implication that is **vacuously true on `EuclideanSpace ℝ (Fin d)`**: its hypothesis bundle has no
+model there (full vacuity caveat below; the instantiated equality lives on the compact circle).
+
+For an ergodic, absolutely-continuous (`μ ≪ volume`), differentiable, uniformly expanding map `T` of
 `EuclideanSpace ℝ (Fin d)` with everywhere-nonsingular derivative and `μ`-integrable log-norm data,
 together with a one-sided generating injectivity partition `ξ` and `μ`-integrable `log ρ` and
 `log|det DT|`, the Kolmogorov–Sinai entropy equals the sum of the (all positive) Lyapunov exponents:
