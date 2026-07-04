@@ -194,8 +194,10 @@ end CrudeUpperBound
 /-! ### Blueprint residuals — precise Lean signatures for the sharp theorem
 
 The sharp SMB theorem is reduced to the following sub-lemmas, in dependency order.  None is proved
-here; each is stated as the exact signature a follow-up should fill, with the cleanest known route.
-The hardest is `R5` (Chung's `L¹` domination); the rest are mechanical given the repo infra.
+in *this* file; each is the route a follow-up should fill — and all of them **have since been
+proved**, in `Oseledets.Krieger.SMBSharp` (telescoping), `SMBLeaves` (the Chung/Maker leaves) and
+`UpperSMB` (the assembled pointwise SMB `ae_tendsto_div_infoFun_self`). The hardest was `R5`
+(Chung's `L¹` domination, now `SMBLeaves.chungTail` + `lintegral_condInfoMaxFun_lt_top`).
 
 `R1` (conditional information function).  Define, for a sub-σ-algebra `𝒜 ≤ mα`,
 `condInfoFun 𝒜 P x := -Real.log ((condExpKernel μ 𝒜 x) (P.cells (P-index of x))).toReal`
@@ -216,11 +218,11 @@ The hardest is `R5` (Chung's `L¹` domination); the rest are mechanical given th
 (itself `condEntropy_tendsto_iSup` + the chain-rule telescoping of `ksEntropySeq`).
 
 `R5` (Chung domination — HARDEST).  `g* := ⨆ₙ gₙ ∈ L¹(μ)`, hence by dominated convergence the
-Cesàro tail `(1/n)∑_{j<n}(g_{n-j} − g)(Tʲx) → 0` a.e.  This is the one genuinely analytic gap:
-Mathlib has Doob's maximal inequality (`maximal_ineq`) but NOT the `L log L`/`L¹` integrability of
-the conditional-information maximal function for a finite partition (Chung 1961).  Best route:
-the explicit Chung estimate `μ{g* > λ} ≤ (something)·e^{-λ}` per cell, giving
-`∫ g* ≤ H(P) + (card ι)/e` or similar; this needs a fresh `≈150-line` development.
+Cesàro tail `(1/n)∑_{j<n}(g_{n-j} − g)(Tʲx) → 0` a.e.  This was the one genuinely analytic gap:
+Mathlib has Doob's maximal inequality (`maximal_ineq`) but not the `L log L`/`L¹` integrability of
+the conditional-information maximal function for a finite partition (Chung 1961).  Route taken:
+the explicit Chung estimate `μ{g* > λ} ≤ e^{-λ}` per cell (`SMBLeaves.chungTail`), giving
+`g* ∈ L¹` (`lintegral_condInfoMaxFun_lt_top`) and hence the Maker tail (`makerTail`).
 
 `SMB` (assembly).  `∀ᵐ x, Tendsto (fun n => iₙ x / n) atTop (𝓝 (ksEntropyPartition hT P))`,
 by `R2 ▸ R3 ▸ R4 ▸ R5` and a Cesàro/squeeze.
