@@ -18,6 +18,7 @@ import Oseledets.Multifractal.Source.FlowEmpirical
 import Oseledets.Multifractal.Source.FlowPartition
 import Oseledets.Multifractal.BernoulliErgodic
 import Oseledets.Multifractal.BernoulliEntropy
+import Oseledets.Multifractal.BernoulliDimension
 import Oseledets.Multifractal.BernoulliTwoSided
 import Oseledets.Multifractal.BernoulliTwoSidedEntropy
 import Oseledets.Multifractal.BernoulliTwoSidedErgodic

@@ -47,8 +47,8 @@ so none of `Z_q`, `τ(q)`, `D_q`, `f(α)` is redefined here.
 * `Oseledets.Multifractal.not_isHeterogeneous_iff_equalMeasure`: `¬ IsHeterogeneous μ P` iff all
   cell masses are equal — i.e. the equal-measure hypothesis of `partitionFunction_equalMeasure` /
   `renyiDim_equalMeasure`, the monofractal single-point spectrum that #16 characterizes.
-* `Oseledets.Multifractal.hasFlowExponent_iff_tendsto_finiteTimeFlowExponent`: the finite-time
-  estimator's `atTop` limit *is* `HasFlowExponent` (true by unfolding).
+* `Oseledets.Multifractal.hasFlowExponent_of_tendsto_finiteTimeFlowExponent`: a converging
+  finite-time estimator at a representative certifies the class's `HasFlowExponent`.
 * `Oseledets.Multifractal.RefiningLimitConvergesProp`: the `ε → 0` mesh-refinement convergence of
   the cell-mass family, stated (signature only) with a cross-reference to the #16 degenerate-
   uniform limit `renyiDim_uniform_tendsto_dim`; the general non-uniform refining limit stays #16's
@@ -191,24 +191,28 @@ variable {d : ℕ} (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X ≃ᵐ X) {τ :
 `log ‖coverCocycle (x, s) t‖ / t`, the function whose `atTop` limit defines
 `Oseledets.HasFlowExponent`. For each fixed `t` this is the finite-time exponent estimate; the
 asymptotic exponent `L` is its `t → ∞` limit, related by
-`hasFlowExponent_iff_tendsto_finiteTimeFlowExponent`. This estimator is suspension-flow-specific
+`hasFlowExponent_of_tendsto_finiteTimeFlowExponent`. This estimator is suspension-flow-specific
 (it reads the cover cocycle), the finite-time Lyapunov estimator the issue asks for. -/
 noncomputable def finiteTimeFlowExponent (hc : ∀ x, c ≤ τ x) (hcpos : 0 < c) (x : X) (s : ℝ)
     (t : ℝ) : ℝ :=
   Real.log ‖coverCocycle A T hτ hc hcpos (x, s) t‖ / t
 
-/-- **The FTLE limit is the flow exponent.** A growth rate `L` is `HasFlowExponent`-witnessed by a
-representative `(x, s)` of the orbit class `q` exactly when the finite-time estimator
-`finiteTimeFlowExponent (x, s) ·` converges to `L` as the flow time `t → ∞`. This is true by
-unfolding: `finiteTimeFlowExponent` is *defined* to be the function inside the `Tendsto` of
-`HasFlowExponent`, so the right-hand `Tendsto` together with `suspensionMk (x, s) = q` is precisely
-the `HasFlowExponent A T hτ hc hcpos q L` witness carried by `(x, s)`. -/
-theorem hasFlowExponent_iff_tendsto_finiteTimeFlowExponent (hc : ∀ x, c ≤ τ x) (hcpos : 0 < c)
-    (q : SuspensionSpace T hτ) (x : X) (s : ℝ) (hmk : suspensionMk T hτ (x, s) = q) (L : ℝ) :
-    Tendsto (fun t : ℝ => finiteTimeFlowExponent A T hτ hc hcpos x s t) atTop (𝓝 L) ↔
-      (suspensionMk T hτ (x, s) = q ∧
-        Tendsto (fun t : ℝ => finiteTimeFlowExponent A T hτ hc hcpos x s t) atTop (𝓝 L)) := by
-  simp only [hmk, true_and]
+/-- **The FTLE limit at a representative certifies the flow exponent.** If the finite-time flow
+estimator `finiteTimeFlowExponent (x, s) ·` at a representative `(x, s)` of the orbit class
+`q : SuspensionSpace T hτ` (so `suspensionMk (x, s) = q`) converges to `L` as the flow time
+`t → ∞`, then the class `q` carries the flow exponent `L`, witnessed by `(x, s)` — that is,
+`HasFlowExponent A T hτ hc hcpos q L` holds. This is the honest content of "the FTLE limit is the
+flow exponent": `finiteTimeFlowExponent` is *defined* to be the function inside the `Tendsto` of
+`HasFlowExponent`, so a converging estimator at a single representative directly produces a
+`HasFlowExponent` witness. The converse — that *every* representative's estimator converges to the
+same `L` — is the representative-invariance proved, under base-cocycle invertibility, by
+`Oseledets.hasFlowExponent_of_suspensionAct`; it is not a definitional consequence, so this is an
+implication, not an `↔`. -/
+theorem hasFlowExponent_of_tendsto_finiteTimeFlowExponent (hc : ∀ x, c ≤ τ x) (hcpos : 0 < c)
+    (q : SuspensionSpace T hτ) (x : X) (s : ℝ) (hmk : suspensionMk T hτ (x, s) = q) (L : ℝ)
+    (hconv : Tendsto (fun t : ℝ => finiteTimeFlowExponent A T hτ hc hcpos x s t) atTop (𝓝 L)) :
+    HasFlowExponent A T hτ hc hcpos q L :=
+  ⟨x, s, hmk, hconv⟩
 
 end FlowExponent
 
