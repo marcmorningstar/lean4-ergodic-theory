@@ -249,7 +249,17 @@ import Oseledets.OperatorEntropy.Lieb.PetzEqualityGeneral
 # Oseledets
 
 Root module of the `Oseledets` library: a Lean 4 + Mathlib formalization of the
-**Oseledets multiplicative ergodic theorem (MET)**, one-sided filtration form.
+**Oseledets multiplicative ergodic theorem (MET)** and a broad layer of results built on the same
+cocycle/matrix infrastructure. It covers the discrete forward filtration MET
+(`Oseledets.oseledets_filtration`) with its additive/geometric extensions (Lyapunov spectrum,
+exponent sums, exterior-power growth, trace–det identity, inverse/time-reversal, restriction,
+non-ergodic and singular forms), the **two-sided splitting** (`Oseledets.oseledets_splitting`),
+the **continuous-flow MET** (`Oseledets.oseledets_flow`), and a finite-dimensional
+**quantum-information layer** (`Oseledets.OperatorEntropy.*`: von Neumann and Umegaki relative
+entropy, Klein/Lieb joint convexity, the CPTP data-processing inequality, CNT dynamical entropy,
+and Petz's recovery/equality theorem). It also includes the entropy layer (Kolmogorov–Sinai,
+Abramov–Rokhlin, Margulis–Ruelle), Krieger's generator theorem, and multifractal/smooth-dynamics
+modules.
 
 This module imports the whole development.
 
@@ -260,14 +270,21 @@ This module imports the whole development.
 * `Oseledets.Cocycle.FurstenbergKesten` — the extremal Lyapunov exponents.
 * `Oseledets.Ergodic.MaximalErgodic` — the maximal ergodic inequality.
 * `Oseledets.Ergodic.Birkhoff` — the pointwise Birkhoff ergodic theorem.
-* `Oseledets.Ergodic.Kingman` — Kingman's subadditive ergodic theorem.
+* `Oseledets.Ergodic.Kingman.Core` — Kingman's subadditive ergodic theorem.
 * `Oseledets.Lyapunov.MeasurableSubspace` — measurably-varying subspaces.
 * `Oseledets.Lyapunov.*` — the Lyapunov-exponent / filtration layers and the
   final assembly chain (`OseledetsLimit`, `TopGapEnvelope`, `FiltrationFromTopGapEnvelope`, …).
 * `Oseledets.MultiplicativeErgodic` — the target theorem `oseledets_filtration`.
-* `Oseledets.Lyapunov.Extensions.Corollaries` — companion results (multiplicities, uniqueness,
-  top-exponent norm growth).
+* `Oseledets.Lyapunov.Extensions.*` — companion results and additive extensions (multiplicities,
+  spectrum uniqueness, top-exponent norm growth, exponent sums, exterior/singular forms).
+* `Oseledets.TwoSided.*` — the two-sided splitting `oseledets_splitting`.
+* `Oseledets.Continuous.*` — the continuous-flow MET `oseledets_flow` and its special-flow
+  (suspension) layer.
+* `Oseledets.OperatorEntropy.*` — the finite-dimensional quantum-information layer.
 
-The target theorem `Oseledets.oseledets_filtration` is proved using only the standard
-axioms `propext`, `Classical.choice`, `Quot.sound`.
+The target theorem `Oseledets.oseledets_filtration`, the two-sided `oseledets_splitting`, the flow
+`oseledets_flow`, and each quantum-information headline are proved using only the standard axioms
+`propext`, `Classical.choice`, `Quot.sound`. This is **enforced**: `test/AxiomAudit.lean` is a
+default `lake` build target (`defaultTargets` in `lakefile.toml`), so every `lake build` re-checks
+these axiom sets via `#guard_msgs in #print axioms` and fails the build on any drift.
 -/

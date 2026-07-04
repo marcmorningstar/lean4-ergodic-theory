@@ -57,7 +57,9 @@ section Final
 variable {μ : Measure X} [SFinite μ] {lam : ℝ}
 
 include hτ in
-/-- **The fully unconditional space-level special-flow Lyapunov exponent.** This is
+/-- **The fully unconditional space-level special-flow Lyapunov exponent.** (`HasFlowExponent` is
+existential over representatives: for `μ̂`-a.e. class *some* representative realises `λ_base / ∫τ`;
+cross-representative uniqueness needs base-cocycle invertibility.) This is
 `Oseledets.ae_suspensionMeasure_hasFlowExponent_unconditional` with the explicit base exponent-set
 measurability hypothesis `hPmeas` replaced by `hA : Measurable A`. Under a bounded roof
 `c ≤ τ ≤ C` (`0 < c`), positive integral `0 < ∫τ`, measurable base cocycle generator `A`, and the
