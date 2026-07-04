@@ -19,18 +19,10 @@ processing saturates), then `Λ` **intertwines the modular flows** of the input 
 
 ## Contents
 
-* `OperatorStrictConvexOn`: strict operator convexity (the equality companion of
-  `OperatorConvexOn`).
 * `cpow` / `upow`: the complex power `A^z` and the unitary power `A^{it}` of a positive-definite
   matrix via its eigendecomposition (there is no `ℂ`-valued cfc on matrices).
 * `cpow_zero`, `cpow_mul_cpow`, `upow_add`, `upow_mul_upow_neg`, `star_upow`: the basic
   one-parameter-group / unitarity laws of these powers.
-* `posSemidef_offDiag_eq_zero` / `posSemidef_zeroCorner_zeroCoupling`: a positive-semidefinite
-  matrix with a vanishing diagonal entry (resp. vanishing `(0,0)`-block) has the corresponding
-  off-diagonal entries (resp. coupling block) vanish.
-* `channelIsometry`, `channelIsometry_isometry`, `channelIsometry_adj`: the Stinespring isometry
-  `V : ℂ^n → ℂ^n ⊗ ℂ^ι` of a Kraus channel (`V†V = 1`) and its dilation identity
-  `V† (Y ⊗ 1) V = Λ† Y`.
 * `IntertwinesIt`: the modular `it`-intertwining property.
 -/
 
@@ -42,18 +34,6 @@ noncomputable section
 namespace Oseledets.OperatorEntropy.Lieb
 
 variable {n : Type*} [Fintype n] [DecidableEq n]
-
-/-! ## Strict operator convexity -/
-
-/-- `f` is **strictly operator convex** on `I`: whenever the midpoint of the operator-Jensen
-inequality for `f` is attained on self-adjoint `a, b` with spectra in `I`, then `a = b`.  This is
-the equality companion of `OperatorConvexOn`, isolated as a hypothesis so it can be discharged at
-integration by the separately-proved strict convexity of `-log`. -/
-def OperatorStrictConvexOn (I : Set ℝ) (f : ℝ → ℝ) : Prop :=
-  ∀ (N : ℕ) (a b : Matrix (Fin N) (Fin N) ℂ),
-    IsSelfAdjoint a → spectrum ℝ a ⊆ I → IsSelfAdjoint b → spectrum ℝ b ⊆ I →
-    cfc f ((1 / 2 : ℝ) • a + (1 / 2 : ℝ) • b) = (1 / 2 : ℝ) • cfc f a + (1 / 2 : ℝ) • cfc f b →
-    a = b
 
 /-! ## Complex and unitary powers of a positive-definite matrix -/
 
@@ -135,105 +115,6 @@ lemma star_upow {A : Matrix n n ℂ} (hA : A.PosDef) (t : ℝ) :
   congr 1
   simp only [map_mul, Complex.conj_ofReal, Complex.conj_I, Complex.ofReal_neg]
   ring
-
-/-! ## Zero-corner / zero-coupling for positive-semidefinite matrices -/
-
-/-- **Off-diagonal vanishing.** In a positive-semidefinite matrix, if a diagonal entry vanishes
-then so does the whole corresponding row: `M p p = 0 ⟹ M p q = 0`. -/
-lemma posSemidef_offDiag_eq_zero {ι : Type*}
-    {M : Matrix ι ι ℂ} (hM : M.PosSemidef) {p q : ι} (hpp : M p p = 0) : M p q = 0 := by
-  by_cases hpq : p = q
-  · rw [← hpq, hpp]
-  · set f : Fin 2 → ι := ![p, q] with hf
-    have hN : (M.submatrix f f).PosSemidef := hM.submatrix f
-    have hdet : (0 : ℂ) ≤ (M.submatrix f f).det := hN.det_nonneg
-    have e00 : (M.submatrix f f) 0 0 = M p p := by simp [Matrix.submatrix_apply, hf]
-    have e01 : (M.submatrix f f) 0 1 = M p q := by simp [Matrix.submatrix_apply, hf]
-    have e10 : (M.submatrix f f) 1 0 = M q p := by simp [Matrix.submatrix_apply, hf]
-    have e11 : (M.submatrix f f) 1 1 = M q q := by simp [Matrix.submatrix_apply, hf]
-    rw [Matrix.det_fin_two, e00, e01, e10, e11, hpp, zero_mul, zero_sub] at hdet
-    have hqp : M q p = star (M p q) := (hM.1.apply q p).symm
-    have key : M p q * M q p = (Complex.normSq (M p q) : ℂ) := by
-      rw [hqp]; exact Complex.mul_conj (M p q)
-    rw [key] at hdet
-    have h2 : (0 : ℝ) ≤ -Complex.normSq (M p q) := by
-      have := (Complex.le_def.mp hdet).1
-      simpa using this
-    exact Complex.normSq_eq_zero.mp (le_antisymm (by linarith) (Complex.normSq_nonneg _))
-
-/-- **Zero-corner ⟹ zero-coupling.** A positive-semidefinite block matrix over `Fin 2 × Fin N`
-with vanishing `(0,0)`-block has vanishing `(0,1)`-coupling block. -/
-lemma posSemidef_zeroCorner_zeroCoupling {N : ℕ}
-    {M : Matrix (Fin 2 × Fin N) (Fin 2 × Fin N) ℂ} (hM : M.PosSemidef)
-    (h00 : M.submatrix (fun j : Fin N => ((0 : Fin 2), j)) (fun j : Fin N => ((0 : Fin 2), j))
-      = 0) :
-    M.submatrix (fun j : Fin N => ((0 : Fin 2), j)) (fun j : Fin N => ((1 : Fin 2), j)) = 0 := by
-  ext i j
-  have hdiag : M ((0 : Fin 2), i) ((0 : Fin 2), i) = 0 := by
-    have := congrFun (congrFun h00 i) i
-    simpa [Matrix.submatrix_apply] using this
-  have hz := posSemidef_offDiag_eq_zero hM (p := ((0 : Fin 2), i)) (q := ((1 : Fin 2), j)) hdiag
-  simpa [Matrix.submatrix_apply] using hz
-
-/-! ## The Stinespring isometry of a Kraus channel -/
-
-/-- The **Stinespring isometry** `V : ℂ^n → ℂ^n ⊗ ℂ^ι` of a Kraus channel, as a matrix with rows
-indexed by `n × ι` and columns by `n`: `V (a, i) k = (K i) a k`. -/
-def channelIsometry (Λ : KrausChannel n) : Matrix (n × Λ.ι) n ℂ :=
-  Matrix.of fun p k => Λ.K p.2 p.1 k
-
-@[simp] lemma channelIsometry_apply (Λ : KrausChannel n) (p : n × Λ.ι) (k : n) :
-    channelIsometry Λ p k = Λ.K p.2 p.1 k := rfl
-
-/-- The dilation `V` is an **isometry**: `V⋆ V = 1`, which is exactly the Kraus completeness
-relation `∑ᵢ Kᵢ⋆ Kᵢ = 1`. -/
-lemma channelIsometry_isometry (Λ : KrausChannel n) :
-    (channelIsometry Λ)ᴴ * channelIsometry Λ = 1 := by
-  have hstep : (channelIsometry Λ)ᴴ * channelIsometry Λ = ∑ i, (Λ.K i)ᴴ * Λ.K i := by
-    ext k l
-    rw [Matrix.mul_apply, Matrix.sum_apply, Fintype.sum_prod_type, Finset.sum_comm]
-    refine Finset.sum_congr rfl fun i _ => ?_
-    rw [Matrix.mul_apply]
-    refine Finset.sum_congr rfl fun a _ => ?_
-    simp [channelIsometry, Matrix.conjTranspose_apply]
-  rw [hstep, Λ.htp]
-
-/-- **Stinespring dilation identity for the Heisenberg adjoint.** With the pure ancilla `ℂ^ι`,
-`V⋆ (Y ⊗ 1) V = Λ† Y = ∑ᵢ Kᵢ⋆ Y Kᵢ`. -/
-lemma channelIsometry_adj (Λ : KrausChannel n) (Y : Matrix n n ℂ) :
-    letI := Classical.decEq Λ.ι
-    (channelIsometry Λ)ᴴ * (Y ⊗ₖ (1 : Matrix Λ.ι Λ.ι ℂ)) * channelIsometry Λ = Λ.adj Y := by
-  classical
-  ext k l
-  rw [Matrix.mul_apply, KrausChannel.adj, Matrix.sum_apply, Fintype.sum_prod_type]
-  have hRHS : ∀ i : Λ.ι, ((Λ.K i)ᴴ * Y * Λ.K i) k l
-      = ∑ b : n, ∑ a : n, star (Λ.K i a k) * Y a b * Λ.K i b l := by
-    intro i
-    rw [Matrix.mul_apply]
-    refine Finset.sum_congr rfl fun b _ => ?_
-    rw [Matrix.mul_apply, Finset.sum_mul]
-    refine Finset.sum_congr rfl fun a _ => ?_
-    rw [Matrix.conjTranspose_apply]
-  have hLHS : ∀ b j, ((channelIsometry Λ)ᴴ * (Y ⊗ₖ (1 : Matrix Λ.ι Λ.ι ℂ))) k (b, j)
-      = ∑ a : n, star (Λ.K j a k) * Y a b := by
-    intro b j
-    rw [Matrix.mul_apply, Fintype.sum_prod_type, Finset.sum_comm]
-    refine (Finset.sum_eq_single j ?_ ?_).trans ?_
-    · intro i _ hij
-      apply Finset.sum_eq_zero
-      intro a _
-      rw [Matrix.conjTranspose_apply, Matrix.kronecker_apply, Matrix.one_apply, if_neg hij,
-        mul_zero, mul_zero]
-    · intro hj; exact absurd (Finset.mem_univ j) hj
-    · refine Finset.sum_congr rfl fun a _ => ?_
-      rw [Matrix.conjTranspose_apply, Matrix.kronecker_apply, Matrix.one_apply, if_pos rfl,
-        mul_one, channelIsometry_apply]
-  simp_rw [hRHS, hLHS, Finset.sum_mul]
-  rw [Finset.sum_comm]
-  refine Finset.sum_congr rfl fun i _ => ?_
-  refine Finset.sum_congr rfl fun b _ => ?_
-  refine Finset.sum_congr rfl fun a _ => ?_
-  rw [channelIsometry_apply]
 
 /-! ## The modular `it`-intertwining -/
 

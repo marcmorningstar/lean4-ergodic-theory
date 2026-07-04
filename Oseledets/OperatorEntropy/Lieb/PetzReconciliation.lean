@@ -4,7 +4,9 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Marcel Morgenstern
 -/
 import Mathlib
-import Oseledets.OperatorEntropy.Lieb.PetzSufficiencyDone
+import Oseledets.OperatorEntropy.Lieb.ChoiLoewner
+import Oseledets.OperatorEntropy.Lieb.ModularOperator
+import Oseledets.OperatorEntropy.Lieb.PetzEqualityM3sc
 import Oseledets.OperatorEntropy.PartialTrace
 
 /-!
@@ -37,7 +39,8 @@ Working directly on **operators** (Hilbert–Schmidt maps of matrices), with a b
 These are the exact objects that, once transported to the *vectorised* Hilbert–Schmidt picture
 (the Kronecker matrices `relModularArg` of `ModularOperator.lean`), feed the rectangular
 operator-Jensen inequality `rect_isometry_neg_log_loewner` to produce the reconciliation Loewner
-pair `A ≤ B` consumed by `gap_mulVec_vecOne_zero_of_reconciliation` in `PetzSufficiencyDone.lean`.
+pair `A ≤ B` consumed by the gap-vanishing keystone `gap_mulVec_vecOne_zero_of_relForm_re_eq`
+(`PetzEqualityM3sc`).
 
 ## What is *not* done here (the two remaining walls of issue #28)
 

@@ -43,7 +43,7 @@ structural facts are:
   vectorised relative modular map `Z ↦ τ Z ω⁻¹` (the Kronecker matrix `τ ⊗ₖ (ω⁻¹)ᵀ`).
 
 These are the three matrix facts (isometry, cyclic-vector, modular-compression) that feed the
-abstract rigidity spine `resolvent_intertwine_of_form_re_eq` in `PetzSufficiencyClosed`.
+resolvent rigidity assembly in `PetzEqualitySufficiency` / `PetzEqualityGeneral`.
 -/
 
 open Matrix Real
