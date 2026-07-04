@@ -3,7 +3,6 @@ Copyright (c) 2026 Marcel Morgenstern. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Marcel Morgenstern
 -/
-import Mathlib
 import Oseledets.OperatorEntropy.Lieb.PetzEqualitySufficiency
 import Oseledets.OperatorEntropy.Lieb.PetzKadison
 import Oseledets.OperatorEntropy.Lieb.Step0Dilation
@@ -553,3 +552,4 @@ theorem petz_equality_recovery (α : DensityMatrix e) (hα : α.val.PosDef)
     (stinespring_intertwinesIt α hα U ρ σ hρ hσ hΛρ hΛσ hEq)
 
 end Oseledets.OperatorEntropy.Lieb
+

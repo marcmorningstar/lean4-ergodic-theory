@@ -3,7 +3,6 @@ Copyright (c) 2026 Marcel Morgenstern. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Marcel Morgenstern
 -/
-import Mathlib
 import Oseledets.OperatorEntropy.Lieb.ChoiLoewner
 import Oseledets.OperatorEntropy.Lieb.PetzEqualityM3sc
 import Oseledets.OperatorEntropy.Lieb.RigidityTail
@@ -787,3 +786,4 @@ theorem partialTrace_equality_imp_intertwinesIt (ω τ : DensityMatrix (nA × nB
 end Oseledets.OperatorEntropy.Lieb
 
 end
+
