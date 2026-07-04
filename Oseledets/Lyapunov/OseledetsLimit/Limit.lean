@@ -578,7 +578,10 @@ The named limit `oseledetsLimit A T x` inherits the self-adjointness and positiv
 semidefiniteness of the approximants `qpow A T n x` (both closed under the matrix limit, proved
 entrywise / via the continuity of the quadratic form). The eigenvalue equality
 `eigenvalues₀ (Λ x) i = e^{λᵢ}` additionally requires continuity of the sorted eigenvalues in the
-Hermitian matrix, which is **absent from Mathlib** (see the blocker flag in the module summary). -/
+Hermitian matrix. This was historically flagged as a blocker (no such lemma in Mathlib), but it is
+now supplied in-repo by the Weyl-perturbation lemma `Oseledets.Weyl.tendsto_eigenvalues₀`
+(`Oseledets/Lyapunov/ExteriorNorm/Weyl.lean`), so the equality `oseledetsLimit_eigenvalues₀_eq`
+below is fully proved. -/
 
 set_option linter.unusedSectionVars false in
 /-- For `μ`-a.e. `x`, the Oseledets limit `oseledetsLimit A T x` is self-adjoint, as the
@@ -658,11 +661,11 @@ theorem lamSing_antitone [IsProbabilityMeasure μ] (hT : Ergodic T μ)
 set_option linter.unusedSectionVars false in
 /-- **The eigenvalues of `qpow` converge to `e^{lamSing}`.** For `μ`-a.e. `x` and every sorted
 index `i`, the `i`-th sorted eigenvalue of the approximant `qpow A T n x` converges to
-`e^{lamSing A T x i}`. This is the eigenvalue statement at the level of the *approximants*; the
-full
-eigenvalue equality for `Λ` itself (`oseledetsLimit_eigenvalues₀_eq`) additionally needs continuity
-of the sorted eigenvalues in the Hermitian matrix, which is absent from Mathlib — see the blocker
-note below. -/
+`e^{lamSing A T x i}`. This is the eigenvalue statement at the level of the *approximants*; the full
+eigenvalue equality for `Λ` itself (`oseledetsLimit_eigenvalues₀_eq`, below) additionally needs
+continuity of the sorted eigenvalues in the Hermitian matrix. That was historically a blocker (no
+such Mathlib lemma), but it is now supplied in-repo by `Oseledets.Weyl.tendsto_eigenvalues₀`, so the
+equality below is proved. -/
 theorem eigenvalues₀_qpow_tendsto_exp_lamSing [IsProbabilityMeasure μ] (hT : Ergodic T μ)
     {A : X → Matrix (Fin d) (Fin d) ℝ} (hA : ∀ x, (A x).det ≠ 0) (hAmeas : Measurable A)
     (hint : IntegrableLogNorm A μ) (hint' : IntegrableLogNorm (fun x => (A x)⁻¹) μ) :

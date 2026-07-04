@@ -43,8 +43,9 @@ This is the natural **a.e.** analogue of `Oseledets.MeasurableSubspace`
   measurable graph at a standard Borel base yields `AEMeasurable (fun x => orthProjMatrix (V x)) μ`
   for every s-finite `μ` (using the now-proved `AnalyticSet.nullMeasurableSet`).
 * `Oseledets.aemeasurable_orthProjMatrix_lambdaSublevel`: **the #6 headline** — for the Lyapunov
-  sublevel filtration over a standard Borel ergodic base (everywhere `IsUltrametricGrowth` gate),
-  the orthogonal projector `x ↦ orthProjMatrix (lambdaSublevel A T x c)` is `AEMeasurable`.
+  sublevel filtration over a standard Borel base with measurable `A`, `T` and any s-finite `μ`
+  (everywhere `IsUltrametricGrowth` gate), the orthogonal projector
+  `x ↦ orthProjMatrix (lambdaSublevel A T x c)` is `AEMeasurable`.
 
 ## Hypotheses and the residual
 
@@ -122,13 +123,14 @@ section Headline
 
 variable {μ : Measure X} [SFinite μ] {T : X → X}
 
-/-- **The singular issue #6 headline: an a.e.-measurable forward Lyapunov projector.** Over a
-standard Borel ergodic base `X` with an invertible measurable generator `A` (forward/inverse
-log-norm integrability of the invertible MET), and the everywhere `IsUltrametricGrowth` gate
-`hUM` (the pointwise form of the a.e. `Oseledets.isUltrametricGrowth_lambdaBar`, automatic e.g. for
-a bounded generator), the orthogonal-projection matrix
-`x ↦ orthProjMatrix (lambdaSublevel A T x c)` of the forward Lyapunov sublevel filtration is
-`AEMeasurable`.
+/-- **The singular issue #6 headline: an a.e.-measurable forward Lyapunov projector.** For a
+measurable generator `A` (`hA`) and a measurable `T` (`hT`) over a standard Borel base `X`, an
+arbitrary s-finite measure `μ`, and the everywhere `IsUltrametricGrowth` gate `hUM` (the pointwise
+form of the a.e. `Oseledets.isUltrametricGrowth_lambdaBar`, automatic e.g. for a bounded
+generator), the orthogonal-projection matrix `x ↦ orthProjMatrix (lambdaSublevel A T x c)` of the
+forward Lyapunov sublevel filtration is `AEMeasurable`. **No invertibility (`det ≠ 0`), ergodicity,
+measure-preservation, or log-norm integrability is assumed** — `A`, `T`, and `μ` are unrelated, so
+the result is strictly more general than the invertible MET setting.
 
 The sublevel filtration has a measurable graph (`Oseledets.measurableSet_graph_lambdaSublevel`),
 which the general a.e. converter `aemeasurable_orthProjMatrix_of_measurableGraph` turns into the
