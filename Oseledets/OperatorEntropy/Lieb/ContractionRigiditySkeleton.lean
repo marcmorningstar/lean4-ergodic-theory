@@ -5,7 +5,7 @@ Authors: Marcel Morgenstern
 -/
 import Mathlib
 import Oseledets.OperatorEntropy.Lieb.RigidityTail
-import Oseledets.OperatorEntropy.Lieb.PetzSufficiencyClosed
+import Oseledets.OperatorEntropy.Lieb.PetzEqualityM3sc
 
 /-!
 # Contraction rigidity helpers (issue #28, GENERAL case — route b″)

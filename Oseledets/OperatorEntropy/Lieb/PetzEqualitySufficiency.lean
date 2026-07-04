@@ -4,7 +4,10 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Marcel Morgenstern
 -/
 import Mathlib
-import Oseledets.OperatorEntropy.Lieb.PetzSufficiencyClosed
+import Oseledets.OperatorEntropy.Lieb.ChoiLoewner
+import Oseledets.OperatorEntropy.Lieb.PetzEqualityM3sc
+import Oseledets.OperatorEntropy.Lieb.RigidityTail
+import Oseledets.OperatorEntropy.Lieb.PetzVecBridge
 import Oseledets.OperatorEntropy.Lieb.PetzEqualityIntertwine
 import Oseledets.OperatorEntropy.Subadditivity
 

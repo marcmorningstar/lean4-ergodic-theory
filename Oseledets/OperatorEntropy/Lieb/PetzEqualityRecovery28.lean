@@ -528,7 +528,11 @@ theorem stinespring_intertwinesIt (α : DensityMatrix e) (hα : α.val.PosDef)
 
 /-- **Petz equality ⟹ recovery for the mixed-ancilla Stinespring class.** If the Umegaki relative
 entropy is preserved by the faithful-ancilla Stinespring channel `Λ_{α,U} ρ = Tr_e(U(ρ⊗α)Uᴴ)`, then
-the Petz recovery map of `σ` reconstructs the input state `ρ` from its image `Λ ρ`. -/
+the Petz recovery map of `σ` reconstructs the input state `ρ` from its image `Λ ρ`.
+
+This is the historical mixed-ancilla route; the fully general theorem, for an arbitrary
+finite-dimensional faithful-state `KrausChannel`, is `petz_equality_recovery_general`
+(`PetzEqualityGeneral`). -/
 theorem petz_equality_recovery (α : DensityMatrix e) (hα : α.val.PosDef)
     (U : Matrix.unitaryGroup (n × e) ℂ) (ρ σ : DensityMatrix n)
     (hρ : ρ.val.PosDef) (hσ : σ.val.PosDef)
