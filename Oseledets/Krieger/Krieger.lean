@@ -16,9 +16,10 @@ recovery core of `Oseledets.Krieger.Coding`.
 ## The theorem
 
 Let `e : α ≃ᵐ α` be an **ergodic, aperiodic, measure-preserving automorphism** of a standard-Borel
-probability space `(α, μ)`, with finite Kolmogorov–Sinai entropy `h`. If `k : ℕ` satisfies
-`Real.log k > h`, then `e` admits a **finite two-sided generator of size `≤ k`**: a partition
-`P : MeasurePartition μ (Fin k)` that is `IsGeneratingTwoSidedMod0` (generates mod 0).
+probability space `(α, μ)`. If `k : ℕ` satisfies `(ksEntropy he).toReal < Real.log k` — the
+Kolmogorov–Sinai entropy of the system is below `log k` — then `e` admits a **finite two-sided
+generator of size `≤ k`**: a partition `P : MeasurePartition μ (Fin k)` that is
+`IsGeneratingTwoSidedMod0` (generates mod 0).
 
 The proof has three layers, of which this file is the top:
 
@@ -54,11 +55,13 @@ produce. Both packaged forms are provided:
 * `krieger_finite_generator_of_coding`: the clean assembly — given a `KriegerCodingData`, exhibit
   the finite mod-0 two-sided generator. **Fully proved, unconditionally.**
 * `krieger_finite_generator`: the faithful headline carrying all of Krieger's hypotheses
-  (ergodicity, aperiodicity, measure preservation, the entropy threshold `Real.log k > h`) together
-  with the coding-existence hypothesis; it specializes the assembly. The entropy threshold and the
-  dynamical hypotheses are the inputs the upstream coding construction consumes to *produce* the
-  `KriegerCodingData`; here they are carried so the statement matches Krieger's theorem and so the
-  orchestrator can discharge the coding hypothesis by wiring M1+M2.
+  (ergodicity, aperiodicity, measure preservation, and the entropy threshold
+  `(ksEntropy he).toReal < Real.log k`, pinned to the genuine system entropy — not a free real)
+  together with the coding-existence hypothesis; it specializes the assembly. Its proof consumes
+  *only* the coding hypothesis; the entropy threshold and dynamical hypotheses are the inputs the
+  upstream coding construction consumes to *produce* the `KriegerCodingData`, carried here so the
+  statement matches Krieger's theorem and so the orchestrator can discharge the coding hypothesis by
+  wiring M1+M2.
 
 ## Main definitions
 
@@ -155,23 +158,31 @@ theorem krieger_finite_generator_of_coding {e : α ≃ᵐ α} {k : ℕ}
 /-- **Krieger's finite generator theorem (headline assembly).**
 
 Let `e : α ≃ᵐ α` be an ergodic, aperiodic, measure-preserving automorphism of a standard-Borel
-probability space `(α, μ)` with Kolmogorov–Sinai entropy `h := (ksEntropy he).toReal`. If
-`k : ℕ` satisfies `Real.log k > h`, and the Krieger coding construction supplies a `Fin k`-valued
-mod-0 code of a mod-0 two-sided generator (`KriegerCodingData e μ k`), then `e` admits a **finite
-two-sided generator of size `≤ k`, mod 0**: a partition `P : MeasurePartition μ (Fin k)` with
-`IsGeneratingTwoSidedMod0 e P` (the μ-completion of its two-sided saturation is the full ambient
-σ-algebra). The mod-0 conclusion is the standard, faithful form of Krieger's theorem: ergodic-theory
-generators generate up to null sets (see `Oseledets.Krieger.Coding`).
+probability space `(α, μ)`. If `k : ℕ` satisfies `(ksEntropy he).toReal < Real.log k` — the
+**actual** Kolmogorov–Sinai entropy of the system is below `log k` — and the Krieger coding
+construction supplies a `Fin k`-valued mod-0 code of a mod-0 two-sided generator
+(`KriegerCodingData e μ k`), then `e` admits a **finite two-sided generator of size `≤ k`, mod 0**:
+a partition `P : MeasurePartition μ (Fin k)` with `IsGeneratingTwoSidedMod0 e P` (the μ-completion
+of its two-sided saturation is the full ambient σ-algebra). The mod-0 conclusion is the standard,
+faithful form of Krieger's theorem: ergodic-theory generators generate up to null sets (see
+`Oseledets.Krieger.Coding`).
 
-The dynamical hypotheses (`herg`, `hap`, `he`) and the entropy threshold `hk : Real.log k > h` are
-precisely the inputs the upstream M1 (Rokhlin tower) and M2 (name count) layers consume to *produce*
-the coding data `hcode`; carried here, they make the statement faithful to Krieger's theorem while
-the assembly itself reduces to the unconditional recovery
-`krieger_finite_generator_of_coding`. (When M1+M2 are wired in, `hcode` is discharged from
-`herg`, `hap`, `he`, and `hk`, yielding the unconditional theorem.) -/
+The entropy threshold is stated as `(ksEntropy he).toReal < Real.log k`, so `he` names the actual
+measure-preservation and the threshold is pinned to the genuine Kolmogorov–Sinai entropy
+`ksEntropy he` of the system — it is *not* a free real, so the hypothesis is a real entropy
+constraint (not vacuously satisfiable).
+
+**What the proof consumes.** The proof term is `krieger_finite_generator_of_coding hcode`: it uses
+*only* the coding hypothesis `hcode`, which already carries the measure-preservation it needs. The
+dynamical hypotheses (`he`, `_herg`, `_hap`) and the entropy threshold `_hk` are carried so that the
+statement is the faithful specialization of Krieger's theorem — they are precisely the inputs the
+upstream M1 (Rokhlin tower) and M2 (name count) layers consume to *produce* the coding data `hcode`.
+When M1+M2 are wired in, `hcode` is discharged from `he`, `_herg`, `_hap`, and `_hk`, yielding the
+unconditional theorem with no change to this interface; until then this file proves the honest
+conditional form, whose only nontrivial input is `hcode`. -/
 theorem krieger_finite_generator [IsProbabilityMeasure μ] {e : α ≃ᵐ α}
-    (_he : MeasurePreserving (e : α → α) μ μ) (_herg : Ergodic (e : α → α) μ)
-    (_hap : Aperiodic e μ) {k : ℕ} {h : ℝ} (_hk : Real.log k > h)
+    (he : MeasurePreserving (e : α → α) μ μ) (_herg : Ergodic (e : α → α) μ)
+    (_hap : Aperiodic e μ) {k : ℕ} (_hk : (ksEntropy he).toReal < Real.log k)
     (hcode : KriegerCodingData e μ k) :
     ∃ P : MeasurePartition μ (Fin k), IsGeneratingTwoSidedMod0 e P :=
   krieger_finite_generator_of_coding hcode
