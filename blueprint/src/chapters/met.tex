@@ -223,16 +223,19 @@ that a vector with nonzero projection onto the band grows at least at the band r
   \(P'v = P'(Pv) = 0\).
 \end{proof}
 
-\section{The spectral upper bound and the determinant squeeze}
+\section{The spectral upper bound}
 
-The upper half is the genuinely non-elementary step. For a vector \(v\) in the slow subspace of
-\(\Lambda\) at level \(e^t\), one bounds \(\norm{A^{(n)}(x)v}\) by the restricted operator norm of
-\(A^{(n)}\) on the slow subspace, whose growth exponent is pinned --- non-circularly --- by a
-determinant/volume squeeze.
+The upper half is the genuinely non-elementary step. On the ultrametric-growth good set the
+per-vector upper growth exponent \(\overline\lambda(x,v)\) of a vector \(v\) in the \(i\)-th
+stratum equals its spectral value \(\mathrm{specList}\,i\) exactly, so in particular
+\(\limsup_n\tfrac1n\log\norm{A^{(n)}(x)v}\le\mathrm{specList}\,i\). This replaces an earlier
+determinant/volume-squeeze argument --- the two \emph{superseded-route} lemmas below, whose
+restricted-operator-norm files were removed from the development as dead code; their labels are
+retained only so cross-references resolve.
 
 \begin{lemma}[Tempering]\label{tempering_posLog}
-  \lean{Oseledets.tempering_posLog}\leanok
-  If \(T\) is measure-preserving and \(g\ge0\) with \(g\in L^1(\mu)\), then for \(\mu\)-a.e.\ \(x\),
+  \lean{Oseledets.ae_tendsto_orbit_div_atTop_zero}\leanok
+  If \(T\) is measure-preserving and \(g\in L^1(\mu)\), then for \(\mu\)-a.e.\ \(x\),
   \(\tfrac1n\,g(T^n x)\to 0\).
 \end{lemma}
 \begin{proof}\leanok
@@ -241,14 +244,16 @@ determinant/volume squeeze.
   \(g(T^n x)=o(n)\), i.e.\ \(\tfrac1n g(T^n x)\to0\).
 \end{proof}
 
-\begin{lemma}[Slow-volume exponent squeeze]\label{limsup_topSlow_le_of_squeeze}
-  \lean{Oseledets.limsup_topSlow_le_of_squeeze}\leanok
+\begin{lemma}[Slow-volume exponent squeeze (superseded route)]\label{limsup_topSlow_le_of_squeeze}
+  \emph{This lemma belonged to a superseded determinant/volume-squeeze route and has no counterpart
+  in the current Lean development; the statement is kept for exposition and the label only so that
+  cross-references resolve.}
   Given a volume cocycle whose top, slow and remaining log-exponent sequences satisfy a sum law
   \(\mathrm{vol} = \mathrm{slow} + \mathrm{rest}\) with the appropriate limits, the slow
   restricted-operator-norm exponent obeys
   \(\limsup_n \tfrac1n\log(\mathrm{slow}_n) \le \lambda_i\).
 \end{lemma}
-\begin{proof}\leanok
+\begin{proof}
   The total volume exponent is the Furstenberg--Kesten determinant limit \(\sum_j\lambda^0_j\); the
   fast-block volume is the exterior-power Kingman limit; their difference forces the slow-block
   volume exponent. The squeeze converts a sum identity of limits into an upper bound for the slow
@@ -256,23 +261,22 @@ determinant/volume squeeze.
   blocks tempering to zero so no cross term inflates the slow volume.
 \end{proof}
 
-\begin{theorem}[Spectral upper bound via the determinant squeeze]\label{spectral_upper_bound_of_squeeze}
-  \lean{Oseledets.spectral_upper_bound_of_squeeze}\leanok
-  Let \(v\neq0\) lie in the slow subspace. Given the slow restricted-norm exponent bound
-  \(\limsup_n \tfrac1n\log r_n\le \lambda_i\) and the restriction estimate
-  \(\norm{A^{(n)}(x)v}\le r_n\norm v\) (valid for \(v\) slow), one has
+\begin{theorem}[Spectral upper bound on each stratum]\label{spectral_upper_bound_of_squeeze}
+  \lean{Oseledets.limsup_log_norm_cocycle_apply_le_specList_of_mem_stratum}\leanok
+  For \(\mu\)-a.e.\ \(x\), every index \(i\) and every vector \(v\) in the \(i\)-th stratum
+  \(\mathrm{vflag}\,i.\mathrm{castSucc}\setminus\mathrm{vflag}\,i.\mathrm{succ}\) one has
   \[
-    \limsup_{n}\ \tfrac1n\log\norm{A^{(n)}(x)\,v} \;\le\; \lambda_i.
+    \limsup_{n}\ \tfrac1n\log\norm{A^{(n)}(x)\,v} \;\le\; \mathrm{specList}\,i.
   \]
 \end{theorem}
 \begin{proof}\leanok
-  \uses{limsup_topSlow_le_of_squeeze,tempering_posLog}
-  Take logs in \(\norm{A^{(n)}(x)v}\le r_n\norm v\), divide by \(n\), and pass to the \(\limsup\):
-  the \(\norm v\) factor contributes \(0\) and \(r_n\) contributes
-  \(\limsup_n\tfrac1n\log r_n\le\lambda_i\) (Lemma~\ref{limsup_topSlow_le_of_squeeze}). The
-  restricted-norm exponent \(r_n\) depends only on the \emph{global} volume cocycle and the
-  tempered slow--fast angle, never on the growth of \(v\) itself, so the argument is
-  non-circular.
+  \uses{tempering_posLog}
+  On the \(\mathrm{IsUltrametricGrowth}\) good set the per-vector upper growth function
+  \(\overline\lambda(x,v)\) equals the exact stratum exponent \(\mathrm{specList}\,i\); since this
+  \(\overline\lambda\) is by definition the \(\limsup\) of \(\tfrac1n\log\norm{A^{(n)}v}\), the
+  bound follows (indeed with equality). The good set itself is built from the subexponential
+  one-step log-norm factor supplied by the tempering estimate (Lemma~\ref{tempering_posLog}), so
+  the argument is non-circular.
 \end{proof}
 
 \begin{theorem}[Upper bound on the slow space]\label{vslow_subset_lambdaSublevel_of_upper}
