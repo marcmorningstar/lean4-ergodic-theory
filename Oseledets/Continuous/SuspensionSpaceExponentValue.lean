@@ -130,7 +130,10 @@ section SpaceExponentValue
 variable {μ : Measure X} [SFinite μ] {lam : ℝ}
 
 include hτ in
-/-- **The space-level special-flow Lyapunov exponent.** For the suspension space `SuspensionSpace
+/-- **The space-level special-flow Lyapunov exponent.** (`HasFlowExponent` is existential over
+representatives: for `μ̂`-a.e. class *some* representative realises the value `λ_base / ∫τ`;
+cross-representative uniqueness is separate and needs base-cocycle invertibility.) For the
+suspension space `SuspensionSpace
 T hτ` with its invariant probability measure `μ̂ = suspensionMeasure`, under a bounded roof
 `c ≤ τ ≤ C` (`0 < c`), positive integral `0 < ∫τ`, and the base-a.e. Birkhoff limits — the discrete
 base growth rate `→ λ_base` and the roof average `→ ∫τ` — the flow Lyapunov exponent equals

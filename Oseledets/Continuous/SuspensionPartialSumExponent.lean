@@ -236,7 +236,10 @@ theorem gammaK_succ_sub_gammaK (i : Fin d) :
   ring
 
 include hT hA hAmeas hint hint' hτ in
-/-- **The per-exponent (full-spectrum) special-flow scaling.** For every sorted index `i : Fin d`,
+/-- **The per-exponent (full-spectrum) special-flow scaling.** (Realised through `HasFlowExponent`,
+which is existential over representatives: for `μ̂`-a.e. class *some* representative realises each
+partial-sum value; cross-representative uniqueness needs base-cocycle invertibility.) For every
+sorted index `i : Fin d`,
 the `i`-th *flow* exponent equals the `i`-th base exponent divided by the mean roof `∫τ`:
 
 `λ_i^flow = exponents i / ∫τ`.

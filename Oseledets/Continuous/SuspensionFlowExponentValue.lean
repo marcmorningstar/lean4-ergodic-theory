@@ -77,7 +77,9 @@ section Unconditional
 variable {μ : Measure X} [SFinite μ] {lam : ℝ}
 
 include hτ in
-/-- **The unconditional space-level special-flow Lyapunov exponent.** This is
+/-- **The unconditional space-level special-flow Lyapunov exponent.** (`HasFlowExponent` is
+existential over representatives: for `μ̂`-a.e. class *some* representative realises `λ_base / ∫τ`;
+cross-representative uniqueness needs base-cocycle invertibility.) This is
 `Oseledets.ae_suspensionMeasure_hasFlowExponent` with its quotient-image measurability hypothesis
 `hmeas` removed: under a bounded roof `c ≤ τ ≤ C` (`0 < c`), positive integral `0 < ∫τ`, the
 base exponent-set measurability `hPmeas`, and the base-a.e. Birkhoff limits — discrete base growth
