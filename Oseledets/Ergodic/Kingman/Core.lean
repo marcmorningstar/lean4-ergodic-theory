@@ -53,7 +53,7 @@ Everything else in this file — a.e. boundedness (`ae_bddBelow_cdiv`), `limsup 
 The proof works with the `EReal`-valued `limsup`/`liminf` to avoid the `ℝ` junk value at
 `−∞`: the `ℝ≥0∞` Fatou step (`ae_bot_lt_ereal_limsup`, `int_limsup_div_integrable_aux`)
 gives `limsup > ⊥` a.e. and the integrability; the stopping-time lemma
-`ae_ereal_limsup_le_liminf` gives `liminf = limsup`; together with the envelope
+`ae_ereal_liminf_eq_limsup` gives `liminf = limsup`; together with the envelope
 `limsup ≤ ↑B < ⊤` they force a finite a.e. limit `e.toReal`. -/
 theorem ae_tendsto_cdiv [IsFiniteMeasure μ]
     (hT : MeasurePreserving T μ μ) (hTm : Measurable T) {g : ℕ → X → ℝ}
@@ -67,7 +67,7 @@ theorem ae_tendsto_cdiv [IsFiniteMeasure μ]
   -- On the good set: `⊥ < e ≤ ↑B < ⊤` and `liminf = limsup = e`, so `cdiv → e.toReal = f₊ x`.
   filter_upwards [ae_ereal_limsup_le_condExp hT hsub hint,
     ae_bot_lt_ereal_limsup hT hTm hsub hint hbdd,
-    ae_ereal_limsup_le_liminf hT hTm hsub hint hbdd] with x hupper hbot heq
+    ae_ereal_liminf_eq_limsup hT hsub hint hbdd] with x hupper hbot heq
   set e : EReal := Filter.limsup (fun n => ecdiv g n x) atTop with hedef
   -- Finiteness of `e`.
   have hetop : e ≠ ⊤ := ne_top_of_le_ne_top (EReal.coe_lt_top _).ne hupper

@@ -335,7 +335,7 @@ theorem ksEntropyPartition_le_sumPosExp_of_atomVolProd {ι : Type*} [Fintype ι]
 
 /-- **The sharp Margulis–Ruelle inequality, conditional on the orbit atom-count input.**
 
-For an ergodic, differentiable self-map `T` of `EuclideanSpace ℝ (Fin d)` with nonsingular,
+For an ergodic self-map `T` of `EuclideanSpace ℝ (Fin d)` with nonsingular,
 log-integrable derivative cocycle, the Kolmogorov–Sinai *system* entropy is bounded by the sum
 of the strictly positive Lyapunov exponents:
 
@@ -355,7 +355,7 @@ The orbit rate at the base point is *not* an extra hypothesis: it is supplied a.
 `tendsto_log_volProd`, and a base point of the full-measure rate set carrying the atom bound is what
 `hatom` provides (its existence is the content of the geometric count, fed by the in-tree local
 covering count `Oseledets.coveringCount_image_ball_le_volProd`). -/
-theorem margulisRuelle_sharp_of_atomVolProd (hdiff : Differentiable ℝ T)
+theorem margulisRuelle_sharp_of_atomVolProd
     (hatom : ∀ (n : ℕ) (P : Oseledets.Entropy.MeasurePartition μ (Fin n)),
       ∃ (C : ℝ) (x : EuclideanSpace ℝ (Fin d)), 1 ≤ C ∧
         Tendsto (fun m : ℕ => (m : ℝ)⁻¹ * Real.log (volProd T m x)) atTop
@@ -368,7 +368,7 @@ theorem margulisRuelle_sharp_of_atomVolProd (hdiff : Differentiable ℝ T)
       ≤ ((Oseledets.sumPosExp hT hdet
           (Oseledets.measurable_derivativeCocycle T) hint hint' : ℝ) : EReal) := by
   -- Discharge the per-partition `hgeo` of `margulisRuelle_le_sumPosExp` via the orbit assembly.
-  refine Oseledets.margulisRuelle_le_sumPosExp hT hdiff hdet hint hint' (fun n P => ?_)
+  refine Oseledets.margulisRuelle_le_sumPosExp hT hdet hint hint' (fun n P => ?_)
   -- The arity `n = 0` is vacuous: an empty-indexed partition cannot cover a probability space.
   rcases Nat.eq_zero_or_pos n with hn | hn
   · subst hn

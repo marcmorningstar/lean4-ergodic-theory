@@ -247,7 +247,7 @@ theorem hatom_of_sharpCovering {n : ℕ} (P : Oseledets.Entropy.MeasurePartition
 
 /-- **The sharp Margulis–Ruelle inequality (unconditional modulo the honest distortion regime).**
 
-For an ergodic, differentiable self-map `T` of `EuclideanSpace ℝ (Fin d)` with nonsingular,
+For an ergodic self-map `T` of `EuclideanSpace ℝ (Fin d)` with nonsingular,
 log-integrable derivative cocycle, the Kolmogorov–Sinai *system* entropy is bounded by the sum of
 the
 strictly positive Lyapunov exponents:
@@ -272,7 +272,7 @@ Everything between this input and the conclusion — the orbit rate `tendsto_log
 sharp covering count `coveringCount_image_ball_le_volProd`, the per-partition assembly
 `ksEntropyPartition_le_sumPosExp_of_atomVolProd`, and the supremum lift
 `Oseledets.margulisRuelle_le_sumPosExp` — is unconditional and sorry-free. -/
-theorem margulisRuelle_sharp (hdiff : Differentiable ℝ T)
+theorem margulisRuelle_sharp
     (hgeo : ∀ (n : ℕ) (P : Oseledets.Entropy.MeasurePartition μ (Fin n)),
       ∃ (ε : ℝ≥0) (Ccov : ℝ), 0 < ε ∧ 0 ≤ Ccov ∧
         (∀ᵐ x ∂μ, ∀ᶠ m : ℕ in atTop,
@@ -282,7 +282,7 @@ theorem margulisRuelle_sharp (hdiff : Differentiable ℝ T)
       ≤ ((Oseledets.sumPosExp hT hdet
           (Oseledets.measurable_derivativeCocycle T) hint hint' : ℝ) : EReal) := by
   -- Discharge the capstone's existential `hatom` from the honest atom-count input.
-  refine margulisRuelle_sharp_of_atomVolProd hT hdet hint hint' hdiff (fun n P => ?_)
+  refine margulisRuelle_sharp_of_atomVolProd hT hdet hint hint' (fun n P => ?_)
   rcases Nat.eq_zero_or_pos n with hn | hn
   · -- Arity `0` is vacuous: an empty-indexed partition cannot cover a probability space.
     subst hn

@@ -329,15 +329,14 @@ theorem ereal_limsup_eq_of_sub_tendsto_zero {u v : ℕ → ℝ}
   rw [hrw u, hrw v, key]
 
 omit [MeasurableSpace X] in
-/-- **EReal ratio squeeze (`liminf`), one-sided.** If `z n ≤ 0`, `c n → 1`, `1 ≤ c n`, then the
-nonpositive `EReal`-coerced products `↑(c n · z n)` (which are `≤ ↑(z n)`) have `liminf` no smaller
-than that of `↑z`: `liminf ↑z ≤ liminf ↑(c · z)`. (The reverse is monotonicity.) For each `ε > 0`,
-eventually `(1+ε)·z n ≤ c n · z n` (as `z ≤ 0`), and
-`liminf ↑((1+ε)·z) = (1+ε)·liminf ↑z → liminf ↑z`
+/-- **EReal ratio squeeze (`liminf`), one-sided.** If `z n ≤ 0` and `c n → 1`, then the
+nonpositive `EReal`-coerced products `↑(c n · z n)` have `liminf` no smaller than that of `↑z`:
+`liminf ↑z ≤ liminf ↑(c · z)`. For each `ε > 0`, eventually `(1+ε)·z n ≤ c n · z n` (as `z ≤ 0`,
+using only `c n ≤ 1 + ε` from convergence), and `liminf ↑((1+ε)·z) = (1+ε)·liminf ↑z → liminf ↑z`
 as `ε → 0`; the `EReal` scalar law `EReal.liminf_const_mul_of_nonneg_of_ne_top` handles the `−∞`
 case uniformly. -/
 theorem ereal_liminf_le_ratio {c z : ℕ → ℝ} (hz : ∀ n, z n ≤ 0)
-    (_hc1 : ∀ n, 1 ≤ c n) (hctend : Tendsto c atTop (𝓝 1)) :
+    (hctend : Tendsto c atTop (𝓝 1)) :
     Filter.liminf (fun n => ((z n : ℝ) : EReal)) atTop
       ≤ Filter.liminf (fun n => ((c n * z n : ℝ) : EReal)) atTop := by
   set Lz : EReal := Filter.liminf (fun n => ((z n : ℝ) : EReal)) atTop with hLz
@@ -403,9 +402,9 @@ theorem ereal_liminf_le_ratio {c z : ℕ → ℝ} (hz : ∀ n, z n ≤ 0)
 
 omit [MeasurableSpace X] in
 /-- **EReal ratio squeeze (`limsup`), one-sided.** Dual of `ereal_liminf_le_ratio`:
-`limsup ↑z ≤ limsup ↑(c · z)` when `z n ≤ 0`, `c n → 1`, `1 ≤ c n`. -/
+`limsup ↑z ≤ limsup ↑(c · z)` when `z n ≤ 0` and `c n → 1`. -/
 theorem ereal_limsup_le_ratio {c z : ℕ → ℝ} (hz : ∀ n, z n ≤ 0)
-    (_hc1 : ∀ n, 1 ≤ c n) (hctend : Tendsto c atTop (𝓝 1)) :
+    (hctend : Tendsto c atTop (𝓝 1)) :
     Filter.limsup (fun n => ((z n : ℝ) : EReal)) atTop
       ≤ Filter.limsup (fun n => ((c n * z n : ℝ) : EReal)) atTop := by
   set Lz : EReal := Filter.limsup (fun n => ((z n : ℝ) : EReal)) atTop with hLz
@@ -460,12 +459,12 @@ theorem ereal_limsup_le_ratio {c z : ℕ → ℝ} (hz : ∀ n, z n ≤ 0)
     exact hreal ε hε
 
 omit [MeasurableSpace X] in
-/-- **EReal ratio squeeze (`limsup`), `c ≤ 1` companion.** If `z n ≤ 0`, `0 ≤ c n ≤ 1`, `c n → 1`,
-then `limsup ↑(c · z) ≤ limsup ↑z`. (The reverse is monotonicity, since `c ≤ 1, z ≤ 0 ⟹ z ≤ c·z`.)
-For each `ε ∈ (0,1)`, eventually `1 − ε ≤ c n`, so `c n · z n ≤ (1−ε)·z n` (as `z ≤ 0`), and
-`limsup ↑((1−ε)·z) = (1−ε)·limsup ↑z → limsup ↑z` as `ε → 0`. -/
+/-- **EReal ratio squeeze (`limsup`), lower companion.** If `z n ≤ 0` and `c n → 1`, then
+`limsup ↑(c · z) ≤ limsup ↑z`. For each `ε ∈ (0,1)`, eventually `1 − ε ≤ c n` (from convergence),
+so `c n · z n ≤ (1−ε)·z n` (as `z ≤ 0`), and `limsup ↑((1−ε)·z) = (1−ε)·limsup ↑z → limsup ↑z`
+as `ε → 0`. -/
 theorem ereal_ratio_le_limsup {c z : ℕ → ℝ} (hz : ∀ n, z n ≤ 0)
-    (_hc1 : ∀ n, c n ≤ 1) (hctend : Tendsto c atTop (𝓝 1)) :
+    (hctend : Tendsto c atTop (𝓝 1)) :
     Filter.limsup (fun n => ((c n * z n : ℝ) : EReal)) atTop
       ≤ Filter.limsup (fun n => ((z n : ℝ) : EReal)) atTop := by
   set Lz : EReal := Filter.limsup (fun n => ((z n : ℝ) : EReal)) atTop with hLz
@@ -527,10 +526,10 @@ theorem ereal_ratio_le_limsup {c z : ℕ → ℝ} (hz : ∀ n, z n ≤ 0)
     exact hreal ε hε hε1
 
 omit [MeasurableSpace X] in
-/-- **EReal ratio squeeze (`liminf`), `c ≤ 1` companion.** Dual of `ereal_ratio_le_limsup`:
-`liminf ↑(c · z) ≤ liminf ↑z` when `z n ≤ 0`, `0 ≤ c n ≤ 1`, `c n → 1`. -/
+/-- **EReal ratio squeeze (`liminf`), lower companion.** Dual of `ereal_ratio_le_limsup`:
+`liminf ↑(c · z) ≤ liminf ↑z` when `z n ≤ 0` and `c n → 1`. -/
 theorem ereal_ratio_le_liminf {c z : ℕ → ℝ} (hz : ∀ n, z n ≤ 0)
-    (_hc1 : ∀ n, c n ≤ 1) (hctend : Tendsto c atTop (𝓝 1)) :
+    (hctend : Tendsto c atTop (𝓝 1)) :
     Filter.liminf (fun n => ((c n * z n : ℝ) : EReal)) atTop
       ≤ Filter.liminf (fun n => ((z n : ℝ) : EReal)) atTop := by
   set Lz : EReal := Filter.liminf (fun n => ((z n : ℝ) : EReal)) atTop with hLz
@@ -737,9 +736,6 @@ theorem ereal_liminf_le_comp {g : ℕ → X → ℝ} (hsub : IsSubadditiveCocycl
     simp only [hzdef, cdiv]
     apply div_nonpos_of_nonpos_of_nonneg _ (by positivity)
     rw [show (k + 1 + 1) = (k + 1) + 1 from rfl]; exact hnonpos (k + 1) x
-  have hc1 : ∀ k, 1 ≤ c k := fun k => by
-    simp only [hcdef]
-    rw [le_div_iff₀ (by positivity)]; linarith
   -- bound `cdiv g k (T x) ≥ c k · z k − g1x/(k+1)`.
   have hbound : ∀ k, c k * z k - g 1 x / ((k : ℝ) + 1) ≤ cdiv g k (T x) :=
     fun k => cdiv_comp_ge_ratio hsub k x
@@ -750,7 +746,7 @@ theorem ereal_liminf_le_comp {g : ℕ → X → ℝ} (hsub : IsSubadditiveCocycl
         exact (Filter.liminf_nat_add (fun n => ((cdiv g n x : ℝ) : EReal)) 1).symm
     _ ≤ Filter.liminf (fun k => ((c k * z k : ℝ) : EReal)) atTop := by
         have hct : Tendsto c atTop (𝓝 1) := by rw [hcdef]; exact ratio_succ_tendsto_one
-        exact ereal_liminf_le_ratio hz hc1 hct
+        exact ereal_liminf_le_ratio hz hct
     _ = Filter.liminf (fun k => ((c k * z k - g 1 x / ((k : ℝ) + 1) : ℝ) : EReal)) atTop := by
         refine ereal_liminf_eq_of_sub_tendsto_zero ?_
         have : (fun k => c k * z k - (c k * z k - g 1 x / ((k : ℝ) + 1)))
@@ -783,9 +779,6 @@ theorem ereal_limsup_le_comp {g : ℕ → X → ℝ} (hsub : IsSubadditiveCocycl
     simp only [hzdef, cdiv]
     apply div_nonpos_of_nonpos_of_nonneg _ (by positivity)
     rw [show (k + 1 + 1) = (k + 1) + 1 from rfl]; exact hnonpos (k + 1) x
-  have hc1 : ∀ k, 1 ≤ c k := fun k => by
-    simp only [hcdef]
-    rw [le_div_iff₀ (by positivity)]; linarith
   have hbound : ∀ k, c k * z k - g 1 x / ((k : ℝ) + 1) ≤ cdiv g k (T x) :=
     fun k => cdiv_comp_ge_ratio hsub k x
   calc Filter.limsup (fun n => ecdiv g n x) atTop
@@ -794,7 +787,7 @@ theorem ereal_limsup_le_comp {g : ℕ → X → ℝ} (hsub : IsSubadditiveCocycl
         exact (Filter.limsup_nat_add (fun n => ((cdiv g n x : ℝ) : EReal)) 1).symm
     _ ≤ Filter.limsup (fun k => ((c k * z k : ℝ) : EReal)) atTop := by
         have hct : Tendsto c atTop (𝓝 1) := by rw [hcdef]; exact ratio_succ_tendsto_one
-        exact ereal_limsup_le_ratio hz hc1 hct
+        exact ereal_limsup_le_ratio hz hct
     _ = Filter.limsup (fun k => ((c k * z k - g 1 x / ((k : ℝ) + 1) : ℝ) : EReal)) atTop := by
         refine ereal_limsup_eq_of_sub_tendsto_zero ?_
         have : (fun k => c k * z k - (c k * z k - g 1 x / ((k : ℝ) + 1)))

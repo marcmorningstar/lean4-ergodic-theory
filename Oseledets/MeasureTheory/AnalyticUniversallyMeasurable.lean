@@ -47,7 +47,7 @@ The general s-finite case follows by dominating `μ` with a finite measure
 ## Main results
 
 * `MeasureTheory.IsChoquetCapacity`: the three Choquet-capacity axioms.
-* `MeasureTheory.measure_isChoquetCapacity`: finite Borel measures on Polish spaces are capacities.
+* `MeasureTheory.measure_isChoquetCapacity`: finite Borel measures are Choquet capacities.
 * `MeasureTheory.AnalyticSet.cap_eq_iSup_isCompact`: Choquet's capacitability theorem (abstract).
 * `MeasureTheory.AnalyticSet.compactCap_eq`: for analytic sets, compact capacity = measure.
 * `MeasureTheory.AnalyticSet.nullMeasurableSet_of_finite`: an analytic set is `NullMeasurableSet`
@@ -87,7 +87,7 @@ noncomputable def MeasureTheory.compactCap
 unions, and sequential continuity from above along decreasing intersections of *closed*
 sets. The third axiom is what distinguishes a capacity from a general outer measure; it
 is the asymmetry that makes the capacitability theorem possible. Every finite Borel
-measure on a Polish space is a Choquet capacity (`measure_isChoquetCapacity`). -/
+measure is a Choquet capacity (`measure_isChoquetCapacity`). -/
 structure MeasureTheory.IsChoquetCapacity
     {α : Type*} [TopologicalSpace α]
     (cap : Set α → ENNReal) : Prop where
@@ -103,14 +103,14 @@ structure MeasureTheory.IsChoquetCapacity
 
 /-! ## Finite Borel measures on Polish spaces are Choquet capacities -/
 
-/-- Every finite Borel measure on a Polish space is a Choquet capacity. Monotonicity
+/-- Every finite Borel measure is a Choquet capacity. Monotonicity
 and the increasing-union axiom are immediate from `measure_mono` and `measure_iUnion`;
 the decreasing-closed-intersection axiom uses Mathlib's `Antitone.measure_iInter` for
-finite measures on closed sets. The instance that lets the abstract capacitability
-machinery be applied to ordinary probability measures. -/
+finite measures on closed sets (measurable via `BorelSpace`). The lemma that lets the abstract
+capacitability machinery be applied to ordinary probability measures. -/
 theorem MeasureTheory.measure_isChoquetCapacity
     {α : Type*}
-    [TopologicalSpace α] [MeasurableSpace α] [BorelSpace α] [PolishSpace α]
+    [TopologicalSpace α] [MeasurableSpace α] [BorelSpace α]
     (μ : MeasureTheory.Measure α) [MeasureTheory.IsFiniteMeasure μ] :
     MeasureTheory.IsChoquetCapacity (fun s : Set α => μ s) := by
   constructor
@@ -282,7 +282,7 @@ The proof parametrises the analytic set as `f(ℕ → ℕ)` for continuous `f`, 
 argument to show `⋂ closure(f '' Cyl N n) = f '' Bnd N` (compact). -/
 theorem MeasureTheory.AnalyticSet.cap_eq_iSup_isCompact
     {α : Type*}
-    [TopologicalSpace α] [MeasurableSpace α] [BorelSpace α] [PolishSpace α]
+    [TopologicalSpace α] [PolishSpace α]
     {cap : Set α → ENNReal}
     (hcap : MeasureTheory.IsChoquetCapacity cap)
     {s : Set α} (hs : MeasureTheory.AnalyticSet s) :

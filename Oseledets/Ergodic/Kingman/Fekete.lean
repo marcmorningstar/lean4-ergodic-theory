@@ -309,7 +309,7 @@ extrema before finiteness is established we coerce the sequence into `EReal`, a
 `CompleteLinearOrder` where `Filter.limsup`/`liminf` are total and `liminf ≤ limsup` is
 unconditional. The two facts produced here — `limsup < ⊤` (envelope, from
 `le_birkhoffSum_one` and Birkhoff convergence) and
-`limsup > ⊥` (Fatou) — together with the hard `limsup ≤ liminf` (`ae_ereal_limsup_le_liminf`)
+`limsup > ⊥` (Fatou) — together with the hard `limsup ≤ liminf` (`ae_ereal_liminf_eq_limsup`)
 pin the `EReal` `limsup`/`liminf` to a common finite value, from which the `ℝ` convergence
 follows. -/
 
