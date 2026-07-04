@@ -113,7 +113,6 @@ import Oseledets.Entropy.Ruelle.Count
 import Oseledets.Entropy.Ruelle.SharpCovering
 import Oseledets.Entropy.Ruelle.MargulisRuelleSharp
 import Oseledets.Singular.SingularFiltrationMeasurable
-import Oseledets.Fourier.Torus2
 import Oseledets.Lyapunov.Extensions.ConstantCocycleSpectralRadius
 import Oseledets.Lyapunov.Extensions.SingularStratumExponent
 import Oseledets.Continuous.SuspensionPartialSumExponent
@@ -1730,22 +1729,6 @@ info: 'Oseledets.CatMapToral.catTorus_ksEntropyPartition_le_logLambda' depends o
 /-- info: 'Oseledets.measurable_extGen' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms Oseledets.measurable_extGen
-
-/-- info: 'Oseledets.Fourier.eq_zero_of_forall_char_inner_eq_zero' depends on axioms: [propext, Classical.choice, Quot.sound] -/
-#guard_msgs in
-#print axioms Oseledets.Fourier.eq_zero_of_forall_char_inner_eq_zero
-
-/-- info: 'Oseledets.Fourier.orthonormal_torusChar' depends on axioms: [propext, Classical.choice, Quot.sound] -/
-#guard_msgs in
-#print axioms Oseledets.Fourier.orthonormal_torusChar
-
-/-- info: 'Oseledets.Fourier.hasSum_sq_torusFourierCoeff' depends on axioms: [propext, Classical.choice, Quot.sound] -/
-#guard_msgs in
-#print axioms Oseledets.Fourier.hasSum_sq_torusFourierCoeff
-
-/-- info: 'Oseledets.Fourier.torusChar_apply' depends on axioms: [propext, Classical.choice, Quot.sound] -/
-#guard_msgs in
-#print axioms Oseledets.Fourier.torusChar_apply
 
 /-- info: 'Oseledets.Examples.Rokhlin.rokhlin_equality_doublingMap' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in

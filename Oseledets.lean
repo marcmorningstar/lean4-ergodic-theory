@@ -189,7 +189,6 @@ import Oseledets.Singular.JointMeasurableLambdaBar
 import Oseledets.Singular.GraphAndDim
 import Oseledets.Singular.MeasurableProjection
 import Oseledets.Singular.SingularFiltrationMeasurable
-import Oseledets.Fourier.Torus2
 import Oseledets.Lyapunov.Extensions.ConstantCocycleSpectralRadius
 import Oseledets.Lyapunov.Extensions.SingularStratumExponent
 import Oseledets.Continuous.SuspensionPartialSumExponent
@@ -203,7 +202,6 @@ import Oseledets.Examples.Rokhlin.DoublingCrux
 import Oseledets.Examples.Rokhlin.DoublingEquality
 import Oseledets.Krieger.ZIterate
 import Oseledets.Krieger.SmallSet
-import Oseledets.Krieger.Aperiodic
 import Oseledets.Krieger.FirstReturn
 import Oseledets.Krieger.InfoFunction
 import Oseledets.Krieger.NameCount
