@@ -49,17 +49,6 @@ variable {n : Type*} [Fintype n] [DecidableEq n]
 
 /-! ## The Hilbert–Schmidt inner product through `vec` -/
 
-omit [DecidableEq n] in
-/-- The Hilbert–Schmidt inner product in vectorised form: `⟪vec A, vec B⟫ = tr(Aᴴ B)`. -/
-lemma vec_dotProduct_eq_trace (A B : Matrix n n ℂ) :
-    star (vec A) ⬝ᵥ vec B = (Aᴴ * B).trace := by
-  rw [Matrix.trace]
-  simp only [Matrix.diag_apply, Matrix.mul_apply, Matrix.conjTranspose_apply]
-  rw [dotProduct, Fintype.sum_prod_type]
-  rw [Finset.sum_comm]
-  refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
-  simp only [Pi.star_apply, vec_apply, RCLike.star_def]
-
 omit [Fintype n] [DecidableEq n] in
 /-- `vec` commutes with finite sums (pointwise). -/
 lemma vec_sum {ι : Type*} (s : Finset ι) (M : ι → Matrix n n ℂ) :

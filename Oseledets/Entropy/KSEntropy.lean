@@ -204,6 +204,13 @@ lemma ksSubadditive [Fintype ι] {μ : Measure α} [IsProbabilityMeasure μ] {T 
     (hT : MeasurePreserving T μ μ) (P : MeasurePartition μ ι) :
     Subadditive (ksEntropySeq hT P) := fun k l => ksEntropySeq_subadditive hT P k l
 
+/-- **Equal subadditive sequences have equal Fekete limits.** Since `Subadditive.lim u` is defined
+as `sInf ((fun n => u n / n) '' Ici 1)`, depending only on the underlying sequence `u` and not on
+the subadditivity proof, two subadditive sequences that agree as functions have equal limits. -/
+lemma Subadditive.lim_eq_of_eq {u v : ℕ → ℝ} (hu : Subadditive u) (hv : Subadditive v)
+    (huv : u = v) : hu.lim = hv.lim := by
+  subst huv; rfl
+
 /-- The **Kolmogorov–Sinai entropy** `h(α, T)` of a measure-preserving transformation `T` relative
 to a finite measurable partition `α`, defined as the Fekete limit
 `limₙ (1 / n) · H(⋁ₖ₌₀ⁿ⁻¹ T⁻ᵏ α)` of the subadditive iterated-join entropy sequence. -/

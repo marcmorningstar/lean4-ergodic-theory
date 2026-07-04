@@ -62,6 +62,16 @@ def vec {m : Type*} (X : Matrix m m ℂ) : m × m → ℂ := fun p => X p.1 p.2
 
 @[simp] lemma vec_apply {m : Type*} (X : Matrix m m ℂ) (p : m × m) : vec X p = X p.1 p.2 := rfl
 
+/-- The Hilbert–Schmidt inner product in vectorised form: `⟪vec A, vec B⟫ = tr(Aᴴ B)`. -/
+lemma vec_dotProduct_eq_trace {m : Type*} [Fintype m] (A B : Matrix m m ℂ) :
+    star (vec A) ⬝ᵥ vec B = (Aᴴ * B).trace := by
+  rw [Matrix.trace]
+  simp only [Matrix.diag_apply, Matrix.mul_apply, Matrix.conjTranspose_apply]
+  rw [dotProduct, Fintype.sum_prod_type]
+  rw [Finset.sum_comm]
+  refine Finset.sum_congr rfl fun i _ => Finset.sum_congr rfl fun j _ => ?_
+  simp only [Pi.star_apply, vec_apply, RCLike.star_def]
+
 /-- The inverse of `vec`: rebuild a matrix from its vectorisation. -/
 def unvec {m : Type*} (v : m × m → ℂ) : Matrix m m ℂ := Matrix.of fun i j => v (i, j)
 

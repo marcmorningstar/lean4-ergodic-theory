@@ -60,13 +60,6 @@ namespace Oseledets.Entropy
 variable {α : Type*} {ι : Type*} {𝒜 : MeasurableSpace α} [mα : MeasurableSpace α]
   [StandardBorelSpace α]
 
-/-- **Equal subadditive sequences have equal Fekete limits.** Since `Subadditive.lim u` is defined
-as `sInf ((fun n => u n / n) '' Ici 1)`, depending only on the underlying sequence `u` and not on
-the subadditivity proof, two subadditive sequences that agree as functions have equal limits. -/
-lemma Subadditive.lim_congr {u v : ℕ → ℝ} (hu : Subadditive u) (hv : Subadditive v)
-    (huv : u = v) : hu.lim = hv.lim := by
-  subst huv; rfl
-
 variable (𝒜)
 
 /-- The **conditional iterated-join entropy sequence** `n ↦ H(⋁ₖ₌₀ⁿ⁻¹ T⁻ᵏ α | 𝒜)`: the conditional
@@ -285,14 +278,15 @@ lemma condKsEntropySeq_bot [Fintype ι] {μ : Measure α} [IsProbabilityMeasure 
 /-- **The relative entropy at `⊥` recovers the absolute entropy:**
 `h(α, T | ⊥) = h(α, T)`. The two iterated-join entropy sequences agree as functions of `n`
 (`condKsEntropySeq_bot`), so the two subadditive sequences are equal and hence have equal Fekete
-limits (`Subadditive.lim_congr`). The one-sided forward-invariance hypothesis for `⊥` is discharged
-internally: `comap T ⊥ = ⊥` (`MeasurableSpace.comap_bot`), so `comap T ⊥ ≤ ⊥` holds reflexively. -/
+limits (`Subadditive.lim_eq_of_eq`). The one-sided forward-invariance hypothesis for `⊥` is
+discharged internally: `comap T ⊥ = ⊥` (`MeasurableSpace.comap_bot`), so `comap T ⊥ ≤ ⊥` holds
+reflexively. -/
 lemma condKsEntropyPartition_bot [Fintype ι] {μ : Measure α} [IsProbabilityMeasure μ]
     (hT : @MeasurePreserving α α mα mα T μ μ) (P : MeasurePartition μ ι) :
     condKsEntropyPartition (𝒜 := ⊥) bot_le hT MeasurableSpace.comap_bot.le P
       = ksEntropyPartition hT P := by
   rw [condKsEntropyPartition, ksEntropyPartition]
-  exact Subadditive.lim_congr _ _ (funext fun n => condKsEntropySeq_bot hT P n)
+  exact Subadditive.lim_eq_of_eq _ _ (funext fun n => condKsEntropySeq_bot hT P n)
 
 end Bot
 

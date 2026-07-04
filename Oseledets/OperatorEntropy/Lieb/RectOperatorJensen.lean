@@ -152,39 +152,6 @@ lemma spectrum_conj_gen {n : Type*} [Fintype n] [DecidableEq n] {W a : Matrix n 
   have hmem : W ∈ unitary (Matrix n n ℂ) := Unitary.mem_iff.mpr ⟨hW1, hW2⟩
   exact Unitary.spectrum_star_right_conjugate (R := ℝ) (a := a) (U := ⟨W, hmem⟩)
 
-/-- **Continuous functional calculus of a Hermitian matrix** (general index) via its spectral
-decomposition. -/
-lemma cfc_hermitian_gen {n : Type*} [Fintype n] [DecidableEq n] {X : Matrix n n ℂ}
-    (hX : X.IsHermitian) (f : ℝ → ℝ) :
-    cfc f X = (hX.eigenvectorUnitary : Matrix n n ℂ)
-      * diagonal (fun i => (f (hX.eigenvalues i) : ℂ))
-      * star (hX.eigenvectorUnitary : Matrix n n ℂ) := by
-  have hs1 : star (hX.eigenvectorUnitary : Matrix n n ℂ)
-      * (hX.eigenvectorUnitary : Matrix n n ℂ) = 1 :=
-    Unitary.coe_star_mul_self hX.eigenvectorUnitary
-  have hs2 : (hX.eigenvectorUnitary : Matrix n n ℂ)
-      * star (hX.eigenvectorUnitary : Matrix n n ℂ) = 1 :=
-    Unitary.coe_mul_star_self hX.eigenvectorUnitary
-  have hLsa : IsSelfAdjoint (diagonal (fun i => (hX.eigenvalues i : ℂ))) := by
-    rw [isSelfAdjoint_iff, Matrix.star_eq_conjTranspose, Matrix.diagonal_conjTranspose]
-    congr 1; funext i; exact Complex.conj_ofReal _
-  have hspec : X = (hX.eigenvectorUnitary : Matrix n n ℂ)
-      * diagonal (fun i => (hX.eigenvalues i : ℂ))
-      * star (hX.eigenvectorUnitary : Matrix n n ℂ) := by
-    have h := hX.spectral_theorem
-    rw [Unitary.conjStarAlgAut_apply] at h
-    have hRC : (RCLike.ofReal ∘ hX.eigenvalues) = fun i => (hX.eigenvalues i : ℂ) := by
-      funext i; rfl
-    rw [hRC] at h; exact h
-  calc cfc f X = cfc f ((hX.eigenvectorUnitary : Matrix n n ℂ)
-        * diagonal (fun i => (hX.eigenvalues i : ℂ))
-        * star (hX.eigenvectorUnitary : Matrix n n ℂ)) := by rw [← hspec]
-    _ = (hX.eigenvectorUnitary : Matrix n n ℂ)
-          * cfc f (diagonal (fun i => (hX.eigenvalues i : ℂ)))
-          * star (hX.eigenvectorUnitary : Matrix n n ℂ) :=
-        Oseledets.OperatorEntropy.cfc_conj _ _ hs1 hs2 hLsa f
-    _ = _ := by rw [cfc_diagonal]
-
 end GeneralIndex
 
 /-! ## Corner-pinching on a `q ⊕ r` block matrix -/
@@ -281,7 +248,7 @@ lemma cfc_fromBlocks_diag {A : Matrix q q ℂ} {B : Matrix r r ℂ}
     funext x; cases x <;> rfl]
   rw [← fromBlocks_diagonal, hWstar, hWdef, fromBlocks_multiply, fromBlocks_multiply]
   simp only [Matrix.mul_zero, Matrix.zero_mul, add_zero, zero_add]
-  rw [← cfc_hermitian_gen hAh, ← cfc_hermitian_gen hBh]
+  rw [← cfc_hermitian_eq hAh, ← cfc_hermitian_eq hBh]
 
 /-- The `(0,0)`-corner of `fromBlocks A B C D` is `A`. -/
 lemma fromBlocks_submatrix_inl_inl {α β l m : Type*} (A : Matrix α l ℂ) (B : Matrix α m ℂ)
