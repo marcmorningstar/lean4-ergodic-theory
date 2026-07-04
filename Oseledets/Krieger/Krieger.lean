@@ -27,8 +27,8 @@ The proof has three layers, of which this file is the top:
   generator `Q` along the tower columns is `≤ kᴺ` up to `ε` whenever `log k > h`.
 * **M3 (coding + recovery, this development).** The combinatorics of M1+M2 build a `Fin k`-valued
   partition `P` that **codes** a (two-sided) generator `Q` **mod 0** — i.e. the two-sided
-  `P`-itinerary recovers each `Q`-cell up to a μ-null set (`Oseledets.Krieger.CodesTwoSidedMod0`).
-  The recovery core (`Oseledets.Krieger.IsGeneratingTwoSidedMod0.of_codes`) then promotes `P` to a
+  `P`-itinerary recovers each `Q`-cell up to a μ-null set (`Oseledets.Krieger.CodesTwoSidedMod0c`).
+  The recovery core (`Oseledets.Krieger.IsGeneratingTwoSidedMod0c.of_codesc`) then promotes `P` to a
   two-sided generator mod 0.
 
 ## Why *mod 0*
@@ -37,7 +37,7 @@ Generators in ergodic theory always generate the σ-algebra **up to null sets** 
 construction produces an a.e.-defined, a.e.-invertible code, which recovers each generator cell
 only modulo a μ-null set. Against an honest standard-Borel (non-`μ`-complete) `mα` this *cannot*
 establish a literal σ-algebra equality, so the headline is — faithfully — phrased with the mod-0
-conditions `IsGeneratingTwoSidedMod0` / `CodesTwoSidedMod0` (the μ-completion of the two-sided
+conditions `IsGeneratingTwoSidedMod0` / `CodesTwoSidedMod0c` (the μ-completion of the two-sided
 saturation is the full ambient). See `Oseledets.Krieger.Coding` for the mod-0 development and
 `Oseledets.Krieger.isGeneratingTwoSidedMod0_of_literal` for faithfulness (literal ⟹ mod 0).
 

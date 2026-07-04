@@ -58,26 +58,22 @@ shift-invariance (`comap_eventuallyMeasurableSpace_twoSidedSat_le`) and the mod-
 monotonicity (`twoSidedSat_mono_of_codes`), so a mod-0 generator `Q` lifts to a mod-0 generator `P`
 (`IsGeneratingTwoSidedMod0.of_codes`).
 
-## The coding interface consumed by the headline
+## The recovery machinery consumed by the coding layer
 
-The upstream coding construction is exposed to the headline through the predicate
-`CodesTwoSidedMod0 e Q P`, which packages the **mod-0** recovery hypothesis
-`σ(Q) ≤ eventuallyMeasurableSpace (twoSidedSat e P) (ae μ)` — every cell of `Q` is, mod 0, in the
-two-sided `P`-saturation. The headline (`Oseledets.Krieger.krieger_finite_generator`) takes the
-*existence* of a `Fin k`-valued `P` with `CodesTwoSidedMod0 e Q P` (the conclusion of the M1+M2
-combinatorics) and concludes `IsGeneratingTwoSidedMod0 e P` via
-`CodesTwoSidedMod0.isGeneratingTwoSidedMod0`.
-
-For the symbolic-code construction (C1–C3) the convenient sufficient condition is provided by
-`codesTwoSidedMod0_of_aeRecovery`: it suffices to exhibit, for each cell of `Q`, a
-`twoSidedSat e P`-measurable set `=ᵐ[μ]`-equal to it — exactly what an a.e.-injective measurable
-code recovering the `Q`-name produces.
+The headline's coding step is phrased through the **cross-layer** predicate
+`Oseledets.Krieger.CodesTwoSidedMod0c` (`Generator.lean`), which packages the **mod-0** recovery
+hypothesis `σ(Q) ≤ eventuallyMeasurableSpace (twoSidedSat e P) (ae μ)` — every cell of `Q` is
+recovered mod 0 by the two-sided `P`-saturation — and turns the *existence* of a `Fin k`-valued
+`P` with that property into `IsGeneratingTwoSidedMod0 e P`. This file supplies the `Fintype`-layer
+machinery that predicate is built on: the two-sided saturation `twoSidedSat`, its (literal and
+mod-0) shift-invariance, the μ-completion functoriality, and the recovery-monotonicity lemmas
+(`twoSidedSat_mono_of_codes`, `IsGeneratingTwoSidedMod0.of_codes`) promoting a mod-0 generator `Q`
+to a mod-0 generator `P` once every cell of `Q` is recovered mod 0 by the two-sided `P`-itinerary.
 
 ## Main definitions
 
 * `Oseledets.Krieger.twoSidedSat`: the two-sided itinerary σ-algebra `⨆ n : ℤ, comap (eⁿ) σ(P)`.
 * `Oseledets.Krieger.IsGeneratingTwoSidedMod0`: `P` two-sidedly generates **mod 0**.
-* `Oseledets.Krieger.CodesTwoSidedMod0`: `P`'s two-sided itinerary recovers each cell of `Q` mod 0.
 
 ## Main results
 
@@ -85,12 +81,8 @@ code recovering the `Q`-name produces.
 * `Oseledets.Krieger.comap_eventuallyMeasurableSpace_twoSidedSat_le`: mod-0 shift-invariance.
 * `Oseledets.Krieger.twoSidedSat_mono_of_codes`: mod-0 recovery monotonicity.
 * `Oseledets.Krieger.IsGeneratingTwoSidedMod0.of_codes`: recovery lifts a mod-0 two-sided generator.
-* `Oseledets.Krieger.CodesTwoSidedMod0.isGeneratingTwoSidedMod0`: a mod-0 code of a mod-0 two-sided
-  generator is a mod-0 two-sided generator.
 * `Oseledets.Krieger.isGeneratingTwoSidedMod0_of_literal`: faithfulness — the (non-standard) literal
   condition is *stronger* than the (standard) mod-0 one.
-* `Oseledets.Krieger.codesTwoSidedMod0_of_aeRecovery`: the convenient sufficient condition the
-  symbolic-code layer discharges.
 
 ## References
 
@@ -147,18 +139,6 @@ theorem comap_twoSidedSat_le (e : α ≃ᵐ α) (P : MeasurePartition μ ι) (m 
   rw [MeasurableSpace.comap_comp, ← ziter_add]
   exact le_iSup (fun k : ℤ => MeasurableSpace.comap (ziter e k) (generatedSigmaAlgebra μ P)) (n + m)
 
-/-- The two-sided saturation `twoSidedSat e P` is always below the ambient σ-algebra `mα`: each cell
-of `P` is measurable (`σ(P) ≤ mα`), and each iterate `eⁿ` is measurable, so every term
-`comap (eⁿ) σ(P) ≤ mα`. -/
-theorem twoSidedSat_le (e : α ≃ᵐ α) (P : MeasurePartition μ ι) : twoSidedSat e P ≤ mα := by
-  have hP_le : generatedSigmaAlgebra μ P ≤ mα := by
-    refine MeasurableSpace.generateFrom_le ?_
-    rintro s ⟨i, rfl⟩
-    exact P.measurable i
-  rw [twoSidedSat_def]
-  refine iSup_le fun n => ?_
-  exact le_trans (MeasurableSpace.comap_mono hP_le) (measurable_ziter e n).comap_le
-
 /-! ### The μ-completion of a sub-σ-algebra, and its functoriality
 
 We use `MeasureTheory.eventuallyMeasurableSpace m₀ (ae μ)` — the σ-algebra of sets `=ᵐ[μ]`-equal to
@@ -200,7 +180,7 @@ theorem comap_eventuallyMeasurableSpace_le {f : α → α} {m₀ : MeasurableSpa
 the **μ-completion** of the two-sided `P`-saturation:
 `mα ≤ eventuallyMeasurableSpace (twoSidedSat e P) (ae μ)`.
 
-Equivalently (since `twoSidedSat e P ≤ mα` always, `twoSidedSat_le`), the μ-completions of
+Equivalently (since `twoSidedSat e P ≤ mα` always), the μ-completions of
 `twoSidedSat e P` and of `mα` agree: *every measurable set is recovered, up to a μ-null set, by the
 two-sided `P`-itinerary*. This is the standard "generator mod 0" condition of ergodic theory (see
 the file header) and the faithful hypothesis/conclusion of Krieger's theorem — the literal equality
@@ -208,18 +188,6 @@ the file header) and the faithful hypothesis/conclusion of Krieger's theorem —
 construction produces. -/
 def IsGeneratingTwoSidedMod0 (e : α ≃ᵐ α) (P : MeasurePartition μ ι) : Prop :=
   mα ≤ eventuallyMeasurableSpace (twoSidedSat e P) (ae μ)
-
-/-- **The mod-0 coding predicate.** A finite `Fin k`-valued (or `ι`-valued) partition `P` *codes* a
-partition `Q` two-sidedly mod 0 under `e` when every cell of `Q` is recovered, **up to a μ-null
-set**, by the two-sided `P`-itinerary: `σ(Q) ≤ eventuallyMeasurableSpace (twoSidedSat e P) (ae μ)`.
-
-This is the exact conclusion of the Krieger coding construction (Rokhlin tower + name count): the
-column-coding partition `P` is built so that, off a null set, the two-sided `P`-itinerary of a point
-determines its `Q`-itinerary, hence in particular which `Q`-cell it lies in. The headline consumes
-the *existence* of such a `P` and turns it into a generator via
-`CodesTwoSidedMod0.isGeneratingTwoSidedMod0`. -/
-def CodesTwoSidedMod0 (e : α ≃ᵐ α) (Q : MeasurePartition μ κ) (P : MeasurePartition μ ι) : Prop :=
-  generatedSigmaAlgebra μ Q ≤ eventuallyMeasurableSpace (twoSidedSat e P) (ae μ)
 
 /-- **Mod-0 shift-invariance of the two-sided saturation.** For a measure-preserving `e`, pulling
 the μ-completion of `twoSidedSat e P` back by any iterate `eᵐ` lands inside it again. Preimage
@@ -271,25 +239,7 @@ theorem IsGeneratingTwoSidedMod0.of_codes {e : α ≃ᵐ α}
     (le_trans (eventuallyMeasurableSpace_mono (twoSidedSat_mono_of_codes e he P Q hrec))
       eventuallyMeasurableSpace_idem)
 
-/-- A mod-0 code of a mod-0 two-sided generator is itself a mod-0 two-sided generator — the headline
-reduction. Immediate from `IsGeneratingTwoSidedMod0.of_codes` and the definition of
-`CodesTwoSidedMod0`. -/
-theorem CodesTwoSidedMod0.isGeneratingTwoSidedMod0 {e : α ≃ᵐ α}
-    (he : MeasurePreserving (e : α → α) μ μ) {Q : MeasurePartition μ κ} {P : MeasurePartition μ ι}
-    (hQ : IsGeneratingTwoSidedMod0 e Q) (hP : CodesTwoSidedMod0 e Q P) :
-    IsGeneratingTwoSidedMod0 e P :=
-  IsGeneratingTwoSidedMod0.of_codes he hQ hP
-
-/-- **Reflexivity of mod-0 coding.** Every partition codes itself two-sidedly mod 0: its own static
-σ-algebra `σ(Q)` is the `n = 0` term of `twoSidedSat e Q`, which embeds into its μ-completion
-(`le_eventuallyMeasurableSpace`). (Sanity check: a mod-0 two-sided generator codes itself,
-recovering `IsGeneratingTwoSidedMod0 e Q` from itself.) -/
-theorem codesTwoSidedMod0_self (e : α ≃ᵐ α) (Q : MeasurePartition μ κ) :
-    CodesTwoSidedMod0 e Q Q := by
-  refine le_trans (le_trans (le_of_eq ?_) (le_iSup _ (0 : ℤ))) le_eventuallyMeasurableSpace
-  rw [ziter_zero, MeasurableSpace.comap_id]
-
-/-! ### Faithfulness, and the convenient sufficient condition for the coding layer -/
+/-! ### Faithfulness -/
 
 /-- **Faithfulness: the literal condition is stronger than the mod-0 one.** If `P` two-sidedly
 generates in the (non-standard) literal sense `twoSidedSat e P = mα` (`IsGeneratingTwoSided`), then
@@ -305,22 +255,5 @@ the equality `twoSidedSat e P = mα` (`IsGeneratingTwoSided` is `@[reducible]`-u
 theorem isGeneratingTwoSidedMod0_of_literal {e : α ≃ᵐ α} {P : MeasurePartition μ ι}
     (h : IsGeneratingTwoSided e P) : IsGeneratingTwoSidedMod0 e P :=
   le_trans (le_of_eq h.symm) le_eventuallyMeasurableSpace
-
-/-- **The convenient sufficient condition for the symbolic-code layer (C1–C3).** To establish a
-mod-0 code `CodesTwoSidedMod0 e Q P` it suffices to exhibit, for each cell `Q.cells j`, a
-`twoSidedSat e P`-measurable set `t` with `Q.cells j =ᵐ[μ] t` — i.e. to recover every `Q`-cell, up
-to a μ-null set, from the two-sided `P`-itinerary. This is exactly the output of an a.e.-injective
-measurable code `π : α → (ℤ → Fin k)` that recovers the `Q`-name a.e.: each `Q`-cell is, mod 0, a
-cylinder event in the `P`-itinerary, hence `twoSidedSat e P`-measurable mod 0.
-
-Formally, `σ(Q) = generateFrom (range Q.cells)`, so `generateFrom_le` reduces the goal to the cells,
-each handled by the hypothesis. -/
-theorem codesTwoSidedMod0_of_aeRecovery {e : α ≃ᵐ α} {Q : MeasurePartition μ κ}
-    {P : MeasurePartition μ ι}
-    (hcode : ∀ j, ∃ t, @MeasurableSet α (twoSidedSat e P) t ∧ Q.cells j =ᵐ[μ] t) :
-    CodesTwoSidedMod0 e Q P := by
-  refine MeasurableSpace.generateFrom_le ?_
-  rintro _ ⟨j, rfl⟩
-  exact hcode j
 
 end Oseledets.Krieger

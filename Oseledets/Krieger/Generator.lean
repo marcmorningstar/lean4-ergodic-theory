@@ -229,8 +229,7 @@ of the finite partition `P`. This is exactly the output of an a.e.-injective mea
 event in the `P`-itinerary, hence `twoSidedSat e P`-measurable mod 0.
 
 Formally, `σ(Q) = generateFrom (range Q)`, so `generateFrom_le` reduces the goal to the cells (the
-range of `Q`), each handled by the hypothesis. This is the countable analogue of
-`Oseledets.Krieger.codesTwoSidedMod0_of_aeRecovery`. -/
+range of `Q`), each handled by the hypothesis. -/
 theorem codesTwoSidedMod0c_of_aeRecovery {e : α ≃ᵐ α} {Q : κ → Set α} {P : MeasurePartition μ ι}
     (hcode : ∀ j, ∃ t, @MeasurableSet α (twoSidedSat e P) t ∧ Q j =ᵐ[μ] t) :
     CodesTwoSidedMod0c e Q P := by

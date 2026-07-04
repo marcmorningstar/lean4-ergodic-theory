@@ -1889,20 +1889,10 @@ info: 'Oseledets.Entropy.condEntropyGivenPartition_eq_condEntropy_generated' dep
 #guard_msgs (whitespace := lax) in
 #print axioms Oseledets.Krieger.IsGeneratingTwoSidedMod0.of_codes
 
-/-- info: 'Oseledets.Krieger.CodesTwoSidedMod0.isGeneratingTwoSidedMod0' depends on axioms:
-[propext, Classical.choice, Quot.sound] -/
-#guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.CodesTwoSidedMod0.isGeneratingTwoSidedMod0
-
 /-- info: 'Oseledets.Krieger.isGeneratingTwoSidedMod0_of_literal' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms Oseledets.Krieger.isGeneratingTwoSidedMod0_of_literal
-
-/-- info: 'Oseledets.Krieger.codesTwoSidedMod0_of_aeRecovery' depends on axioms:
-[propext, Classical.choice, Quot.sound] -/
-#guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.codesTwoSidedMod0_of_aeRecovery
 
 /-- info: 'Oseledets.Krieger.krieger_finite_generator_of_coding' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
@@ -2009,17 +1999,12 @@ axioms: [propext, Classical.choice, Quot.sound] -/
 
 -- Issue #15 (unconditional drive): the symbolic code-map measurable backbone — the itinerary map
 -- x ↦ (n ↦ code(eⁿx)) is twoSidedSat-measurable (automatic, no new symbolic-dynamics infra), so a
--- measurable decoder with a.e. recovery (CodeMapData) discharges the mod-0 coding hypothesis.
+-- measurable decoder with a.e. recovery discharges the mod-0 coding hypothesis (measurable_itin).
 
 /-- info: 'Oseledets.Krieger.measurable_itin' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms Oseledets.Krieger.measurable_itin
-
-/-- info: 'Oseledets.Krieger.codesTwoSidedMod0_of_codeMapData' depends on axioms:
-[propext, Classical.choice, Quot.sound] -/
-#guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.codesTwoSidedMod0_of_codeMapData
 
 -- Issue #15 (unconditional drive): asymptotic-equipartition name count (C2) — the pigeonhole +
 -- covering content are unconditional; the C3-facing cover ≤ exp(N(h+ε)) names ≥ 1-ε is modulo the
@@ -2114,14 +2099,9 @@ axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms Oseledets.Krieger.measurable_sentinelParse
 
-/-- info: 'Oseledets.Krieger.SentinelColumnCode.codes' depends on axioms:
-[propext, Classical.choice, Quot.sound] -/
-#guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.SentinelColumnCode.codes
-
--- Issue #15 (unconditional drive): the OFFSET-AWARE tower code. Adversarial catch: the bare
--- sentinelParse is position-blind (parse_event_cannot_separate: same label at x and e·x), so the
--- bare SentinelColumnCode.recovers is unsatisfiable. Fixed with blockOffset / sentinelParseAt
+-- Issue #15 (unconditional drive): the OFFSET-AWARE tower code. Adversarial catch: a bare
+-- position-blind sentinelParse gives the same label at x and e·x (parse_event_cannot_separate), so a
+-- naive sentinel-column recovery field is unsatisfiable. Fixed with blockOffset / sentinelParseAt
 -- (offset increases by 1 under the shift ⟹ can separate floors) + the floor-address map.
 
 /-- info: 'Oseledets.Krieger.parse_event_cannot_separate' depends on axioms:

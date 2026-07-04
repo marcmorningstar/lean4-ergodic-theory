@@ -44,10 +44,10 @@ So the residual flagged as multi-week is, in fact, a few hundred lines of routin
 What genuinely remains for an *unconditional* `ColumnCodeData` is the **dynamical** content — the
 construction of one fixed code symbol `c : α → Fin k` whose per-column blocks spell the sentinel
 encodings of the `Q`-names, and the a.e. recovery that the parser then reads off (points (1), (2),
-(4) of the `Recovery` note). That genuinely-dynamical core is isolated, sorry-free, in the sharpened
-`SentinelColumnCode` bundle below — strictly sharper than `ColumnCodeData` because the parser `D` is
-no longer a hypothesis: it is **constructed and proved measurable here**, and the bundle only has to
-supply the code symbol and the a.e. *correctness* of the parse.
+(4) of the `Recovery` note). Note that a decoder must be **position-aware** to satisfy the recovery
+field: the bare `sentinelParse` of this file is position-blind, so a naive sentinel-column recovery
+bundle built on it is unsatisfiable (see the trap note at the end of this file, and the repaired
+position-aware `SentinelColumnCodeAt` in `Oseledets.Krieger.TowerCode`).
 
 ## Main definitions
 
@@ -67,9 +67,6 @@ supply the code symbol and the a.e. *correctness* of the parse.
 * `measurableSet_blockContent_decode_eq` — each preimage `{w | dec (blockContent s w) = j}` is
   measurable (the countable-block-shape decomposition).
 * `measurable_sentinelParse` — **the headline: the bi-infinite sentinel parser is measurable.**
-* `SentinelColumnCode.toColumnCodeData` — a sharpened residual bundle (code symbol + a.e. parse
-  correctness) yields a full `Oseledets.Krieger.ColumnCodeData`, hence (via `ColumnCodeData.codes`)
-  the cross-layer mod-0 code.
 
 ## References
 
@@ -379,70 +376,20 @@ theorem measurable_sentinelParse [Countable κ] [MeasurableSpace κ] [Measurable
   refine measurable_to_countable' (fun j => ?_)
   exact measurableSet_blockContent_decode_eq s dec j
 
-/-! ### The sharpened residual: a code symbol + a.e. parse correctness ⇒ `ColumnCodeData`
+/-! ### Why a naive sentinel-column coding scheme is unsatisfiable (a documented trap)
 
-With the parser constructed and proved measurable, the `ColumnCodeData` residual sharpens: the
-decoder is no longer a hypothesis. The remaining *genuinely dynamical* input is a measurable code
-symbol `c : α → Fin k` (built from the tower columns + sentinel encoding) and the a.e. *correctness*
-of the sentinel parse — that off a μ-null set the parser applied to the two-sided itinerary of a
-point recovers the `Q`-name, i.e. recovers which `Q`-cell it lies in. We package this as
-`SentinelColumnCode` and show it yields a full `ColumnCodeData`. This is the honest reduction of
-sub-problem B to its dynamical core, with the measurable-parse infrastructure fully discharged. -/
-
-/-- **The sharpened column-code residual.** Bundles exactly the genuinely *dynamical* inputs of
-sub-problem B that remain after the measurable bi-infinite parser is constructed:
-
-* `code` (+ `code_measurable`): the measurable code symbol `c : α → Fin k`, built from the refining
-  Rokhlin towers so that `c (eⁱ x)` spells the `i`-th symbol of the sentinel block of the column
-  through `x` (points (1), (2) of the `Recovery` note);
-* `decode`: the per-block decode map `List (Fin k) → κ` (strip the sentinel, look up the `Q`-name —
-  the *finite* unique-decodability of `Oseledets.Krieger.sentinelEncodeList_injective`); and
-* `recovers`: the a.e. *correctness* of the sentinel parse — for each `Q`-cell `j`, `Q j` agrees
-  `μ`-a.e. with `{x | sentinelParse s decode (itin e code x) = j}` (point (4), the `m → ∞` /
-  Borel–Cantelli limit over the two-sided recurrence tiling).
-
-This is strictly sharper than `Oseledets.Krieger.ColumnCodeData`: the decoder is no longer supplied
-or assumed measurable — it is the **constructed, proved-measurable** parser `sentinelParse s decode`
-of this file. -/
-structure SentinelColumnCode [Countable κ] [MeasurableSpace κ] [MeasurableSingletonClass κ]
-    (e : α ≃ᵐ α) (μ : Measure α) (Q : κ → Set α) (k : ℕ) where
-  /-- The reserved sentinel letter of the `Fin k` alphabet. -/
-  sentinel : Fin k
-  /-- The measurable code symbol `c : α → Fin k` of the column coding. -/
-  code : α → Fin k
-  /-- The code symbol is measurable. -/
-  code_measurable : Measurable code
-  /-- The per-block decode map (finite unique decodability of a sentinel block). -/
-  decode : List (Fin k) → κ
-  /-- A.e. correctness of the sentinel parse: each `Q`-cell agrees mod 0 with the parser event. -/
-  recovers : ∀ j, Q j =ᵐ[μ]
-    {x | sentinelParse sentinel decode (itin e code x) = j}
-
-/-- **The sharpened residual yields a full `ColumnCodeData`.** Given a `SentinelColumnCode` — a
-measurable code symbol, a per-block decode map, and the a.e. correctness of the *constructed*
-sentinel parse — the decoder field is filled by `sentinelParse sentinel decode`, which is measurable
-by `measurable_sentinelParse` (the headline of this file), and the recovery field is the supplied
-a.e. correctness. So the only inputs left are dynamical: the code symbol and the a.e. parse
-correctness. The measurable bi-infinite parser, flagged as the residual with no Mathlib analogue, is
-**discharged** — it is `sentinelParse` with its `measurable_sentinelParse` certificate. -/
-noncomputable def SentinelColumnCode.toColumnCodeData
-    [Countable κ] [MeasurableSpace κ] [MeasurableSingletonClass κ]
-    {e : α ≃ᵐ α} {Q : κ → Set α} (data : SentinelColumnCode e μ Q k) :
-    ColumnCodeData e μ Q k where
-  code := data.code
-  code_measurable := data.code_measurable
-  decoder := sentinelParse data.sentinel data.decode
-  decoder_measurable := measurable_sentinelParse data.sentinel data.decode
-  recovers := data.recovers
-
-/-- A `SentinelColumnCode` yields the cross-layer countable mod-0 code of `Q` by its code partition
-— the deliverable that slots into `Oseledets.Krieger.KriegerCodingData.code_codes`. Immediate from
-`SentinelColumnCode.toColumnCodeData` and `Oseledets.Krieger.ColumnCodeData.codes`. -/
-theorem SentinelColumnCode.codes
-    [Countable κ] [MeasurableSpace κ] [MeasurableSingletonClass κ]
-    {e : α ≃ᵐ α} {Q : κ → Set α} (data : SentinelColumnCode e μ Q k) :
-    CodesTwoSidedMod0c e Q
-      (codePartition (μ := μ) data.code data.code_measurable) :=
-  (data.toColumnCodeData).codes
+A tempting "sharpened residual" would bundle a measurable code symbol `c : α → Fin k` with an a.e.
+recovery field of the form `Q j =ᵐ[μ] {x | sentinelParse s decode (itin e code x) = j}`, reusing
+the constructed measurable parser `sentinelParse` as the decoder. **This scheme is unsatisfiable
+for a generic countable generator `Q`.** The parser `sentinelParse s dec w` decodes only the
+*content* of the sentinel block around coordinate `0`, hence is *position-blind*. The two-sided
+itinerary intertwines `e` with the one-step shift (`itin_apply_e`), and `sentinelParse` is
+invariant under that shift inside a block, so it returns the **same** label at `x` and at `e x`
+whenever both sit in one tower column — while distinct floors of a column lie in genuinely
+different `Q`-cells. Hence no `decode` makes the parser event agree a.e. with `Q j`. This
+obstruction is formalized in `Oseledets.Krieger.parse_event_cannot_separate` (`TowerCode.lean`).
+The honest column-code residual instead carries the within-block offset: the position-aware
+parser `sentinelParseAt` and bundle `SentinelColumnCodeAt` (`TowerCode.lean`), whose recovery
+field *is* satisfiable. -/
 
 end Oseledets.Krieger
