@@ -11,27 +11,18 @@ import Oseledets.Lyapunov.Forward
 # The restricted Lyapunov exponent (two-sided MET)
 
 This module identifies the **restricted Kingman constant** of the restricted cocycle
-`restGen A V x = A x · P_{V x}` on the forward Oseledets level `V := Vᵢ` with the
-Lyapunov exponent `λᵢ = expEnum lam0 d i`, and derives the **backward-orbit envelope**
-`limsup (1/n) log ‖A⁽ⁿ⁾(T⁻ⁿx) · P_{Vᵢ(T⁻ⁿx)}‖ ≤ λᵢ` (the `≤` direction is the only one
-consumed downstream by the transversality crux `ae_crux`).
+`restGen A V x = A x · P_{V x}` on the forward Oseledets level `V := Vᵢ`, showing it equals the
+Lyapunov exponent `λᵢ = expEnum lam0 d i`.
 
 The architecture:
 
-* `limsup_log_sum_le_max` — for finitely many eventually-positive sequences `aⱼ`,
-  `limsup (1/n) log (Σⱼ aⱼ n) ≤ maxⱼ limsup (1/n) log aⱼ n`.  Built from the
-  one-sided helper `limsup_inv_mul_log_sum_le`.
 * `exists_stratum` — every nonzero `v ∈ Vᵢ(x)` lies in a stratum `j ≥ i` of the flag
   (pure order logic on the `oseledets_filtration_dims` flag), so its growth rate `≤ λᵢ`.
 * `restricted_const_eq` — the Kingman constant `c` of `restLog A V T` (`restLog_kingman`)
   equals `λᵢ`.  Both bounds are evaluated at the base point through the
   floor-absorbed identity `restLog_eq_on_good`:
   the `≥` direction uses a stratum witness, the `≤` direction the orthonormal-basis
-  bound `‖A⁽ⁿ⁾ · P‖ ≤ Σⱼ ‖A⁽ⁿ⁾ eⱼ‖` (`norm_mul_orthProj_le_sum`) together with
-  `limsup_log_sum_le_max`.
-* `ae_limsup_restricted_backward_le` — the backward-orbit envelope, obtained from
-  `restLog_backward_kingman`, the floor absorption along the *backward* orbit
-  (`restLog_eq_on_good`), and `restricted_const_eq`.
+  bound `‖A⁽ⁿ⁾ · P‖ ≤ Σⱼ ‖A⁽ⁿ⁾ eⱼ‖` (`norm_mul_orthProj_le_sum`).
 
 -/
 
@@ -41,31 +32,6 @@ open scoped Matrix.Norms.L2Operator RealInnerProductSpace
 namespace Oseledets
 
 variable {X : Type*} {d : ℕ}
-
-/-! ### A log-sum-max limsup bound -/
-
-/-- **Log-sum-max for limsups.** For finitely many sequences `a : s → ℕ → ℝ` with
-`aⱼ n ≥ 0`, each normalized log-limsup bounded above (`IsBoundedUnder`), eventually
-positive total sum, the normalized log of the sum has limsup at most the maximum of the
-individual limsups. This is the additive engine of the restricted-exponent upper bound;
-it is built directly from `limsup_inv_mul_log_sum_le` and `eventually_le_exp_of_limsup_le`. -/
-theorem limsup_log_sum_le_max {s : Type*} [Fintype s] [Nonempty s]
-    (a : s → ℕ → ℝ) (hnn : ∀ m n, 0 ≤ a m n)
-    (hbdd : ∀ m, IsBoundedUnder (· ≤ ·) atTop (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (a m n)))
-    (hpos : ∀ᶠ n : ℕ in atTop, 0 < ∑ m, a m n)
-    (hcobdd : IsCoboundedUnder (· ≤ ·) atTop
-      (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (∑ m, a m n))) :
-    limsup (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (∑ m, a m n)) atTop
-      ≤ Finset.univ.sup' Finset.univ_nonempty
-          (fun m => limsup (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (a m n)) atTop) := by
-  set L := Finset.univ.sup' Finset.univ_nonempty
-      (fun m => limsup (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (a m n)) atTop) with hL
-  refine limsup_inv_mul_log_sum_le a L hnn ?_ hpos hcobdd
-  intro m ε hε
-  have hmle : limsup (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (a m n)) atTop ≤ L :=
-    Finset.le_sup'
-      (fun m => limsup (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (a m n)) atTop) (Finset.mem_univ m)
-  exact eventually_le_exp_of_limsup_le (hnn m) (hbdd m) hmle ε hε
 
 /-! ### The orthonormal-basis norm bound -/
 
@@ -499,84 +465,6 @@ theorem restricted_const_eq
       restricted_const_le_aux hA hVx hw Lj hLjle hLjtendsto
     exact le_antisymm hle hge
   exact hkey.exists.choose_spec
-
-/-- **The backward-orbit restricted envelope** (the `≤` direction consumed by the
-transversality crux `ae_crux`). For a.e. `x`, the floor-absorbed restricted operator
-norm along the backward orbit has limsup at most `λᵢ`:
-
-`limsup (1/n) log ‖A⁽ⁿ⁾(T⁻ⁿ x) · P_{Vᵢ(T⁻ⁿ x)}‖ ≤ λᵢ`.
-
-Assembled from `restLog_backward_kingman` (the backward Kingman limit shares the forward
-constant `c`), `restricted_const_eq` (`c = λᵢ`), and the floor absorption along the backward
-orbit: the whole bi-orbit is good a.e. (`ae_forall_iterate_of_ae` over `T.symm`), so
-`restLog_eq_on_good` absorbs the floor at each `T⁻ⁿ x`. -/
-theorem ae_limsup_restricted_backward_le
-    (hT : Ergodic T μ)
-    {A : X → Matrix (Fin d) (Fin d) ℝ} (hA : ∀ x, (A x).det ≠ 0)
-    (hAmeas : Measurable A)
-    (hint : IntegrableLogNorm A μ) (hint' : IntegrableLogNorm (fun x => (A x)⁻¹) μ)
-    (lam0 : ℕ → ℝ)
-    (V : Fin (numExp lam0 d + 1) → X → Submodule ℝ (EuclideanSpace ℝ (Fin d)))
-    (hVmeas : ∀ i, MeasurableSubspace fun x => V i x)
-    (hVae : ∀ᵐ x ∂μ,
-      V 0 x = ⊤ ∧ V (Fin.last (numExp lam0 d)) x = ⊥ ∧
-      (∀ i : Fin (numExp lam0 d), V i.succ x < V i.castSucc x) ∧
-      (∀ i : Fin (numExp lam0 d + 1),
-        Submodule.map (Matrix.toEuclideanCLM (𝕜 := ℝ) (A x)).toLinearMap (V i x)
-          = V i ((⇑T) x)) ∧
-      (∀ i : Fin (numExp lam0 d),
-        ∀ v ∈ (V i.castSucc x : Set (EuclideanSpace ℝ (Fin d))), v ∉ V i.succ x →
-          Tendsto (fun n : ℕ => (n : ℝ)⁻¹ *
-            Real.log ‖Matrix.toEuclideanCLM (𝕜 := ℝ) (cocycle A (⇑T) n x) v‖)
-            atTop (𝓝 (expEnum lam0 d i))))
-    (i : Fin (numExp lam0 d)) :
-    ∀ᵐ x ∂μ, limsup (fun n : ℕ => (n : ℝ)⁻¹ * Real.log
-      ‖cocycle A (⇑T) n ((⇑T.symm)^[n] x) * orthProjMatrix (V i.castSucc ((⇑T.symm)^[n] x))‖)
-      atTop ≤ expEnum lam0 d i := by
-  classical
-  have hmp : MeasurePreserving T μ μ := hT.toMeasurePreserving
-  set Vi : X → Submodule ℝ (EuclideanSpace ℝ (Fin d)) := fun x => V i.castSucc x with hVi
-  obtain ⟨c, _hcmean, hcfwd, hcbwd⟩ :=
-    restLog_backward_kingman hT hA hAmeas (hVmeas i.castSucc) hint hint'
-  have hceq : c = expEnum lam0 d i :=
-    restricted_const_eq hT hA lam0 V hVae i c hcfwd
-  have hmapVi_ae : ∀ᵐ x ∂μ, Submodule.map (Matrix.toEuclideanCLM (𝕜 := ℝ) (A x)).toLinearMap
-      (Vi x) = Vi (T x) := by
-    filter_upwards [hVae] with x hx; exact hx.2.2.2.1 i.castSucc
-  have hVne_ae : ∀ᵐ x ∂μ, Vi x ≠ ⊥ := by
-    filter_upwards [hVae] with x hx
-    intro hbot
-    have hlt := hx.2.2.1 i
-    rw [show V i.castSucc x = Vi x from rfl, hbot] at hlt
-    exact absurd hlt (by simp)
-  have horbit : ∀ᵐ x ∂μ, ∀ k : ℕ,
-      Submodule.map (Matrix.toEuclideanCLM (𝕜 := ℝ) (A (T^[k] x))).toLinearMap
-        (Vi (T^[k] x)) = Vi (T (T^[k] x)) :=
-    ae_forall_iterate_of_ae hmp _ hmapVi_ae
-  have hGood : ∀ᵐ x ∂μ, Vi x ≠ ⊥ ∧ ∀ k : ℕ,
-      Submodule.map (Matrix.toEuclideanCLM (𝕜 := ℝ) (A (T^[k] x))).toLinearMap
-        (Vi (T^[k] x)) = Vi (T (T^[k] x)) := by
-    filter_upwards [hVne_ae, horbit] with x h1 h2 using ⟨h1, h2⟩
-  have hGoodbwd : ∀ᵐ x ∂μ, ∀ m : ℕ, Vi ((⇑T.symm)^[m] x) ≠ ⊥ ∧ ∀ k : ℕ,
-      Submodule.map (Matrix.toEuclideanCLM (𝕜 := ℝ) (A (T^[k] ((⇑T.symm)^[m] x)))).toLinearMap
-        (Vi (T^[k] ((⇑T.symm)^[m] x))) = Vi (T (T^[k] ((⇑T.symm)^[m] x))) :=
-    ae_forall_iterate_of_ae (hmp.symm T) _ hGood
-  filter_upwards [hcbwd, hGoodbwd] with x hxc hxgood
-  have hcongr : (fun n : ℕ => (n : ℝ)⁻¹ * restLog A Vi (⇑T) n ((⇑T.symm)^[n] x))
-      =ᶠ[atTop] fun n : ℕ => (n : ℝ)⁻¹ * Real.log
-        ‖cocycle A (⇑T) n ((⇑T.symm)^[n] x) * orthProjMatrix (Vi ((⇑T.symm)^[n] x))‖ := by
-    filter_upwards [eventually_ge_atTop 1] with n hn
-    obtain ⟨m, rfl⟩ := Nat.exists_eq_add_of_lt (Nat.lt_of_lt_of_le Nat.zero_lt_one hn)
-    rw [Nat.zero_add]
-    congr 1
-    obtain ⟨hVy, hmapy⟩ := hxgood (m + 1)
-    exact restLog_eq_on_good hA
-      (fun k => orthProj_equivariant_of_map (T := (⇑T)) (V := Vi) (hmapy k)) hVy m
-  have habs : Tendsto (fun n : ℕ => (n : ℝ)⁻¹ * Real.log
-      ‖cocycle A (⇑T) n ((⇑T.symm)^[n] x) * orthProjMatrix (Vi ((⇑T.symm)^[n] x))‖)
-      atTop (𝓝 c) := hxc.congr' hcongr
-  rw [← hceq]
-  exact le_of_eq habs.limsup_eq
 
 end Main
 

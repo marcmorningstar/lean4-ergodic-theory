@@ -28,9 +28,9 @@ The architecture:
 
 * `ae_crux` — assembles the per-point crux a.e., for all forward level / backward level pairs
   `(i, s)` with `λᵢ + μₛ < 0`: `V i.castSucc x ⊓ W s.castSucc x = ⊥`.  The envelope comes from
-  `ae_limsup_restricted_backward_le`, the backward decay from the backward strong
+  `ae_tendsto_restricted_backward`, the backward decay from the backward strong
   export (`oseledets_filtration_dims` applied to `(T.symm, backwardGen A T)`), and all the a.e.
-  facts are bundled onto a single biinvariant conull good set (`exists_conull_biinvariant`); the
+  facts are bundled onto a single conull good set; the
   level quantifiers range over finite `Fin k × Fin l`.
 
 * `ae_counting` — the **counting bound**, holding a.e. and hence (being a deterministic
@@ -259,12 +259,11 @@ theorem mem_iterate_backward_of_orbit
 converges to the Lyapunov exponent `λᵢ`:
 `(1/n) log ‖A⁽ⁿ⁾(Sⁿx) · P_{Vᵢ(Sⁿx)}‖ → λᵢ` a.e.
 
-This is the convergent strengthening of `ae_limsup_restricted_backward_le` (whose
-`limsup ≤ λᵢ` is the consumed direction): it is obtained from the backward Kingman limit
-`restLog_backward_kingman` (shared constant `c`), the identification `c = λᵢ`
-(`restricted_const_eq`), and the floor absorption along the backward orbit
-(`restLog_eq_on_good`).  The convergence supplies the `IsBoundedUnder` proviso that the crux
-needs, while the rate bound itself is taken from `ae_limsup_restricted_backward_le`. -/
+This is the convergent form of the backward-orbit envelope (`limsup ≤ λᵢ`): it is obtained from
+the backward Kingman limit `restLog_backward_kingman` (shared constant `c`), the identification
+`c = λᵢ` (`restricted_const_eq`), and the floor absorption along the backward orbit
+(`restLog_eq_on_good`).  The convergence supplies both the `IsBoundedUnder` proviso that the crux
+needs and the rate bound itself (via `limsup_eq`). -/
 theorem ae_tendsto_restricted_backward
     (hT : Ergodic T μ)
     {A : X → Matrix (Fin d) (Fin d) ℝ} (hA : ∀ x, (A x).det ≠ 0)
@@ -339,8 +338,8 @@ are transverse: for every forward level `i` and backward level `s` with
 `λᵢ + μₛ < 0`, `V i.castSucc x ⊓ W s.castSucc x = ⊥`.
 
 The proof bundles, on a single conull set, the backward-orbit envelope
-(`ae_limsup_restricted_backward_le`, with the `IsBoundedUnder` proviso from the convergent
-strengthening `ae_tendsto_restricted_backward`), the forward equivariance along the backward
+(`ae_tendsto_restricted_backward`, which supplies both the `limsup ≤ λᵢ` bound and the
+`IsBoundedUnder` proviso), the forward equivariance along the backward
 orbit (`ae_forall_iterate_of_ae` over `T.symm` + `mem_iterate_backward_of_orbit`), and the
 backward growth limits (the backward strong-export growth clause + flag descent
 `exists_stratum`), then applies the per-point crux `inf_eq_bot_of_neg_sum`.  All quantifiers

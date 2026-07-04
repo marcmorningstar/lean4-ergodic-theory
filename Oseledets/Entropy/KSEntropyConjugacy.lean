@@ -14,8 +14,8 @@ intertwines the dynamics (`e ∘ T = S ∘ e`) — have equal Kolmogorov–Sinai
 
 `h(T) = h(S)`  (`Oseledets.Entropy.ksEntropy_congr_of_conjugacy`).
 
-This is the entropy-side companion of the index-reindexing invariance `ksEntropyPartition_reindex`
-(which only permutes the index type of a single partition): here the whole *space* is transported.
+This is the entropy-side companion of index-reindexing invariance (which only permutes the index
+type of a single partition): here the whole *space* is transported.
 
 ## Proof
 

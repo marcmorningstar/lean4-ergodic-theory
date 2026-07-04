@@ -152,12 +152,6 @@ theorem l2_opNorm_map_ofReal (M : Matrix (Fin d) (Fin d) ℝ) :
 
 /-! ## Finiteness and positivity of the spectral radius -/
 
-/-- The complexification of a real matrix power is the power of the complexification:
-`(Mⁿ).map (algebraMap ℝ ℂ) = (M.map (algebraMap ℝ ℂ))ⁿ`. -/
-theorem map_ofReal_pow (M : Matrix (Fin d) (Fin d) ℝ) (n : ℕ) :
-    (M ^ n).map (algebraMap ℝ ℂ) = (M.map (algebraMap ℝ ℂ)) ^ n :=
-  Matrix.map_pow M (algebraMap ℝ ℂ) n
-
 /-- For a real matrix with `d ≠ 0`, the complex spectral radius of the complexification is
 finite (bounded by the norm; the complex matrix algebra is a nontrivial `CStarRing`, hence a
 `NormOneClass`). -/
@@ -214,7 +208,7 @@ theorem tendsto_pow_norm_one_div_spectralRadius [NeZero d] (M : Matrix (Fin d) (
   -- `‖M_ℂ^n‖ = ‖M^n‖`.
   have hnorm : ∀ n : ℕ, ‖Mℂ ^ n‖ = ‖M ^ n‖ := by
     intro n
-    rw [hMℂ, ← map_ofReal_pow, l2_opNorm_map_ofReal]
+    rw [hMℂ, ← Matrix.map_pow M (algebraMap ℝ ℂ) n, l2_opNorm_map_ofReal]
   have hg' : Tendsto (fun n : ℕ => ENNReal.ofReal (‖M ^ n‖ ^ (1 / n : ℝ))) atTop
       (𝓝 (spectralRadius ℂ Mℂ)) := by
     refine hg.congr fun n => ?_

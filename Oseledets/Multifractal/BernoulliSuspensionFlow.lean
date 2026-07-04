@@ -65,44 +65,6 @@ noncomputable def MeasurePreservingFlow.ksEntropy {μ : Measure X} [IsProbabilit
     (φ : MeasurePreservingFlow μ) : EReal :=
   Oseledets.Entropy.ksEntropy (φ.measurePreserving 1)
 
-/-! ### Reindexing a partition along an equivalence of the index type -/
-
-namespace Entropy
-
-variable {α : Type*} [MeasurableSpace α] {ι κ : Type*}
-
-omit [MeasurableSpace α] in
-/-- The `n`-fold join cells of a reindexed partition are those of the original, reindexed at the
-level of the join index `Fin n → κ ≃ Fin n → ι` by post-composition with `e`. -/
-lemma ksJoinCells_reindex (cells : ι → Set α) (e : κ ≃ ι) (T : α → α)
-    (n : ℕ) (f : Fin n → κ) :
-    ksJoinCells (fun k => cells (e k)) T n f = ksJoinCells cells T n (fun i => e (f i)) := by
-  rw [ksJoinCells_apply, ksJoinCells_apply]
-
-/-- **Reindexing invariance of the iterated-join entropy.** Reindexing a partition along an
-equivalence of index types leaves every iterated-join entropy `ksEntropySeq` unchanged: the join
-cells are merely reindexed by `Fin n → κ ≃ Fin n → ι`, which permutes the summands. -/
-lemma ksEntropySeq_reindex [Fintype ι] [Fintype κ] {μ : Measure α} [IsProbabilityMeasure μ]
-    {T : α → α} (hT : MeasurePreserving T μ μ) (P : MeasurePartition μ ι) (e : κ ≃ ι) (n : ℕ) :
-    ksEntropySeq hT (P.reindex e) n = ksEntropySeq hT P n := by
-  rw [ksEntropySeq, ksEntropySeq, ksJoin_cells, ksJoin_cells]
-  rw [← entropy_reindex μ (Equiv.piCongrRight (fun _ : Fin n => e)) (ksJoinCells P.cells T n)]
-  refine Finset.sum_congr rfl fun f _ => ?_
-  rw [MeasurePartition.reindex_cells, ksJoinCells_reindex]
-  rfl
-
-/-- **Reindexing invariance of the partition Kolmogorov–Sinai entropy.** The KS entropy
-`h(α, T)` of a partition relative to `T` is unchanged when the partition's index type is reindexed
-along an equivalence: the underlying subadditive sequences agree as functions of `n`, hence so do
-their Fekete limits. -/
-lemma ksEntropyPartition_reindex [Fintype ι] [Fintype κ] {μ : Measure α} [IsProbabilityMeasure μ]
-    {T : α → α} (hT : MeasurePreserving T μ μ) (P : MeasurePartition μ ι) (e : κ ≃ ι) :
-    ksEntropyPartition hT (P.reindex e) = ksEntropyPartition hT P := by
-  rw [ksEntropyPartition, ksEntropyPartition]
-  exact Subadditive.lim_eq_of_eq _ _ (funext fun n => ksEntropySeq_reindex hT P e n)
-
-end Entropy
-
 namespace Multifractal
 
 open Oseledets.Entropy

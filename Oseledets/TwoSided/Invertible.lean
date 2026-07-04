@@ -38,10 +38,7 @@ so that the one-sided theorems can be instantiated for the backward system in on
   `Oseledets.integrableLogNorm_backwardGen_inv`: transfer of the two `L¹`-log-norm
   integrabilities.
 * `Oseledets.cocycle_succ'`: the cocycle recursion with the newest factor on the right.
-* `Oseledets.cocycle_backwardGen`, `Oseledets.cocycle_backwardGen_iterate`: the two
-  backward cocycle identities.
-* `Oseledets.exists_conull_biinvariant`: a conull set inside a given conull set that is
-  invariant under both `T` and `T.symm`.
+* `Oseledets.cocycle_backwardGen`: the backward cocycle identity.
 -/
 
 open MeasureTheory Filter
@@ -126,90 +123,6 @@ theorem cocycle_backwardGen {A : X → Matrix (Fin d) (Fin d) ℝ} (T : X ≃ᵐ
     rw [cocycle_succ, ih (T.symm x), ← Function.iterate_succ_apply (⇑T.symm) n x,
       cocycle_succ' A (⇑T) n ((⇑T.symm)^[n + 1] x), Matrix.mul_inv_rev, hpt]
     rfl
-
-/-- Dual form of the backward cocycle identity at a forward point:
-`B⁽ⁿ⁾(Tⁿ y) = (A⁽ⁿ⁾ y)⁻¹`. -/
-theorem cocycle_backwardGen_iterate {A : X → Matrix (Fin d) (Fin d) ℝ} (T : X ≃ᵐ X)
-    (n : ℕ) (y : X) :
-    cocycle (backwardGen A T) (⇑T.symm) n ((⇑T)^[n] y) = (cocycle A (⇑T) n y)⁻¹ := by
-  have hLI : Function.LeftInverse (⇑T.symm) (⇑T) := fun z => T.symm_apply_apply z
-  rw [cocycle_backwardGen]
-  congr 2
-  exact (hLI.iterate n) y
-
-/-- **Biinvariant conull set extraction.** Given a conull measurable set `S`, there is a
-conull measurable subset `S' ⊆ S` invariant under both `T` and `T.symm`.
-
-Construction: `S' = (⋂ₙ (T^[n])⁻¹' S) ∩ (⋂ₙ (T.symm^[n])⁻¹' S)`. Each iterate is
-measure-preserving, so each preimage is conull and a countable intersection of conull
-sets is conull. Bi-invariance is an index shift: applying `T` (resp. `T.symm`) reindexes
-the two families against each other, the cross term collapsing through
-`T.symm ∘ T = id` (resp. `T ∘ T.symm = id`). -/
-theorem exists_conull_biinvariant {μ : Measure X} [IsProbabilityMeasure μ]
-    {T : X ≃ᵐ X} (hTm : MeasurePreserving T μ μ)
-    {S : Set X} (hS : MeasurableSet S) (hconull : μ Sᶜ = 0) :
-    ∃ S' : Set X, S' ⊆ S ∧ MeasurableSet S' ∧ μ S'ᶜ = 0 ∧
-      (∀ x ∈ S', T x ∈ S') ∧ (∀ x ∈ S', T.symm x ∈ S') := by
-  set F : Set X := ⋂ n : ℕ, (T^[n])⁻¹' S with hF
-  set G : Set X := ⋂ n : ℕ, (T.symm^[n])⁻¹' S with hG
-  -- measurability of the two families and their intersection.
-  have hTmeas : ∀ n : ℕ, Measurable (T^[n] : X → X) := fun n =>
-    (hTm.iterate n).measurable
-  have hSmeas : ∀ n : ℕ, Measurable (T.symm^[n] : X → X) := fun n =>
-    ((hTm.symm T).iterate n).measurable
-  have hFmeas : MeasurableSet F :=
-    MeasurableSet.iInter fun n => hS.preimage (hTmeas n)
-  have hGmeas : MeasurableSet G :=
-    MeasurableSet.iInter fun n => hS.preimage (hSmeas n)
-  -- conullity of each family.
-  have hFconull : μ Fᶜ = 0 := by
-    rw [hF, Set.compl_iInter]
-    refine measure_iUnion_null fun n => ?_
-    rw [← Set.preimage_compl, (hTm.iterate n).measure_preimage hS.compl.nullMeasurableSet]
-    exact hconull
-  have hGconull : μ Gᶜ = 0 := by
-    rw [hG, Set.compl_iInter]
-    refine measure_iUnion_null fun n => ?_
-    rw [← Set.preimage_compl,
-      ((hTm.symm T).iterate n).measure_preimage hS.compl.nullMeasurableSet]
-    exact hconull
-  -- membership characterizations.
-  have hmemF : ∀ x, x ∈ F ↔ ∀ n : ℕ, T^[n] x ∈ S := fun x => by
-    simp only [hF, Set.mem_iInter, Set.mem_preimage]
-  have hmemG : ∀ x, x ∈ G ↔ ∀ n : ℕ, T.symm^[n] x ∈ S := fun x => by
-    simp only [hG, Set.mem_iInter, Set.mem_preimage]
-  refine ⟨F ∩ G, ?_, hFmeas.inter hGmeas, ?_, ?_, ?_⟩
-  · -- `F ∩ G ⊆ S`: take `n = 0` in `F`.
-    intro x hx
-    have := (hmemF x).1 hx.1 0
-    simpa using this
-  · -- conull: complement is contained in `Fᶜ ∪ Gᶜ`, both null.
-    rw [Set.compl_inter]
-    exact measure_union_null hFconull hGconull
-  · -- forward invariance.
-    rintro x ⟨hxF, hxG⟩
-    refine ⟨(hmemF _).2 fun n => ?_, (hmemG _).2 fun n => ?_⟩
-    · -- `T^[n] (T x) = T^[n+1] x ∈ S`.
-      rw [← Function.iterate_succ_apply T n x]
-      exact (hmemF x).1 hxF (n + 1)
-    · -- `T.symm^[n] (T x) ∈ S`.
-      cases n with
-      | zero => simpa using (hmemF x).1 hxF 1
-      | succ m =>
-        rw [Function.iterate_succ_apply, T.symm_apply_apply]
-        exact (hmemG x).1 hxG m
-  · -- backward invariance.
-    rintro x ⟨hxF, hxG⟩
-    refine ⟨(hmemF _).2 fun n => ?_, (hmemG _).2 fun n => ?_⟩
-    · -- `T^[n] (T.symm x) ∈ S`.
-      cases n with
-      | zero => simpa using (hmemG x).1 hxG 1
-      | succ m =>
-        rw [Function.iterate_succ_apply, T.apply_symm_apply]
-        exact (hmemF x).1 hxF m
-    · -- `T.symm^[n] (T.symm x) = T.symm^[n+1] x ∈ S`.
-      rw [← Function.iterate_succ_apply T.symm n x]
-      exact (hmemG x).1 hxG (n + 1)
 
 /-- The bundled standing hypotheses for the **backward system** `(⇑T.symm, backwardGen A T)`:
 everywhere-nonzero determinant, measurability of the generator, and the two

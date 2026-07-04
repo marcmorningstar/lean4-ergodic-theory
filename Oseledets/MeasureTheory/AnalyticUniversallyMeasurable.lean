@@ -80,16 +80,6 @@ noncomputable def MeasureTheory.compactCap
     (μ : MeasureTheory.Measure α) (s : Set α) : ENNReal :=
   sSup {r : ENNReal | ∃ K : Set α, IsCompact K ∧ K ⊆ s ∧ r = μ K}
 
-/-- Compact capacity is monotone in its set argument: enlarging `s` enlarges the family
-of compact subsets and so the supremum. -/
-theorem MeasureTheory.compactCap_mono
-    {α : Type*} [TopologicalSpace α] [MeasurableSpace α]
-    {μ : MeasureTheory.Measure α} {s t : Set α} (hst : s ⊆ t) :
-    MeasureTheory.compactCap μ s ≤ MeasureTheory.compactCap μ t := by
-  apply sSup_le_sSup
-  rintro r ⟨K, hKc, hKs, rfl⟩
-  exact ⟨K, hKc, hKs.trans hst, rfl⟩
-
 /-! ## Choquet capacity structure -/
 
 /-- Bundled record of the three Choquet capacity axioms for a functional
@@ -130,35 +120,6 @@ theorem MeasureTheory.measure_isChoquetCapacity
     exact hf.measure_iInter
       (fun n => (hclosed n).measurableSet.nullMeasurableSet)
       ⟨0, measure_ne_top μ (f 0)⟩
-
-/-! ## Measurable sets: compact capacity = measure -/
-
-/-- For Borel-measurable sets, `compactCap μ s = μ s`. Two-sided bound: monotonicity
-gives `≤`, and the existing inner regularity of finite Borel measures on Polish spaces
-(`MeasurableSet.exists_isCompact_lt_add`) gives `≥`. The easy half of the
-capacitability statement; the analytic-set half requires the cylinder construction in
-the rest of the file. -/
-theorem MeasureTheory.MeasurableSet.compactCap_eq
-    {α : Type*}
-    [TopologicalSpace α] [MeasurableSpace α] [BorelSpace α] [PolishSpace α]
-    {μ : MeasureTheory.Measure α} [MeasureTheory.IsFiniteMeasure μ]
-    {s : Set α} (hs : MeasurableSet s) :
-    MeasureTheory.compactCap μ s = μ s := by
-  apply le_antisymm
-  · apply sSup_le
-    rintro r ⟨K, _, hKs, rfl⟩
-    exact measure_mono hKs
-  · unfold MeasureTheory.compactCap
-    have hbdd : BddAbove {r : ENNReal | ∃ K : Set α, IsCompact K ∧ K ⊆ s ∧ r = μ K} :=
-      ⟨μ Set.univ, fun _ ⟨_, _, hLs, hr⟩ => hr ▸ measure_mono (hLs.trans (Set.subset_univ _))⟩
-    apply ENNReal.le_of_forall_pos_le_add
-    intro ε hε _
-    have hε_ne : (ε : ENNReal) ≠ 0 := ENNReal.coe_ne_zero.mpr hε.ne'
-    obtain ⟨K, hKs, hKc, hlt⟩ := hs.exists_isCompact_lt_add (measure_ne_top μ s) hε_ne
-    calc μ s ≤ μ K + ε := le_of_lt hlt
-      _ ≤ sSup {r | ∃ K, IsCompact K ∧ K ⊆ s ∧ r = μ K} + ε := by
-        gcongr
-        exact le_csSup hbdd ⟨K, hKc, hKs, rfl⟩
 
 /-! ## iSup rewrite of compactCap -/
 

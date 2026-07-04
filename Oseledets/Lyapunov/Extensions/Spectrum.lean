@@ -29,8 +29,6 @@ definition.
 * `Oseledets.exponents` — the sorted, with-multiplicity Lyapunov spectrum, as a total
   `Fin d → ℝ`, obtained by `Classical.choose`-ing the `lam : ℕ → ℝ` of
   `exists_lam_tendsto_singularValue` and restricting it to `Fin d`.
-* `Oseledets.exponentMultiset` — the same data as a `Multiset ℝ` for multiset-style
-  consumers.
 * `Oseledets.topExponent` — the largest exponent `exponents … 0`.
 
 ## Main results
@@ -102,12 +100,6 @@ theorem exponents_tendsto_log_singularValue (i : Fin d) :
         Real.log ((Matrix.toEuclideanLin (cocycle A T n x)).singularValues (i : ℕ)))
       atTop (𝓝 (exponents hT hA hAmeas hint hint' i)) :=
   (chosenLam_spec hT hA hAmeas hint hint').2 (i : ℕ) i.isLt
-
-/-- **The spectrum as a `Multiset ℝ`**, for multiset-style consumers (e.g. counting
-exponents with multiplicity by membership). It is the image of `Finset.univ` under
-`exponents`. -/
-noncomputable def exponentMultiset : Multiset ℝ :=
-  Finset.univ.val.map (exponents hT hA hAmeas hint hint')
 
 /-- The top (largest) Lyapunov exponent, `exponents … 0`. Requires `d ≠ 0` (the index `0`
 is `⟨0, _⟩ : Fin d`), which is available from `[NeZero d]`. -/

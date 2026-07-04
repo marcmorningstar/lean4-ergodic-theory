@@ -24,10 +24,6 @@ This is the honest, foliation-free version of the Ledrappier–Young/Rokhlin ent
 expanding case: no stable foliation, no SRB-density machinery — just the all-positive-spectrum
 collapse of the positive-part sum onto the determinant integral.
 
-## Main definitions
-
-* `Oseledets.IsExpanding` — uniform derivative expansion `∃ K > 1, ∀ x v, K‖v‖ ≤ ‖Dₓ T v‖`.
-
 ## Main results
 
 * `Oseledets.cocycle_expanding_bound` — the compounded bound `Kⁿ‖v‖ ≤ ‖D(T^[n]) v‖`.
@@ -51,13 +47,6 @@ open scoped Matrix.Norms.L2Operator
 namespace Oseledets
 
 variable {d : ℕ} [NeZero d]
-
-/-- A differentiable self-map `T : EuclideanSpace ℝ (Fin d) → EuclideanSpace ℝ (Fin d)` is
-**uniformly expanding** when there is an expansion constant `K > 1` such that the derivative
-`Dₓ T` stretches every tangent vector by at least `K`: `K · ‖v‖ ≤ ‖Dₓ T v‖` for every base point
-`x` and every vector `v`. -/
-def IsExpanding (T : EuclideanSpace ℝ (Fin d) → EuclideanSpace ℝ (Fin d)) : Prop :=
-  ∃ K : ℝ, 1 < K ∧ ∀ x v, K * ‖v‖ ≤ ‖fderiv ℝ T x v‖
 
 omit [NeZero d] in
 /-- **The compounded expansion bound.** For a differentiable uniformly expanding map with

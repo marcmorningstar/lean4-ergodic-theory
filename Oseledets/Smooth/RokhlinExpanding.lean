@@ -35,14 +35,13 @@ hypothesis by the later nodes.
 
 ## The injectivity-partition predicate
 
-`IsInjectivityPartition μ T ξ` packages the three hypotheses Coudène's conditional-expectation
+`IsInjectivityPartition μ T ξ` packages the two hypotheses Coudène's conditional-expectation
 proof of Rokhlin's formula needs from a finite measurable partition `ξ`:
 
 * `T` is injective on each cell (`Set.InjOn`),
-* each cell is measurable (`MeasurableSet`),
-* the union of the cell frontiers is `μ`-null.
+* each cell is measurable (`MeasurableSet`).
 
-The first two fields are **literally** the hypotheses `hf` and `hs` of Mathlib's change-of-
+The two fields are **literally** the hypotheses `hf` and `hs` of Mathlib's change-of-
 variables lemma `MeasureTheory.lintegral_image_eq_lintegral_abs_det_fderiv_mul`, which the next
 node feeds them into. We deliberately do **not** include a Markov condition (`T '' ξᵢ` a union of
 cells) — the conditional-expectation argument needs only injectivity — and we do **not** bake in
@@ -50,7 +49,7 @@ cells) — the conditional-expectation argument needs only injectivity — and w
 
 ## Main definitions
 
-* `Oseledets.IsInjectivityPartition` — the injectivity/measurability/null-boundary predicate on a
+* `Oseledets.IsInjectivityPartition` — the injectivity/measurability predicate on a
   finite measurable partition.
 
 ## Main results
@@ -92,11 +91,10 @@ end Density
 /-! ### N5.2 — the injectivity-partition predicate -/
 
 /-- An **injectivity partition** for a self-map `T` and a finite measurable partition `ξ`:
-the three hypotheses Coudène's conditional-expectation proof of Rokhlin's formula needs.
+the two hypotheses Coudène's conditional-expectation proof of Rokhlin's formula needs.
 
 * `inj` : `T` is injective on each cell `ξ.cells i`;
-* `meas` : each cell is measurable;
-* `boundaryNull` : the union of the cell frontiers is `μ`-null.
+* `meas` : each cell is measurable.
 
 The `inj` and `meas` fields are exactly the hypotheses (`hf`, `hs`) consumed by Mathlib's
 change-of-variables lemma `MeasureTheory.lintegral_image_eq_lintegral_abs_det_fderiv_mul`. No
@@ -109,21 +107,6 @@ structure IsInjectivityPartition {d : ℕ}
   inj : ∀ i, Set.InjOn T (ξ.cells i)
   /-- Each cell of the partition is measurable. -/
   meas : ∀ i, MeasurableSet (ξ.cells i)
-  /-- The union of the cell frontiers is `μ`-null. -/
-  boundaryNull : μ (⋃ i, frontier (ξ.cells i)) = 0
-
-namespace IsInjectivityPartition
-
-variable {d : ℕ} {μ : Measure (EuclideanSpace ℝ (Fin d))}
-    {T : EuclideanSpace ℝ (Fin d) → EuclideanSpace ℝ (Fin d)}
-    {ι : Type*} [Fintype ι] {ξ : Oseledets.Entropy.MeasurePartition μ ι}
-
-/-- Each individual cell frontier is `μ`-null, extracted from `boundaryNull` via monotonicity. -/
-lemma frontier_null (h : IsInjectivityPartition μ T ξ) (i : ι) :
-    μ (frontier (ξ.cells i)) = 0 :=
-  measure_mono_null (Set.subset_iUnion (fun j => frontier (ξ.cells j)) i) h.boundaryNull
-
-end IsInjectivityPartition
 
 /-! ### N5.3 — the per-cell Jacobian–measure identity -/
 
