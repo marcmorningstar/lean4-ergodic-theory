@@ -49,23 +49,27 @@ which telescopes to `iₙ(x) = ∑_{j<n} g_{n-j}(Tʲx)`.
   pointwise a.e. theorem converges to), proved *unconditionally* via the telescoped sum + the
   fixed-partition Lévy theorem `condEntropy_tendsto_iSup` + the Cesàro mean `Filter.Tendsto.cesaro`.
 
-## The remaining pointwise residual (precise)
+## The pointwise a.e. SMB (now proved downstream)
 
-What is *not* yet proved is the **pointwise a.e.** convergence `(1/n)·iₙ(x) → h(P,T)` for `μ`-a.e.
-`x` under `Ergodic T μ`. By the integral-level identity above the *target* `h` is correct; the gap
-is the a.e. statement, which decomposes into (with `gₖ` the conditional information *function*):
+The **pointwise a.e.** convergence `(1/n)·iₙ(x) → h(P,T)` for `μ`-a.e. `x` under `Ergodic T μ`
+is **proved**: as `Oseledets.Krieger.UpperSMB.ae_tendsto_div_infoFun_self` for the concrete
+information function, and — parameterized by the Breiman telescoping — as
+`Oseledets.Krieger.SMBLeaves.ae_tendsto_div_infoFun`. By the integral-level identity above the
+*target* `h` is `ksEntropyPartition_eq_condEntropy_iSup`; the a.e. statement decomposes into
+(with `gₖ` the conditional information *function*):
 
 * **R3/R4 (a.e. main term).** `(1/n)∑_{j<n} g_∞(Tʲx) → ∫ g_∞ = h` a.e., from
   `tendsto_birkhoffAverage_ae_integral` and `ksEntropyPartition_eq_condEntropy_iSup` (`∫ g_∞ = h`).
   The a.e. Lévy limit `gₖ → g_∞` is `MeasureTheory.tendsto_ae_condExp` (used inside
   `condEntropy_tendsto_iSup`).
-* **R5 (Chung `L¹` maximal domination — the genuine analytic gap).** The Cesàro tail
+* **R5 (Chung `L¹` maximal domination — now proved).** The Cesàro tail
   `(1/n)∑_{j<n}(g_{n-j} − g_∞)(Tʲx) → 0` a.e. needs `g* := ⨆ₖ gₖ ∈ L¹(μ)`. The per-cell maximal
   estimate `μ{x ∈ Pᵢ : g* > λ} ≤ e^{−λ}` (a Doob stopping-time bound on the conditional-probability
   martingale `pₖ = E(𝟙_{Pᵢ}|Cₖ)`: on `{τ = first k with pₖ < e^{−λ}} ∈ Cₖ`,
-  `μ(Pᵢ ∩ {τ=k}) = ∫_{τ=k} pₖ ≤ e^{−λ}μ(τ=k)`) gives, by the layer-cake formula,
-  `∫ g* ≤ log(card ι) + 1 < ∞`.  Mathlib has Doob's `maximal_ineq` but not this `L¹` integrability;
-  it is a `≈150`-line development (Chung 1961).  This is the one item that blocks the headline.
+  `μ(Pᵢ ∩ {τ=k}) = ∫_{τ=k} pₖ ≤ e^{−λ}μ(τ=k)`) gives, by the layer-cake formula, `g* ∈ L¹`.
+  This is discharged in `Oseledets.Krieger.SMBLeaves` as `chungTail` +
+  `lintegral_condInfoMaxFun_lt_top`, whence the Maker/Breiman tail `makerTail` and, downstream, the
+  in-measure bound `Oseledets.Krieger.UpperSMB.upperSMBInMeasure_of_ergodic`.
 
 ## References
 

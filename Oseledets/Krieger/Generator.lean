@@ -72,8 +72,9 @@ Shannon–McMillan–Breiman theorem and Rokhlin's lemma to bound the entropy in
 re-derived here; it is exposed as the hypothesis bundle `KeaneSerafinData` so that the headline
 existence theorem `exists_countable_twoSided_generator_of_keaneSerafinData` is a faithful, honest
 reduction: *given* the inductive sequence with its three properties, the finite-entropy countable
-two-sided generator exists. The hard analytic content (SMB + Rokhlin) is isolated in
-`KeaneSerafinData` and tracked as the open residual for sub-problem A.
+two-sided generator exists. The remaining dynamical residual is the Rokhlin-tower construction
+assembling the (now proved in-repo) SMB equipartition into `Q`; it is isolated in `KeaneSerafinData`
+and named, not faked, for sub-problem A.
 
 ## References
 
@@ -393,9 +394,9 @@ that two-sidedly generates `(α, e, μ)` mod 0 **and** has finite static Shannon
 
 This is sub-problem A of the unconditional Krieger finite generator theorem (issue #15): the static
 input that is then coded into `Fin k` by the Rokhlin-tower / name-count combinatorics of
-`Oseledets.Krieger.Coding`. The construction of the data `D` (Rokhlin's lemma + the
-Shannon–McMillan–Breiman theorem) is the remaining dynamical residual; everything from `D` to the
-two conclusions is proved here unconditionally. -/
+`Oseledets.Krieger.Coding`. The construction of the data `D` (the Rokhlin-tower assembly of the
+now-proved in-repo Shannon–McMillan–Breiman equipartition) is the remaining dynamical residual;
+everything from `D` to the two conclusions is proved here unconditionally. -/
 theorem exists_countable_twoSided_generator_of_keaneSerafinData [StandardBorelSpace α]
     {μ : Measure α} [IsProbabilityMeasure μ] {e : α ≃ᵐ α} (D : KeaneSerafinData μ e) :
     ∃ Q : ℕ → Set α, (∀ i, MeasurableSet (Q i)) ∧

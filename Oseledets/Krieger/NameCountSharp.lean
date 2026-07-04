@@ -37,17 +37,19 @@ Einsiedler–Lindenstrauss–Ward, *Entropy in Ergodic Theory*, §2–3; Downaro
    measure
    `μ {x | (1/N)·infoFunₙ(x) > h+ε} → 0`,
    the upper half of the Shannon–McMillan–Breiman theorem *in measure*. It is **parameterized** here
-   as the hypothesis `UpperSMBInMeasure` (a sorry-free `Prop`), because the unconditional sharp rate
-   `h` (rather than the crude `log (card ι)` of `Oseledets.Krieger.SMB`) is the documented residual
-   `R5` of `Oseledets.Krieger.SMBSharp` — the Chung `L¹` maximal-function domination. See the module
-   note at the bottom for the precise minimal analytic input and the cheaper (martingale-free)
-   block-product route that discharges it.
+   as the hypothesis `UpperSMBInMeasure` (a sorry-free `Prop`); the unconditional sharp rate `h`
+   (rather than the crude `log (card ι)` of `Oseledets.Krieger.SMB`) is now **proved** —
+   `Oseledets.Krieger.UpperSMB.upperSMBInMeasure_of_ergodic` discharges this hypothesis for every
+   ergodic `T`, from the full pointwise SMB `ae_tendsto_div_infoFun_self` (formerly the `R5`
+   Chung `L¹`-domination residual of `Oseledets.Krieger.SMBSharp`). See the module note below for
+   the analytic content and the cheaper (martingale-free) block-product route that also fits.
 
 ## Main definitions
 
 * `Oseledets.Krieger.goodNames` — the Finset of rank-`N` names whose cell has measure `≥ exp(−N·R)`.
 * `Oseledets.Krieger.UpperSMBInMeasure` — the in-measure SMB upper bound at rate `h`, the exact
-  analytic input the covering half needs (the parameterized residual).
+  analytic input the covering half needs (now discharged for ergodic `T` by
+  `Oseledets.Krieger.UpperSMB.upperSMBInMeasure_of_ergodic`).
 
 ## Main results
 
@@ -322,7 +324,10 @@ Everything above is **unconditional** except the single hypothesis `UpperSMBInMe
 **in-measure Shannon–McMillan–Breiman upper bound** at the sharp rate `h = ksEntropyPartition hT P`:
 `∀ ε > 0, μ {x | (1/N)·infoFunₙ(x) > h+ε} → 0`. This is the *exact* analytic input the AEP covering
 bound needs — strictly weaker than the pointwise a.e. SMB (`(1/N)·infoFunₙ → h`), being the upper
-half only and *in measure* (McMillan, not Breiman).
+half only and *in measure* (McMillan, not Breiman). This hypothesis is now **proved**:
+`upperSMBInMeasure_of_ergodic` (`Oseledets.Krieger.UpperSMB`) supplies it for every ergodic `T`,
+from the full pointwise SMB `ae_tendsto_div_infoFun_self`. The two routes below record the
+analytic content; Route 2 is the one the repository took.
 
 **Why the crude bound and plain Markov are not enough.**
 `Oseledets.Krieger.ae_limsup_div_infoFun_le_log_card` (Birkhoff-free, Markov + Borel–Cantelli) gives
@@ -333,7 +338,7 @@ ksEntropySeq N / N → h`, so `μ {(1/N)·infoFunₙ > h+ε} ≤ (ksEntropySeq N
 positive constant. The content of the upper bound is the *concentration* of `(1/N)·infoFunₙ` about
 its mean `h` — genuine SMB content, not bookkeeping.
 
-**Route 1 — block / likelihood-ratio (engine + Birkhoff, no martingale).** Recommended discharge.
+**Route 1 — block / likelihood-ratio (engine + Birkhoff, no martingale).** Not the route taken.
 Feed the engine `Oseledets.Krieger.ae_forall_eventually_div_log_le` (the `∫⁻ gₙ ≤ 1` form) the
 **likelihood ratio** `gₙ(x) = qₙ(name x) / μ(cellₙ(x))`, where `qₙ` is a competing sub-probability
 on the `N`-names, *not* the fixed `exp(infoFunₙ − N·R)`. For block length `m`, take `qₙ(name) =
@@ -351,18 +356,18 @@ for each `ε`, `(1/N)·infoFunₙ ≤ h+ε` eventually a.e.; the bounded indicat
 to `0`).
 
 This route needs **ergodicity / the Birkhoff ergodic theorem** (already in the repo) but **no
-martingale, no conditional information function, no Chung `L¹` maximal domination**. The genuine
-remaining work is (a) the `m`-block product likelihood ratio and its `∫⁻ ≤ 1` (finite measure
-algebra on the append factorization `ksJoinCells_append`, repo `KSEntropy.lean`), and (b) the
-Birkhoff
-evaluation of `(1/N) ∑_{blocks} I_{P_m}∘T^{jm}` — an `≈100–150`-line development. This is the
-**minimal** discharge, since only the upper half *in measure* is needed.
+martingale, no conditional information function, no Chung `L¹` maximal domination**. For this
+(untaken) alternative the work would be (a) the `m`-block product likelihood ratio and its
+`∫⁻ ≤ 1` (finite measure algebra on the append factorization `ksJoinCells_append`, repo
+`KSEntropy.lean`), and (b) the Birkhoff evaluation of `(1/N) ∑_{blocks} I_{P_m}∘T^{jm}` — an
+`≈100–150`-line development. This is the **minimal** such route, since only the upper half *in
+measure* is needed.
 
-**Route 2 — full pointwise SMB via `SMBSharp` (heavier).** The documented residual `R5` of
-`Oseledets.Krieger.SMBSharp` (Chung's `L¹` maximal-function domination, `≈150` lines on top of the
-telescoping already proved there) gives the full a.e. SMB `(1/N)·infoFunₙ → h`, from which
-`UpperSMBInMeasure` is immediate. Route 1 is lighter for *this* corollary because it avoids the
-martingale entirely; both require the ergodic theorem.
+**Route 2 — full pointwise SMB via `SMBSharp` (heavier, and the route taken).** The now-proved `R5`
+of `Oseledets.Krieger.SMBSharp` (Chung's `L¹` maximal-function domination, proved on top of the
+telescoping there) gives the full a.e. SMB `(1/N)·infoFunₙ → h`, from which `UpperSMBInMeasure` is
+immediate (`Oseledets.Krieger.UpperSMB.upperSMBInMeasure_of_ergodic`). Route 1 would be lighter for
+*this* corollary because it avoids the martingale entirely; both require the ergodic theorem.
 
 **Minimal analytic input named.** Either (Route 1) the `m`-block product partition-function identity
 `∫⁻ (∏_{blocks} μ(P_m-cell)) / μ(cellₙ) ∂μ ≤ 1` plus a.e. Birkhoff convergence of the block average

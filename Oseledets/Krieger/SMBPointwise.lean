@@ -529,12 +529,13 @@ section SMBHeadline
 
 variable [Nonempty ι]
 
-/-! ### The pointwise Shannon–McMillan–Breiman theorem: full structure and remaining leaves
+/-! ### The pointwise Shannon–McMillan–Breiman theorem: full structure
 
 This is the assembly of the pointwise SMB theorem `(1/n)·iₙ(x) → h(P,T)` from the proved pieces and
-the two precisely-isolated remaining leaves.  It records the dependency structure as an honest
-`theorem` taking the two leaves as hypotheses, so the reduction is machine-checked even though the
-leaves are not yet discharged.
+the two precisely-isolated analytic leaves.  It records the dependency structure as an honest
+`theorem` taking the tail leaf as a hypothesis, so the reduction is machine-checked; that leaf is
+**discharged downstream** in `Oseledets.Krieger.SMBLeaves` (`ae_tendsto_breiman_tail`/`makerTail`),
+making `ae_tendsto_div_infoFun` there — and `UpperSMB.ae_tendsto_div_infoFun_self` — unconditional.
 
 The Breiman telescoping (`SMBSharp.infoWeight_succ_eq`) gives `iₙ(x) = ∑_{j<n} g_{n−j}(Tʲx)` a.e.,
 so `(1/n)·iₙ(x) = A_n(g∞)(x) + (1/n)∑_{j<n}(g_{n−j} − g∞)(Tʲx)`, where:
@@ -543,9 +544,9 @@ so `(1/n)·iₙ(x) = A_n(g∞)(x) + (1/n)∑_{j<n}(g_{n−j} − g∞)(Tʲx)`, w
 * the **Cesàro tail** `→ 0` a.e. is the content of the two leaves below.
 -/
 
-/-- **Pointwise SMB, assembled from the single remaining (Maker/Chung) leaf.**  For ergodic `T`,
+/-- **Pointwise SMB, assembled from the single (Maker/Chung) tail leaf.**  For ergodic `T`,
 the information-function averages `(1/n)·iₙ(x)` converge `μ`-a.e. to
-`h(P,T) = ksEntropyPartition hT P`, *given* the one residual leaf
+`h(P,T) = ksEntropyPartition hT P`, *given* the one tail leaf
 
 * `hTail` — the **Maker/Breiman dominated-Cesàro** vanishing of the Cesàro tail
   `iₙ(x)/n − A_n(g∞)(x) → 0` a.e., whose `L¹` domination is the Chung bound

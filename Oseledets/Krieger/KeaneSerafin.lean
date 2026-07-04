@@ -40,11 +40,13 @@ join have measure `≈ e^{−hm}`"). This is the one genuinely analytic ingredie
 
 ## The single dynamical residual: the per-step Keane–Serafin Lemma
 
-The per-step Lemma (3) is **not** re-derived here: its proof needs the *in-probability*
+The per-step Lemma (3) is **not** re-derived here: its proof combines the *in-probability*
 Shannon–McMillan–Breiman theorem (the equipartition `μ(atom) ∈ [e^{−(h+δ)m}, e^{−(h−δ)m}]` for most
-`m`-block atoms), which the repository's SMB development (`Oseledets.Krieger.SMBSharp`) currently
-isolates as the open **R5 (Chung `L¹`-domination)** residual — only the integral-level rate identity
-`ksEntropyPartition_eq_condEntropy_iSup` and the crude name-count upper bound are proved. The
+`m`-block atoms) with a row-organized Rokhlin-tower marker-painting. The SMB ingredient is now
+**proved** in the repository (`Oseledets.Krieger.UpperSMB`, `SMBLeaves`): the pointwise a.e. SMB
+`ae_tendsto_div_infoFun_self`, its in-measure upper bound `upperSMBInMeasure_of_ergodic`, and the
+underlying Chung/Maker leaves `chungTail`, `lintegral_condInfoMaxFun_lt_top`, `makerTail`.
+What is left un-formalized is only the Rokhlin-tower construction producing `Q`. The
 in-probability equipartition is genuinely load-bearing for the count bound `Jₖ ≤ e^{(gₖ+2δ)m}`,
 hence for the entropy economy of the step, hence for `summable_index_mass`.
 
@@ -58,19 +60,21 @@ capturing exactly what the SMB-driven Lemma produces for the *whole* enumerated 
   faithful, directly-`summable_index_mass`-feeding form of the entropy economy (3).
 
 The **inductive assembly** `keaneSerafinData_of_step` then produces `KeaneSerafinData` from a
-`KeaneSerafinStep` **unconditionally and sorry-free**. The hard analytic content (SMB + Rokhlin
-producing the geometric mass envelope) is the remaining dynamical residual, isolated in
-`KeaneSerafinStep`, exactly mirroring how `Oseledets.Krieger.Krieger` isolates the M1+M2
-combinatorics in `KriegerCodingData`.
+`KeaneSerafinStep` **unconditionally and sorry-free**. The remaining dynamical residual is the
+Rokhlin-tower construction producing the geometric mass envelope from the (now proved in-repo) SMB
+equipartition, isolated in `KeaneSerafinStep`, exactly mirroring how `Oseledets.Krieger.Krieger`
+isolates the M1+M2 combinatorics in `KriegerCodingData`.
 
 ## Why a hypothesis bundle and not an outright construction
 
 The outright construction of `KeaneSerafinData` (no hypotheses beyond ergodic/aperiodic
-measure-preserving `e` of finite entropy) needs the in-probability SMB, which is BLOCKED upstream.
-Bundling the SMB output is the faithful reduction: it keeps the *structural* content — turning
-two-sided recovery into mod-0 generation, and the geometric mass envelope into finite static Shannon
-entropy (Downarowicz Fact 1.1.4, `cHμ_summable_of_summable_index_mul`) — proved here, while the open
-analytic residual is named, not faked. See the module note at the end for the precise residual.
+measure-preserving `e` of finite entropy) needs, on top of the in-probability SMB — now **proved**
+in-repo (`upperSMBInMeasure_of_ergodic`, `ae_tendsto_div_infoFun_self`) — the Rokhlin-tower
+marker-painting that turns the SMB output into `Q`, which is not formalized. Bundling that output is
+the faithful reduction: it keeps the *structural* content — turning two-sided recovery into mod-0
+generation, and the geometric mass envelope into finite static Shannon entropy (Downarowicz Fact
+1.1.4, `cHμ_summable_of_summable_index_mul`) — proved here, while the open dynamical residual is
+named, not faked. See the module note at the end for the precise residual.
 
 ## References
 
@@ -289,19 +293,20 @@ is the per-step **Keane–Serafin Lemma**:
 > `A ∈ ⋁ₙ eⁿ σ(Q)` mod 0, and `H(Q) ≤ H(P) + g + c`.
 
 Its proof is the row-organized Rokhlin-tower marker-painting of Keane–Serafin §2. The
-`rokhlin_tower` lemma (`Oseledets.Krieger.RokhlinTower`) supplies the tower; the genuine missing
-ingredient is the **in-probability Shannon–McMillan–Breiman theorem**: for `δ > 0` and `m` large,
+`rokhlin_tower` lemma (`Oseledets.Krieger.RokhlinTower`) supplies the tower, and the
+**in-probability Shannon–McMillan–Breiman theorem** it feeds on — for `δ > 0` and `m` large,
 *most* atoms of the `m`-block join `⋁₀^{m−1} eⁿ P̄` have measure in `[e^{−(h̄+δ)m}, e^{−(h̄−δ)m}]`
 (and likewise for `P`), which yields the per-row count bound `Jᵢ ≤ e^{(g+2δ)m}` driving the entropy
-increment `H(Q') ≲ g`. The repository's SMB development (`Oseledets.Krieger.SMBSharp`) currently
-proves only the **integral-level** rate identity `ksEntropyPartition_eq_condEntropy_iSup` and the
-**crude** name-count upper bound (`Oseledets.Krieger.SMB.ae_limsup_div_infoFun_le_log_card`); the
-**pointwise / in-probability** equipartition is its open **R5 (Chung `L¹`-domination)** leaf. The
-in-probability statement is genuinely load-bearing here (it gives the lower deviation bound keeping
-the surviving sub-atoms from being too small, hence caps the per-row count), so it is the sharp,
-non-fakeable residual. Until R5 lands, `KeaneSerafinStep` / `KeaneSerafinLevels` is the faithful
-hypothesis boundary, and `exists_countable_twoSided_generator_of_levels` is the unconditional
-reduction of sub-problem A to it.
+increment `H(Q') ≲ g` — is now **proved** in the repository: beyond the integral-level rate identity
+`ksEntropyPartition_eq_condEntropy_iSup` (`Oseledets.Krieger.SMBSharp`), the SMB development gives
+the full pointwise a.e. SMB `ae_tendsto_div_infoFun_self` and the in-measure equipartition
+`upperSMBInMeasure_of_ergodic` (`Oseledets.Krieger.UpperSMB`), via the Chung/Maker leaves
+`chungTail`, `lintegral_condInfoMaxFun_lt_top`, `makerTail` (`Oseledets.Krieger.SMBLeaves`).
+What is **not** yet formalized is only the marker-painting that turns this equipartition into the
+refinement partition `Q` — the genuine, non-fakeable dynamical residual. Pending it,
+`KeaneSerafinStep` / `KeaneSerafinLevels` is the faithful hypothesis boundary, and
+`exists_countable_twoSided_generator_of_levels` is the unconditional reduction of sub-problem A
+to it.
 
 The `summable_index_mass` strengthening (vs. the weaker `H(Q) < ∞`) is *not* an extra obstacle: the
 row-organized construction places the `Jᵢ ≈ e^{gm}` cells of row `i` (measures `≈ e^{−h̄m}`) at
