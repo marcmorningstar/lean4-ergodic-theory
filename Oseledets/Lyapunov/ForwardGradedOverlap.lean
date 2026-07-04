@@ -13,7 +13,8 @@ import Oseledets.Lyapunov.SpectrumResiduals
 /-!
 # The `n`-scaled forward graded overlap bound
 
-This module proves `forward_graded_overlap`: almost everywhere, for every `δ > 0` there is a
+This module provides the helper lemmas for the forward graded-overlap bound. The bound (proved
+in `ForwardGradedOverlapTopGap`) states: almost everywhere, for every `δ > 0` there is a
 constant `c ≥ 1` such that, eventually in `n`, for all sorted-eigenbasis indices `a` and
 limit-eigenbasis indices `e`,
 
@@ -31,7 +32,6 @@ forward Oseledets filtration.
 * `abs_inner_le_of_bandProjector_mass_bound`: the limit-transfer reduction — the overlap `|⟪w, u⟫|`
   is bounded by any eventual fast-band-mass bound, transferred through the projector limit.
 * `exists_spectral_cut`: a spectrum-avoiding cut strictly between two `exp`-levels exists.
-* `forward_graded_overlap`: the a.e. graded-overlap bound stated above.
 
 ## Implementation notes
 
@@ -191,115 +191,5 @@ theorem exists_spectral_cut {d : ℕ} (g : Fin d → ℝ) {lo hi : ℝ} (hlohi :
   obtain ⟨c₀, hc₀mem⟩ := (hinf.diff hfin).nonempty
   rw [Set.mem_diff, Set.mem_Ioo, Set.mem_range, not_exists] at hc₀mem
   exact ⟨c₀, hc₀mem.1.1, hc₀mem.1.2, hc₀mem.2⟩
-
-end Oseledets
-
-namespace Oseledets
-
-variable {X : Type*} [MeasurableSpace X] {μ : MeasureTheory.Measure X} {d : ℕ} {T : X → X}
-
-theorem forward_graded_overlap [MeasureTheory.IsProbabilityMeasure μ] [NeZero d]
-    (_hT : Ergodic T μ)
-    {A : X → Matrix (Fin d) (Fin d) ℝ} (_hA : ∀ x, (A x).det ≠ 0) (_hAmeas : Measurable A)
-    (_hint : IntegrableLogNorm A μ) (_hint' : IntegrableLogNorm (fun x => (A x)⁻¹) μ)
-    (lam0 : ℕ → ℝ)
-    (hlam0 : ∀ i : ℕ, i < d → ∀ᵐ x ∂μ, Filter.Tendsto
-      (fun n : ℕ => (n : ℝ)⁻¹ *
-        Real.log ((Matrix.toEuclideanLin (cocycle A T n x)).singularValues i))
-      Filter.atTop (𝓝 (lam0 i)))
-    (b' : X → OrthonormalBasis (Fin d) ℝ (EuclideanSpace ℝ (Fin d)))
-    (hb' : ∀ᵐ x ∂μ, ∀ e : Fin d,
-      Matrix.toEuclideanLin (lambdaHat A T x) (b' x e)
-        = Real.exp (lamSing A T x (e : ℕ)) • b' x e)
-    (hident : ∀ᵐ x ∂μ, ∀ c : ℝ, 0 < c → (∀ i : Fin d, Real.exp (lamSing A T x (i : ℕ)) ≠ c) →
-      Filter.Tendsto (fun n : ℕ => bandProjector A T (Set.indicator (Set.Ioi c) 1) n x)
-        Filter.atTop (𝓝 (cfc (Set.indicator (Set.Ioi c) (1 : ℝ → ℝ)) (lambdaHat A T x))))
-    -- The two-time chain envelope (Ruelle Lemma 1.4, step 2: the uniform-in-`m` fast-band-mass
-    -- bound), stated at an arbitrary spectral cut `c₀` strictly between the two `exp`-levels.
-    -- For a gap pair `λ_a < λ_e` and any such `c₀`, the fast-band mass of the time-`n` slow
-    -- eigenvector `u_a(n)`, measured by the time-`m` band projector at cut `c₀`, decays like
-    -- `exp(−n(λ_e−λ_a−δ))` uniformly in `m ≥ n`. The cut selection (step 1) is discharged in the
-    -- proof via `exists_spectral_cut`; only the envelope is assumed here.
-    (hchain : ∀ᵐ x ∂μ, ∀ δ : ℝ, 0 < δ → ∃ C : ℝ, 1 ≤ C ∧ ∀ a e : Fin d,
-      lam0 (a : ℕ) < lam0 (e : ℕ) →
-      ∀ c₀ : ℝ, Real.exp (lam0 (a : ℕ)) < c₀ → c₀ < Real.exp (lam0 (e : ℕ)) →
-        ∀ᶠ n : ℕ in Filter.atTop, ∀ m : ℕ, n ≤ m →
-          ‖Matrix.toEuclideanLin (bandProjector A T (Set.indicator (Set.Ioi c₀) 1) m x)
-              (sortedGramEigenbasis A T n x
-                ⟨(a : ℕ), lt_of_lt_of_eq a.isLt (Fintype.card_fin d).symm⟩)‖
-            ≤ C * Real.exp (-(n : ℝ) * (lam0 (e : ℕ) - lam0 (a : ℕ) - δ))) :
-    ∀ᵐ x ∂μ, ∀ δ : ℝ, 0 < δ → ∃ c : ℝ, 1 ≤ c ∧ ∀ᶠ n : ℕ in Filter.atTop,
-      ∀ a e : Fin d,
-        |(inner ℝ (b' x e) (sortedGramEigenbasis A T n x
-            ⟨(a : ℕ), lt_of_lt_of_eq a.isLt (Fintype.card_fin d).symm⟩) : ℝ)|
-          ≤ c * Real.exp (-(n : ℝ) * (max (lam0 (e : ℕ) - lam0 (a : ℕ)) 0 - δ)) := by
-  filter_upwards [hb', hident, hchain,
-    ae_lamSing_eq_lam0 lam0 hlam0] with x hb'x hidentx hchainx hlameq
-  intro δ hδ
-  obtain ⟨C, hC1, hCpair⟩ := hchainx δ hδ
-  refine ⟨C, hC1, ?_⟩
-  -- Prove the bound for each pair `(a, e)` separately, eventually in `n`; then combine over the
-  -- finitely many pairs via `eventually_all`.  Trivial pairs (`λ_e ≤ λ_a`) are free by
-  -- Cauchy–Schwarz; gap pairs (`λ_a < λ_e`) use the chain + limit-transfer.
-  have hpair : ∀ p : Fin d × Fin d, ∀ᶠ n : ℕ in Filter.atTop,
-      |(inner ℝ (b' x p.2) (sortedGramEigenbasis A T n x
-          ⟨(p.1 : ℕ), lt_of_lt_of_eq p.1.isLt (Fintype.card_fin d).symm⟩) : ℝ)|
-        ≤ C * Real.exp (-(n : ℝ) * (max (lam0 (p.2 : ℕ) - lam0 (p.1 : ℕ)) 0 - δ)) := by
-    rintro ⟨a, e⟩
-    by_cases hgap : lam0 (a : ℕ) < lam0 (e : ℕ)
-    · -- GAP pair: pick a spectral cut, then chain + limit transfer.
-      obtain ⟨c₀, hc₀lo, hc₀hi, hc₀avoid⟩ :=
-        exists_spectral_cut (fun i : Fin d => lam0 (i : ℕ)) hgap
-      have hc₀pos : 0 < c₀ := lt_trans (Real.exp_pos _) hc₀lo
-      have hc₀spec : ∀ i : Fin d, Real.exp (lamSing A T x (i : ℕ)) ≠ c₀ := by
-        intro i; rw [hlameq i]; exact hc₀avoid i
-      have hc₀lt : c₀ < Real.exp (lamSing A T x (e : ℕ)) := by rw [hlameq e]; exact hc₀hi
-      have hmass := hCpair a e hgap c₀ hc₀lo hc₀hi
-      set Pinf := cfc (Set.indicator (Set.Ioi c₀) (1 : ℝ → ℝ)) (lambdaHat A T x) with hPinf
-      have hfix : Matrix.toEuclideanLin Pinf (b' x e) = b' x e := by
-        apply toEuclideanLin_cfc_fix_eigenvector (lambdaHat A T x)
-          (lambdaHat_isSelfAdjoint A T x).isHermitian
-          (Set.indicator (Set.Ioi c₀) (1 : ℝ → ℝ)) (b' x e) (hb'x e)
-        rw [Set.indicator_of_mem (Set.mem_Ioi.mpr hc₀lt), Pi.one_apply]
-      have hPinfsa : IsSelfAdjoint Pinf := cfc_predicate _ _
-      have htend := hidentx c₀ hc₀pos hc₀spec
-      have hmaxeq : max (lam0 (e : ℕ) - lam0 (a : ℕ)) 0 = lam0 (e : ℕ) - lam0 (a : ℕ) :=
-        max_eq_left (by linarith)
-      filter_upwards [hmass] with n hmassn
-      rw [hmaxeq]
-      exact abs_inner_le_of_bandProjector_mass_bound htend hPinfsa (b' x e)
-        (sortedGramEigenbasis A T n x ⟨(a : ℕ), lt_of_lt_of_eq a.isLt (Fintype.card_fin d).symm⟩)
-        (le_of_eq ((b' x).orthonormal.1 e)) hfix
-        (Filter.eventually_atTop.2 ⟨n, hmassn⟩)
-    · -- TRIVIAL pair: `λ_e ≤ λ_a`, so `max(λ_e − λ_a, 0) = 0`, RHS `= C·exp(nδ) ≥ 1 ≥ |⟪·,·⟫|`.
-      have hmaxeq : max (lam0 (e : ℕ) - lam0 (a : ℕ)) 0 = 0 :=
-        max_eq_right (by linarith [not_lt.mp hgap])
-      filter_upwards with n
-      rw [hmaxeq]
-      have hCS : |(inner ℝ (b' x e) (sortedGramEigenbasis A T n x
-          ⟨(a : ℕ), lt_of_lt_of_eq a.isLt (Fintype.card_fin d).symm⟩) : ℝ)| ≤ 1 := by
-        calc |(inner ℝ (b' x e) (sortedGramEigenbasis A T n x
-            ⟨(a : ℕ), lt_of_lt_of_eq a.isLt (Fintype.card_fin d).symm⟩) : ℝ)|
-            ≤ ‖b' x e‖ * ‖sortedGramEigenbasis A T n x
-                ⟨(a : ℕ), lt_of_lt_of_eq a.isLt (Fintype.card_fin d).symm⟩‖ :=
-              abs_real_inner_le_norm _ _
-          _ = 1 := by
-              rw [(b' x).orthonormal.1 e,
-                (sortedGramEigenbasis A T n x).orthonormal.1
-                  ⟨(a : ℕ), lt_of_lt_of_eq a.isLt (Fintype.card_fin d).symm⟩, one_mul]
-      refine hCS.trans ?_
-      have hexp1 : (1 : ℝ) ≤ Real.exp (-(n : ℝ) * (0 - δ)) :=
-        Real.one_le_exp (by nlinarith [Nat.cast_nonneg (α := ℝ) n, hδ.le])
-      calc (1 : ℝ) = 1 * 1 := (one_mul 1).symm
-        _ ≤ C * Real.exp (-(n : ℝ) * (0 - δ)) :=
-            mul_le_mul hC1 hexp1 (by norm_num) (le_trans (by norm_num) hC1)
-  -- combine over the finitely many pairs `(a, e) : Fin d × Fin d`
-  have hall : ∀ᶠ n : ℕ in Filter.atTop, ∀ p : Fin d × Fin d,
-      |(inner ℝ (b' x p.2) (sortedGramEigenbasis A T n x
-          ⟨(p.1 : ℕ), lt_of_lt_of_eq p.1.isLt (Fintype.card_fin d).symm⟩) : ℝ)|
-        ≤ C * Real.exp (-(n : ℝ) * (max (lam0 (p.2 : ℕ) - lam0 (p.1 : ℕ)) 0 - δ)) :=
-    Filter.eventually_all.2 hpair
-  filter_upwards [hall] with n hn a e
-  exact hn (a, e)
 
 end Oseledets

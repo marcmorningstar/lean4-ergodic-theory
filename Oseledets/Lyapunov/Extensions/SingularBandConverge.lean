@@ -69,8 +69,8 @@ projector measures.
 The forward exponents being *positive at the cut* (the prompt's expanding-top-`k` insight) controls
 the **time-averaged / eventual** growth `(1/n)log‖compound k (cocycle n x)‖ → λ₁+⋯+λₖ > log c`, but
 **not** the per-step ratio `μ̃₀/cM² = (‖compound(cocycle (n+1))‖/‖compound(cocycle n)‖)²`, which an
-individual contracting step `B` can push below `1`. The reverse SVD sandwich `oneStep_sandwich` /
-`orthogonal_block_mass_symm` (`Oseledets/Lyapunov/RuelleCore.lean`) is **mass-symmetric, not a lower
+individual contracting step `B` can push below `1`. The reverse SVD sandwich `oneStep_sandwich`
+(`Oseledets/Lyapunov/RuelleCore.lean`) is **mass-symmetric, not a lower
 bound**: it equates the slow→fast and fast→slow off-diagonal block masses for a *fixed* orthonormal
 change of basis (a `limsup` envelope on a *fixed* slow space, `limsup_le_of_mem_vslow`); it does not
 lower-bound `μ̃₀`, hence cannot drive the Davis–Kahan **projector increment** the Cauchy

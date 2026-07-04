@@ -8,7 +8,6 @@ import Oseledets.Lyapunov.Forward
 import Oseledets.Lyapunov.ForwardV
 import Oseledets.Lyapunov.OseledetsLimit.Limit
 import Oseledets.Lyapunov.StratumLogGrowthBounds
-import Oseledets.Lyapunov.ForwardSqueezeCore
 import Oseledets.Cocycle.Basic
 
 /-!
@@ -69,6 +68,11 @@ namespace Oseledets
 
 variable {X : Type*} [MeasurableSpace X] {μ : MeasureTheory.Measure X}
 variable {d : ℕ} {T : X → X}
+
+/-- `IsCoboundedUnder (·≤·)` of a sequence follows from it being bounded below. -/
+theorem isCoboundedUnder_le_of_boundedUnder_ge {f : ℕ → ℝ}
+    (h : IsBoundedUnder (· ≥ ·) atTop f) : IsCoboundedUnder (· ≤ ·) atTop f :=
+  h.isCoboundedUnder_le
 
 /-! ## Positivity of the cocycle applied to a nonzero vector -/
 
@@ -152,7 +156,7 @@ An orthonormal change-of-basis matrix `S i j = ⟪b' j, b i⟫` is orthogonal (`
 Parseval).  If its *forward* (level-increasing) entries decay at the graded rate
 `c·exp(-(g j - g i)₊)`, then Ruelle's cofactor bound `hrev` transfers this to the *reverse*
 (level-decreasing) entries: `|S i j| ≤ (d-1)!·c^{d-1}·exp(-(g i - g j))`.
-`Oseledets.RuelleCofactor.SVDData.orthogonal_block_mass_symm` is the Frobenius-mass companion;
+the orthogonal change of basis is Frobenius-mass-symmetric across the band diagonal;
 here `hrev` supplies the per-entry graded transfer. -/
 
 open scoped Matrix in
@@ -193,7 +197,7 @@ The Ruelle-dependent content enters through three hypotheses:
   needed;
 * `hfwd` — the forward graded overlap bound, uniform in the band index, the output of the
   forward chain of Ruelle's Lemma 1.4 (`Oseledets.RuelleCofactor.SVDData.oneStep_sandwich` and
-  `Oseledets.RuelleCofactor.chain_leakage_exp`, the full pairwise gap);
+  the forward leakage chain, at the full pairwise gap);
 * `hbridge` — the band-limit bridge: from the reverse graded entry bound to the fast-index
   `specTerm` envelope, via the band-limit identification `tendsto_bandProjector_of_gap`.
 
@@ -213,7 +217,7 @@ per-index `specTerm` envelopes: slow indices (`lam j ≤ t`) from `specTerm_enve
 hypotheses:
 
 * `hfwd` — the forward graded overlap bound, uniform in the band index (Ruelle Lemma 1.4,
-  `SVDData.oneStep_sandwich` + `chain_leakage_exp`): the level-increasing entries of the
+  `SVDData.oneStep_sandwich` + the leakage chain): the level-increasing entries of the
   change of basis between the limit eigenbasis `b'` and the time-`n` Gram eigenbasis decay
   at the graded rate.
 * `hbridge` — the band-limit bridge (`tendsto_bandProjector_of_gap`): from the *reverse*

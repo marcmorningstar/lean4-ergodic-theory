@@ -38,10 +38,6 @@ the target theorem.
   `log c ≤ liminf (1/n) log‖A⁽ⁿ⁾ v‖` from band-projector convergence.
 * `limitBandProjector_apply_eq_zero_of_le`: kernel propagation between limit band
   projectors of nested thresholds.
-* `norm_sq_bandProjector_apply_eq_sum`: the frame Parseval identity for the band
-  projection in the straddled regime.
-* `limsup_normLog_inner_le`: the per-overlap limsup bound via the handle identity and
-  Cauchy–Schwarz.
 * `limsup_inv_mul_log_norm_cocycle_apply_le`: the per-vector growth upper bound,
   conditional on per-index leakage envelopes.
 * `tendsto_inv_mul_log_norm_cocycle_apply_of_bandProjector_envelope`: the assembled per-vector
@@ -566,81 +562,6 @@ theorem limitBandProjector_apply_eq_zero_of_le [NeZero d]
     _ = Matrix.toEuclideanLin P' 0 := by rw [hv]
     _ = 0 := map_zero _
 
-/-! ## The exact frame Parseval identity
-
-In the eventual straddled regime where exactly `k` `qpow`-eigenvalues exceed the cut `c`
-and the top-`k` sorted ones all exceed it, `bandProjector_indicator_eq_sortedTopFrame`
-gives `P = W Wᵀ` with `Wᵀ W = 1`, `W = sortedTopFrame`. The band projection applied to `v`
-therefore has squared norm equal to the sum of squared overlaps with the top sorted Gram
-eigenvectors. -/
-
-/-- **Frame Parseval identity.** Under the eventual straddled-regime hypotheses (`htop`,
-`hcount`) of `bandProjector_indicator_eq_sortedTopFrame`, the squared norm of the band
-projection equals the sum of squared overlaps of `v` with the top-`k` sorted Gram
-eigenvectors (the columns of `sortedTopFrame`, recovered by `colE_sortedTopFrame`). -/
-theorem norm_sq_bandProjector_apply_eq_sum [NeZero d]
-    (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (n : ℕ) (x : X) (c : ℝ)
-    {k : ℕ} (hk : k ≤ Fintype.card (Fin d))
-    (htop : ∀ j : Fin k, c < (qpow_isSelfAdjoint A T n x).isHermitian.eigenvalues₀
-      ⟨j, lt_of_lt_of_le j.2 hk⟩)
-    (hcount : Fintype.card {i : Fin d // c < (qpow_isSelfAdjoint A T n x).isHermitian.eigenvalues i}
-      = k) (v : EuclideanSpace ℝ (Fin d)) :
-    ‖Matrix.toEuclideanLin (bandProjector A T (Set.indicator (Set.Ioi c) 1) n x) v‖ ^ 2
-      = ∑ j : Fin k,
-          (inner ℝ v (ExteriorNorm.colE (sortedTopFrame A T n x hk) j) : ℝ) ^ 2 := by
-  obtain ⟨hPWW, hWW⟩ :=
-    bandProjector_indicator_eq_sortedTopFrame A T n x c hk htop hcount
-  set W := sortedTopFrame A T n x hk with hW
-  rw [hPWW]
-  -- Step 1: `toEuclideanLin (W Wᵀ) v = ∑ⱼ ⟪v, colE W j⟫ • colE W j`.
-  have hdecomp : Matrix.toEuclideanLin (W * Wᵀ) v
-      = ∑ j : Fin k, (inner ℝ v (ExteriorNorm.colE W j) : ℝ) • ExteriorNorm.colE W j := by
-    apply (EuclideanSpace.equiv (Fin d) ℝ).injective
-    rw [map_sum]
-    funext a
-    rw [Matrix.toLpLin_apply]
-    -- LHS at `a`: `((W Wᵀ) *ᵥ v) a`; RHS: `∑ⱼ ⟪v,colEⱼ⟫ • (equiv colEⱼ) a`.
-    change ((W * Wᵀ) *ᵥ ((EuclideanSpace.equiv (Fin d) ℝ) v)) a
-      = (∑ j : Fin k, (EuclideanSpace.equiv (Fin d) ℝ)
-          ((inner ℝ v (ExteriorNorm.colE W j) : ℝ) • ExteriorNorm.colE W j)) a
-    rw [Finset.sum_apply]
-    simp only [map_smul, Pi.smul_apply, smul_eq_mul]
-    -- LHS: `((W Wᵀ) *ᵥ equiv v) a = ∑ b, (∑ j, W a j * W b j) * (equiv v) b`.
-    have hLHS : ((W * Wᵀ) *ᵥ ((EuclideanSpace.equiv (Fin d) ℝ) v)) a
-        = ∑ b, (∑ j : Fin k, W a j * W b j) * (EuclideanSpace.equiv (Fin d) ℝ) v b := by
-      rw [Matrix.mulVec, dotProduct]
-      refine Finset.sum_congr rfl (fun b _ => ?_)
-      rw [Matrix.mul_apply]
-      refine congrArg (· * _) ?_
-      exact Finset.sum_congr rfl (fun j _ => by rw [Matrix.transpose_apply])
-    rw [hLHS]
-    simp only [Finset.sum_mul]
-    rw [Finset.sum_comm]
-    refine Finset.sum_congr rfl (fun j _ => ?_)
-    -- RHS term `j`: `⟪v, colE W j⟫ * (equiv colE W j) a = ⟪v, colE W j⟫ * W a j`
-    have hcolE : (EuclideanSpace.equiv (Fin d) ℝ) (ExteriorNorm.colE W j) a = W a j := by
-      rw [ExteriorNorm.colE]; rfl
-    have hcolEval : ∀ b, (ExteriorNorm.colE W j) b = W b j := fun b => rfl
-    have hinner : (inner ℝ v (ExteriorNorm.colE W j) : ℝ) = ∑ b, W b j * v b := by
-      rw [PiLp.inner_apply]
-      refine Finset.sum_congr rfl (fun b _ => ?_)
-      rw [RCLike.inner_apply, conj_trivial, hcolEval, mul_comm]
-    rw [hcolE, hinner, Finset.sum_mul]
-    refine Finset.sum_congr rfl (fun b _ => ?_)
-    have hvb : (EuclideanSpace.equiv (Fin d) ℝ) v b = v.ofLp b := rfl
-    rw [hvb]; ring
-  rw [hdecomp]
-  -- Step 2: the columns are orthonormal (`Wᵀ W = 1`), so the squared norm of the sum is `∑ aⱼ²`.
-  have horth : ∀ i j : Fin k, (inner ℝ (ExteriorNorm.colE W i) (ExteriorNorm.colE W j) : ℝ)
-      = if i = j then 1 else 0 := by
-    intro i j
-    rw [ExteriorNorm.inner_colE, hWW, Matrix.one_apply]
-  rw [← real_inner_self_eq_norm_sq, inner_sum]
-  simp only [sum_inner, inner_smul_left, inner_smul_right, conj_trivial, horth]
-  simp only [mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
-  refine Finset.sum_congr rfl (fun j _ => ?_)
-  ring
-
 end LowerBound
 
 /-! ## The per-overlap limsup bound
@@ -764,58 +685,6 @@ theorem limsup_normLog_overlap_le {a t : ℕ → ℝ} {nv r : ℝ}
     limsup_add_le hubdd_ge hubdd_le hcobt hbddt
   rw [hulimsup, zero_add] at h2
   exact (h1.trans h2).trans htilt
-
-/-- **Limsup overlap bound (band-projector form).** Ties the abstract limsup bound to the
-genuine band projectors. Given, eventually in `n`, self-adjointness of `Pₙ`/`Pinf`, the
-slow hypothesis `Pinf v = 0`, and fast-band membership `Pₙ uⱼ(n) = uⱼ(n)`, the handle +
-Cauchy–Schwarz supply the per-step bound, and with the tilt rate `htilt` the overlap
-exponent has `limsup ≤ r`. -/
-theorem limsup_normLog_inner_le [NeZero d]
-    {Pn : ℕ → Matrix (Fin d) (Fin d) ℝ} {Pinf : Matrix (Fin d) (Fin d) ℝ}
-    {v : EuclideanSpace ℝ (Fin d)} {uj : ℕ → EuclideanSpace ℝ (Fin d)} {r : ℝ}
-    (hvpos : 0 < ‖v‖)
-    (hPnsa : ∀ᶠ n in atTop, (Pn n)ᵀ = Pn n) (hPinfsa : Pinfᵀ = Pinf)
-    (hslow : Matrix.toEuclideanLin Pinf v = 0)
-    (hfast : ∀ᶠ n in atTop, Matrix.toEuclideanLin (Pn n) (uj n) = uj n)
-    (hapos : ∀ᶠ n in atTop, 0 < |(inner ℝ v (uj n) : ℝ)|)
-    (htpos : ∀ᶠ n in atTop, 0 < ‖Matrix.toEuclideanLin (Pn n - Pinf) (uj n)‖)
-    (hnvvanish : Tendsto (fun n : ℕ => (n : ℝ)⁻¹ * Real.log ‖v‖) atTop (𝓝 0))
-    (htilt : Filter.limsup
-      (fun n : ℕ => (n : ℝ)⁻¹ * Real.log ‖Matrix.toEuclideanLin (Pn n - Pinf) (uj n)‖) atTop ≤ r)
-    (hcob : Filter.atTop.IsCoboundedUnder (· ≤ ·)
-      (fun n : ℕ => (n : ℝ)⁻¹ * Real.log |(inner ℝ v (uj n) : ℝ)|))
-    (hcobt : Filter.atTop.IsCoboundedUnder (· ≤ ·)
-      (fun n : ℕ => (n : ℝ)⁻¹ * Real.log ‖Matrix.toEuclideanLin (Pn n - Pinf) (uj n)‖))
-    (hbddt : Filter.atTop.IsBoundedUnder (· ≤ ·)
-      (fun n : ℕ => (n : ℝ)⁻¹ * Real.log ‖Matrix.toEuclideanLin (Pn n - Pinf) (uj n)‖)) :
-    Filter.limsup
-      (fun n : ℕ => (n : ℝ)⁻¹ * Real.log |(inner ℝ v (uj n) : ℝ)|) atTop ≤ r := by
-  have hbound : ∀ᶠ n in atTop,
-      |(inner ℝ v (uj n) : ℝ)| ≤ ‖v‖ * ‖Matrix.toEuclideanLin (Pn n - Pinf) (uj n)‖ := by
-    filter_upwards [hPnsa, hfast] with n hsa hf
-    exact abs_inner_le_norm_mul_bandProjector_tilt hsa hPinfsa hslow hf
-  exact limsup_normLog_overlap_le hbound hapos hvpos htpos hnvvanish htilt hcob hcobt hbddt
-
-/-- **Band-projection leakage bound (per-step log form).** With `‖P v‖² = Σⱼ cⱼ`, `cⱼ ≥ 0`,
-and a common per-step ceiling `cⱼ ≤ B`, the band-projection leakage exponent is bounded by
-`(1/2n) log (k·B)`. -/
-theorem normLog_bandProj_le {k : ℕ} {P : ℝ} {c : Fin k → ℝ} {B : ℝ} {n : ℕ}
-    (hPpos : 0 < P) (hsum : P ^ 2 = ∑ j, c j) (hcB : ∀ j, c j ≤ B) :
-    (n : ℝ)⁻¹ * Real.log P ≤ (n : ℝ)⁻¹ * (2⁻¹ * Real.log ((k : ℝ) * B)) := by
-  rcases Nat.eq_zero_or_pos n with hn | hn
-  · subst hn; simp
-  have hninv : (0 : ℝ) ≤ (n : ℝ)⁻¹ := by positivity
-  have hPsq_le : P ^ 2 ≤ (k : ℝ) * B := by
-    rw [hsum]
-    calc ∑ j, c j ≤ ∑ _j : Fin k, B := Finset.sum_le_sum (fun j _ => hcB j)
-      _ = (k : ℝ) * B := by rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin]; ring
-  have hlogP : Real.log P ≤ 2⁻¹ * Real.log ((k : ℝ) * B) := by
-    have h2 : Real.log (P ^ 2) ≤ Real.log ((k : ℝ) * B) :=
-      Real.log_le_log (by positivity) hPsq_le
-    rw [Real.log_pow] at h2
-    push_cast at h2
-    linarith
-  exact mul_le_mul_of_nonneg_left hlogP hninv
 
 end OverlapBound
 

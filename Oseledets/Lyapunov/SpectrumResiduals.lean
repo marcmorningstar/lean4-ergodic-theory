@@ -9,7 +9,7 @@ import Oseledets.Lyapunov.FiltrationFromSpectralUpper
 # Spectral residuals: `hub_spec`, `hlb_spec`, and the per-stratum lower bound
 
 This module discharges three residuals of the MET final composer
-`Oseledets.oseledets_filtration_of_upper`:
+`Oseledets.oseledets_filtration_of_upper'`:
 
 * `lyapunovSpectrum_subset_distinctExp_of_slowflag` — every realized exponent is one of the
   deterministic `lam0 i`;

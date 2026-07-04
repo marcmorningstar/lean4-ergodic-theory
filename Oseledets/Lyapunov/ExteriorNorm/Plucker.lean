@@ -533,31 +533,6 @@ theorem inner_colE {d k : ℕ} (U V : Matrix (Fin d) (Fin k) ℝ) (i j : Fin k) 
   simp only [RCLike.inner_apply, conj_trivial, EuclideanSpace.equiv, Matrix.transpose_apply]
   exact Finset.sum_congr rfl (fun a _ => mul_comm _ _)
 
-/-- **The Plücker frame ↔ wedge determinant bridge (matrix form).** For two `d×k`
-column-frames `U`, `V`, the determinant of the cross-Gram `Uᵀ V` equals the L2 inner product of the
-Hodge-trivialized wedges of their columns. This is the `hdet : det(UᵀV) = ⟪vt, v₀⟫` plumbing fact
-consumed by `Oseledets.norm_bandProjector_succ_sub_le`, with `v₀ = wedge of U-columns` (the Plücker
-top eigenvector of `Cₙ`) and `vt = wedge of V-columns` (the perturbed top eigenvector of `Cₙ₊₁`).
-Since the band-projector frames `U_top` have orthonormal eigenvector columns
-(`bandProjector_indicator_eq_frame`) which are the same eigenbasis the Plücker eigenpair
-(`plucker_eigenpair_ceiling_standard`, applied with `u = eigenvectorBasis`) is built from, the
-two wedges are exactly these Hodge-trivialized column wedges, and this identity supplies `hdet`. -/
-theorem det_transpose_mul_eq_inner_hodge {d k : ℕ} (U V : Matrix (Fin d) (Fin k) ℝ) :
-    (Uᵀ * V).det
-      = (inner ℝ
-          (hodgeTrivialization (E := EuclideanSpace ℝ (Fin d)) k
-            (exteriorPower.ιMulti ℝ k (fun j => colE V j)))
-          (hodgeTrivialization (E := EuclideanSpace ℝ (Fin d)) k
-            (exteriorPower.ιMulti ℝ k (fun i => colE U i))) : ℝ) := by
-  rw [inner_hodgeTrivialization_ιMulti k (fun j => colE V j) (fun i => colE U i)]
-  have hmat : Uᵀ * V
-      = Matrix.of (fun i j => (inner ℝ (colE V j) (colE U i) : ℝ)) := by
-    ext i j
-    rw [Matrix.of_apply, inner_colE, Matrix.mul_apply, Matrix.mul_apply]
-    exact Finset.sum_congr rfl
-      (fun a _ => by rw [Matrix.transpose_apply, Matrix.transpose_apply]; ring)
-  rw [hmat]
-
 /-! ### Abstract diagonal Euclidean operators: eigenpair and second-eigenvalue ceiling -/
 
 /-- A Euclidean operator diagonal in the standard basis (with real weights) is symmetric. -/
