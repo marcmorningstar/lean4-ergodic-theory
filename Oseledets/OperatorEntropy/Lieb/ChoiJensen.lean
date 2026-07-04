@@ -44,41 +44,6 @@ noncomputable section
 
 namespace Oseledets.OperatorEntropy.Lieb
 
-/-! ## Functional calculus of a Hermitian matrix (general index) -/
-
-/-- Functional calculus of a Hermitian matrix via its spectral decomposition (general index type).
-Generalizes `Oseledets.OperatorEntropy.Lieb.cfc_hermitian_eq` from `Fin N` to any Fintype index. -/
-lemma cfc_hermitian_eq' {n : Type*} [Fintype n] [DecidableEq n] {X : Matrix n n ℂ}
-    (hX : X.IsHermitian) (f : ℝ → ℝ) :
-    cfc f X = (hX.eigenvectorUnitary : Matrix n n ℂ)
-      * diagonal (fun i => (f (hX.eigenvalues i) : ℂ))
-      * star (hX.eigenvectorUnitary : Matrix n n ℂ) := by
-  have hs1 : star (hX.eigenvectorUnitary : Matrix n n ℂ)
-      * (hX.eigenvectorUnitary : Matrix n n ℂ) = 1 :=
-    Unitary.coe_star_mul_self hX.eigenvectorUnitary
-  have hs2 : (hX.eigenvectorUnitary : Matrix n n ℂ)
-      * star (hX.eigenvectorUnitary : Matrix n n ℂ) = 1 :=
-    Unitary.coe_mul_star_self hX.eigenvectorUnitary
-  have hspec : X = (hX.eigenvectorUnitary : Matrix n n ℂ)
-      * diagonal (fun i => (hX.eigenvalues i : ℂ))
-      * star (hX.eigenvectorUnitary : Matrix n n ℂ) := by
-    have h := hX.spectral_theorem
-    rw [Unitary.conjStarAlgAut_apply] at h
-    have hRC : (RCLike.ofReal ∘ hX.eigenvalues) = fun i => (hX.eigenvalues i : ℂ) := by
-      funext i; rfl
-    rw [hRC] at h; exact h
-  have hLsa : IsSelfAdjoint (diagonal (fun i => (hX.eigenvalues i : ℂ))) := by
-    rw [isSelfAdjoint_iff, Matrix.star_eq_conjTranspose, Matrix.diagonal_conjTranspose]
-    congr 1; funext i; exact Complex.conj_ofReal _
-  calc cfc f X = cfc f ((hX.eigenvectorUnitary : Matrix n n ℂ)
-        * diagonal (fun i => (hX.eigenvalues i : ℂ))
-        * star (hX.eigenvectorUnitary : Matrix n n ℂ)) := by rw [← hspec]
-    _ = (hX.eigenvectorUnitary : Matrix n n ℂ)
-          * cfc f (diagonal (fun i => (hX.eigenvalues i : ℂ)))
-          * star (hX.eigenvectorUnitary : Matrix n n ℂ) :=
-        Oseledets.OperatorEntropy.cfc_conj _ _ hs1 hs2 hLsa f
-    _ = _ := by rw [cfc_diagonal]
-
 /-! ## Functional calculus distributes over a block diagonal -/
 
 set_option maxHeartbeats 800000 in -- large block-matrix / cfc spectral elaboration
@@ -136,7 +101,7 @@ lemma cfc_blockDiagonal {ι q : Type*} [Fintype ι] [DecidableEq ι] [Fintype q]
       ← blockDiagonal_mul]
     congr 1; funext i
     rw [← Matrix.star_eq_conjTranspose]
-    exact cfc_hermitian_eq' (hYh i) f
+    exact cfc_hermitian_eq (hYh i) f
   rw [hYeq, Oseledets.OperatorEntropy.cfc_conj _ _ hBU1 hBU2 hΛsa f, hcfcΛ, hRHS]
 
 /-! ## The Kraus column isometry -/

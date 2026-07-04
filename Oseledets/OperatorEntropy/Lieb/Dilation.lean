@@ -191,34 +191,36 @@ lemma blockCorner (U : Matrix (Fin 2 × Fin N) (Fin 2 × Fin N) ℂ)
 
 /-! ## Functional calculus of a Hermitian matrix and of `blockDiag2` -/
 
-/-- Functional calculus of a Hermitian matrix via its spectral decomposition. -/
-lemma cfc_hermitian_eq {X : Matrix (Fin N) (Fin N) ℂ} (hX : X.IsHermitian) (f : ℝ → ℝ) :
-    cfc f X = (hX.eigenvectorUnitary : Matrix (Fin N) (Fin N) ℂ)
+/-- **Functional calculus of a Hermitian matrix** via its spectral decomposition, for an arbitrary
+finite index type `n`. -/
+lemma cfc_hermitian_eq {n : Type*} [Fintype n] [DecidableEq n] {X : Matrix n n ℂ}
+    (hX : X.IsHermitian) (f : ℝ → ℝ) :
+    cfc f X = (hX.eigenvectorUnitary : Matrix n n ℂ)
       * diagonal (fun i => (f (hX.eigenvalues i) : ℂ))
-      * star (hX.eigenvectorUnitary : Matrix (Fin N) (Fin N) ℂ) := by
-  have hs1 : star (hX.eigenvectorUnitary : Matrix (Fin N) (Fin N) ℂ)
-      * (hX.eigenvectorUnitary : Matrix (Fin N) (Fin N) ℂ) = 1 :=
+      * star (hX.eigenvectorUnitary : Matrix n n ℂ) := by
+  have hs1 : star (hX.eigenvectorUnitary : Matrix n n ℂ)
+      * (hX.eigenvectorUnitary : Matrix n n ℂ) = 1 :=
     Unitary.coe_star_mul_self hX.eigenvectorUnitary
-  have hs2 : (hX.eigenvectorUnitary : Matrix (Fin N) (Fin N) ℂ)
-      * star (hX.eigenvectorUnitary : Matrix (Fin N) (Fin N) ℂ) = 1 :=
+  have hs2 : (hX.eigenvectorUnitary : Matrix n n ℂ)
+      * star (hX.eigenvectorUnitary : Matrix n n ℂ) = 1 :=
     Unitary.coe_mul_star_self hX.eigenvectorUnitary
   have hLsa : IsSelfAdjoint (diagonal (fun i => (hX.eigenvalues i : ℂ))) := by
     rw [isSelfAdjoint_iff, Matrix.star_eq_conjTranspose, Matrix.diagonal_conjTranspose]
     congr 1; funext i; exact Complex.conj_ofReal _
-  have hspec : X = (hX.eigenvectorUnitary : Matrix (Fin N) (Fin N) ℂ)
+  have hspec : X = (hX.eigenvectorUnitary : Matrix n n ℂ)
       * diagonal (fun i => (hX.eigenvalues i : ℂ))
-      * star (hX.eigenvectorUnitary : Matrix (Fin N) (Fin N) ℂ) := by
+      * star (hX.eigenvectorUnitary : Matrix n n ℂ) := by
     have h := hX.spectral_theorem
     rw [Unitary.conjStarAlgAut_apply] at h
     have hRC : (RCLike.ofReal ∘ hX.eigenvalues) = fun i => (hX.eigenvalues i : ℂ) := by
       funext i; rfl
     rw [hRC] at h; exact h
-  calc cfc f X = cfc f ((hX.eigenvectorUnitary : Matrix (Fin N) (Fin N) ℂ)
+  calc cfc f X = cfc f ((hX.eigenvectorUnitary : Matrix n n ℂ)
         * diagonal (fun i => (hX.eigenvalues i : ℂ))
-        * star (hX.eigenvectorUnitary : Matrix (Fin N) (Fin N) ℂ)) := by rw [← hspec]
-    _ = (hX.eigenvectorUnitary : Matrix (Fin N) (Fin N) ℂ)
+        * star (hX.eigenvectorUnitary : Matrix n n ℂ)) := by rw [← hspec]
+    _ = (hX.eigenvectorUnitary : Matrix n n ℂ)
           * cfc f (diagonal (fun i => (hX.eigenvalues i : ℂ)))
-          * star (hX.eigenvectorUnitary : Matrix (Fin N) (Fin N) ℂ) :=
+          * star (hX.eigenvectorUnitary : Matrix n n ℂ) :=
         Oseledets.OperatorEntropy.cfc_conj _ _ hs1 hs2 hLsa f
     _ = _ := by rw [cfc_diagonal]
 
@@ -642,10 +644,12 @@ theorem hpj_affine (f : ℝ → ℝ) (I : Set ℝ) (hf : OperatorConvexOn I f)
   exact hmono
 
 /-- **Hansen–Pedersen–Jensen (isometry form).** For an isometry `V` (`V⋆V = 1`), operator-convex
-`f` with `f 0 ≤ 0` and `0 ∈ I`, `f(V⋆XV) ≤ V⋆ f(X) V`. -/
+`f`, and `0 ∈ I`, `f(V⋆XV) ≤ V⋆ f(X) V`. (Completing `V` to the unital two-block column `[V, 0]`
+makes the usual `f 0 ≤ 0` requirement unnecessary: the padding block contributes `0` to the right
+side.) -/
 theorem hpj_isometry (f : ℝ → ℝ) (I : Set ℝ) (hf : OperatorConvexOn I f)
     (V X : Matrix (Fin N) (Fin N) ℂ) (hV : star V * V = 1)
-    (hX : IsSelfAdjoint X ∧ spectrum ℝ X ⊆ I) (h0 : (0 : ℝ) ∈ I) (_hf0 : f 0 ≤ 0) :
+    (hX : IsSelfAdjoint X ∧ spectrum ℝ X ⊆ I) (h0 : (0 : ℝ) ∈ I) :
     cfc f (star V * X * V) ≤ star V * cfc f X * V := by
   have hAB : star V * V + star (0 : Matrix (Fin N) (Fin N) ℂ) * 0 = 1 := by
     rw [star_zero, mul_zero, add_zero, hV]

@@ -50,13 +50,6 @@ open Oseledets.OperatorEntropy
 
 /-! ## Hilbert–Schmidt inner product in the `vec` picture -/
 
-/-- **The `vec`/Hilbert–Schmidt inner product.** `⟪vec X, vec Y⟫ = Tr (Xᴴ Y)`. -/
-lemma vec_dotProduct {m : Type*} [Fintype m] (X Y : Matrix m m ℂ) :
-    star (vec X) ⬝ᵥ vec Y = (Xᴴ * Y).trace := by
-  simp only [dotProduct, Pi.star_apply, vec_apply, Matrix.trace, Matrix.diag_apply,
-    Matrix.mul_apply, Matrix.conjTranspose_apply]
-  rw [Fintype.sum_prod_type, Finset.sum_comm]
-
 /-- **Right Kronecker negation.** `A ⊗ₖ (-B) = -(A ⊗ₖ B)`. -/
 lemma kron_neg {m : Type*} (A B : Matrix m m ℂ) : A ⊗ₖ (-B) = -(A ⊗ₖ B) := by
   rw [← neg_one_smul ℂ B, Matrix.kronecker_smul, neg_one_smul]
@@ -98,7 +91,7 @@ lemma kronForm_trace {m : Type*} [Fintype m] [DecidableEq m] {ρ σ : Matrix m m
         rw [Matrix.transpose_one, neg_kron], ← vec_mul_mul, Matrix.mul_one, Matrix.neg_mul]
   have hB : ((1 : Matrix m m ℂ) ⊗ₖ Lρᵀ) *ᵥ vec sq = vec (sq * Lρ) := by
     rw [← vec_mul_mul, Matrix.one_mul]
-  rw [hA, hB, vec_dotProduct, vec_dotProduct]
+  rw [hA, hB, vec_dotProduct_eq_trace, vec_dotProduct_eq_trace]
   -- STEP 3: `(ρ^{1/2})ᴴ = ρ^{1/2}` and `ρ^{1/2} ρ^{1/2} = ρ`, then trace cyclicity.
   have hsqH : sqᴴ = sq := by
     rw [hsq, ← CFC.rpow_eq_pow]

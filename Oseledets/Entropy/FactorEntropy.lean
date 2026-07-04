@@ -44,13 +44,6 @@ namespace Oseledets.Entropy
 
 variable {α β : Type*} {ι : Type*} [MeasurableSpace α] [MeasurableSpace β]
 
-/-- **Equal subadditive sequences have equal Fekete limits.** Since `Subadditive.lim u` is
-`sInf ((fun n => u n / n) '' Ici 1)`, depending only on the underlying sequence `u` and not on the
-subadditivity proof, two subadditive sequences that agree as functions have equal limits. -/
-lemma Subadditive.lim_eq_of_eq {u v : ℕ → ℝ} (hu : Subadditive u) (hv : Subadditive v)
-    (huv : u = v) : hu.lim = hv.lim := by
-  subst huv; rfl
-
 /-- The **pulled-back partition** `π⁻¹ R` of a finite measurable partition `R` of the target `β`
 along a measure-preserving map `π : α → β`: the partition of the source `α` whose cell at index
 `i` is the preimage `π⁻¹ (R.cells i)`. Each cell is measurable (preimage of a measurable set under
@@ -103,7 +96,8 @@ This is the first reduction of the Abramov–Rokhlin addition formula. The proof
 variables: for each `n` the cells of the iterated join of `π⁻¹R` are the `π`-preimages of those of
 the iterated join of `R` (`ksJoinCells_pulledBack`), and `μ(π⁻¹E) = ν(E)` by measure-preservation,
 so the two iterated-join entropy *sequences* `ksEntropySeq` agree as functions of `n`; the
-subadditive sequences are therefore equal and have equal Fekete limits (`Subadditive.lim_congr`). -/
+subadditive sequences are therefore equal and have equal Fekete limits
+(`Subadditive.lim_eq_of_eq`). -/
 theorem factor_relative_eq {μ : Measure α} {ν : Measure β} [IsProbabilityMeasure μ]
     [IsProbabilityMeasure ν] {T : α → α} {S : β → β} {π : α → β}
     (hT : MeasurePreserving T μ μ) (hS : MeasurePreserving S ν ν)

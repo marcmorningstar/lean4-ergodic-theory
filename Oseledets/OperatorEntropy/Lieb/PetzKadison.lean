@@ -34,7 +34,7 @@ the Petz map to `ρ`.
 
 * `KrausChannel.kadison_schwarz_eq`: the concrete Gram identity for `Λ†`.
 * `KrausChannel.intertwine_of_adj_eq`: vanishing Kadison–Schwarz defect gives `X Kᵢ = Kᵢ Λ†X`.
-* `Oseledets.OperatorEntropy.Lieb.cpow_add` / `cpow_conjTranspose` / `upow_mem_unitary`: the
+* `Oseledets.OperatorEntropy.Lieb.cpow_conjTranspose` / `upow_mem_unitary`: the
   spectral cocycle facts.
 * `intertwinesIt_imp_recovery`: **the Petz recovery equality** `petz σ Λ (Λ ρ) = ρ`.
 -/
@@ -121,27 +121,6 @@ variable {n : Type*} [Fintype n] [DecidableEq n]
 
 /-! ## Spectral cocycle facts for `cpow` / `upow` -/
 
-/-- **Additivity of the entire power in the exponent**: `A^a A^b = A^{a+b}`. -/
-lemma cpow_add {A : Matrix n n ℂ} (hA : A.PosDef) (a b : ℂ) :
-    cpow hA a * cpow hA b = cpow hA (a + b) := by
-  unfold cpow
-  set U := (hA.1.eigenvectorUnitary : Matrix n n ℂ) with hU
-  have hSU : star U * U = 1 := Unitary.coe_star_mul_self _
-  set da : n → ℂ := fun i => Complex.exp (a * (Real.log (hA.1.eigenvalues i) : ℂ)) with hda
-  set db : n → ℂ := fun i => Complex.exp (b * (Real.log (hA.1.eigenvalues i) : ℂ)) with hdb
-  have step : (U * diagonal da * star U) * (U * diagonal db * star U)
-      = U * diagonal da * (star U * U) * diagonal db * star U := by
-    simp only [Matrix.mul_assoc]
-  rw [step, hSU, Matrix.mul_one, Matrix.mul_assoc U (diagonal da) (diagonal db),
-    diagonal_mul_diagonal]
-  have hfe : (fun i => da i * db i)
-      = fun i => Complex.exp ((a + b) * (Real.log (hA.1.eigenvalues i) : ℂ)) := by
-    funext i
-    simp only [hda, hdb, ← Complex.exp_add]
-    congr 1
-    ring
-  rw [hfe]
-
 /-- **Conjugate transpose of the entire power**: `(A^z)ᴴ = A^{conj z}`. -/
 lemma cpow_conjTranspose {A : Matrix n n ℂ} (hA : A.PosDef) (z : ℂ) :
     (cpow hA z)ᴴ = cpow hA (starRingEnd ℂ z) := by
@@ -169,8 +148,8 @@ lemma upow_mem_unitary {A : Matrix n n ℂ} (hA : A.PosDef) (t : ℝ) :
     ring
   rw [Unitary.mem_iff]
   refine ⟨?_, ?_⟩
-  · rw [hconj]; simp only [upow]; rw [cpow_add, neg_add_cancel, cpow_zero]
-  · rw [hconj]; simp only [upow]; rw [cpow_add, add_neg_cancel, cpow_zero]
+  · rw [hconj]; simp only [upow]; rw [cpow_mul_cpow, neg_add_cancel, cpow_zero]
+  · rw [hconj]; simp only [upow]; rw [cpow_mul_cpow, add_neg_cancel, cpow_zero]
 
 /-! ## The analytic continuation of the intertwining relation -/
 
