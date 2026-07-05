@@ -27,5 +27,5 @@ Useful links:
 * [Blueprint as pdf]({{ site.url }}/blueprint.pdf)
 * [Dependency graph]({{ site.url }}/blueprint/dep_graph_document.html)
 * [API documentation]({{ site.url }}/docs/)
-* [GitHub repository](https://github.com/marcmorningstar/lean4-oseledets)
+* [GitHub repository](https://github.com/marcmorningstar/lean4-ergodic-theory)
 * [Zulip chat for Lean](https://leanprover.zulipchat.com/)

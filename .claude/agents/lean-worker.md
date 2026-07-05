@@ -7,7 +7,7 @@ hooks:
     - matcher: "Bash"
       hooks:
         - type: command
-          command: "/workspaces/lean4-oseledets/.claude/hooks/block-git.sh"
+          command: "$CLAUDE_PROJECT_DIR/.claude/hooks/block-git.sh"
 ---
 
 > NOTE: You may NOT run any `git` command (it is blocked by a hook). Never use version

@@ -1,12 +1,12 @@
 # Site settings for the project home page (Jekyll, served from GitHub Pages).
 
-title: The Oseledets Multiplicative Ergodic Theorem in Lean 4
+title: Ergodic Theory in Lean 4
 description: A Lean 4 + Mathlib formalization of the Oseledets multiplicative ergodic theorem
 baseurl: "" # the subpath of your site, e.g. /blog
-url: "https://marcmorningstar.github.io/lean4-oseledets" # the base hostname & protocol for your site
+url: "https://marcmorningstar.github.io/lean4-ergodic-theory" # the base hostname & protocol for your site
 twitter_username:
 github_username: marcmorningstar
-repository: marcmorningstar/lean4-oseledets
+repository: marcmorningstar/lean4-ergodic-theory
 
 # Build settings
 remote_theme: pages-themes/cayman@v0.2.0

@@ -1,15 +1,15 @@
-# Oseledets — Lean 4 formalization
+# ErgodicTheory — Lean 4 formalization
 
-[![Blueprint and documentation](https://github.com/marcmorningstar/lean4-oseledets/actions/workflows/blueprint.yml/badge.svg)](https://github.com/marcmorningstar/lean4-oseledets/actions/workflows/blueprint.yml)
-[![Build](https://github.com/marcmorningstar/lean4-oseledets/actions/workflows/push.yml/badge.svg)](https://github.com/marcmorningstar/lean4-oseledets/actions/workflows/push.yml)
+[![Blueprint and documentation](https://github.com/marcmorningstar/lean4-ergodic-theory/actions/workflows/blueprint.yml/badge.svg)](https://github.com/marcmorningstar/lean4-ergodic-theory/actions/workflows/blueprint.yml)
+[![Build](https://github.com/marcmorningstar/lean4-ergodic-theory/actions/workflows/push.yml/badge.svg)](https://github.com/marcmorningstar/lean4-ergodic-theory/actions/workflows/push.yml)
 
 A Lean 4 + Mathlib formalization of the **Oseledets multiplicative ergodic theorem** (MET)
 and a broad layer of companion results.
 
-📖 **[Blueprint](https://marcmorningstar.github.io/lean4-oseledets/blueprint/)** ·
-**[Blueprint (PDF)](https://marcmorningstar.github.io/lean4-oseledets/blueprint.pdf)** ·
-**[Dependency graph](https://marcmorningstar.github.io/lean4-oseledets/blueprint/dep_graph_document.html)** ·
-**[API documentation](https://marcmorningstar.github.io/lean4-oseledets/docs/)**
+📖 **[Blueprint](https://marcmorningstar.github.io/lean4-ergodic-theory/blueprint/)** ·
+**[Blueprint (PDF)](https://marcmorningstar.github.io/lean4-ergodic-theory/blueprint.pdf)** ·
+**[Dependency graph](https://marcmorningstar.github.io/lean4-ergodic-theory/blueprint/dep_graph_document.html)** ·
+**[API documentation](https://marcmorningstar.github.io/lean4-ergodic-theory/docs/)**
 
 (The documentation site is published once the repository is public and GitHub Pages is enabled.)
 
@@ -64,7 +64,7 @@ test/
   AxiomAudit.lean     -- guarded #print-axioms regression (separate lib; not upstreamable source)
 blueprint/            -- leanblueprint LaTeX source (web + PDF; \lean-linked to declarations)
 home_page/            -- Jekyll landing page for the GitHub Pages site
-lakefile.toml         -- package config (Oseledets + AxiomAudit libraries; depends on Mathlib + checkdecls)
+lakefile.toml         -- package config (ErgodicTheory + AxiomAudit libraries; depends on Mathlib + checkdecls)
 lean-toolchain        -- pinned Lean version
 docs/                 -- research notes, design records, references.bib, progress state
 ```

@@ -51,7 +51,7 @@ const SCHEMA = {
 
 // Worker boilerplate — every Lean worker gets this.
 const INV = [
-  'You are a Lean 4 + Mathlib worker on /workspaces/lean4-oseledets. Read CLAUDE.md.',
+  'You are a Lean 4 + Mathlib worker on the main repo checkout. Read CLAUDE.md.',
   'Provision your OWN warm worktree: WT=$(.claude/scripts/lwt add <branch> | tail -1) (NEVER --no-warm).',
   'Edit only under $WT (absolute paths). Iterate with warm leancheck; if confirmed broken this session, fall back to cold `lake build`.',
   'You may NOT run git. NEVER sorry/admit/axiom. Lint=errors: <=100 codepoints/line; no show/push_neg;',
@@ -104,10 +104,10 @@ export const meta = {
   description: 'Multi-lens adversarial QA over <modules> -> deduped confirmed fix list',
   phases: [{ title: 'Lenses' }, { title: 'Verify' }],
 }
-const REPO = '/workspaces/lean4-oseledets'          // or the integration worktree path
+const REPO = '/workspaces/<repo-checkout>'          // or the integration worktree path
 const FILES = ['ErgodicTheory/.../A.lean (what it proves)', 'ErgodicTheory/.../B.lean (…)']  // the new modules
 const PREAMBLE = [
-  'READ-ONLY QA reviewer for the Oseledets project (code under review in ' + REPO + '). Read its CLAUDE.md.',
+  'READ-ONLY QA reviewer for the ErgodicTheory project (code under review in ' + REPO + '). Read its CLAUDE.md.',
   'Modules under review (with one-line purpose):', FILES.map(function (f) { return '  - ' + f }).join('\n'),
   '<one-paragraph context: what the result is, the route, and any deliberate rescope NOT to flag>',
   'Read the files in full + cited lemmas. Do NOT edit. Report findings ONLY for your lens:',
@@ -124,7 +124,7 @@ const LENSES = [
   { key: 'math-faithfulness', agentType: 'mathematician', focus: 'Do the STATEMENTS faithfully capture the intended results with NO weakening? Spot-check the load-bearing proof steps for soundness.' },
   { key: 'vacuity-honesty', agentType: 'mathematician', focus: 'Is the result NON-VACUOUS (the hypotheses satisfiable, the measures/spaces non-degenerate)? Any hypothesis secretly trivializing it?' },
   { key: 'soundness', agentType: 'general-purpose', focus: 'No sorry/admit/axiom/unsafe/native_decide; no Eq.mpr/cast/defeq abuse. Do the axiom-audit guards cover every headline result?' },
-  { key: 'reuse', agentType: 'general-purpose', focus: 'Duplicated/ reinvented Mathlib or Oseledets API? Redundant hypotheses? Name the existing lemma that could replace each.' },
+  { key: 'reuse', agentType: 'general-purpose', focus: 'Duplicated/ reinvented Mathlib or ErgodicTheory API? Redundant hypotheses? Name the existing lemma that could replace each.' },
   { key: 'style', agentType: 'general-purpose', focus: 'Naming/convention consistency (incl. set_option/omit before docstrings, codepoint line length), doc-comments with SOURCE attribution.' },
 ]
 

@@ -15,7 +15,7 @@
 # checkout itself is on a slow 9p mount; the shared .lake comes from this checkout.
 set -euo pipefail
 export LWT_BASE_DIR="${LWT_BASE_DIR:-/home/vscode}"
-export LWT_MAIN="${LWT_MAIN:-/workspaces/lean4-oseledets}"
+export LWT_MAIN="${LWT_MAIN:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
 
 for c in \
   "$HOME/.claude/plugins/marketplaces/lean-tools/leancheck/scripts/lwt.py" \

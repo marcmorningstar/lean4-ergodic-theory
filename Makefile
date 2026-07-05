@@ -2,7 +2,7 @@
 
 all: build
 
-# Build the Oseledets library (and its Mathlib dependency).
+# Build the ErgodicTheory library (and its Mathlib dependency).
 build:
 	lake build
 

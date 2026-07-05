@@ -15,7 +15,7 @@ to the host's self-hosted instance for web research.
 ## Build commands
 
 ```bash
-lake build      # build the Oseledets library (alias: make build)
+lake build      # build the ErgodicTheory library (alias: make build)
 make clean      # lake clean
 ```
 

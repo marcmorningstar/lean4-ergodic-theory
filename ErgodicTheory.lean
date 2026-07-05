@@ -246,7 +246,7 @@ import ErgodicTheory.OperatorEntropy.Lieb.PetzEqualitySufficiency
 import ErgodicTheory.OperatorEntropy.Lieb.PetzEqualityGeneral
 
 /-!
-# Oseledets
+# ErgodicTheory
 
 Root module of the `ErgodicTheory` library: a Lean 4 + Mathlib formalization of the
 **Oseledets multiplicative ergodic theorem (MET)** and a broad layer of results built on the same
