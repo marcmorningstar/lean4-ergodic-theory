@@ -13,7 +13,8 @@ import ErgodicTheory.Smooth.DerivativeCocycle
 
 The companion module `ErgodicTheory/Examples/Elementary.lean` realizes the cat-map *matrix*
 `M = !![2,1;1,1]` as a **constant cocycle over the doubling map** and reads off its Lyapunov
-spectrum `log((3 ± √5)/2)` (`ErgodicTheory.catMapMatrix_exponents`).  That theorem carries an explicit
+spectrum `log((3 ± √5)/2)` (`ErgodicTheory.catMapMatrix_exponents`).  That theorem carries
+an explicit
 *honesty caveat*: the base is the doubling map, not the genuine cat-map dynamics, and the cocycle is
 the bare constant matrix, **not** the derivative cocycle of the Arnold cat map.
 
@@ -67,7 +68,8 @@ identity derivative).
   lift of the genuine cat map.
 * `ErgodicTheory.CatMapToral.derivativeCocycle_catLift` — the repo's derivative cocycle of `catLift`
   is the constant matrix `catℝ` at every point.
-* `ErgodicTheory.CatMapToral.catLift_derivativeCocycle_topExponent_pos` — the top Lyapunov exponent of
+* `ErgodicTheory.CatMapToral.catLift_derivativeCocycle_topExponent_pos` — the top Lyapunov
+  exponent of
   the **genuine derivative cocycle** of `catLift`, over the genuine ergodic base `catTorus`, is
   `log((3 + √5)/2) > 0`.
 
@@ -131,7 +133,8 @@ theorem catTorus_constCocycle_exponents :
       (ErgodicTheory.absMatrix_isHermitian catℝ).eigenvalues₀ i
         = ErgodicTheory.catMapGen_isHermitian.eigenvalues₀ i := fun i =>
     (ErgodicTheory.eigenvalues₀_absMatrix_of_posSemidef catℝ_posSemidef i).trans
-      (ErgodicTheory.eigenvalues₀_congr catℝ_posSemidef.isHermitian ErgodicTheory.catMapGen_isHermitian
+      (ErgodicTheory.eigenvalues₀_congr catℝ_posSemidef.isHermitian
+        ErgodicTheory.catMapGen_isHermitian
         catℝ_eq_catMapGen i)
   refine ⟨?_, ?_⟩
   · have key := ErgodicTheory.exponents_const ergodic_catTorus catℝ_transpose catℝ_det_ne_zero
@@ -148,7 +151,8 @@ The top Lyapunov exponent of the constant cat-map cocycle `catℝ` over the genu
 map `catTorus` is `log((3 + √5)/2) > 0`.  Positivity is the hyperbolicity of the cat map:
 `(3 + √5)/2 > 1`. -/
 theorem catTorus_constCocycle_topExponent_pos :
-    0 < ErgodicTheory.topExponent ergodic_catTorus (ErgodicTheory.const_det_ne_zero catℝ_det_ne_zero)
+    0 < ErgodicTheory.topExponent ergodic_catTorus
+        (ErgodicTheory.const_det_ne_zero catℝ_det_ne_zero)
         (ErgodicTheory.const_measurable catℝ) (ErgodicTheory.const_integrableLogNorm catℝ)
         (ErgodicTheory.const_integrableLogNorm_inv catℝ) := by
   -- The top exponent is `exponents … ⟨0, _⟩`, which Grade 1 evaluates to `log((3+√5)/2)`.

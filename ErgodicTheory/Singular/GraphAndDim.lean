@@ -56,7 +56,8 @@ section Graph
 variable {X : Type*} [MeasurableSpace X] {d : ℕ}
 
 /-- **The graph of the Lyapunov sublevel filtration is measurable.** Given the everywhere
-`IsUltrametricGrowth` gate `hUM` (the pointwise form of `ErgodicTheory.isUltrametricGrowth_lambdaBar`,
+`IsUltrametricGrowth` gate `hUM` (the pointwise form of
+`ErgodicTheory.isUltrametricGrowth_lambdaBar`,
 which holds a.e.), the set
 `{p : X × EuclideanSpace ℝ (Fin d) | p.2 ∈ lambdaSublevel A T p.1 c}` is measurable.
 

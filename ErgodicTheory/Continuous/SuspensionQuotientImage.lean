@@ -10,7 +10,8 @@ import ErgodicTheory.Continuous.SuspensionSpaceExponentValue
 
 This module discharges the quotient-image measurability hypothesis `hmeas` carried as an explicit
 input by `ErgodicTheory.ae_suspensionMeasure_hasFlowExponent`
-(`ErgodicTheory.Continuous.SuspensionSpaceExponentValue`). That hypothesis asks that the *image* under
+(`ErgodicTheory.Continuous.SuspensionSpaceExponentValue`). That hypothesis asks that the *image*
+under
 the quotient projection `suspensionMk` of a measurable base set is a `MeasurableSet` in the
 suspension space `SuspensionSpace T hτ`. We prove this unconditionally from the measurable structure
 of the orbit quotient, following the special-flow / mapping-torus model of Cornfeld–Fomin–Sinai,
@@ -40,7 +41,8 @@ so the saturation is measurable and the image is measurable.
   `suspensionMk ⁻¹' (suspensionMk '' S) = ⋃ n : ℤ, suspensionAct T hτ n '' S`.
 * `ErgodicTheory.measurableSet_suspensionMk_image`: `S` measurable ⇒ `suspensionMk T hτ '' S`
   measurable (the general quotient-image measurability lemma).
-* `ErgodicTheory.measurableSet_suspensionMk_exponent_image`: the specialisation discharging `hmeas` —
+* `ErgodicTheory.measurableSet_suspensionMk_exponent_image`: the specialisation discharging
+  `hmeas` —
   the lifted exponent set of `ae_suspensionMeasure_hasFlowExponent` is measurable given the base
   exponent set is.
 

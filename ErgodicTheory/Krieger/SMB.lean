@@ -195,7 +195,8 @@ end CrudeUpperBound
 
 The sharp SMB theorem is reduced to the following sub-lemmas, in dependency order.  None is proved
 in *this* file; each is the route a follow-up should fill — and all of them **have since been
-proved**, in `ErgodicTheory.Krieger.SMBSharp` (telescoping), `SMBLeaves` (the Chung/Maker leaves) and
+proved**, in `ErgodicTheory.Krieger.SMBSharp` (telescoping), `SMBLeaves` (the Chung/Maker
+leaves) and
 `UpperSMB` (the assembled pointwise SMB `ae_tendsto_div_infoFun_self`). The hardest was `R5`
 (Chung's `L¹` domination, now `SMBLeaves.chungTail` + `lintegral_condInfoMaxFun_lt_top`).
 

@@ -613,7 +613,8 @@ theorem hpj_affine (f : ℝ → ℝ) (I : Set ℝ) (hf : OperatorConvexOn I f)
   -- `cfc f (V M V) = V (cfc f M) V`
   have hcfcVMV : cfc f (blockDiag2 (1 : Matrix (Fin N) (Fin N) ℂ) (-1) * M * blockDiag2 1 (-1))
       = blockDiag2 1 (-1) * cfc f M * blockDiag2 1 (-1) := by
-    have h := ErgodicTheory.OperatorEntropy.cfc_conj (blockDiag2 (1 : Matrix (Fin N) (Fin N) ℂ) (-1))
+    have h := ErgodicTheory.OperatorEntropy.cfc_conj
+      (blockDiag2 (1 : Matrix (Fin N) (Fin N) ℂ) (-1))
       M (by rw [hstarV]; exact hVV) (by rw [hstarV]; exact hVV) hMsa f
     rw [hstarV] at h; exact h
   -- RHS block

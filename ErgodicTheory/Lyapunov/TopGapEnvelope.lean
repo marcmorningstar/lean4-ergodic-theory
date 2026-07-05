@@ -33,7 +33,8 @@ The proof is organized in three layers.
 * `ErgodicTheory.Localized`, `ErgodicTheory.Tempered` — the per-orbit localization and temperedness
   predicates on the singular-value spectrum.
 * `ErgodicTheory.stratumBand` — the spectral band associated with a stratum.
-* `ErgodicTheory.canonSlack`, `ErgodicTheory.canonCut`, `ErgodicTheory.PerStratumEnvelope` — the canonical
+* `ErgodicTheory.canonSlack`, `ErgodicTheory.canonCut`, `ErgodicTheory.PerStratumEnvelope` —
+  the canonical
   per-stratum slack and cut, and the inductively-built per-stratum band-mass envelope.
 
 ## Main results
@@ -424,7 +425,8 @@ private lemma htgmulti_fastProj_sum {E : Type*} [NormedAddCommGroup E] [InnerPro
 open ErgodicTheory.RuelleCofactor in
 /-- The slow projection at time `t` decomposes over a disjoint cover of the slow indices `hiᶜ`. -/
 private lemma htgmulti_slowProj_eq_sum {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
-    {D : ℕ} (S : ErgodicTheory.RuelleCofactor.SVDData E D) (t : ℕ) (hiT : Finset (Fin D)) {W : Type*}
+    {D : ℕ} (S : ErgodicTheory.RuelleCofactor.SVDData E D) (t : ℕ) (hiT : Finset (Fin D))
+    {W : Type*}
     (Wf : Finset W) (Bw : W → Finset (Fin D)) (hcover : hiTᶜ = Wf.biUnion Bw)
     (hdisj : (Wf : Set W).PairwiseDisjoint Bw) (u : E) :
     S.slowProj t hiT u = ∑ w ∈ Wf, S.fastProj t (Bw w) u := by
@@ -435,7 +437,8 @@ private lemma htgmulti_slowProj_eq_sum {E : Type*} [NormedAddCommGroup E] [Inner
 
 open ErgodicTheory.RuelleCofactor in
 /-- The SVDData-level multi-source one-step recursion.  Generalizes
-`ErgodicTheory.RuelleCofactor.SVDData.oneStep_recursion` to a disjoint sub-partition `{Bw w : w ∈ Wf}`
+`ErgodicTheory.RuelleCofactor.SVDData.oneStep_recursion` to a disjoint sub-partition
+`{Bw w : w ∈ Wf}`
 of the slow indices `hiTᶜ`: the fast band mass at `t+1` is bounded by the fast band mass at `t` plus
 a sum of
 per-sub-band leakage sources, each with its own cap `sval w`. -/

@@ -28,7 +28,8 @@ back* σ-algebra `comap S 𝒜` makes every hypothesis automatic: a `comap S �
 
 ## Main results
 
-* `ErgodicTheory.Entropy.condExp_indicator_preimage_comap`: conditional-expectation equivariance for the
+* `ErgodicTheory.Entropy.condExp_indicator_preimage_comap`: conditional-expectation equivariance
+  for the
   comap σ-algebra, `μ⟦S⁻¹B | comap S 𝒜⟧ =ᵐ[μ] (μ⟦B | 𝒜⟧) ∘ S`, with NO two-sided hypothesis.
 * `ErgodicTheory.Entropy.condExpKernel_preimage_comap_toReal_ae_eq`: the kernel-level form
   `(κ_{comap S 𝒜}(ω, S⁻¹B)).toReal =ᵐ[μ] (κ_𝒜(S ω, B)).toReal`.

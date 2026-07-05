@@ -38,7 +38,8 @@ genuinely-dynamical interleaving:
   *stage events* `T m` (the well-covered part of stage `m`, on which the alignment fires and the
   parser reads the `q`-cell), the misses `∑ₘ μ (T m)ᶜ` are summable, then the parser agrees with
   `q` a.e. This is the `m → ∞` / `∑ εₘ < ∞` Borel–Cantelli limit, packaged once over
-  `eventually_mem_of_summable_compl`. It is exactly the leaf flagged in `ErgodicTheory.Krieger.Recovery`
+  `eventually_mem_of_summable_compl`. It is exactly the leaf flagged in
+  `ErgodicTheory.Krieger.Recovery`
   as the cleanest part — discharged here generically over the abstract stage events.
 
 ## The honest residual (the adversarial verdict)
@@ -52,7 +53,8 @@ read via `ErgodicTheory.Krieger.floorAddr` + `ErgodicTheory.Krieger.exists_senti
 hardest content is establishing the **two-sided alignment hypotheses** (`htop`/`hdata`/`hprev` of
 `sentinelParseAt_itin_eq`) on a positive-coverage stage event. It is isolated, sorry-free, as the
 parameterized bundle `RefiningTowerCode` below, exactly mirroring the repo's honest-reduction
-pattern (`ErgodicTheory.Krieger.KeaneSerafinStep`, `ErgodicTheory.Krieger.ColumnCodeData`). The structural
+pattern (`ErgodicTheory.Krieger.KeaneSerafinStep`, `ErgodicTheory.Krieger.ColumnCodeData`).
+The structural
 assembly `RefiningTowerCode → ColumnLayoutData` is proved here, unconditionally and sorry-free.
 
 ## Main results
@@ -245,7 +247,8 @@ theorem RefiningTowerCode.codes
 
 The structural `ErgodicTheory.Krieger.sentinelParseAt_itin_eq` takes the column block `blk` as an
 abstract list with the sentinel-placement hypotheses `htop`/`hdata` as side conditions. When `blk`
-is an actual `ErgodicTheory.Krieger.sentinelEncode` block (`d.map emb ++ [s]`, the code C3 reads off),
+is an actual `ErgodicTheory.Krieger.sentinelEncode` block (`d.map emb ++ [s]`, the code C3
+reads off),
 those two hypotheses are **automatic** from the encoding structure: the sentinel is the trailing
 letter (`htop`) and the data part `d.map emb` contains no sentinel (`hdata`, `notMem_sentinelData`).
 This corollary discharges them, so a concrete construction needs only to supply
@@ -253,7 +256,8 @@ This corollary discharges them, so a concrete construction needs only to supply
 * `hblk`: the code spells the encoded block on the column (`c (eʲ b) = (sentinelEncode …)[j]`), and
 * `hprev`: the previous column's terminating sentinel sits one coordinate below floor `0`.
 
-This is the bridge `ErgodicTheory.Krieger.PrefixCode` → `ErgodicTheory.Krieger.sentinelParseAt_itin_eq`
+This is the bridge `ErgodicTheory.Krieger.PrefixCode` →
+`ErgodicTheory.Krieger.sentinelParseAt_itin_eq`
 that both the refining-tower interleaving (sub-problem B) and the Keane–Serafin levels (sub-problem
 A) reuse when they build their stage codes. -/
 

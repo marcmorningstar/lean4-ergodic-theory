@@ -15,7 +15,8 @@ This module records the **top** index `k = d` of the cumulative forward singular
 
 The full singular-value product is the absolute determinant,
 `sprod A T d n x = |det(A⁽ⁿ⁾ x)|` — this is the pre-existing, invertibility-free identity
-`ErgodicTheory.sprod_d_eq_abs_det` (`ErgodicTheory/Lyapunov/Extensions/DetIdentity.lean`), obtained from
+`ErgodicTheory.sprod_d_eq_abs_det` (`ErgodicTheory/Lyapunov/Extensions/DetIdentity.lean`),
+obtained from
 `(∏ σᵢ)² = ∏ eigenvalueᵢ(MᵀM) = det(MᵀM) = (det M)²` and a nonnegative square root. Rewriting the
 defining `limsup` of `γ_d` through it shows the top cumulative forward singular exponent `γ_d` is
 *exactly* the forward `log⁺`-determinant `limsup`, the volume-growth (full `d`-dimensional)

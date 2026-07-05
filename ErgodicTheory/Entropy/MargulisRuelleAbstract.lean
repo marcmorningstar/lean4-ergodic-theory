@@ -24,8 +24,8 @@ the lift from `ℝ` to the complete lattice `EReal` — is proved here, sorry-fr
 
 * The **left-hand side** `ksEntropy hT.toMeasurePreserving` is the `EReal`-valued system entropy
   `h(T) = sup_α h(α, T)`, the supremum over all `Fin n`-indexed finite measurable partitions
-  (`ErgodicTheory.Entropy.ksEntropy`, `ErgodicTheory.Entropy.KSEntropySystem`). Since `Ergodic` extends
-  `MeasurePreserving`, the ergodic hypothesis `hT` feeds the entropy through
+  (`ErgodicTheory.Entropy.ksEntropy`, `ErgodicTheory.Entropy.KSEntropySystem`). Since
+  `Ergodic` extends `MeasurePreserving`, the ergodic hypothesis `hT` feeds the entropy through
   `hT.toMeasurePreserving`.
 * The **right-hand side** `(sumPosExp … : EReal)` is the coercion to `EReal` of the (plain real)
   sum of the strictly positive Lyapunov exponents of `A := derivativeCocycle T`

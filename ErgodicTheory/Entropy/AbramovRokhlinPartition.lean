@@ -33,7 +33,8 @@ All three are proved here sorry-free.
 
 ## Main results
 
-* `ErgodicTheory.Entropy.entropy_joinCells_of_refines` (W1): the refinement collapse of join entropy.
+* `ErgodicTheory.Entropy.entropy_joinCells_of_refines` (W1):
+  the refinement collapse of join entropy.
 * `ErgodicTheory.Entropy.entropy_join_eq_of_refines`: the per-`n` identity
   `H(A_n) = H(B_n) + condEntropyGivenPartition μ B_n A_n` for a coarsening `B_n` of `A_n`.
 

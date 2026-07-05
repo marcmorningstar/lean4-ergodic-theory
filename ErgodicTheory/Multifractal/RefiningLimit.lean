@@ -35,7 +35,8 @@ constant: `Tendsto (fun ε => renyiDim (p ε) ε q) (𝓝[Set.Ioo 0 1] 0) (𝓝 
 
 This is **only** the degenerate uniform / monofractal case, where the per-resolution dimension is
 constant in `ε` and the limit is trivial. The pointwise *local dimension* itself is defined, and its
-absolutely-continuous case proved, in `ErgodicTheory.Multifractal.LocalDimension` (item 5). What stays
+absolutely-continuous case proved, in `ErgodicTheory.Multifractal.LocalDimension` (item 5). What
+stays
 the genuine frontier is the **general non-uniform refining limit** (item 6 for a genuinely
 multifractal measure) and **general exact-dimensionality** — a.e.-constancy of the local dimension
 for a singular / SRB measure, and the Young / Ledrappier–Young identity. These need the absolute

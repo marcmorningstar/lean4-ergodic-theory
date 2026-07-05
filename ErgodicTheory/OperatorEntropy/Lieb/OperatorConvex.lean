@@ -18,7 +18,8 @@ and the continuous functional calculus.
 
 ## Main results
 
-* `ErgodicTheory.OperatorEntropy.Lieb.operatorConvexOn_neg_log`: `-log` is operator convex on `(0, ∞)`.
+* `ErgodicTheory.OperatorEntropy.Lieb.operatorConvexOn_neg_log`: `-log` is operator convex
+  on `(0, ∞)`.
 -/
 
 open scoped MatrixOrder ComplexOrder

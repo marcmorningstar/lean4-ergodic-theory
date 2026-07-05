@@ -26,14 +26,17 @@ genuine `−∞`-aware exponent lacks (it can fall to `⊥` on the kernel / volu
 sidestep integrability entirely:
 
 1. **Per-direction singular-value submultiplicativity** `σ_k(g ∘ f) ≤ σ_k(g) · ‖f‖`
-   (`ErgodicTheory.singularValues_comp_le_opNorm`). This is a Courant–Fischer dimension count built on
-   `ErgodicTheory.Weyl` (`spanP`, `quad_ge_on_top`, `quad_le_on_bot`, `finrank_spanP`): the top-`(k+1)`
+   (`ErgodicTheory.singularValues_comp_le_opNorm`). This is a Courant–Fischer dimension count
+   built on
+   `ErgodicTheory.Weyl` (`spanP`, `quad_ge_on_top`, `quad_le_on_bot`, `finrank_spanP`):
+   the top-`(k+1)`
    eigenspace of `(g ∘ f)*(g ∘ f)` (dim `k+1`) and the `f`-preimage of the bottom-`(n-k)` eigenspace
    of `g*g` (dim `≥ n-k`) sum to dimension `> n`, hence meet nonzero, pinning the squared singular
    value. It is the genuine Horn inequality that Mathlib lacks.
 
 2. **Sub-invariance** `λ_k^gen(x) ≤ λ_k^gen(T x)` for **every** `x`
-   (`ErgodicTheory.singularSpectralValue_le_comp`). From `cocycle (n+1) x = cocycle n (T x) · A x` and
+   (`ErgodicTheory.singularSpectralValue_le_comp`). From `cocycle (n+1) x = cocycle n (T x) · A x`
+   and
    step 1, `σ_k(A⁽ⁿ⁺¹⁾ x) ≤ σ_k(A⁽ⁿ⁾(T x)) · ‖A x‖`. After `(1/n) log` and `limsup`, the fixed
    single-step factor `log ‖A x‖` washes out (`(1/n) · c → 0`), giving the bound. The reverse
    genuinely needs the **smallest** singular value of `A x` (invertibility), so only sub-invariance
@@ -58,8 +61,10 @@ sidestep integrability entirely:
   `σ_k(g ∘ f) ≤ σ_k(g) · ‖f‖`.
 * `ErgodicTheory.singularSpectralValue_le_comp` — deterministic sub-invariance
   `λ_k^gen(x) ≤ λ_k^gen(T x)`.
-* `ErgodicTheory.singularSpectralValue_invariant_ae` — `λ_k^gen =ᵐ λ_k^gen ∘ T` (integrability-free).
-* `ErgodicTheory.ae_singularSpectralValue_eq_const` — **the headline**: `λ_k^gen` is `μ`-a.e. constant.
+* `ErgodicTheory.singularSpectralValue_invariant_ae` — `λ_k^gen =ᵐ λ_k^gen ∘ T`
+  (integrability-free).
+* `ErgodicTheory.ae_singularSpectralValue_eq_const` — **the headline**: `λ_k^gen` is `μ`-a.e.
+  constant.
 
 ## References
 
@@ -345,7 +350,8 @@ omit [MeasurableSpace X] in
 /-- **Deterministic sub-invariance of the genuine per-direction exponent.** For **every** `x` (no
 invertibility, no integrability, no ergodicity), `λ_k^gen(x) ≤ λ_k^gen(T x)`. From the single-step
 Horn log bound `log σ_k(A⁽ⁿ⁺¹⁾ x) ≤ log σ_k(A⁽ⁿ⁾(T x)) + log ‖A x‖`
-(`ErgodicTheory.logSingularValue_cocycle_succ_le`), the defining `limsup` of `λ_k^gen(x)` shifts by `+1`
+(`ErgodicTheory.logSingularValue_cocycle_succ_le`), the defining `limsup` of `λ_k^gen(x)`
+shifts by `+1`
 (`Filter.limsup_nat_add`) and is dominated by the `n⁻¹`-normalized `limsup` at `T x` plus the fixed
 single-step term `log ‖A x‖` that washes out, via the reindexing
 `ErgodicTheory.limsup_inv_succ_mul_add_le`. The reverse inequality genuinely needs the **smallest**
@@ -419,7 +425,8 @@ open scoped Matrix.Norms.L2Operator
 /-- **An a.e. finite upper bound on `λ_k^gen`.** For an ergodic measure-preserving `T` and a
 possibly-singular generator with `log⁺‖A‖ ∈ L¹`, there is a finite real constant `lam` (the forward
 top value `λ₁⁺`) with `λ_k^gen(x) ≤ lam` for `μ`-a.e. `x`. Each defining term is
-`≤ (1/n) log⁺‖A⁽ⁿ⁾‖` (`ErgodicTheory.singularSpectralValue_term_le_posLogNorm`), whose `limsup` is the
+`≤ (1/n) log⁺‖A⁽ⁿ⁾‖` (`ErgodicTheory.singularSpectralValue_term_le_posLogNorm`), whose `limsup`
+is the
 a.e. limit `lam` of `tendsto_top_posLogNorm`. -/
 theorem ae_singularSpectralValue_le [IsProbabilityMeasure μ] [NeZero d]
     (hT : Ergodic T μ) {A : X → Matrix (Fin d) (Fin d) ℝ} (hAmeas : Measurable A)
@@ -438,7 +445,8 @@ theorem ae_singularSpectralValue_le [IsProbabilityMeasure μ] [NeZero d]
 /-- **Integrability-free invariance of `λ_k^gen`.** For an ergodic measure-preserving `T` and a
 possibly-singular generator with `log⁺‖A‖ ∈ L¹`, the genuine per-direction exponent is `μ`-a.e.
 `T`-invariant: `λ_k^gen =ᵐ λ_k^gen ∘ T`. From the deterministic sub-invariance
-`λ_k^gen ≤ λ_k^gen ∘ T` (`ErgodicTheory.singularSpectralValue_le_comp`), the bounded strictly-monotone
+`λ_k^gen ≤ λ_k^gen ∘ T` (`ErgodicTheory.singularSpectralValue_le_comp`), the bounded
+strictly-monotone
 transform `EReal.exp : EReal → ℝ≥0∞` gives `h := exp ∘ λ_k^gen` with `h ≤ h ∘ T` and `∫⁻ h < ∞`
 (since `λ_k^gen ≤ λ₁⁺` a.e., `ErgodicTheory.ae_singularSpectralValue_le`, and `μ` is a probability
 measure). As `T` is measure-preserving `∫⁻ (h ∘ T) = ∫⁻ h`, so `h =ᵐ h ∘ T`
@@ -484,12 +492,14 @@ theorem singularSpectralValue_invariant_ae [IsProbabilityMeasure μ] [NeZero d]
 /-- **The genuine singular Lyapunov spectrum is `μ`-a.e. constant (det-free).** For an ergodic
 measure-preserving `T` and a **possibly-singular** measurable generator with `log⁺‖A‖ ∈ L¹` (and
 *no* `det A ≠ 0`, *no* inverse integrability), the genuine `−∞`-aware per-direction singular
-exponent `λ_k^gen = ErgodicTheory.singularSpectralValue A T k` is `μ`-a.e. equal to a single constant
+exponent `λ_k^gen = ErgodicTheory.singularSpectralValue A T k` is `μ`-a.e. equal to a single
+constant
 `c : EReal`:
 
 `∃ c : EReal, ∀ᵐ x ∂μ, singularSpectralValue A T k x = c`.
 
-From the integrability-free a.e. `T`-invariance `ErgodicTheory.singularSpectralValue_invariant_ae`, the
+From the integrability-free a.e. `T`-invariance `ErgodicTheory.singularSpectralValue_invariant_ae`,
+the
 exponent is a.e. constant by ergodicity (`Ergodic.ae_eq_const_of_ae_eq_comp₀`; `EReal` is Polish,
 hence has a countably-separated Borel structure). The value `c` can be `⊥` on the kernel /
 volume-collapse stratum — that is the whole point of the genuine `−∞`-aware exponent. -/

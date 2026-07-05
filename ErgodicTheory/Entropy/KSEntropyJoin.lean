@@ -29,14 +29,16 @@ Dividing by `n` and passing both sides to the Fekete limit (`tendsto_ksEntropySe
 
 ## Main definitions
 
-* `ErgodicTheory.Entropy.joinPartition`: the join (common refinement) `α ∨ β` of two finite measurable
+* `ErgodicTheory.Entropy.joinPartition`: the join (common refinement) `α ∨ β` of two finite
+  measurable
   partitions, as a `MeasurePartition μ (ι × κ)` with cells `joinCells α.cells β.cells`.
 
 ## Main results
 
 * `ErgodicTheory.Entropy.ksEntropySeq_join_le`: `ksEntropySeq (α ∨ β) n ≤ ksEntropySeq α n +
   ksEntropySeq β n`, the per-`n` cell-level subadditivity.
-* `ErgodicTheory.Entropy.ksEntropyPartition_join_le`: `h(α ∨ β, T) ≤ h(α, T) + h(β, T)`, the dynamical
+* `ErgodicTheory.Entropy.ksEntropyPartition_join_le`: `h(α ∨ β, T) ≤ h(α, T) + h(β, T)`, the
+  dynamical
   subadditivity of the Kolmogorov–Sinai entropy under joins.
 
 ## References

@@ -14,13 +14,15 @@ the increments that yields a.e. convergence of the band projectors at a spectral
 
 ## Main definitions
 
-* `ErgodicTheory.lamCocycle`, `ErgodicTheory.pluckerTopVec` — the per-step exponent cocycle and the Plücker
+* `ErgodicTheory.lamCocycle`, `ErgodicTheory.pluckerTopVec` — the per-step exponent cocycle and the
+  Plücker
   (wedge) top vector carrying the gap data.
 * `ErgodicTheory.bCocycle`, `ErgodicTheory.stepHypCocycle` — the increment-bound and step cocycles.
 
 ## Main results
 
-* `ErgodicTheory.norm_bandProjector_succ_sub_le`, `ErgodicTheory.norm_bandProjector_succ_sub_le_cocycle` —
+* `ErgodicTheory.norm_bandProjector_succ_sub_le`,
+  `ErgodicTheory.norm_bandProjector_succ_sub_le_cocycle` —
   the single-step band-projector increment bound, abstract and cocycle forms.
 * `ErgodicTheory.exists_tendsto_bandProjector` — a.e. convergence of the band projectors.
 * `ErgodicTheory.tendsto_bandProjector_of_gap` — convergence at a genuine spectral gap.

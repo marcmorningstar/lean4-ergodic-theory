@@ -10,8 +10,8 @@ import ErgodicTheory.Krieger.TowerCode
 
 This file builds the **dynamical alignment heart** of the column-coding step (C3) of Krieger's
 finite generator theorem (issue #15), on top of the *position-aware* sentinel parser
-`ErgodicTheory.Krieger.sentinelParseAt` of `ErgodicTheory.Krieger.TowerCode`. The prior repair there proved
-the naive parser `sentinelParse` is **position-blind** — it returns the same label at `x` and
+`ErgodicTheory.Krieger.sentinelParseAt` of `ErgodicTheory.Krieger.TowerCode`. The prior repair there
+proved the naive parser `sentinelParse` is **position-blind** — it returns the same label at `x` and
 `e·x` (`ErgodicTheory.Krieger.parse_event_cannot_separate`) — and replaced it with the offset-aware
 `sentinelParseAt s dec w = dec (blockContent s w) (blockOffset s w)`.
 
@@ -46,17 +46,17 @@ sentinel-free, and the previous column's terminator sits one coordinate below fl
 A `SentinelColumnCodeAt` (`ErgodicTheory.Krieger.TowerCode`) demands the **mod-0** recovery
 `∀ j, Q j =ᵐ[μ] {x | sentinelParseAt s decode (itin e code x) = j}` — agreement off a
 **μ-null** set. The alignment recovers the `Q`-cell of `x` **on the covered set of one tower**, with
-measure only `1 - ε` (`ErgodicTheory.Krieger.rokhlin_tower`), `ε > 0`. So a **single tower closes the
-recovery only mod-`ε`, not mod-`0`**: off the covered set (`floorAddr = N`) the column tiling fails
-and the parser returns an unrelated label, on a set of *positive* measure `μ Cᶜ ∈ (0, ε)`. The
+measure only `1 - ε` (`ErgodicTheory.Krieger.rokhlin_tower`), `ε > 0`. So a **single tower closes
+the recovery only mod-`ε`, not mod-`0`**: off the covered set (`floorAddr = N`) the column tiling
+fails and the parser returns an unrelated label, on a set of *positive* measure `μ Cᶜ ∈ (0, ε)`. The
 documented framing "mod-0 tolerates the rest" is therefore **false for a single tower** — the
 genuine discharge needs the refining-tower / Borel–Cantelli limit (`∑ εₘ < ∞`,
 `ErgodicTheory.Krieger.eventually_mem_of_summable_compl`) carried by **one** fixed code symbol
 interleaving all the towers. That `m → ∞` symbolic interleaving is the irreducible residual; it is
-isolated here as the hypothesis bundle `ColumnLayoutData`, whose single non-structural
-field `recovers_tiled` is the a.e. two-sided column tiling. Everything else — the alignment, the
-recovery from the tiling, the bundling into a `SentinelColumnCodeAt` and hence `CodesTwoSidedMod0c`
-— is proved unconditionally and sorry-free below.
+isolated here as the hypothesis bundle `ColumnLayoutData`, whose single non-structural field
+`recovers_tiled` is the a.e. two-sided column tiling. Everything else — the alignment, the recovery
+from the tiling, the bundling into a `SentinelColumnCodeAt` and hence `CodesTwoSidedMod0c` — is
+proved unconditionally and sorry-free below.
 
 ## Main results
 
@@ -230,7 +230,8 @@ position-aware parser and the column-tiling alignment are discharged:
   built (via `ErgodicTheory.Krieger.floorAddr` + `ErgodicTheory.Krieger.exists_sentinelEncoding`) so
   `c (eⁱ x)` spells the `i`-th symbol of the sentinel block of the column through `x`;
 * `decode`: the position-aware per-block decoder (decode the sentinel block to its column
-  `Q`-name — `ErgodicTheory.Krieger.sentinelEncodeList_injective` — and read the symbol at the offset);
+  `Q`-name — `ErgodicTheory.Krieger.sentinelEncodeList_injective` — and read the symbol at the
+  offset);
 * `recovers_tiled`: the a.e. recovery the column tiling yields — for each `Q`-cell `j`, `Q j`
   agrees `μ`-a.e. with the position-aware parser event. This is the `m → ∞` interleaving residual:
   off a μ-null set the itinerary of `code` is two-sided column-tiled (the refining-tower limit),
@@ -257,9 +258,9 @@ structure ColumnLayoutData [Countable κ] [MeasurableSpace κ] [MeasurableSingle
     {x | sentinelParseAt sentinel decode (itin e code x) = j}
 
 /-- A `ColumnLayoutData` is exactly the data of a `SentinelColumnCodeAt` (the residual bundle of
-`ErgodicTheory.Krieger.TowerCode`): the column-tiling recovery `recovers_tiled` is its `recovers` field.
-This makes the dynamical-core reduction explicit — the position-aware parser and the alignment are
-discharged; only the a.e. column tiling is carried. -/
+`ErgodicTheory.Krieger.TowerCode`): the column-tiling recovery `recovers_tiled` is its `recovers`
+field. This makes the dynamical-core reduction explicit — the position-aware parser and the
+alignment are discharged; only the a.e. column tiling is carried. -/
 noncomputable def ColumnLayoutData.toSentinelColumnCodeAt
     [Countable κ] [MeasurableSpace κ] [MeasurableSingletonClass κ]
     {e : α ≃ᵐ α} {Q : κ → Set α} (data : ColumnLayoutData e μ Q k) :
@@ -271,8 +272,8 @@ noncomputable def ColumnLayoutData.toSentinelColumnCodeAt
   recovers := data.recovers_tiled
 
 /-- **A `ColumnLayoutData` yields the cross-layer countable mod-0 code.** Composing
-`ColumnLayoutData.toSentinelColumnCodeAt` with `ErgodicTheory.Krieger.SentinelColumnCodeAt.codes` gives
-`CodesTwoSidedMod0c` for the code partition — the deliverable that slots into
+`ColumnLayoutData.toSentinelColumnCodeAt` with `ErgodicTheory.Krieger.SentinelColumnCodeAt.codes`
+gives `CodesTwoSidedMod0c` for the code partition — the deliverable that slots into
 `ErgodicTheory.Krieger.KriegerCodingData.code_codes`. Thus the entire symbolic side of sub-problem B
 reduces, sorry-free, to the single residual `recovers_tiled` (the a.e. two-sided column tiling of
 one fixed interleaving code symbol). -/

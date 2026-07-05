@@ -10,7 +10,8 @@ import ErgodicTheory.Entropy.CondGivenPartitionBridge
 # Reducing the Abramov–Rokhlin residual to a single Cesàro entropy-defect (B6a, issue #13)
 
 The partition-level Abramov–Rokhlin identity `abramovRokhlin_partition_of_W3`
-(`ErgodicTheory.Entropy.AbramovRokhlinPartition`) rests on a named hypothesis `hW3`, which identifies
+(`ErgodicTheory.Entropy.AbramovRokhlinPartition`) rests on a named hypothesis `hW3`, which
+identifies
 the Cesàro limit of the conditional *cell-form* sequence
 `condCellSeq hT Q P n = condEntropyGivenPartition μ B_n A_n` (with `A_n = ⋁_{k<n}T⁻ᵏP`,
 `B_n = ⋁_{k<n}T⁻ᵏQ`) with the relative Kolmogorov–Sinai entropy `condKsEntropyPartition` — the

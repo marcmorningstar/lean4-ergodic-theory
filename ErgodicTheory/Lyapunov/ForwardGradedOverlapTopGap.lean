@@ -30,7 +30,8 @@ gap removes that obstruction.
 * The remainder of the module is the Step-A engine for discharging `htopgap` via Ruelle's
   per-stratum strong induction: qpow↔rpow singular-value comparisons, σ-localization at all
   times, the tempered one-step operator factor, the per-step band-mass recursion
-  (`bandMass_oneStep_recursion`, built on `ErgodicTheory.RuelleCofactor.SVDData.oneStep_recursion` and
+  (`bandMass_oneStep_recursion`, built on `ErgodicTheory.RuelleCofactor.SVDData.oneStep_recursion`
+  and
   `toEuclideanLin_bandProjector_eq_fastProj`), and the `a₀ = 0` initialization
   (`bandMass_init_zero`).
 
@@ -40,7 +41,8 @@ gap removes that obstruction.
 
 ## Main results
 
-* `ErgodicTheory.forward_graded_overlap_of_topGapEnvelope` — the forward graded-overlap bound obtained
+* `ErgodicTheory.forward_graded_overlap_of_topGapEnvelope` — the forward graded-overlap
+  bound obtained
   from the top-gap band-mass envelope (the headline result of the module).
 * `ErgodicTheory.exists_topgap_cut` — existence of a top-gap spectral cut.
 

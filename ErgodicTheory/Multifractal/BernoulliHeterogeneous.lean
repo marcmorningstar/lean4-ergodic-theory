@@ -36,7 +36,8 @@ The chain is:
 
 ## Main results
 
-* `ErgodicTheory.Multifractal.Hnu_lt_log_two`: the strict bound `Hnu ν < log 2` for a biased 2-symbol
+* `ErgodicTheory.Multifractal.Hnu_lt_log_two`: the strict bound `Hnu ν < log 2` for a biased
+  2-symbol
   law.
 * `ErgodicTheory.Multifractal.measure_coordPartition_cell_bern`: the marginal identity
   `(bern ν) ((coordPartition (bern ν)).cells i) = ν {i}`.
@@ -196,7 +197,8 @@ omit [DecidableEq α₀] in
 entropy `Hnu ν` (the marginal identity `measure_coordPartition_cell_bern`). -/
 theorem renyiDimMeasure_coordPartition_bern_one {ν : Measure α₀} [IsProbabilityMeasure ν] {ε : ℝ} :
     renyiDimMeasure (bern ν) (coordPartition (bern ν)) ε 1 = Hnu ν / (-Real.log ε) := by
-  have hentropy : ErgodicTheory.Entropy.entropy (bern ν) (coordPartition (bern ν)).cells = Hnu ν := by
+  have hentropy :
+      ErgodicTheory.Entropy.entropy (bern ν) (coordPartition (bern ν)).cells = Hnu ν := by
     rw [ErgodicTheory.Entropy.entropy_def, Hnu]
     refine Finset.sum_congr rfl fun k _ => ?_
     rw [measure_coordPartition_cell_bern ν k]

@@ -28,7 +28,8 @@ exactly the log of `spectralRadius ℂ M_ℂ`.
 
 ## Main results
 
-* `ErgodicTheory.l2_opNorm_map_ofReal` — the L2 operator norm of a real matrix equals the L2 operator
+* `ErgodicTheory.l2_opNorm_map_ofReal` — the L2 operator norm of a real matrix equals the L2
+  operator
   norm of its complexification `M.map (algebraMap ℝ ℂ)`.
 * `ErgodicTheory.tendsto_pow_norm_one_div_spectralRadius` —
   `‖Mⁿ‖^{1/n} → (spectralRadius ℂ M_ℂ).toReal`.

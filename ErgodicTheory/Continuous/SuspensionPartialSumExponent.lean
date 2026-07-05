@@ -9,18 +9,19 @@ import ErgodicTheory.Lyapunov.Extensions.ExteriorCocycle
 /-!
 # Full-spectrum scaling of the special-flow Lyapunov exponents
 
-The space-level special-flow headline `ErgodicTheory.ae_suspensionMeasure_hasFlowExponent_of_measurable`
-(`ErgodicTheory.Continuous.SuspensionFlowExponentFinal`) establishes, for `μ̂ = suspensionMeasure`-a.e.
-orbit class `q`, the **top** flow exponent `λ_base / ∫τ` — the Lyapunov analogue of Abramov's
-entropy formula `h(flow) = h(base)/∫τ`. That headline is, however, *generic in its cocycle
-generator*: it takes an arbitrary base generator `A : X → Matrix (Fin d) (Fin d) ℝ`, an arbitrary
-base growth rate `lam` (the a.e. limit of `(1/n) log ‖cocycle A T n x‖`), and produces the
+The space-level special-flow headline
+`ErgodicTheory.ae_suspensionMeasure_hasFlowExponent_of_measurable`
+(`ErgodicTheory.Continuous.SuspensionFlowExponentFinal`) establishes, for `μ̂ =
+suspensionMeasure`-a.e. orbit class `q`, the **top** flow exponent `λ_base / ∫τ` — the Lyapunov
+analogue of Abramov's entropy formula `h(flow) = h(base)/∫τ`. That headline is, however, *generic in
+its cocycle generator*: it takes an arbitrary base generator `A : X → Matrix (Fin d) (Fin d) ℝ`, an
+arbitrary base growth rate `lam` (the a.e. limit of `(1/n) log ‖cocycle A T n x‖`), and produces the
 cover-cocycle growth rate `lam / ∫τ`. Nothing in it is special to the *top* exponent.
 
 This module upgrades that to the **full spectrum**, i.e. to *every* exponent of the base spectrum,
 by instantiating the generic headline at the **exterior (compound) cocycle generator** `extGen k A`
-(`ErgodicTheory.Lyapunov.Extensions.ExteriorCocycle`). The `k`-th compound cocycle `C_k(A^{(n)})` has
-operator-norm growth rate `Γ_k = ∑_{i<k} exponents i` (the sum of the top-`k` base exponents,
+(`ErgodicTheory.Lyapunov.Extensions.ExteriorCocycle`). The `k`-th compound cocycle `C_k(A^{(n)})`
+has operator-norm growth rate `Γ_k = ∑_{i<k} exponents i` (the sum of the top-`k` base exponents,
 `ErgodicTheory.tendsto_log_opNorm_compound_cocycle`), so feeding it into the generic special-flow
 headline yields the **partial-sum (exterior-power) flow scaling**
 
@@ -60,12 +61,12 @@ spectrum is the base spectrum divided by `∫τ`, exponent by exponent, not mere
   the flow growth rate `Γ_k^flow = HasFlowExponent`-value is `Γ_k^base / ∫τ`.
 * `ErgodicTheory.gammaK_succ_sub_gammaK` — the base-spectrum telescoping increment
   `Γ_{i+1}^base − Γ_i^base = exponents i`.
-* `ErgodicTheory.suspension_perExponent_scaling` — the **per-exponent / full-spectrum flow scaling**:
-  for `μ̂`-a.e. orbit class `q`, both consecutive exterior flow exponents are realized
-  (`HasFlowExponent (extGen (i+1) A) … q (Γ_{i+1}^base / ∫τ)` and
-  `HasFlowExponent (extGen i A) … q (Γ_i^base / ∫τ)`) and their difference — the `i`-th *flow*
-  exponent — equals `exponents i / ∫τ`. Each individual flow exponent is the corresponding base
-  exponent divided by the actual mean roof `∫τ`.
+* `ErgodicTheory.suspension_perExponent_scaling` — the **per-exponent / full-spectrum flow
+  scaling**: for `μ̂`-a.e. orbit class `q`, both consecutive exterior flow exponents are realized
+  (`HasFlowExponent (extGen (i+1) A) … q (Γ_{i+1}^base / ∫τ)` and `HasFlowExponent (extGen i A) … q
+  (Γ_i^base / ∫τ)`) and their difference — the `i`-th *flow* exponent — equals `exponents i / ∫τ`.
+  Each individual flow exponent is the corresponding base exponent divided by the actual mean roof
+  `∫τ`.
 
 ## References
 

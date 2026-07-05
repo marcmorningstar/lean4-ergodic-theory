@@ -17,7 +17,8 @@ symbolic-coding step (C3) of Krieger's finite generator theorem (issue #15), and
 parameterized *column-code* data into the cross-layer countable mod-0 code
 `ErgodicTheory.Krieger.CodesTwoSidedMod0c` consumed by the headline.
 
-The contract that the code-map backbone (`ErgodicTheory.Krieger.CodeMap`) and the countable coding layer
+The contract that the code-map backbone (`ErgodicTheory.Krieger.CodeMap`) and the countable
+coding layer
 (`ErgodicTheory.Krieger.Generator`) need is: produce a **code symbol** `c : α → Fin k` and a
 **decoder** `D : (ℤ → Fin k) → κ` together with the **a.e. recovery**
 
@@ -29,7 +30,8 @@ The contract that the code-map backbone (`ErgodicTheory.Krieger.CodeMap`) and th
 ## The construction (Downarowicz §4.2 Lemma 4.2.5; Shields §I.9; Krieger 1970)
 
 Use a **refining sequence of Rokhlin towers** of heights `N m ↑ ∞`. At stage `m`, `rokhlin_tower`
-(`ErgodicTheory.Krieger.RokhlinTower`) gives a base `B m`, height `N m`, with disjoint floors `eⁱ(B m)`
+(`ErgodicTheory.Krieger.RokhlinTower`) gives a base `B m`, height `N m`, with disjoint floors
+`eⁱ(B m)`
 covering `1 - ε m` (`ε m ↓ 0`). On each column one reads the `Q`-`(N m)`-name; by the C2 name-count
 bound (`ErgodicTheory.Krieger.exists_cover_names_card_le`, under `UpperSMBInMeasure`) there are
 `≤ exp(N m·(h+ε)) < k^(N m)` names on a `(1-ε)`-set, so `exists_sentinelEncoding`
@@ -208,7 +210,8 @@ structure ColumnCodeData [Countable κ] [MeasurableSpace κ] [MeasurableSingleto
 
 Given a `ColumnCodeData`, the code partition `codePartition c hc` codes the countable generator `Q`
 two-sidedly mod 0. The decoder event `{x | D (itin e c x) = j}` is `twoSidedSat e P`-measurable —
-because `itin e c` is `twoSidedSat e P`-measurable (`ErgodicTheory.Krieger.measurable_itin`) and `D` is
+because `itin e c` is `twoSidedSat e P`-measurable (`ErgodicTheory.Krieger.measurable_itin`)
+and `D` is
 product-measurable — and the a.e. recovery then discharges the countable contract
 `ErgodicTheory.Krieger.codesTwoSidedMod0c_of_aeRecovery`. Every step here is structural and
 unconditional; the content is entirely in *producing* the `ColumnCodeData`. -/
@@ -219,7 +222,8 @@ partition `codePartition c hc` **codes the countable family `Q` two-sidedly mod 
 (`ErgodicTheory.Krieger.CodesTwoSidedMod0c`).
 
 The decoder event `{x | D (itin e c x) = j} = (D ∘ itin e c)⁻¹ {j}` is `twoSidedSat e P`-measurable
-because `itin e c` is `twoSidedSat e P`-measurable (`ErgodicTheory.Krieger.measurable_itin`) and `D` is
+because `itin e c` is `twoSidedSat e P`-measurable (`ErgodicTheory.Krieger.measurable_itin`)
+and `D` is
 product-measurable; the a.e. recovery then discharges
 `ErgodicTheory.Krieger.codesTwoSidedMod0c_of_aeRecovery`, using the itinerary-measurability backbone
 `ErgodicTheory.Krieger.measurable_itin` (`CodeMap.lean`). -/

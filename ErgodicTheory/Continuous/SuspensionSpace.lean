@@ -20,7 +20,8 @@ The suspension space is the orbit quotient
 
 `SuspensionSpace T hτ := Quotient (AddAction.orbitRel ℤ (X × ℝ))`,
 
-for the action `suspensionAddAction T hτ` of `ErgodicTheory.Continuous.Suspension`. As a `Quotient` it
+for the action `suspensionAddAction T hτ` of `ErgodicTheory.Continuous.Suspension`.
+As a `Quotient` it
 carries the canonical pushforward `MeasurableSpace` instance for free.
 
 Its measure is built by *restricting* `μ × volume` to the fundamental box `suspensionDomain τ` and
@@ -34,7 +35,8 @@ measure `suspensionMeasure`.
 
 ## Main definitions
 
-* `ErgodicTheory.SuspensionSpace`: the suspension quotient `Quotient (AddAction.orbitRel ℤ (X × ℝ))`.
+* `ErgodicTheory.SuspensionSpace`: the suspension quotient
+  `Quotient (AddAction.orbitRel ℤ (X × ℝ))`.
 * `ErgodicTheory.suspensionMeasure₀`: the raw pushforward measure `(restrict box).map π`.
 * `ErgodicTheory.suspensionMeasure`: the normalised invariant probability measure
   `(∫ τ)⁻¹ • suspensionMeasure₀`.
@@ -70,7 +72,8 @@ variable (T : X ≃ᵐ X) {τ : X → ℝ} (hτ : Measurable τ)
 /-- The **suspension (mapping-torus) space** of the base map `T` under the roof function `τ`: the
 orbit quotient of `X × ℝ` by the suspension `ℤ`-action `G (x, s) = (T x, s − τ x)`.
 
-The action is the locally-activated `suspensionAddAction T hτ` of `ErgodicTheory.Continuous.Suspension`;
+The action is the locally-activated `suspensionAddAction T hτ` of
+`ErgodicTheory.Continuous.Suspension`;
 it is brought into scope by `letI` so that `AddAction.orbitRel ℤ (X × ℝ)` is the suspension orbit
 relation. As a `Quotient` the space carries the canonical pushforward `MeasurableSpace` instance. -/
 def SuspensionSpace : Type _ :=

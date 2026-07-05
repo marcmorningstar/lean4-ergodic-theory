@@ -17,7 +17,8 @@ For a **possibly-singular** matrix cocycle generator `A : X → Matrix (Fin d) (
 as an honest `EReal`-valued, everywhere-defined, measurable function. Here `sprod_k` is the
 top-`k` singular-value product (`ErgodicTheory.sprod`, the `k`-volume growth). The `limsup` is used
 (rather than `limUnder`) so the definition is robustly measurable; on the `μ`-a.e. full set where
-the normalized `log⁺ sprod_k` converges (`ErgodicTheory.tendsto_top_posLogSprod`) the `limsup` is the
+the normalized `log⁺ sprod_k` converges (`ErgodicTheory.tendsto_top_posLogSprod`) the `limsup`
+is the
 genuine limit `Γ_k⁺`, so `γ_k = (Γ_k⁺ : EReal)` `μ`-a.e.
 
 The `log⁺` (= `Real.posLog`) form is essential: it is the *convergent* one
@@ -40,7 +41,8 @@ converge for a singular cocycle (it can fall to `−∞`), which is exactly why 
 * `ErgodicTheory.forwardSingularExponent_zero` — `γ_0 = 0` everywhere (the empty product is `1`).
 * `ErgodicTheory.ae_forwardSingularExponent_eq_coe` — under ergodicity and forward integrability,
   `γ_k = (Γ_k⁺ : EReal)` `μ`-a.e. for a real constant `Γ_k⁺`.
-* `ErgodicTheory.ae_forwardSingularExponent_lt_top`, `ErgodicTheory.ae_forwardSingularExponent_ne_bot` —
+* `ErgodicTheory.ae_forwardSingularExponent_lt_top`,
+  `ErgodicTheory.ae_forwardSingularExponent_ne_bot` —
   `μ`-a.e. finiteness (`γ_k < ⊤` and `⊥ < γ_k`), since `γ_k` a.e. equals a real coercion.
 
 ## Implementation notes

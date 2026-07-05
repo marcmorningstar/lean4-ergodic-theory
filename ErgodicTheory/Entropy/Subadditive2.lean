@@ -9,7 +9,8 @@ import ErgodicTheory.Entropy.Join
 # Subadditivity of Shannon entropy under joins
 
 This file continues the measure-theoretic foundation for Kolmogorov–Sinai entropy started in
-`ErgodicTheory.Entropy.Partition` and `ErgodicTheory.Entropy.Join`. It establishes the **subadditivity**
+`ErgodicTheory.Entropy.Partition` and `ErgodicTheory.Entropy.Join`. It establishes
+the **subadditivity**
 of Shannon entropy under the join of two finite measurable partitions,
 `H(α ∨ β) ≤ H(α) + H(β)`, the analytic heart of the Fekete argument that turns the sequence
 `n ↦ H(⋁ₖ₌₀ⁿ⁻¹ Tᵏα)` into the well-defined Kolmogorov–Sinai entropy `h(T, α)`.

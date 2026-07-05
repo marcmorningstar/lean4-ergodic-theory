@@ -29,8 +29,8 @@ factors as `suspensionBaseProj = fst ∘ e` (the equivalence sends `[x, s] ↦ (
 
 * `ErgodicTheory.Multifractal.suspensionBaseProj_eq_fst_comp_unitEquiv`: the base projection is the
   first coordinate of the fundamental-domain equivalence (F-prep).
-* `ErgodicTheory.Multifractal.condKsEntropy_bernSuspensionFlow_one_baseProj_eq_zero`: the conditional
-  fibre entropy vanishes (the literal target of issue #21).
+* `ErgodicTheory.Multifractal.condKsEntropy_bernSuspensionFlow_one_baseProj_eq_zero`: the
+  conditional fibre entropy vanishes (the literal target of issue #21).
 
 ## References
 

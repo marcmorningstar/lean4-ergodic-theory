@@ -16,15 +16,18 @@ This produces the orbit log-growth limits along the eigenspace filtration.
 
 ## Main definitions
 
-* `ErgodicTheory.stepVal` — the block-value step function whose CFC on `qpow` is the block approximant.
+* `ErgodicTheory.stepVal` — the block-value step function whose CFC on `qpow` is the block
+  approximant.
 * `ErgodicTheory.oseledetsLimit` — the limiting matrix `Λ x = lim_n qpow A T n x`.
 
 ## Main results
 
-* `ErgodicTheory.tendsto_qpow`, `ErgodicTheory.tendsto_oseledetsLimit` — a.e. convergence of the candidates.
+* `ErgodicTheory.tendsto_qpow`, `ErgodicTheory.tendsto_oseledetsLimit` — a.e. convergence of the
+  candidates.
 * `ErgodicTheory.oseledetsLimit_isSelfAdjoint`, `ErgodicTheory.oseledetsLimit_posSemidef`,
   `ErgodicTheory.oseledetsLimit_eigenvalues₀_eq` — structure of the limit and its eigenvalues.
-* `ErgodicTheory.ae_tendsto_log_cocycle_apply_of_eq_exponents` — the orbit log-growth limit along the
+* `ErgodicTheory.ae_tendsto_log_cocycle_apply_of_eq_exponents` — the orbit log-growth limit along
+  the
   eigenspace filtration.
 -/
 
@@ -664,7 +667,8 @@ index `i`, the `i`-th sorted eigenvalue of the approximant `qpow A T n x` conver
 `e^{lamSing A T x i}`. This is the eigenvalue statement at the level of the *approximants*; the full
 eigenvalue equality for `Λ` itself (`oseledetsLimit_eigenvalues₀_eq`, below) additionally needs
 continuity of the sorted eigenvalues in the Hermitian matrix. That was historically a blocker (no
-such Mathlib lemma), but it is now supplied in-repo by `ErgodicTheory.Weyl.tendsto_eigenvalues₀`, so the
+such Mathlib lemma), but it is now supplied in-repo by `ErgodicTheory.Weyl.tendsto_eigenvalues₀`,
+so the
 equality below is proved. -/
 theorem eigenvalues₀_qpow_tendsto_exp_lamSing [IsProbabilityMeasure μ] (hT : Ergodic T μ)
     {A : X → Matrix (Fin d) (Fin d) ℝ} (hA : ∀ x, (A x).det ≠ 0) (hAmeas : Measurable A)

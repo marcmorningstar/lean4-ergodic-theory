@@ -48,10 +48,10 @@ singularity spectrum `f(α)` (the Legendre transform of `τ`), together with the
   guard).
 * `ErgodicTheory.Multifractal.Degeneracy` — the equal-measure (uniform / monofractal) degeneracy
   `Z_q = N^{1-q}`, `D_q ≡ log N / (-log ε)` (issue #16, item 4c).
-* `ErgodicTheory.Multifractal.LogConvex` — the mathematical heart: log-convexity of `Z_q` (the Hölder /
-  cumulant-convexity argument) and concavity of `τ`.
-* `ErgodicTheory.Multifractal.Monotone` — the monotonicity `D_q` is non-increasing in `q` (issue #16,
-  item 4b), over all of `ℝ`.
+* `ErgodicTheory.Multifractal.LogConvex` — the mathematical heart: log-convexity of `Z_q`
+  (the Hölder / cumulant-convexity argument) and concavity of `τ`.
+* `ErgodicTheory.Multifractal.Monotone` — the monotonicity `D_q` is non-increasing in `q`
+  (issue #16, item 4b), over all of `ℝ`.
 * `ErgodicTheory.Multifractal.Spectrum` — the singularity-spectrum (Legendre transform) bounds for
   `f(α)` (issue #16, item 3).
 * `ErgodicTheory.Multifractal.Measure` — the measure/flow layer: the same quantities for an actual

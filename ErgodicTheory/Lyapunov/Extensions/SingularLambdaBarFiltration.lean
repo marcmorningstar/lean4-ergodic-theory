@@ -59,8 +59,8 @@ It is strictly weaker than `det A ≠ 0`.
 * `ErgodicTheory.lambdaBarSublevel_antitone`: monotonicity in `c`.
 * `ErgodicTheory.mem_lambdaBarSublevel_iff`: membership, `v = 0 ∨ lambdaBar A T x v ≤ c`, in the
   regime `0 ≤ c` (where the floor is invisible).
-* `ErgodicTheory.lambdaBarSublevel_equivariant`: the cocycle step maps the level-`c` space at `x` into
-  the level-`c` space at `T x`.
+* `ErgodicTheory.lambdaBarSublevel_equivariant`: the cocycle step maps the level-`c` space at `x`
+  into the level-`c` space at `T x`.
 
 ## References
 
@@ -327,8 +327,9 @@ to a one-shifted copy of the defining sequence at `x`. Writing
 `T x`) and the shifted source sequence is `g n = (n+1)⁻¹·L n` (the source sequence at `n+1`). They
 are related by `f n = ((n+1)/n)·g n` (for `n ≥ 1`). The **full identity** at the spectrum level
 needs `f` bounded on *both* sides (lower boundedness is the invertible/det data, see
-`ErgodicTheory.lambdaBar_equivariant`). The **one-sided inequality** below — which is all the sublevel
-filtration requires — is **det-free**: where `L n ≥ 0` we have `f n = g n + g n/n` with `g` bounded
+`ErgodicTheory.lambdaBar_equivariant`). The **one-sided inequality** below — which is all the
+sublevel filtration requires — is **det-free**: where `L n ≥ 0` we have `f n = g n + g n/n` with `g`
+bounded
 above by `HasFiniteTopGrowth A T x`, and where `L n < 0` we have `f n < 0`, so the floor at `0`
 absorbs it. -/
 

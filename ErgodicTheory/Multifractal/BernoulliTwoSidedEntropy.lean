@@ -36,7 +36,8 @@ reduction from the one-sided file does not port. Only the partition-relative ide
 
 * `ErgodicTheory.Multifractal.coordPartitionZFin`
 * `ErgodicTheory.Multifractal.ksEntropyPartition_coordPartitionZ_bernZ_eq`
-* `ErgodicTheory.Multifractal.ksEntropyPartition_coordPartitionZFin_bernZ_eq`  — the headline `hbase`
+* `ErgodicTheory.Multifractal.ksEntropyPartition_coordPartitionZFin_bernZ_eq`
+  — the headline `hbase`
 -/
 
 open MeasureTheory Filter Topology Function Set

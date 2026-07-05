@@ -29,7 +29,8 @@ This is the two-space generalisation of `condEntropy_comap_preimage`
 
 * `ErgodicTheory.Entropy.condEntropy_comap_preimage_cross`: the cross-space joint pull-back of
   conditional Shannon entropy.
-* `ErgodicTheory.Entropy.condKsEntropyPartition_pulledBack_eq`: the conditional factor-relative entropy
+* `ErgodicTheory.Entropy.condKsEntropyPartition_pulledBack_eq`: the conditional factor-relative
+  entropy
   invariance, `h(e⁻¹R, T | comap e 𝒜β) = h(R, S | 𝒜β)`.
 * `ErgodicTheory.Entropy.condKsEntropy_congr_of_conjugacy`: measurable conjugacy with matched
   conditioning σ-algebras ⇒ equal relative entropy, `h(T | comap e 𝒜β) = h(S | 𝒜β)`.

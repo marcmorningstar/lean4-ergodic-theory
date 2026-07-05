@@ -38,9 +38,11 @@ The identity is an entirely algebraic manipulation of `comap`s, driven by four M
 
 ## Main results
 
-* `ErgodicTheory.Entropy.comap_generatedSigmaAlgebra_pulledBack`: `σ(π⁻¹R) = comap π σ(R)` — the clean
+* `ErgodicTheory.Entropy.comap_generatedSigmaAlgebra_pulledBack`: `σ(π⁻¹R) = comap π σ(R)` —
+  the clean
   base lemma identifying the pulled-back generated σ-algebra with the comap of the base one.
-* `ErgodicTheory.Entropy.factor_iSup_comap_eq`: `⨆ n, comap (T^[n]) σ(π⁻¹R) = comap π mβ` — the forward
+* `ErgodicTheory.Entropy.factor_iSup_comap_eq`: `⨆ n, comap (T^[n]) σ(π⁻¹R) = comap π mβ` —
+  the forward
   iterates of the pulled-back generator saturate the factor σ-algebra.
 
 ## References

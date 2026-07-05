@@ -34,7 +34,8 @@ correspondence lemma.
 
 ## Main definitions
 
-* `ErgodicTheory.Entropy.IsFactorMap`: `π : α → β` is a factor map from `(α, T, μ)` to `(β, S, ν)` when
+* `ErgodicTheory.Entropy.IsFactorMap`: `π : α → β` is a factor map from `(α, T, μ)` to `(β, S, ν)`
+  when
   it is measure preserving, the target map `S` is measurable, and it intertwines the dynamics,
   `π ∘ T = S ∘ π`.
 

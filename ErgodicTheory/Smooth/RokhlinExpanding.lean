@@ -63,13 +63,14 @@ cells) — the conditional-expectation argument needs only injectivity — and w
 
 * `ErgodicTheory.withDensity_rnDeriv_volume_eq` — `volume.withDensity (μ.rnDeriv volume) = μ` for an
   absolutely continuous finite measure (N5.1).
-* `ErgodicTheory.rnDeriv_volume_pos` — the Radon–Nikodym density is `μ`-a.e. strictly positive (N5.1).
+* `ErgodicTheory.rnDeriv_volume_pos` — the Radon–Nikodym density is `μ`-a.e. strictly positive
+  (N5.1).
 * `ErgodicTheory.measure_cell_inter_preimage_eq_setLIntegral_transfer` (N5.3) — the per-cell
   change-of-variables identity recovering `μ (ξᵢ ∩ T⁻¹' B)` from the branch transfer density.
 * `ErgodicTheory.condEntropy_comap_eq_integral_log_abs_det` (N5.4) — the partition-independent
   identity `H(ξ | comap T mα) = ∫ log|det DT| dμ` (Coudène Prop 12.1).
-* `ErgodicTheory.ksEntropyPartition_eq_integral_log_abs_det` (N5.5) — the per-partition Rokhlin formula
-  `h(T, ξ) = ∫ log|det DT| dμ` for a generating injectivity partition.
+* `ErgodicTheory.ksEntropyPartition_eq_integral_log_abs_det` (N5.5) — the per-partition Rokhlin
+  formula `h(T, ξ) = ∫ log|det DT| dμ` for a generating injectivity partition.
 * `ErgodicTheory.pesin_formula_expanding` — the unconditional expanding-map Pesin formula
   `h_μ(T) = ∑ λ⁺ = ∫ log|det DT| dμ`. A correct implication that is **vacuous on `EuclideanSpace`**
   (see its docstring); the instantiated equality lives on the compact circle.
@@ -880,7 +881,8 @@ invariant *probability* measure: e.g. for `T = c • id` (`c > 1`) the nested pr
 `μ ≪ volume`; in general uniform expansion on a non-compact space forces mass to escape to infinity
 (every existence theorem for a.c. invariant measures of uniformly expanding maps is on a *compact*
 manifold). The intended models live on a torus. A genuinely *instantiated* Pesin/Rokhlin equality
-`h_μ(T) = ∫ log|det DT| dμ = log 2` is `ErgodicTheory.Examples.Rokhlin.rokhlin_equality_doublingMap`, on
+`h_μ(T) = ∫ log|det DT| dμ = log 2` is
+`ErgodicTheory.Examples.Rokhlin.rokhlin_equality_doublingMap`, on
 the compact circle `UnitAddCircle`. A non-vacuous EuclideanSpace-style statement would require
 porting the derivative-cocycle / expanding / Lyapunov-exponent layer to the torus (currently
 `EuclideanSpace`-only). -/
@@ -893,11 +895,13 @@ theorem pesin_formula_expanding {d : ℕ} [NeZero d]
     (hint : ErgodicTheory.IntegrableLogNorm (ErgodicTheory.derivativeCocycle T) μ)
     (hint' : ErgodicTheory.IntegrableLogNorm (fun x => (ErgodicTheory.derivativeCocycle T x)⁻¹) μ)
     {m : ℕ} [Nonempty (Fin m)] {ξ : ErgodicTheory.Entropy.MeasurePartition μ (Fin m)}
-    (hξ : ErgodicTheory.IsInjectivityPartition μ T ξ) (hgen : ErgodicTheory.Entropy.IsGenerating μ T ξ)
+    (hξ : ErgodicTheory.IsInjectivityPartition μ T ξ)
+    (hgen : ErgodicTheory.Entropy.IsGenerating μ T ξ)
     (hlogρ : Integrable (fun x => Real.log ((μ.rnDeriv volume) x).toReal) μ)
     (hlogdet : Integrable (fun x => Real.log |(fderiv ℝ T x).det|) μ) :
     ErgodicTheory.Entropy.ksEntropy hErg.toMeasurePreserving
-      = ((ErgodicTheory.sumPosExp hErg hdet (ErgodicTheory.measurable_derivativeCocycle T) hint hint'
+      = ((ErgodicTheory.sumPosExp hErg hdet (ErgodicTheory.measurable_derivativeCocycle T)
+          hint hint'
           : ℝ) : EReal) := by
   -- The `fderiv` form of the nonsingularity hypothesis, aligned via the determinant bridge.
   have hdet' : ∀ x, (fderiv ℝ T x).det ≠ 0 := fun x => by

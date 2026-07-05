@@ -53,7 +53,8 @@ Two corollaries follow:
 
 ## Main results
 
-* `ErgodicTheory.Entropy.tendsto_condEntropy_genJoin_div`: the moving-σ-algebra conditional KS limit.
+* `ErgodicTheory.Entropy.tendsto_condEntropy_genJoin_div`: the moving-σ-algebra conditional
+  KS limit.
 * `ErgodicTheory.Entropy.tendsto_condCellSeq_div`: the cell-form Cesàro limit (W3, discharged).
 * `ErgodicTheory.Entropy.abramovRokhlin_partition`: the unconditional Abramov–Rokhlin partition
   identity.

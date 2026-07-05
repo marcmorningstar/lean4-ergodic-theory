@@ -23,8 +23,8 @@ concrete realization of Pesin's equality on a real expanding system; the dynamic
 
 ## Main results
 
-* `ErgodicTheory.Examples.Rokhlin.entropy_uniform_join`: if every join cell has measure `b⁻ⁿ` and there
-  are `bⁿ` of them, then `ksEntropySeq hT P n = n · Real.log b`.
+* `ErgodicTheory.Examples.Rokhlin.entropy_uniform_join`: if every join cell has measure `b⁻ⁿ`
+  and there are `bⁿ` of them, then `ksEntropySeq hT P n = n · Real.log b`.
 * `ErgodicTheory.Examples.Rokhlin.ksEntropyPartition_of_uniform`: under the same uniform-measure
   hypothesis for every `n`, `ksEntropyPartition hT P = Real.log b`.
 

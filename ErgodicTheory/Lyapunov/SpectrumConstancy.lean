@@ -8,8 +8,9 @@ import ErgodicTheory.Lyapunov.FiltrationInterfaceReduction
 /-!
 # Spectrum constancy: identifying the per-point spectrum with the deterministic exponent set
 
-`ErgodicTheory.specList_eq_expEnum_of_lyapunovSpectrum_const` (in `FiltrationInterfaceReduction.lean`)
-reduces the `hspec` interface of the final assembly to the single hypothesis
+`ErgodicTheory.specList_eq_expEnum_of_lyapunovSpectrum_const` (in
+`FiltrationInterfaceReduction.lean`) reduces the `hspec` interface of the final assembly to the
+single hypothesis
 
 ```
 hspecconst : ∀ᵐ x ∂μ, lyapunovSpectrum A T x = distinctExp lam0 d.
@@ -17,8 +18,8 @@ hspecconst : ∀ᵐ x ∂μ, lyapunovSpectrum A T x = distinctExp lam0 d.
 
 This file discharges `hspecconst`.  The per-point limsup spectrum `lyapunovSpectrum A T x` is the
 finite set of values of the upper Lyapunov growth function `lambdaBar A T x` on nonzero vectors
-(`ErgodicTheory.lyapunovSpectrum`, `ErgodicTheory.mem_lyapunovSpectrum`).  Pinning that finite set to the
-deterministic distinct-exponent set `distinctExp lam0 d` is a `Finset.Subset.antisymm` of two
+(`ErgodicTheory.lyapunovSpectrum`, `ErgodicTheory.mem_lyapunovSpectrum`). Pinning that finite set to
+the deterministic distinct-exponent set `distinctExp lam0 d` is a `Finset.Subset.antisymm` of two
 per-vector inclusions:
 
 * **upper inclusion** `lyapunovSpectrum A T x ⊆ distinctExp lam0 d` — every realized `lambdaBar`

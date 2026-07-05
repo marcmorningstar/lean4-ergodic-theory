@@ -32,8 +32,8 @@ The construction proceeds in three steps, each grounded on the return-time API o
 
 ## Main definitions
 
-* `ErgodicTheory.lapCount`: `N(t, x) = Nat.findGreatest (fun n => returnTime n x ≤ t) (latch t x)`, the
-  number of base returns completed by flow time `t`.
+* `ErgodicTheory.lapCount`: `N(t, x) = Nat.findGreatest (fun n => returnTime n x ≤ t) (latch t x)`,
+  the number of base returns completed by flow time `t`.
 
 ## Main results
 

@@ -11,7 +11,8 @@ import Mathlib.MeasureTheory.Covering.Vitali
 # The local-dimension → Hausdorff-dimension bridge
 
 This file connects the pointwise *local dimension* `d_μ(x)` of an absolutely-continuous probability
-measure (formalized in `ErgodicTheory/Multifractal/LocalDimension.lean`) to the **Hausdorff dimension**
+measure (formalized in `ErgodicTheory/Multifractal/LocalDimension.lean`) to
+the **Hausdorff dimension**
 `dimH s` of a full-measure carrier set `s`.
 
 The headline result is:

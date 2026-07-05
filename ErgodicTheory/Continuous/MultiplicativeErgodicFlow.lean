@@ -37,7 +37,8 @@ The proof combines four continuous-flow ingredients:
 
 ## Main statements
 
-* `ErgodicTheory.oseledets_flow`: the continuous-flow Oseledets MET. For a measure-preserving flow `φ`
+* `ErgodicTheory.oseledets_flow`: the continuous-flow Oseledets MET. For a measure-preserving flow
+  `φ`
   on a probability space whose **time-`1`** map `φ 1` is ergodic (ergodicity is assumed only of the
   time-`1` map, not of the flow), and a continuous-time linear cocycle `A` whose one-step log-norms
   are dominated uniformly on `[0,1]` by integrable functions, almost every point carries a strictly

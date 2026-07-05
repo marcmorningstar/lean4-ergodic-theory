@@ -23,14 +23,14 @@ along the cross-section orbit of `x`.
 
 ## Main definitions
 
-* `ErgodicTheory.suspensionCocycleReturn`: the return cocycle `n ↦ cocycle A T n x`, the linear action
-  accumulated over `n` base returns from the cross-section point `x`.
+* `ErgodicTheory.suspensionCocycleReturn`: the return cocycle `n ↦ cocycle A T n x`,
+  the linear action accumulated over `n` base returns from the cross-section point `x`.
 * `ErgodicTheory.returnTime`: the flow time `roofSum T hτ n x` elapsed over `n` returns from `x`.
 
 ## Main results
 
-* `ErgodicTheory.suspensionCocycleReturn_add`: the return-cocycle multiplicativity, read off from the
-  base cocycle identity `cocycle_add`:
+* `ErgodicTheory.suspensionCocycleReturn_add`: the return-cocycle multiplicativity, read off from
+  the base cocycle identity `cocycle_add`:
   `suspensionCocycleReturn A T (m + n) x = suspensionCocycleReturn A T m (T^[n] x)
   * suspensionCocycleReturn A T n x`.
 * `ErgodicTheory.returnTime_add`: the additivity of the return time along the cross-section orbit,
@@ -38,16 +38,17 @@ along the cross-section orbit of `x`.
   of the matrix multiplicativity (read off from `roofSum_natCast_eq_birkhoffSum` and the Birkhoff
   cocycle property).
 * `ErgodicTheory.measurable_suspensionCocycleReturn`: each return level is measurable.
-* `ErgodicTheory.suspensionCocycleReturn_returnTime`: the **return identity** in cross-section form —
-  at the `n`-th return (flow time `returnTime n x`) the accumulated linear action is the base
+* `ErgodicTheory.suspensionCocycleReturn_returnTime`: the **return identity** in cross-section
+  form — at the `n`-th return (flow time `returnTime n x`) the accumulated linear action is the base
   iterated cocycle `cocycle A T n x`. Stated as the definitional equality that ties the
   time-indexed schedule to the base cocycle.
 
 ## What is *not* in this file — the remaining gap toward the full flow cocycle
 
 A genuine `ErgodicTheory.FlowCocycle` instance over the suspension *space*
-`ErgodicTheory.SuspensionSpace T hτ` and the flow `ErgodicTheory.suspensionFlowMap` is **not** built here.
-`FlowCocycle φ d` (`ErgodicTheory.Continuous.Flow`) requires a map `Ψ : ℝ → SuspensionSpace → Matrix`
+`ErgodicTheory.SuspensionSpace T hτ` and the flow `ErgodicTheory.suspensionFlowMap` is **not**
+built here. `FlowCocycle φ d` (`ErgodicTheory.Continuous.Flow`) requires a map
+`Ψ : ℝ → SuspensionSpace → Matrix`
 satisfying the continuous cocycle identity `Ψ (t + s) [p] = Ψ t (ζ s [p]) * Ψ s [p]` for *all*
 real `t, s`. Defining `Ψ t [x, s]` requires counting how many base returns the flow of duration `t`
 crosses starting from the representative `(x, s)` — i.e. evaluating the integer return-count

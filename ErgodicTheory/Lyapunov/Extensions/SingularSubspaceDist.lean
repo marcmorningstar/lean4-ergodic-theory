@@ -13,7 +13,8 @@ A measurably-varying family of subspaces of `EuclideanSpace ℝ (Fin d)` is enco
 formalization by the matrix of its orthogonal projection, `ErgodicTheory.orthProjMatrix`
 (`ErgodicTheory.Lyapunov.MeasurableSubspace`). This module turns the abstract
 finite-dimensional-completeness `CauchySeq` machinery of
-`ErgodicTheory.cauchySeq_of_summable_norm_sub` (`ErgodicTheory.Lyapunov.OseledetsLimit.BandProjector`)
+`ErgodicTheory.cauchySeq_of_summable_norm_sub`
+(`ErgodicTheory.Lyapunov.OseledetsLimit.BandProjector`)
 into a **subspace-convergence tool** keyed on the differences of those orthogonal-projection
 matrices.
 
@@ -29,7 +30,8 @@ analysis needed to extract a limiting flag space from a Cauchy sequence of finit
 
 * `ErgodicTheory.cauchySeq_of_summable_subspaceDist`: summable consecutive projector gaps give a
   Cauchy projector sequence.
-* `ErgodicTheory.exists_tendsto_orthProjMatrix_of_summable`: such a sequence converges to a matrix `P`
+* `ErgodicTheory.exists_tendsto_orthProjMatrix_of_summable`: such a sequence converges
+  to a matrix `P`
   that is self-adjoint and idempotent (`P * P = P`) — an orthogonal projector.
 -/
 

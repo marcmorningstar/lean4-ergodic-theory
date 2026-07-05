@@ -28,7 +28,8 @@ non-increasing order. Feeding this through the eigenvalue tie
 ## Main results
 
 * `ErgodicTheory.cocycle_const` — `cocycle (fun _ => M) T n x = Mⁿ` for an arbitrary generator `M`.
-* `ErgodicTheory.gram_const`, `ErgodicTheory.qpow_const`, `ErgodicTheory.oseledetsLimit_const` — for symmetric
+* `ErgodicTheory.gram_const`, `ErgodicTheory.qpow_const`, `ErgodicTheory.oseledetsLimit_const`
+  — for symmetric
   `M`, the Gram matrix is `M^{2n}`, the approximant `qpow` is `|M|` for every `n ≥ 1`, and the
   Oseledets limit is `|M|`.
 * `ErgodicTheory.exp_exponents_const_eq_eigenvalues₀_absMatrix` — for symmetric invertible `M`,

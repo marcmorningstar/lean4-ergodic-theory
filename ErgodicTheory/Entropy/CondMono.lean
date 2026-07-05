@@ -10,7 +10,8 @@ import ErgodicTheory.Entropy.CondPartition
 # Monotonicity of conditional entropy under refinement of the σ-algebra
 
 This file adds the **monotonicity of conditional entropy** to the conditional-entropy milestone
-(GitHub issue #13), continuing `ErgodicTheory.Entropy.CondPartition` (which defines `condEntropy μ 𝒜 s`
+(GitHub issue #13), continuing `ErgodicTheory.Entropy.CondPartition`
+(which defines `condEntropy μ 𝒜 s`
 as the `μ`-average of the pointwise entropy against the regular conditional probability
 `condExpKernel μ 𝒜 ω`).
 
@@ -37,8 +38,8 @@ Summing over the finite partition yields the claim.
 
 ## Main results
 
-* `ErgodicTheory.Entropy.condEntropy_mono_of_le`: conditioning on a finer σ-algebra reduces conditional
-  entropy.
+* `ErgodicTheory.Entropy.condEntropy_mono_of_le`: conditioning on a finer σ-algebra reduces
+  conditional entropy.
 
 ## References
 

@@ -33,7 +33,8 @@ M. S. Raghunathan, *A proof of Oseledec's multiplicative ergodic theorem*, Israe
 
 ## Main definitions
 
-* `ErgodicTheory.forwardSingularExponentLog` — the genuine-`log` cumulative forward singular exponent
+* `ErgodicTheory.forwardSingularExponentLog` — the genuine-`log` cumulative forward singular
+  exponent
   `γ_k^log`, an `EReal`-valued `limsup`, defined for every `x` with no invertibility hypothesis.
   It can equal `⊥` (the kernel / volume-collapse regime).
 
@@ -44,7 +45,8 @@ M. S. Raghunathan, *A proof of Oseledec's multiplicative ergodic theorem*, Israe
   (deterministic), where `γ_k = ErgodicTheory.forwardSingularExponent` is the `log⁺` exponent. Since
   `log ≤ log⁺` termwise, the genuine-`log` exponent is always dominated by the `log⁺` one; the gap
   is exactly the collapse `−∞` stratum invisible to `log⁺`.
-* `ErgodicTheory.forwardSingularExponentLog_eq_bot_of_tendsto` — the **`−∞` kernel stratum hook**: if
+* `ErgodicTheory.forwardSingularExponentLog_eq_bot_of_tendsto` — the **`−∞` kernel stratum hook**:
+  if
   `(1/n) log sprod_k(A⁽ⁿ⁾ x) → −∞` (the `k`-volume collapses super-exponentially), then
   `γ_k^log(x) = ⊥`.
 
@@ -81,7 +83,8 @@ generator, as an `EReal`-valued `limsup`:
 `γ_k^log(x) = limsup_n ((1/n) log sprod_k(A⁽ⁿ⁾ x) : EReal)`,
 
 where `sprod_k = ErgodicTheory.sprod A T k` is the top-`k` singular-value product. Unlike the `log⁺`
-exponent `ErgodicTheory.forwardSingularExponent`, this uses the **genuine** `Real.log`, so it can equal
+exponent `ErgodicTheory.forwardSingularExponent`, this uses the **genuine** `Real.log`, so it
+can equal
 `⊥` when the `k`-volume collapses (`sprod_k → 0`, the kernel stratum of the non-invertible MET). -/
 noncomputable def forwardSingularExponentLog (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X)
     (k : ℕ) (x : X) : EReal :=

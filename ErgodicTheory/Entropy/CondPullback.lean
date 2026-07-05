@@ -20,7 +20,8 @@ measure `condExpKernel μ 𝒜 ω`, which for `μ`-a.e. `ω` is a probability me
 are still genuine measurable partitions; the resulting pointwise bound integrates termwise.
 
 Invariance of conditional entropy under a factor is provided instead by
-`ErgodicTheory.Entropy.condEntropy_comap_pullback` (`ErgodicTheory.Entropy.CondJointPullback`), which
+`ErgodicTheory.Entropy.condEntropy_comap_pullback` (`ErgodicTheory.Entropy.CondJointPullback`),
+which
 conditions on the *pulled-back* σ-algebra `comap S 𝒜` and so needs only the one-sided hypothesis; it
 superseded an earlier fixed-`𝒜` pull-back that required the two-sided invariance hypotheses.
 

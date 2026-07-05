@@ -32,7 +32,8 @@ literally the rescaled base growth `(n/returnTime n x)·(1/n)·log‖cocycle A T
   `‖coverCocycle (x,0) (returnTime n x + r)‖ ≤ ‖coverCocycle (Tⁿ x, 0) r‖ * ‖cocycle A T n x‖`,
   directly from `coverCocycle_section_returnTime` and L2-norm submultiplicativity
   (`Matrix.l2_opNorm_mul`).
-* `ErgodicTheory.coverCocycle_returnTime_eq`: at the residual `r = 0` the cover cocycle at the `n`-th
+* `ErgodicTheory.coverCocycle_returnTime_eq`: at the residual `r = 0` the cover cocycle at
+  the `n`-th
   return time **is** the base cocycle, `coverCocycle (x,0) (returnTime n x) = cocycle A T n x`.
 * `ErgodicTheory.coverCocycle_returnTime_norm_eq`: the operator-norm bridge,
   `‖coverCocycle (x,0) (returnTime n x)‖ = ‖cocycle A T n x‖`, tying the cover-cocycle norm at

@@ -10,7 +10,8 @@ import ErgodicTheory.Krieger.RokhlinTower
 # The position-aware sentinel parser for Krieger's column code (C3, sub-problem B)
 
 This file repairs and sharpens the bi-infinite sentinel parser of
-`ErgodicTheory.Krieger.ColumnCode`. The parser there, `sentinelParse s dec w = dec (blockContent s w)`,
+`ErgodicTheory.Krieger.ColumnCode`. The parser there,
+`sentinelParse s dec w = dec (blockContent s w)`,
 decodes the **content** of the sentinel block containing coordinate `0`. A naive sentinel-column
 recovery field built on it would demand
 
@@ -379,7 +380,8 @@ theorem SentinelColumnCodeAt.codes
 /-! ### The measurable floor-address map of a Rokhlin tower
 
 The first dynamical field of a `SentinelColumnCodeAt` — the code symbol `c : α → Fin k` — is built
-from the **floor-address map** of a Rokhlin tower (`ErgodicTheory.Krieger.rokhlin_tower`): the index of
+from the **floor-address map** of a Rokhlin tower (`ErgodicTheory.Krieger.rokhlin_tower`):
+the index of
 the floor a point sits on within its column. We construct it here as a measurable `ℕ`-valued map
 (junk value `N` off the tower), which is exactly the within-column offset the position-aware parser
 (`blockOffset`) consumes. This is the self-contained, reusable piece point (1) of the `Recovery`

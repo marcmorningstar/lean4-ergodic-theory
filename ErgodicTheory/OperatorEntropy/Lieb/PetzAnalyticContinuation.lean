@@ -27,7 +27,8 @@ defined through its spectral decomposition `A = U diag(λ) U*` by
 
 ## Main definitions
 
-* `ErgodicTheory.OperatorEntropy.Lieb.cpow`: the entire complex power `A^{z}` via the spectral theorem.
+* `ErgodicTheory.OperatorEntropy.Lieb.cpow`: the entire complex power `A^{z}` via the spectral
+  theorem.
 * `ErgodicTheory.OperatorEntropy.Lieb.upow`: the modular unitary `A^{it} = cpow hA (t·i)`.
 * `ErgodicTheory.OperatorEntropy.Lieb.IntertwinesIt`: the imaginary-axis intertwining condition.
 

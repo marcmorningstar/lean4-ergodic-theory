@@ -35,10 +35,12 @@ that build on this layer live in `ErgodicTheory.Lyapunov.ExteriorNorm.Plucker` a
 
 * `ErgodicTheory.ExteriorNorm.exteriorOpNorm_comp_le` — submultiplicativity of the exterior-power
   operator norm under composition.
-* `ErgodicTheory.ExteriorNorm.exteriorOpNorm_hodge_eq_prod_singularValues` — the bridge identifying the
+* `ErgodicTheory.ExteriorNorm.exteriorOpNorm_hodge_eq_prod_singularValues` — the bridge
+  identifying the
   exterior operator norm with the product of the top-`k` singular values `∏_{i<k} σᵢ(f)`.
 * `ErgodicTheory.ExteriorNorm.compoundMatrix_mul`,
-  `ErgodicTheory.ExteriorNorm.prod_singularValues_eq_l2_opNorm_compound` — Cauchy–Binet multiplicativity
+  `ErgodicTheory.ExteriorNorm.prod_singularValues_eq_l2_opNorm_compound` — Cauchy–Binet
+  multiplicativity
   and the operator-norm identity of the compound matrix.
 
 ## Implementation notes

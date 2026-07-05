@@ -33,7 +33,8 @@ If `Mᵏ v = v` for some `k ≥ 1` then `φ(v) = λᵏ φ(v)` and `ψ(v) = λ⁻
 * `ErgodicTheory.CatMapToral.catℤ` — the integer cat-map matrix `!![2,1;1,1]`.
 * `ErgodicTheory.CatMapToral.eq_zero_of_pow_mulVec_eq` — `Mᵏ ·ᵥ v = v`, `k ≥ 1` ⇒ `v = 0` over ℝ.
 * `ErgodicTheory.CatMapToral.orbit_injective` — `p ↦ Mᵖ ·ᵥ v` is injective for nonzero integer `v`.
-* `ErgodicTheory.CatMapToral.orbit_infinite` — the orbit `{Mᵖ ·ᵥ v | p}` is infinite for nonzero `v`.
+* `ErgodicTheory.CatMapToral.orbit_infinite` — the orbit `{Mᵖ ·ᵥ v | p}` is infinite for nonzero
+  `v`.
 -/
 
 open Matrix

@@ -10,7 +10,8 @@ import ErgodicTheory.Multifractal.SymbolicDimensionBernoulli
 
 The suspension/flow construction (`ErgodicTheory/Continuous/Suspension*.lean`) requires an
 **invertible** base automorphism `T : X ≃ᵐ X`. The on-`main` one-sided Bernoulli shift
-(`ErgodicTheory/Multifractal/SymbolicDimensionBernoulli.lean`) is *non*-invertible. This file builds the
+(`ErgodicTheory/Multifractal/SymbolicDimensionBernoulli.lean`) is *non*-invertible. This file
+builds the
 two-sided analogue: the full shift over the index type `ℤ`, equipped with the i.i.d. (Bernoulli)
 product measure, with the left shift packaged as a `MeasurableEquiv`.
 

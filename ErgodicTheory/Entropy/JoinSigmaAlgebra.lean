@@ -189,7 +189,8 @@ The supremum of the increasing filtration `n ↦ σ(B_n)` equals the forward-sat
 `le_iSup`.
 
 This is the bridge to a saturation hypothesis `⨆ n, σ(B_n) = 𝒜`: combined with
-`ErgodicTheory.Entropy.factor_iSup_comap_eq` (whose left-hand side is the same forward-saturated shape
+`ErgodicTheory.Entropy.factor_iSup_comap_eq` (whose left-hand side is the same forward-saturated
+shape
 `⨆ n, comap (T^[n]) σ(R.pulledBack)`), it lets the moving-index Abramov–Rokhlin limit (issue #13)
 read off that the join filtration saturates the factor σ-algebra. -/
 lemma iSup_generatedSigmaAlgebra_ksJoin_eq :

@@ -44,7 +44,8 @@ rate** (Lyapunov exponent `lim (1/t) log ‖·‖`) does: the extra `log ‖A x�
 
 ## Main results
 
-* `ErgodicTheory.returnTime_one`: the first return time is the roof value, `returnTime T hτ 1 x = τ x`.
+* `ErgodicTheory.returnTime_one`: the first return time is the roof value,
+  `returnTime T hτ 1 x = τ x`.
 * `ErgodicTheory.coverCocycle_one_lap`: the **one-lap descent identity** — advancing from the base
   section at `x` past one full lap `τ x` then a residual `r ≥ 0` equals advancing from the next base
   point `T x` by `r`, post-multiplied by the single base step `A x`:
@@ -56,8 +57,8 @@ rate** (Lyapunov exponent `lim (1/t) log ‖·‖`) does: the extra `log ‖A x�
 ## What is *not* in this file — the remaining gap toward the `SuspensionSpace` `FlowCocycle`
 
 This module lands the *matrix-level* descent at a single lap (and its norm shadow), but a genuine
-quotient-well-defined `ErgodicTheory.FlowCocycle` over `SuspensionSpace T hτ` and the suspension flow
-needs three further pieces, all deferred:
+quotient-well-defined `ErgodicTheory.FlowCocycle` over `SuspensionSpace T hτ` and the suspension
+flow needs three further pieces, all deferred:
 
 1. **Quotient-class constancy.** `coverCocycle` is *not* constant on orbit classes (it changes by
    the factor `A x` per lap, exactly `coverCocycle_one_lap`); a descended object must therefore be

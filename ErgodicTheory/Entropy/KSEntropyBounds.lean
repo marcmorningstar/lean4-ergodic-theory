@@ -27,7 +27,8 @@ limit yields `h(α, T) ≤ H(α)`.
 * `ErgodicTheory.Entropy.ksEntropySeq_one`: `ksEntropySeq hT P 1 = entropy μ P.cells`.
 * `ErgodicTheory.Entropy.ksEntropySeq_le_nsmul`: `ksEntropySeq hT P n ≤ n • entropy μ P.cells`.
 * `ErgodicTheory.Entropy.ksEntropyPartition_nonneg`: `0 ≤ ksEntropyPartition hT P`.
-* `ErgodicTheory.Entropy.ksEntropyPartition_le_entropy`: `ksEntropyPartition hT P ≤ entropy μ P.cells`.
+* `ErgodicTheory.Entropy.ksEntropyPartition_le_entropy`: `ksEntropyPartition hT P ≤ entropy μ
+  P.cells`.
 
 ## References
 

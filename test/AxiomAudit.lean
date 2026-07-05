@@ -238,7 +238,9 @@ sites).
 #guard_msgs in
 #print axioms ErgodicTheory.IsOseledetsFiltration.unique
 
-/-- info: 'ErgodicTheory.IsOseledetsFiltration.tendsto_log_opNorm_cocycle' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.IsOseledetsFiltration.tendsto_log_opNorm_cocycle' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
 #guard_msgs in
 #print axioms ErgodicTheory.IsOseledetsFiltration.tendsto_log_opNorm_cocycle
 
@@ -428,11 +430,15 @@ sites).
 #guard_msgs in
 #print axioms ErgodicTheory.tendsto_integral_logSprod_of_unifIntegrable
 
-/-- info: 'ErgodicTheory.tendsto_integral_logSprod_of_ae_unifIntegrable' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.tendsto_integral_logSprod_of_ae_unifIntegrable' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
 #guard_msgs in
 #print axioms ErgodicTheory.tendsto_integral_logSprod_of_ae_unifIntegrable
 
-/-- info: 'ErgodicTheory.gammaK_upperSemicontinuous_of_ae_unifIntegrable' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.gammaK_upperSemicontinuous_of_ae_unifIntegrable' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
 #guard_msgs in
 #print axioms ErgodicTheory.gammaK_upperSemicontinuous_of_ae_unifIntegrable
 
@@ -1070,7 +1076,9 @@ info: 'ErgodicTheory.Entropy.MeasurePartition.sum_toReal_measure_eq_one' depends
 #guard_msgs in
 #print axioms ErgodicTheory.Entropy.bddBelow_ksEntropySeq_div
 
-/-- info: 'ErgodicTheory.Entropy.ksEntropyPartition_le_ksEntropySeq_div' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.Entropy.ksEntropyPartition_le_ksEntropySeq_div' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
 #guard_msgs in
 #print axioms ErgodicTheory.Entropy.ksEntropyPartition_le_ksEntropySeq_div
 
@@ -1456,7 +1464,9 @@ info: 'ErgodicTheory.Entropy.MeasurePartition.sum_toReal_measure_eq_one' depends
 #guard_msgs in
 #print axioms ErgodicTheory.ae_suspensionMeasure_hasFlowExponent_unconditional
 
-/-- info: 'ErgodicTheory.ae_suspensionMeasure_hasFlowExponent_flowOrbit' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.ae_suspensionMeasure_hasFlowExponent_flowOrbit' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
 #guard_msgs in
 #print axioms ErgodicTheory.ae_suspensionMeasure_hasFlowExponent_flowOrbit
 
@@ -1573,7 +1583,9 @@ info: 'ErgodicTheory.Entropy.MeasurePartition.sum_toReal_measure_eq_one' depends
 -- Issue #6 (tempered-class V_j + the wall identity): unconditional soft-analysis core (any summable band
 -- increment ⇒ V_j converges), the tempered-non-degeneracy V_j, and the proof the increment IS an aperture.
 
-/-- info: 'ErgodicTheory.tendsto_vSlowSingularStep_of_summable_increment' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.tendsto_vSlowSingularStep_of_summable_increment' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
 #guard_msgs in
 #print axioms ErgodicTheory.tendsto_vSlowSingularStep_of_summable_increment
 
@@ -1650,7 +1662,9 @@ info: 'ErgodicTheory.Entropy.MeasurePartition.sum_toReal_measure_eq_one' depends
 
 -- MET enhancements campaign: #1-#6 closures
 
-/-- info: 'ErgodicTheory.topExponent_constantCocycle_eq_log_spectralRadius' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.topExponent_constantCocycle_eq_log_spectralRadius' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
 #guard_msgs in
 #print axioms ErgodicTheory.topExponent_constantCocycle_eq_log_spectralRadius
 
@@ -1690,7 +1704,9 @@ info: 'ErgodicTheory.singular_perDirection_exponent_eq_lambda_of_mem_stratum' de
 #guard_msgs in
 #print axioms ErgodicTheory.CatMapToral.orbit_infinite
 
-/-- info: 'ErgodicTheory.CatMapToral.catTorus_constCocycle_topExponent_pos' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.CatMapToral.catTorus_constCocycle_topExponent_pos' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound] -/
 #guard_msgs in
 #print axioms ErgodicTheory.CatMapToral.catTorus_constCocycle_topExponent_pos
 

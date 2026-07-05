@@ -33,7 +33,8 @@ definitionally — a self-adjoint idempotent equals the orthogonal projection on
 
 * `ErgodicTheory.measurable_lambdaBar_apply` — for fixed `v`, `x ↦ lambdaBar A T x v` is measurable
   (the scalar measurability used by the later arguments).
-* `ErgodicTheory.orthProjMatrix_apply` / `ErgodicTheory.measurable_orthProjMatrix_iff` — the projection
+* `ErgodicTheory.orthProjMatrix_apply` / `ErgodicTheory.measurable_orthProjMatrix_iff` —
+  the projection
   matrix's entry formula and the resulting reduction of matrix measurability to projecting the
   fixed standard basis vectors.
 * `ErgodicTheory.instMeasurableAdd₂Matrix`, `ErgodicTheory.measurable_matrix_pow`,

@@ -29,8 +29,8 @@ directions — is the **positive-part singular-value product**
 
 where `σᵢ(D_x(T^[n]))` are the singular values of the cocycle iterate
 `cocycle (derivativeCocycle T) T n x` (the chain-rule cocycle, `chainRule_cocycle`).  Its logarithm
-is `∑_{i} log⁺ σᵢ` (`ErgodicTheory.Entropy.sum_posLog_singularValues_toEuclideanLin_eq`), the finite-`n`
-incarnation of `∑ λᵢ⁺`.
+is `∑_{i} log⁺ σᵢ` (`ErgodicTheory.Entropy.sum_posLog_singularValues_toEuclideanLin_eq`),
+the finite-`n` incarnation of `∑ λᵢ⁺`.
 
 ## The two layers
 
@@ -38,7 +38,8 @@ incarnation of `∑ λᵢ⁺`.
    `(1/n) · log (volProd T n x) → sumPosExp`.  This is the genuinely new orbit-iteration content:
    each per-singular-value term `(1/n) log⁺ σᵢ = max 0 ((1/n) log σᵢ)` converges to
    `max 0 (exponents i)` (continuity of `max 0 ·` composed with the per-exponent limit
-   `ErgodicTheory.exponents_tendsto_log_singularValue`), and the finite sum of these limits is exactly
+   `ErgodicTheory.exponents_tendsto_log_singularValue`), and the finite sum of these limits
+   is exactly
    `∑ᵢ max 0 (exponents i) = sumPosExp` (the positive part of an antitone spectrum, summed with
    multiplicity).  No extra Furstenberg–Kesten integrability is needed: the rate rides on the
    already-established per-exponent singular-value limits.
@@ -46,14 +47,17 @@ incarnation of `∑ λᵢ⁺`.
 2. **The local covering count (`coveringCount_image_ball_le_volProd`, proved in-tree).**  The
    genuinely geometric per-step input — the image `L '' (ball x ε)` of an `ε`-ball under a linear
    map `L` is coverable by at most `6^d · ∏ᵢ max(1, σᵢ(L))` balls of radius `ε` — is **fully proved
-   in-tree** in the sibling module `ErgodicTheory.Entropy.Ruelle.SharpCovering` (via a constructive SVD
+   in-tree** in the sibling module `ErgodicTheory.Entropy.Ruelle.SharpCovering` (via a
+   constructive SVD
    ellipsoid domination + determinant volume bound).  Specialised to the orbit differential
-   `L = D_x(T^[n])` (`ErgodicTheory.chainRule_cocycle`) it gives exactly the per-orbit `volProd` count.
+   `L = D_x(T^[n])` (`ErgodicTheory.chainRule_cocycle`) it gives exactly the per-orbit
+   `volProd` count.
    The honest mathematical caveat is the non-compactness distortion regime (`hgeo` below, Riquelme
    2017), *not* the covering count itself.
 
 Feeding the orbit rate (layer 1) into the abstract atom-count reduction
-`ErgodicTheory.Entropy.ksEntropyPartition_le_of_atomCount_growth` (`ErgodicTheory.Entropy.Ruelle.Crude`)
+`ErgodicTheory.Entropy.ksEntropyPartition_le_of_atomCount_growth`
+(`ErgodicTheory.Entropy.Ruelle.Crude`)
 turns the per-step covering count into the per-partition bound `h(P, T) ≤ sumPosExp`, which
 discharges the `hgeo` / `hcount` hypothesis of `ErgodicTheory.margulisRuelle_le_sumPosExp`.
 
@@ -156,8 +160,10 @@ contributes itself.  This is the deterministic, ergodic-constant right-hand side
 inequality, expressed as the limit value of the orbit rate. -/
 theorem sum_max_zero_exponents_eq_sumPosExp :
     ∑ i : Fin d, max 0
-        (ErgodicTheory.exponents hT hdet (ErgodicTheory.measurable_derivativeCocycle T) hint hint' i)
-      = ErgodicTheory.sumPosExp hT hdet (ErgodicTheory.measurable_derivativeCocycle T) hint hint' := by
+        (ErgodicTheory.exponents hT hdet
+          (ErgodicTheory.measurable_derivativeCocycle T) hint hint' i)
+      = ErgodicTheory.sumPosExp hT hdet
+          (ErgodicTheory.measurable_derivativeCocycle T) hint hint' := by
   classical
   rw [ErgodicTheory.sumPosExp, ← Finset.sum_filter_add_sum_filter_not Finset.univ
     (fun i => 0 < ErgodicTheory.exponents hT hdet
@@ -171,7 +177,8 @@ theorem sum_max_zero_exponents_eq_sumPosExp :
           (ErgodicTheory.measurable_derivativeCocycle T) hint hint' i)
       = ∑ i ∈ Finset.univ.filter (fun i => 0 < ErgodicTheory.exponents hT hdet
           (ErgodicTheory.measurable_derivativeCocycle T) hint hint' i),
-        ErgodicTheory.exponents hT hdet (ErgodicTheory.measurable_derivativeCocycle T) hint hint' i :=
+        ErgodicTheory.exponents hT hdet
+          (ErgodicTheory.measurable_derivativeCocycle T) hint hint' i :=
     Finset.sum_congr rfl (fun i hi =>
       max_eq_right (le_of_lt (Finset.mem_filter.mp hi).2))
   -- The non-positive block: `max 0 λ = 0` when `¬ 0 < λ`.
@@ -206,7 +213,8 @@ theorem tendsto_posLog_singularValue (i : Fin d) :
           (i : ℕ))
       = max 0 ((n : ℝ)⁻¹ * Real.log
           (LinearMap.singularValues
-            (Matrix.toEuclideanLin (ErgodicTheory.cocycle (ErgodicTheory.derivativeCocycle T) T n x))
+            (Matrix.toEuclideanLin
+              (ErgodicTheory.cocycle (ErgodicTheory.derivativeCocycle T) T n x))
             (i : ℕ))) := by
     intro n
     rw [Real.posLog_def, mul_max_of_nonneg _ _ (by positivity), mul_zero]
@@ -227,7 +235,8 @@ Furstenberg–Kesten integrability for a compound generator is required: the rat
 on the per-exponent singular-value limits. -/
 theorem tendsto_log_volProd :
     ∀ᵐ x ∂μ, Tendsto (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (volProd T n x)) atTop
-      (𝓝 (ErgodicTheory.sumPosExp hT hdet (ErgodicTheory.measurable_derivativeCocycle T) hint hint')) := by
+      (𝓝 (ErgodicTheory.sumPosExp hT hdet
+        (ErgodicTheory.measurable_derivativeCocycle T) hint hint')) := by
   -- Gather the per-index limits over the finite index set `Fin d`.
   have hall : ∀ᵐ x ∂μ, ∀ i : Fin d, Tendsto
       (fun n : ℕ => (n : ℝ)⁻¹ * Real.posLog
@@ -243,13 +252,15 @@ theorem tendsto_log_volProd :
   have hrw : ∀ n : ℕ, (n : ℝ)⁻¹ * Real.log (volProd T n x)
       = ∑ i : Fin d, (n : ℝ)⁻¹ * Real.posLog
           (LinearMap.singularValues
-            (Matrix.toEuclideanLin (ErgodicTheory.cocycle (ErgodicTheory.derivativeCocycle T) T n x))
+            (Matrix.toEuclideanLin
+              (ErgodicTheory.cocycle (ErgodicTheory.derivativeCocycle T) T n x))
             (i : ℕ)) := by
     intro n
     rw [log_volProd_eq_sum_posLog, Finset.mul_sum,
       Finset.sum_range fun i => (n : ℝ)⁻¹ * Real.posLog
         (LinearMap.singularValues
-          (Matrix.toEuclideanLin (ErgodicTheory.cocycle (ErgodicTheory.derivativeCocycle T) T n x)) i)]
+          (Matrix.toEuclideanLin
+            (ErgodicTheory.cocycle (ErgodicTheory.derivativeCocycle T) T n x)) i)]
   rw [← sum_max_zero_exponents_eq_sumPosExp hT hdet hint hint']
   exact (tendsto_finsetSum Finset.univ (fun i _ => hx i)).congr (fun n => (hrw n).symm)
 
@@ -260,12 +271,14 @@ by exponentiating the eventual estimate `(1/n) log (volProd …) ≤ sumPosExp +
 once `(1/n) log volProd` is within `ε` of `sumPosExp`) and using `volProd > 0`. -/
 theorem eventually_volProd_le {x : EuclideanSpace ℝ (Fin d)}
     (hx : Tendsto (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (volProd T n x)) atTop
-      (𝓝 (ErgodicTheory.sumPosExp hT hdet (ErgodicTheory.measurable_derivativeCocycle T) hint hint')))
+      (𝓝 (ErgodicTheory.sumPosExp hT hdet
+        (ErgodicTheory.measurable_derivativeCocycle T) hint hint')))
     {ε : ℝ} (hε : 0 < ε) :
     ∀ᶠ n : ℕ in atTop, volProd T n x
       ≤ Real.exp (n * (ErgodicTheory.sumPosExp hT hdet
           (ErgodicTheory.measurable_derivativeCocycle T) hint hint' + ε)) := by
-  set L := ErgodicTheory.sumPosExp hT hdet (ErgodicTheory.measurable_derivativeCocycle T) hint hint' with hL
+  set L := ErgodicTheory.sumPosExp hT hdet
+    (ErgodicTheory.measurable_derivativeCocycle T) hint hint' with hL
   -- Eventually `(1/n) log volProd < L + ε`.
   have hlt : ∀ᶠ n : ℕ in atTop, (n : ℝ)⁻¹ * Real.log (volProd T n x) < L + ε :=
     hx.eventually (eventually_lt_nhds (by linarith))
@@ -312,12 +325,15 @@ theorem ksEntropyPartition_le_sumPosExp_of_atomVolProd {ι : Type*} [Fintype ι]
     (P : ErgodicTheory.Entropy.MeasurePartition μ ι) {C : ℝ} (hC : 1 ≤ C)
     {x : EuclideanSpace ℝ (Fin d)}
     (hxrate : Tendsto (fun n : ℕ => (n : ℝ)⁻¹ * Real.log (volProd T n x)) atTop
-      (𝓝 (ErgodicTheory.sumPosExp hT hdet (ErgodicTheory.measurable_derivativeCocycle T) hint hint')))
+      (𝓝 (ErgodicTheory.sumPosExp hT hdet
+        (ErgodicTheory.measurable_derivativeCocycle T) hint hint')))
     (hatom : ∀ᶠ n : ℕ in atTop,
       (ErgodicTheory.Entropy.atomCount hT.toMeasurePreserving P n : ℝ) ≤ C * volProd T n x) :
     ErgodicTheory.Entropy.ksEntropyPartition hT.toMeasurePreserving P
-      ≤ ErgodicTheory.sumPosExp hT hdet (ErgodicTheory.measurable_derivativeCocycle T) hint hint' := by
-  set L := ErgodicTheory.sumPosExp hT hdet (ErgodicTheory.measurable_derivativeCocycle T) hint hint' with hL
+      ≤ ErgodicTheory.sumPosExp hT hdet
+          (ErgodicTheory.measurable_derivativeCocycle T) hint hint' := by
+  set L := ErgodicTheory.sumPosExp hT hdet
+    (ErgodicTheory.measurable_derivativeCocycle T) hint hint' with hL
   -- Show `h(P, T) ≤ L + ε` for every `ε > 0`.
   refine le_of_forall_pos_le_add (fun ε hε => ?_)
   -- The atom-count growth bound at rate `L + ε`.

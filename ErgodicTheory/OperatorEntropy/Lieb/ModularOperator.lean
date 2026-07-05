@@ -28,7 +28,8 @@ feeding the Petz-equality analysis.
 
 * `ErgodicTheory.OperatorEntropy.Lieb.relModularArg`: the vectorised relative modular operator
   argument `ρ⁻¹ ⊗ σᵀ`.
-* `ErgodicTheory.OperatorEntropy.Lieb.relModularArg_eq_perspArg`: it is the perspective argument of the
+* `ErgodicTheory.OperatorEntropy.Lieb.relModularArg_eq_perspArg`: it is the perspective argument
+  of the
   Effros pair `(1 ⊗ σᵀ, ρ ⊗ 1)`.
 * `ErgodicTheory.OperatorEntropy.Lieb.relEntropy_eq_relForm`: the modular/perspective form of the
   relative entropy.

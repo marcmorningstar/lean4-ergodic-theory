@@ -24,7 +24,8 @@ It produces the fast-index `specTerm` envelope outright; the reverse-bound premi
 
 ## Main results
 
-* `ErgodicTheory.vslow_bridge_bound_of_forward_graded`: for a.e. `x`, every nonzero vector `v` of the
+* `ErgodicTheory.vslow_bridge_bound_of_forward_graded`: for a.e. `x`, every nonzero vector `v`
+  of the
   slow subspace `vslow A T (Real.exp t) x` and every fast index `j` (one with `t < lam0 j`) satisfy
   the eventual spectral-term bound `specTerm T A n x v j ≤ Real.exp (n * (2 * t + ε))`.
 

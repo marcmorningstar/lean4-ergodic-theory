@@ -27,7 +27,8 @@ covering–distortion count into the atom-count growth bound, producing the ineq
    covering count
    `coveringNumber ε (D_x(T^[n]) '' closedBall 0 ε) ≤ C_d · ∏ᵢ max(1, σᵢ(D_x(T^[n])))`,
    i.e. `≤ C_d · volProd T n x`, is **fully proved in-tree** in
-   `ErgodicTheory.Entropy.Ruelle.SharpCovering` (`ErgodicTheory.coveringCount_image_ball_le_volProd`, via a
+   `ErgodicTheory.Entropy.Ruelle.SharpCovering`
+   (`ErgodicTheory.coveringCount_image_ball_le_volProd`, via a
    constructive SVD ellipsoid domination + determinant volume bound).  It is packaged here as the
    explicit `Prop`-valued interface `ErgodicTheory.SharpLocalCovering`, which
    `sharpLocalCovering_of_coveringCount` *discharges* (with the explicit dimensional constant
@@ -36,7 +37,8 @@ covering–distortion count into the atom-count growth bound, producing the ineq
 2. **The geometric atom-count count (honest non-compactness hypothesis).**  The combinatorial step
    — a non-empty atom of the refined partition `⋁ₖ₌₀ⁿ⁻¹ T⁻ᵏ P` maps under `T^[n]` into a set
    covered by `~ volProd` balls, each meeting boundedly many atoms — is the Mañé/Katok count.  On
-   the noncompact `EuclideanSpace` it requires the honest regime of `ErgodicTheory.Entropy.Ruelle.Crude`
+   the noncompact `EuclideanSpace` it requires the honest regime of
+   `ErgodicTheory.Entropy.Ruelle.Crude`
    (uniform derivative bound / `μ` on a compact invariant set / bounded distortion; the bare
    inequality is false otherwise, Riquelme 2017).  We phrase it as the explicit hypothesis
    `hgeoCount`: at a base point `x` carrying the orbit rate, the atom count of the `n`-refinement is
@@ -48,7 +50,8 @@ covering–distortion count into the atom-count growth bound, producing the ineq
 * `ErgodicTheory.SharpLocalCovering` — the `Prop`-valued packaging of the one-step sharp covering
   count `coveringNumber ε (D_x(T^[n]) '' ball) ≤ C · volProd T n x`, *discharged* in-tree by
   `sharpLocalCovering_of_coveringCount`.
-* `ErgodicTheory.atomCount_le_volProd_of_sharpCovering` — composing the (proved) sharp covering count
+* `ErgodicTheory.atomCount_le_volProd_of_sharpCovering` — composing the (proved) sharp
+  covering count
   with the geometric count `hgeoCount` yields the per-orbit `volProd` atom bound
   `atomCount ≤ C' · volProd T n x` consumed by the orbit assembly.
 * `ErgodicTheory.hatom_of_sharpCovering` — discharges the existential `hatom` of the capstone for a
@@ -101,7 +104,8 @@ and `D_x(T^[n]) = toEuclideanCLM (cocycle (derivativeCocycle T) T n x)`
 
 This is the **sharp anisotropic** Liao–Qiu count (a thin pancake needs *few* balls along its thin
 directions), the genuinely geometric per-step input.  It is **proved in-tree** by the sibling
-`ErgodicTheory.Entropy.Ruelle.SharpCovering` (`ErgodicTheory.coveringCount_image_ball_le_volProd`, via a
+`ErgodicTheory.Entropy.Ruelle.SharpCovering` (`ErgodicTheory.coveringCount_image_ball_le_volProd`,
+via a
 constructive SVD ellipsoid domination); `sharpLocalCovering_of_coveringCount` instantiates that
 count at the differential `D_x(T^[n])` to discharge this packaging, so it is not a hypothesis.
 The weaker isotropic count `≤ (2‖L‖+1)^d` (which sees only `σ₀ = ‖L‖`) is subsumed by it. -/
@@ -257,7 +261,8 @@ strictly positive Lyapunov exponents:
 The **only** remaining input is the honest non-compactness atom count:
 
 * `hgeo` — the **geometric Mañé/Katok atom count** (the honest non-compactness input, same regime as
-  `ErgodicTheory.Entropy.Ruelle.Crude`: a uniform-distortion / compact-carrier hypothesis is unavoidable
+  `ErgodicTheory.Entropy.Ruelle.Crude`: a uniform-distortion / compact-carrier hypothesis is
+  unavoidable
   on
   the noncompact `EuclideanSpace`, Riquelme 2017): for every finite partition `P` there is a
   constant

@@ -16,7 +16,8 @@ Universidade de São Paulo lecture notes, 2013, **Theorem 2**; after Oseledec an
 value lies below the `j`-th gap `t = (gap)²`, i.e. the spectral subspaces of the cocycle Gram matrix
 `(cocycle A T n x)ᵀ (cocycle A T n x)` with eigenvalues `≤ t`.
 
-`ErgodicTheory.Lyapunov.Extensions.SingularSublevelProjector` (module 1) built, for each fixed step `n`
+`ErgodicTheory.Lyapunov.Extensions.SingularSublevelProjector` (module 1) built, for each
+fixed step `n`
 and threshold `t ≥ 0`, a measurable choice of that finite-step approximant — the spectral `≤ t`
 subspace `cocycleSublevelEuclid A T n t x`, the generalization of the bottom kernel stratum
 (threshold `0`) to an arbitrary sublevel `t`. This file is the threshold-`t` analogue of the

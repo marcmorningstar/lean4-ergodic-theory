@@ -41,9 +41,11 @@ Borel.
 
 * `ErgodicTheory.standardBorelSpace_of_measurableEquiv`: a measurable equivalence transports
   `StandardBorelSpace`.
-* `ErgodicTheory.standardBorelSpace_suspensionSpace_const_roof`: for `τ ≡ 1` and a standard Borel base,
+* `ErgodicTheory.standardBorelSpace_suspensionSpace_const_roof`: for `τ ≡ 1` and
+  a standard Borel base,
   the suspension space is standard Borel.
-* `ErgodicTheory.Multifractal.instStandardBorelSpace_suspensionSpace_bern`: the constant-roof Bernoulli
+* `ErgodicTheory.Multifractal.instStandardBorelSpace_suspensionSpace_bern`: the constant-roof
+  Bernoulli
   suspension space `SuspensionSpace biShiftEquiv measurable_oneRoof` is standard Borel (for a
   standard Borel alphabet `α₀`).
 -/

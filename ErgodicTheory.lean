@@ -282,7 +282,8 @@ This module imports the whole development.
   (suspension) layer.
 * `ErgodicTheory.OperatorEntropy.*` — the finite-dimensional quantum-information layer.
 
-The target theorem `ErgodicTheory.oseledets_filtration`, the two-sided `oseledets_splitting`, the flow
+The target theorem `ErgodicTheory.oseledets_filtration`, the two-sided `oseledets_splitting`,
+the flow
 `oseledets_flow`, and each quantum-information headline are proved using only the standard axioms
 `propext`, `Classical.choice`, `Quot.sound`. This is **enforced**: `test/AxiomAudit.lean` is a
 default `lake` build target (`defaultTargets` in `lakefile.toml`), so every `lake build` re-checks

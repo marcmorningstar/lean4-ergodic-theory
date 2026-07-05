@@ -46,10 +46,10 @@ its own class.
 * `ErgodicTheory.tendsto_coverCocycle_exponent_of_section`: the height-shift. If
   `Real.log ‖coverCocycle (x, 0) t‖ / t → L`, then `Real.log ‖coverCocycle (x, s) t‖ / t → L` for
   every height `s`.
-* `ErgodicTheory.ae_suspensionMeasure_hasFlowExponent`: the **space-level exponent**. Under a bounded
-  roof `c ≤ τ ≤ C` with `0 < c`, positive integral `0 < ∫τ`, and the base-a.e. Birkhoff growth /
-  roof-average limits (top base exponent `λ_base`, mean roof `∫τ`), for `μ̂`-a.e.
-  `q ∈ SuspensionSpace`, `HasFlowExponent q (λ_base / ∫τ)`.
+* `ErgodicTheory.ae_suspensionMeasure_hasFlowExponent`: the **space-level exponent**. Under a
+  bounded roof `c ≤ τ ≤ C` with `0 < c`, positive integral `0 < ∫τ`, and the base-a.e. Birkhoff
+  growth / roof-average limits (top base exponent `λ_base`, mean roof `∫τ`), for `μ̂`-a.e. `q ∈
+  SuspensionSpace`, `HasFlowExponent q (λ_base / ∫τ)`.
 
 ## gap
 
@@ -57,12 +57,12 @@ The headline is the `μ̂`-a.e. *existence of the flow exponent value* `λ_base 
 class — the genuine space-level #5 exponent. It is the `μ̂`-a.e. instantiation of the existential
 predicate `HasFlowExponent`; uniqueness of that value across the class (well-definedness of a single
 `SuspensionSpace → ℝ` exponent function) is the *forward-step* content of
-`ErgodicTheory.tendsto_exponent_iff_of_suspensionAct` (`SuspensionSpaceExponent`), whose closure over
-the full signed-integer orbit connection is deferred there. The measurability witness `hmeas` of the
-lifted exponent set on the quotient is consumed as an explicit hypothesis (the disintegration data,
-exactly as in `ae_suspensionMeasure_section_exponent_set`: the quotient image of a measurable base
-set is not measurable for free). No closed-form identification of `λ_base` with the integrated top
-Lyapunov exponent is asserted here beyond its defining base-a.e. Birkhoff limit `hgrow`.
+`ErgodicTheory.tendsto_exponent_iff_of_suspensionAct` (`SuspensionSpaceExponent`), whose closure
+over the full signed-integer orbit connection is deferred there. The measurability witness `hmeas`
+of the lifted exponent set on the quotient is consumed as an explicit hypothesis (the disintegration
+data, exactly as in `ae_suspensionMeasure_section_exponent_set`: the quotient image of a measurable
+base set is not measurable for free). No closed-form identification of `λ_base` with the integrated
+top Lyapunov exponent is asserted here beyond its defining base-a.e. Birkhoff limit `hgrow`.
 -/
 
 open MeasureTheory Filter Topology Set

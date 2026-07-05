@@ -10,7 +10,8 @@ import Mathlib.Dynamics.Ergodic.MeasurePreserving
 # Invariance of Shannon entropy under a measure-preserving map
 
 This file continues the measure-theoretic foundation for Kolmogorov–Sinai entropy started in
-`ErgodicTheory.Entropy.Partition` and `ErgodicTheory.Entropy.Join`. It records the **`T`-invariance** of
+`ErgodicTheory.Entropy.Partition` and `ErgodicTheory.Entropy.Join`. It records the
+**`T`-invariance** of
 the Shannon entropy of a finite family of cells: pulling each cell back along a measure-preserving
 transformation `T` leaves the entropy unchanged.
 

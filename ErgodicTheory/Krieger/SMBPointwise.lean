@@ -534,7 +534,8 @@ variable [Nonempty ι]
 This is the assembly of the pointwise SMB theorem `(1/n)·iₙ(x) → h(P,T)` from the proved pieces and
 the two precisely-isolated analytic leaves.  It records the dependency structure as an honest
 `theorem` taking the tail leaf as a hypothesis, so the reduction is machine-checked; that leaf is
-**discharged downstream** in `ErgodicTheory.Krieger.SMBLeaves` (`ae_tendsto_breiman_tail`/`makerTail`),
+**discharged downstream** in `ErgodicTheory.Krieger.SMBLeaves`
+(`ae_tendsto_breiman_tail`/`makerTail`),
 making `ae_tendsto_div_infoFun` there — and `UpperSMB.ae_tendsto_div_infoFun_self` — unconditional.
 
 The Breiman telescoping (`SMBSharp.infoWeight_succ_eq`) gives `iₙ(x) = ∑_{j<n} g_{n−j}(Tʲx)` a.e.,

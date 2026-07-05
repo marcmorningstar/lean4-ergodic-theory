@@ -51,10 +51,12 @@ The entropy is then a clean three-step chain:
   (a probability measure).
 * `ErgodicTheory.Multifractal.measurePreserving_suspensionUnitEquiv`: the fundamental-domain
   equivalence sends the suspension measure to `bernZ ν × fibreMeasure`.
-* `ErgodicTheory.Multifractal.suspensionUnitEquiv_comp_flow`: the equivalence conjugates the time-`1`
+* `ErgodicTheory.Multifractal.suspensionUnitEquiv_comp_flow`: the equivalence conjugates
+  the time-`1`
   map to the frozen product `T × id`.
 * `ErgodicTheory.Multifractal.ksEntropy_bernSuspensionFlow_one_eq_Hnu`: the headline identity.
-* `ErgodicTheory.Multifractal.bernSuspensionFlow_ksEntropy_eq_Hnu`: the flow-metric-entropy restatement.
+* `ErgodicTheory.Multifractal.bernSuspensionFlow_ksEntropy_eq_Hnu`:
+  the flow-metric-entropy restatement.
 
 ## References
 

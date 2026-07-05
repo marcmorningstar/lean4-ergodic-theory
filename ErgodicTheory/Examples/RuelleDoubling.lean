@@ -18,7 +18,8 @@ module **instantiates that content concretely** on the classical worked example:
 map** `T : y ↦ 2 • y` on the unit circle (`ErgodicTheory.doublingMap`,
 `ErgodicTheory/Examples/Elementary.lean`).
 
-The headline `ErgodicTheory.doublingMap_ksEntropyPartition_le_sumPosExp` proves the **per-partition**
+The headline `ErgodicTheory.doublingMap_ksEntropyPartition_le_sumPosExp` proves the
+**per-partition**
 bound `ksEntropyPartition hT P ≤ sumPosExp`, i.e. `h(α, T) ≤ ∑ λᵢ⁺`, for a *single* partition `α` —
 it is **not** the system Margulis–Ruelle inequality `h(T) ≤ ∑ λᵢ⁺`. The bridge from the
 per-partition bound to the system entropy is the Kolmogorov–Sinai identity `h(T) = h(α, T)` for a
@@ -37,17 +38,21 @@ proof rather than prose.
 
 ## What is discharged here, and what stays an honest input
 
-* **The right-hand side is computed unconditionally.** `ErgodicTheory.doublingMap_sumPosExp_eq_log_two`
+* **The right-hand side is computed unconditionally.**
+  `ErgodicTheory.doublingMap_sumPosExp_eq_log_two`
   proves `sumPosExp = log 2` for the doubling-map constant cocycle, with *every* spectrum hypothesis
   (invertibility, measurability, the two log-integrability conditions) discharged from the
   constant-cocycle API (`const_det_ne_zero`, `const_measurable`, `const_integrableLogNorm`,
   `const_integrableLogNorm_inv`). It reuses the proven single exponent
-  `ErgodicTheory.doublingMap_topExponent_eq_log_two` (`= log 2`). This is the genuine positive-exponent
+  `ErgodicTheory.doublingMap_topExponent_eq_log_two` (`= log 2`). This is the genuine
+  positive-exponent
   *sum* side, fully sorry-free.
 
 * **The per-partition Ruelle inequality is instantiated at the rate `log 2`.**
-  `ErgodicTheory.doublingMap_ksEntropyPartition_le_sumPosExp` specializes the unconditional arithmetic
-  backbone `ErgodicTheory.Entropy.ksEntropyPartition_le_of_atomCount_growth` to the doubling map at the
+  `ErgodicTheory.doublingMap_ksEntropyPartition_le_sumPosExp` specializes the unconditional
+  arithmetic
+  backbone `ErgodicTheory.Entropy.ksEntropyPartition_le_of_atomCount_growth` to the doubling
+  map at the
   exponential rate `R = log 2`, and then *identifies that rate with the computed positive-exponent
   sum*: from the atom-count growth `atomCount ≤ C · 2ⁿ` of a partition's `n`-refinement, the
   partition entropy `h(α, T)` is bounded by `sumPosExp = log 2`. The rate here is not an assumed
@@ -60,7 +65,8 @@ doubling-map-specific geometry. So the natural binary instance exercises **no** 
 input. The geometric content of `hgrow` only *bites* for partitions of cardinality `> 2`, where
 `card(ι)ⁿ` exceeds `2ⁿ` and the exact `2`-to-`1` structure of the doubling map (a partition into
 intervals refines under `T^[n]` into `≈ 2ⁿ` atoms, not `card(ι)ⁿ`) is what pins the rate down. The
-hypothesis has exactly the status the Mañé/Katok count carries in `ErgodicTheory.Entropy.Ruelle.Crude`,
+hypothesis has exactly the status the Mañé/Katok count carries in
+`ErgodicTheory.Entropy.Ruelle.Crude`,
 here with the rate `log 2` matching the true exponent.
 
 The remaining bridge to a fully unconditional `h(T) ≤ log 2` over the **system** entropy is the

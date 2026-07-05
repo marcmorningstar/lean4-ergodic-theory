@@ -406,7 +406,8 @@ noncomputable def StageInput.toStageCode (e : α ≃ᵐ α) {Q : κ → Set α}
 /-- **Sub-problem B closed (modulo the supplied generator).** A `StageInput` — one fixed measurable
 `code` whose refining-tower stages spell the sentinel-encoded `Q`-name and bracket every column with
 the escape symbol `s`, with summable misses — yields `CodesTwoSidedMod0c e Q (codePartition …)`, the
-deliverable that slots into `ErgodicTheory.Krieger.KriegerCodingData.code_codes`. This is the symbolic
+deliverable that slots into `ErgodicTheory.Krieger.KriegerCodingData.code_codes`.
+This is the symbolic
 side of Krieger's column code: the residual is now the construction of the `StageInput` fields. -/
 theorem StageInput.codes [Countable κ] [MeasurableSpace κ] [MeasurableSingletonClass κ]
     {e : α ≃ᵐ α} {Q : κ → Set α} (D : StageInput e μ Q k) :

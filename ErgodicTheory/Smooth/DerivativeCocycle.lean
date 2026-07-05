@@ -23,11 +23,13 @@ act on `EuclideanSpace ℝ (Fin d)` via `Matrix.toEuclideanCLM`.
 
 ## Main definitions
 
-* `ErgodicTheory.derivativeCocycle` — the matrix-valued generator `x ↦ (toEuclideanCLM).symm (Dₓ T)`.
+* `ErgodicTheory.derivativeCocycle` — the matrix-valued generator
+  `x ↦ (toEuclideanCLM).symm (Dₓ T)`.
 
 ## Main results
 
-* `ErgodicTheory.toEuclideanCLM_derivativeCocycle` — `toEuclideanCLM (derivativeCocycle T x) = Dₓ T`.
+* `ErgodicTheory.toEuclideanCLM_derivativeCocycle` —
+  `toEuclideanCLM (derivativeCocycle T x) = Dₓ T`.
 * `ErgodicTheory.norm_derivativeCocycle` — the generator has the same L2 operator norm as `Dₓ T`.
 * `ErgodicTheory.chainRule_cocycle` — the **chain-rule cocycle identity**
   `toEuclideanCLM (cocycle (derivativeCocycle T) T n x) = fderiv ℝ (T^[n]) x`.
@@ -35,7 +37,8 @@ act on `EuclideanSpace ℝ (Fin d)` via `Matrix.toEuclideanCLM`.
   the second derivative data (here: from `measurable_fderiv`).
 * `ErgodicTheory.det_derivativeCocycle_ne_zero` — invertibility of each `Dₓ T` gives a nonvanishing
   matrix determinant for the generator.
-* `ErgodicTheory.oseledets_filtration_derivativeCocycle` — the Oseledets filtration specialized to the
+* `ErgodicTheory.oseledets_filtration_derivativeCocycle` — the Oseledets filtration specialized
+  to the
   derivative cocycle of an ergodic differentiable map with integrable log-derivative data.
 
 ## References

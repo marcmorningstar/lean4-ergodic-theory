@@ -426,8 +426,8 @@ theorem ae_tendsto_logMass_div_continuum (hσ : Ergodic (shiftMap (α₀ := α�
 /-! ### A5 — the conditional, per-partition entropy = Hausdorff-dimension headline
 
 Feeding the `μ`-a.e. pointwise dimension limit (A3) into the metric-space Billingsley/Frostman
-bridge `dimH_eq_of_localDimension_eq` (`ErgodicTheory/Multifractal/HausdorffDimension.lean`) yields the
-**symbolic entropy = dimension identity** on the explicit conull carrier set: the Hausdorff
+bridge `dimH_eq_of_localDimension_eq` (`ErgodicTheory/Multifractal/HausdorffDimension.lean`) yields
+the **symbolic entropy = dimension identity** on the explicit conull carrier set: the Hausdorff
 dimension of the full-measure set on which the pointwise dimension exists equals `h / log 2`, with
 `h` the Kolmogorov–Sinai entropy of the coordinate partition.
 

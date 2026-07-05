@@ -18,20 +18,24 @@ formula), the matrix accumulated by flow time `t` starting on the base section a
 return cocycle evaluated at the number of completed laps.
 
 The construction sits on top of the lap-counter first-passage API of
-`ErgodicTheory.Continuous.SuspensionLapCount` (`lapCount_returnTime_le`, `lapCount_lt_returnTime_succ`,
+`ErgodicTheory.Continuous.SuspensionLapCount` (`lapCount_returnTime_le`,
+`lapCount_lt_returnTime_succ`,
 `returnTime_strictMono`) and the return cocycle of `ErgodicTheory.Continuous.SuspensionCocycle`
 (`suspensionCocycleReturn`, `cocycle_add`).
 
 ## Main definitions
 
-* `ErgodicTheory.flowCocycleSection`: `flowCocycleSection A T hτ hc hcpos t x` is the matrix accumulated
+* `ErgodicTheory.flowCocycleSection`: `flowCocycleSection A T hτ hc hcpos t x` is the matrix
+  accumulated
   by flow time `t` starting on the base section at `x`, namely the return cocycle at `lapCount t x`.
 
 ## Main results
 
-* `ErgodicTheory.lapCount_returnTime_eq`: the lap count at exactly the `n`-th return time is `n`, pinned
+* `ErgodicTheory.lapCount_returnTime_eq`: the lap count at exactly the `n`-th return time is `n`,
+  pinned
   by the first-passage sandwich and the strict monotonicity of the return times.
-* `ErgodicTheory.flowCocycleSection_returnTime`: at an integer lap time `t = returnTime n x` the flow
+* `ErgodicTheory.flowCocycleSection_returnTime`: at an integer lap time `t = returnTime n x`
+  the flow
   cocycle on the section equals the discrete base cocycle `cocycle A T n x`.
 * `ErgodicTheory.flowCocycleSection_zero`: at flow time `0` the flow cocycle on the section is the
   identity matrix.

@@ -9,11 +9,11 @@ import ErgodicTheory.Lyapunov.Extensions.Spectrum
 # The inverse (time-reversed) singular-value spectrum
 
 This module is purely *additive* on top of the spectrum object
-`ErgodicTheory.exponents : Fin d → ℝ` (defined in `ErgodicTheory/Lyapunov/Spectrum.lean`). It records
-the **inverse-matrix-cocycle** reciprocity: the singular values of `M⁻¹` are the reciprocals,
-in reversed order, of the singular values of `M`, and consequently the Lyapunov exponents of
-the *inverse cocycle* `n ↦ (cocycle A T n x)⁻¹` are the negatives, in reversed order, of the
-exponents of `A`.
+`ErgodicTheory.exponents : Fin d → ℝ` (defined in `ErgodicTheory/Lyapunov/Spectrum.lean`). It
+records the **inverse-matrix-cocycle** reciprocity: the singular values of `M⁻¹` are the
+reciprocals, in reversed order, of the singular values of `M`, and consequently the Lyapunov
+exponents of the *inverse cocycle* `n ↦ (cocycle A T n x)⁻¹` are the negatives, in reversed order,
+of the exponents of `A`.
 
 ## The honest caveat on "time reversal"
 

@@ -14,8 +14,9 @@ quotient `SuspensionSpace T hτ` (the mapping torus of `T` under the roof `τ`),
 well defined: the growth rate `lim (1/t) log ‖coverCocycle p t‖` of the cover cocycle does not
 depend on which representative `(x, s)` of the orbit class `[x, s]` is used to compute it.
 
-The cover cocycle of `ErgodicTheory.Continuous.SuspensionCoverFlow` is the *cover-level* special-flow
-cocycle: the accumulated matrix `coverCocycle (x, s) t` lives on `X × ℝ`, before passing to the
+The cover cocycle of `ErgodicTheory.Continuous.SuspensionCoverFlow` is the *cover-level*
+special-flow cocycle: the accumulated matrix `coverCocycle (x, s) t` lives on `X × ℝ`, before
+passing to the
 quotient. As recorded in `ErgodicTheory.Continuous.SuspensionGrowthDescent`, the **matrix** cover
 cocycle does *not* descend to the quotient — re-basing along one orbit step post-multiplies it by
 the fixed factor `cocycle A T n x`. What *does* descend is the **growth rate**: the fixed
@@ -33,7 +34,8 @@ Nauk SSSR **128** (1959) 873–875).
 
 ## Main definitions
 
-* `ErgodicTheory.HasFlowExponent`: the predicate `HasFlowExponent q L` on `q : SuspensionSpace T hτ`,
+* `ErgodicTheory.HasFlowExponent`: the predicate `HasFlowExponent q L` on
+  `q : SuspensionSpace T hτ`,
   asserting that **some** representative `(x, s)` of the orbit class `q` carries the cover-cocycle
   growth rate `L`, i.e. `suspensionMk (x, s) = q` and
   `Tendsto (fun t ↦ log ‖coverCocycle (x, s) t‖ / t) atTop (𝓝 L)`. The existential form lifts
@@ -49,8 +51,8 @@ Nauk SSSR **128** (1959) 873–875).
   two `Tendsto` statements are equivalent. The `→` direction is the Module-1 limit transfer; the
   `←` direction is its mirror, obtained from the *symmetric* additive `log`-discrepancy bound
   `coverCocycle_suspensionAct_log_discrepancy` by the same `1/t` squeeze.
-* `ErgodicTheory.hasFlowExponent_of_suspensionAct`: orbit-class invariance of `HasFlowExponent`. If two
-  cover points are connected by a forward orbit step `suspensionAct (n : ℤ) (x, s) = (x₂, s₂)`
+* `ErgodicTheory.hasFlowExponent_of_suspensionAct`: orbit-class invariance of `HasFlowExponent`. If
+  two cover points are connected by a forward orbit step `suspensionAct (n : ℤ) (x, s) = (x₂, s₂)`
   (so `suspensionMk (x, s) = suspensionMk (x₂, s₂)`) then, under the same hypotheses,
   `Tendsto (fun t ↦ log ‖coverCocycle (x, s) t‖ / t) atTop (𝓝 L)` *witnesses*
   `HasFlowExponent (suspensionMk (x₂, s₂)) L`: the growth rate computed at one representative

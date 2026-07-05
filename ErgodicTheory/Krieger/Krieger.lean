@@ -28,8 +28,10 @@ The proof has three layers, of which this file is the top:
   generator `Q` along the tower columns is `≤ kᴺ` up to `ε` whenever `log k > h`.
 * **M3 (coding + recovery, this development).** The combinatorics of M1+M2 build a `Fin k`-valued
   partition `P` that **codes** a (two-sided) generator `Q` **mod 0** — i.e. the two-sided
-  `P`-itinerary recovers each `Q`-cell up to a μ-null set (`ErgodicTheory.Krieger.CodesTwoSidedMod0c`).
-  The recovery core (`ErgodicTheory.Krieger.IsGeneratingTwoSidedMod0c.of_codesc`) then promotes `P` to a
+  `P`-itinerary recovers each `Q`-cell up to a μ-null set
+  (`ErgodicTheory.Krieger.CodesTwoSidedMod0c`).
+  The recovery core (`ErgodicTheory.Krieger.IsGeneratingTwoSidedMod0c.of_codesc`) then promotes
+  `P` to a
   two-sided generator mod 0.
 
 ## Why *mod 0*
@@ -117,7 +119,8 @@ column-coding `Fin k` partition built from the `≤ kᴺ` name bound (sub-proble
 countable `Q`-name only a.e. The two saturation layers — the `Countable` layer of `Generator.lean`
 for `Q` and the `Fintype` layer of `Coding.lean` for `P` — are bridged by `CodesTwoSidedMod0c`. The
 headline turns a `KriegerCodingData` into a finite mod-0 two-sided generator by the cross-layer
-recovery `ErgodicTheory.Krieger.IsGeneratingTwoSidedMod0c.of_codesc`. The measure-preservation `mp` is
+recovery `ErgodicTheory.Krieger.IsGeneratingTwoSidedMod0c.of_codesc`. The measure-preservation
+`mp` is
 carried because that recovery needs it: preimage under the iterates `eⁿ` must commute with the
 μ-completion. -/
 structure KriegerCodingData (e : α ≃ᵐ α) (μ : Measure α) (k : ℕ) where

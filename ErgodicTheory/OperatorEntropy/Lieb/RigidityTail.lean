@@ -31,7 +31,8 @@ single identity yields *both* the per-resolvent operator convexity `(Wᴴ X⁻¹
 *and* the rigidity: saturation `⟪ξ, (Wᴴ X⁻¹ W - Y_X⁻¹) ξ⟫ = 0` forces `X⁻¹ (W ξ) = W (Y_X⁻¹ ξ)`.
 
 Feeding `X = Δ + t` and integrating the scalar representation `-log x = ∫₀^∞ ((x+t)⁻¹ - (1+t)⁻¹)`
-(`ErgodicTheory.OperatorEntropy.Lieb.cfc_neg_log_eq_integral`) turns the `-log` gap into an integral of
+(`ErgodicTheory.OperatorEntropy.Lieb.cfc_neg_log_eq_integral`) turns the `-log` gap into
+an integral of
 these nonnegative resolvent gaps; a zero integral of a nonnegative continuous integrand is pointwise
 zero, so each resolvent intertwines on `ξ`.  Finally the resolvent readoff
 (`ErgodicTheory.OperatorEntropy.Lieb.exists_resolvent_combo`) upgrades resolvent intertwining to

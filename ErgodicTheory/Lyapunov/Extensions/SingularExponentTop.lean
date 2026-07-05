@@ -33,8 +33,8 @@ forward `log⁺`-operator-norm `limsup` (`forwardPosLogNormLimsup`); this is the
 * `ErgodicTheory.sprod_one_eq_opNorm` — `sprod A T 1 n x = ‖A⁽ⁿ⁾(x)‖`.
 * `ErgodicTheory.forwardSingularExponent_one_eq` — `γ₁(x) = forwardPosLogNormLimsup A T x`
   (deterministic, every `x`).
-* `ErgodicTheory.ae_forwardSingularExponent_one_eq_topExponent` — under ergodicity, `γ₁ = (λ₁⁺ : EReal)`
-  `μ`-a.e. for a real constant `λ₁⁺` (the headline tie-in).
+* `ErgodicTheory.ae_forwardSingularExponent_one_eq_topExponent` — under ergodicity, `γ₁ = (λ₁⁺ :
+  EReal)` `μ`-a.e. for a real constant `λ₁⁺` (the headline tie-in).
 
 ## References
 
@@ -110,10 +110,10 @@ variable {X : Type*} [MeasurableSpace X] {T : X → X} {d : ℕ}
 
 /-- **Top singular value = L2 operator norm.** For a square matrix `M : Matrix (Fin d) (Fin d) ℝ`
 with `d ≠ 0`, the largest singular value of `toEuclideanLin M` equals the L2 operator norm `‖M‖`:
-`σ₀(toEuclideanLin M) = ‖M‖`. The `≤` direction is `ErgodicTheory.sigma_le_opNorm`; the `≥` direction
-is `ContinuousLinearMap.opNorm_le_bound` fed the per-vector bound
-`LinearMap.norm_apply_le_top_singularValue` (`‖f x‖ ≤ σ₀ · ‖x‖`), using
-`‖M‖ = ‖LinearMap.toContinuousLinearMap (toEuclideanLin M)‖`. -/
+`σ₀(toEuclideanLin M) = ‖M‖`. The `≤` direction is `ErgodicTheory.sigma_le_opNorm`; the `≥`
+direction is `ContinuousLinearMap.opNorm_le_bound` fed the per-vector bound
+`LinearMap.norm_apply_le_top_singularValue` (`‖f x‖ ≤ σ₀ · ‖x‖`), using `‖M‖ =
+‖LinearMap.toContinuousLinearMap (toEuclideanLin M)‖`. -/
 theorem top_singularValue_eq_opNorm [NeZero d] (M : Matrix (Fin d) (Fin d) ℝ) :
     (Matrix.toEuclideanLin M).singularValues 0 = ‖M‖ := by
   set f := Matrix.toEuclideanLin M with hf

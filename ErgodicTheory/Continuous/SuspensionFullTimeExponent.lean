@@ -18,9 +18,11 @@ cross-section return subsequence* `t = returnTime n x`. Upgrading it to *arbitra
 ingredients of that squeeze.
 
 The structural input is the between-returns constancy of
-`ErgodicTheory.Continuous.SuspensionBetweenReturns`: on the whole `n`-th lap interval the cover cocycle
+`ErgodicTheory.Continuous.SuspensionBetweenReturns`: on the whole `n`-th lap interval
+the cover cocycle
 norm is locked to the discrete base cocycle norm. Sampling that constancy at the *lap count*
-`n = lapCount t x` (the first-passage index of `ErgodicTheory.Continuous.SuspensionLapCount`, with its
+`n = lapCount t x` (the first-passage index of `ErgodicTheory.Continuous.SuspensionLapCount`,
+with its
 defining sandwich `returnTime (lapCount t x) x ≤ t < returnTime (lapCount t x + 1) x`) turns the
 moving real-time norm into the discrete base norm evaluated at the lap count, *for every* real
 `t ≥ 0`:
@@ -80,7 +82,8 @@ still open:
 Beyond these, the **quotient descent** of `coverCocycle` from the cover `X × ℝ` to the orbit
 quotient `ErgodicTheory.SuspensionSpace T hτ` (the `(x, τ x) ∼ (T x, 0)` identification, the measure
 `μ̂`, and the `MeasurePreservingFlow` packaging) remains the open keystone toward the genuine
-space-level headline (cf. the quotient gap documented in `ErgodicTheory.Continuous.SuspensionCocycle`).
+space-level headline (cf. the quotient gap documented
+in `ErgodicTheory.Continuous.SuspensionCocycle`).
 The present file lands the two exact reduction lemmas — sorry-free real-time building blocks — and
 documents the remaining tendsto + quotient-descent gap precisely.
 -/

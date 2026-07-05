@@ -10,7 +10,8 @@ import ErgodicTheory.Continuous.Flow
 # Measure-preservation of the suspension flow
 
 This module supplies the measure-theoretic content that
-`ErgodicTheory.Continuous.SuspensionFlow` deliberately deferred: the per-time **measure-preservation**
+`ErgodicTheory.Continuous.SuspensionFlow` deliberately deferred: the per-time
+**measure-preservation**
 of the suspension flow `ζ_t` on the suspension probability space, and its packaging as a
 `MeasurePreservingFlow`.
 

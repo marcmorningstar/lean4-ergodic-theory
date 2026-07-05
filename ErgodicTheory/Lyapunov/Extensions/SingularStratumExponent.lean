@@ -28,8 +28,9 @@ The exact limit is a `liminf = limsup` squeeze:
 
 * **Upper half (`limsup ≤ c`), unconditional and det-free.** Membership `v ∈ lambdaBarSublevel
   A T c x` at a nonnegative cut `c ≥ 0` is exactly `lambdaBar A T x v ≤ c`
-  (`ErgodicTheory.mem_lambdaBarSublevel_iff`), i.e. `limsup (1/n)·log‖A⁽ⁿ⁾ v‖ ≤ c`. No invertibility,
-  no integrability, no band-projector convergence — it is *built into* the filtration's definition.
+  (`ErgodicTheory.mem_lambdaBarSublevel_iff`), i.e. `limsup (1/n)·log‖A⁽ⁿ⁾ v‖ ≤ c`. No
+  invertibility, no integrability, no band-projector convergence — it is *built into* the
+  filtration's definition.
 
 * **Lower half (`c ≤ liminf`), from the fast band projector at the cut.** Supplied by the det-free
   analytic core `ErgodicTheory.cocycle_apply_sq_ge_band` (`cᵘⁿ‖Pᶜₙ v‖² ≤ ‖A⁽ⁿ⁾ v‖²`, no `det`
@@ -44,21 +45,22 @@ The exact limit is a `liminf = limsup` squeeze:
 The band-projector convergence datum `hP, hPv` is exactly the genuine residual of the singular
 forward filtration (the wall `(R)` pinned in `SingularBandConverge.lean` and
 `SingularSlowSpaceUnconditional.lean`): for a singular cocycle it is *not* unconditional, but is
-guaranteed on the tempered class (`ErgodicTheory.tendsto_vSlowSingularStep_of_tempered`). We therefore
-take it — together with the two-sided Furstenberg–Kesten boundedness `hbdd` — as the explicit
-hypotheses of the exact law, exactly as the invertible engine
-(`ErgodicTheory.tendsto_inv_mul_log_norm_cocycle_apply_of_bandProjector`) does. The headline is then a
-clean, sorry-free, det-free squeeze.
+guaranteed on the tempered class (`ErgodicTheory.tendsto_vSlowSingularStep_of_tempered`). We
+therefore take it — together with the two-sided Furstenberg–Kesten boundedness `hbdd` — as the
+explicit hypotheses of the exact law, exactly as the invertible engine
+(`ErgodicTheory.tendsto_inv_mul_log_norm_cocycle_apply_of_bandProjector`) does. The headline is then
+a clean, sorry-free, det-free squeeze.
 
 ## Main results
 
 * `ErgodicTheory.log_le_liminf_log_cocycle_apply_detfree` — the **det-free** per-vector liminf lower
   bound `log c ≤ liminf (1/n)·log‖A⁽ⁿ⁾ v‖` from band-projector convergence at the cut `c > 0`. No
   invertibility.
-* `ErgodicTheory.singular_perDirection_exponent_eq_lambda_of_mem_stratum` — **the headline**: the exact
-  per-stratum per-direction growth limit `Tendsto (fun n => (1/n)·log‖A⁽ⁿ⁾ v‖) atTop (𝓝 c)` for a
-  vector exactly on the `c`-stratum of the singular sublevel filtration (`v ∈ lambdaBarSublevel
-  A T c x`, `v ≠ 0`) with a fast band projector converging non-trivially at the cut.
+* `ErgodicTheory.singular_perDirection_exponent_eq_lambda_of_mem_stratum` — **the headline**: the
+  exact per-stratum per-direction growth limit `Tendsto (fun n => (1/n)·log‖A⁽ⁿ⁾ v‖) atTop (𝓝 c)`
+  for a vector exactly on the `c`-stratum of the singular sublevel filtration (`v ∈
+  lambdaBarSublevel A T c x`, `v ≠ 0`) with a fast band projector converging non-trivially at the
+  cut.
 * `ErgodicTheory.lambdaBar_eq_of_mem_stratum` — the user-facing corollary tying the measurable
   filtration to the exact exponent: under the same hypotheses, `lambdaBar A T x v = c` *and* the
   full sequence (not just its `limsup`) converges to `c`.
@@ -83,15 +85,16 @@ variable {X : Type*} [MeasurableSpace X] {d : ℕ}
 The invertible liminf engine `ErgodicTheory.log_le_liminf_log_cocycle_apply` carries
 `hA : ∀ x, (A x).det ≠ 0` only to guarantee `‖A⁽ⁿ⁾ v‖ > 0` (`cocycle_apply_ne_zero`). For a
 singular cocycle that positivity is instead *forced by the band bound*
-`ErgodicTheory.cocycle_apply_sq_ge_band`: where the band projection `‖Pᶜₙ v‖` is positive (eventually,
-since it converges to `‖P v‖ > 0`), the bound `cᵘⁿ‖Pᶜₙ v‖² ≤ ‖A⁽ⁿ⁾ v‖²` with `c > 0` makes
-`‖A⁽ⁿ⁾ v‖ > 0`. So we re-derive the eventual lower bound and the `liminf` bound **det-free**. -/
+`ErgodicTheory.cocycle_apply_sq_ge_band`: where the band projection `‖Pᶜₙ v‖` is positive
+(eventually, since it converges to `‖P v‖ > 0`), the bound `cᵘⁿ‖Pᶜₙ v‖² ≤ ‖A⁽ⁿ⁾ v‖²` with `c > 0`
+makes `‖A⁽ⁿ⁾ v‖ > 0`. So we re-derive the eventual lower bound and the `liminf` bound **det-free**.
+-/
 
 /-- **Det-free eventual per-vector lower bound.** If the fast band projectors for `(c,∞)` (with
 `c > 0`) converge to `P` with `P v ≠ 0`, then *eventually*
 `log c + (1/n)·log‖Pᶜₙ v‖ ≤ (1/n)·log‖A⁽ⁿ⁾ v‖`. No invertibility: positivity of `‖A⁽ⁿ⁾ v‖` is
-forced by the det-free band bound `ErgodicTheory.cocycle_apply_sq_ge_band` (since the band projection
-norm is eventually positive and `c > 0`). -/
+forced by the det-free band bound `ErgodicTheory.cocycle_apply_sq_ge_band` (since the band
+projection norm is eventually positive and `c > 0`). -/
 theorem log_add_correction_le_inv_mul_log_cocycle_apply_detfree [NeZero d]
     (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X)
     {c : ℝ} (hc : 0 < c) {x : X} {P : Matrix (Fin d) (Fin d) ℝ} {v : EuclideanSpace ℝ (Fin d)}
@@ -148,11 +151,11 @@ theorem log_add_correction_le_inv_mul_log_cocycle_apply_detfree [NeZero d]
 
 /-- **Det-free per-vector liminf lower bound.** If the fast band projectors for `(c,∞)` (with
 `c > 0`) converge to `P` with `P v ≠ 0`, then `log c ≤ liminf (1/n)·log‖A⁽ⁿ⁾ v‖`. **No
-invertibility** (the det-free analogue of `ErgodicTheory.log_le_liminf_log_cocycle_apply`): combines the
-det-free eventual lower bound `log c + (1/n)·log‖Pᶜₙ v‖ ≤ (1/n)·log‖A⁽ⁿ⁾ v‖` (whose left side tends
-to `log c`, the band correction vanishing by
-`ErgodicTheory.tendsto_inv_mul_log_norm_bandProjector_apply`) with `liminf` monotonicity. The cobounded
-side condition is the hypothesis `hcobdd`, supplied a.e. by Furstenberg–Kesten. -/
+invertibility** (the det-free analogue of `ErgodicTheory.log_le_liminf_log_cocycle_apply`): combines
+the det-free eventual lower bound `log c + (1/n)·log‖Pᶜₙ v‖ ≤ (1/n)·log‖A⁽ⁿ⁾ v‖` (whose left side
+tends to `log c`, the band correction vanishing by
+`ErgodicTheory.tendsto_inv_mul_log_norm_bandProjector_apply`) with `liminf` monotonicity. The
+cobounded side condition is the hypothesis `hcobdd`, supplied a.e. by Furstenberg–Kesten. -/
 theorem log_le_liminf_log_cocycle_apply_detfree [NeZero d]
     (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X)
     {c : ℝ} (hc : 0 < c) {x : X} {P : Matrix (Fin d) (Fin d) ℝ} {v : EuclideanSpace ℝ (Fin d)}
@@ -204,12 +207,13 @@ qualifier is not part of this lemma — it enters only because the conditional b
 boundedness is supplied a.e. by Furstenberg–Kesten for an integrable generator.
 
 The upper half `limsup ≤ c` is the membership `v ∈ lambdaBarSublevel A T c x` itself
-(`ErgodicTheory.mem_lambdaBarSublevel_iff`, det-free). The lower half `c ≤ liminf` is the det-free band
-bound `ErgodicTheory.log_le_liminf_log_cocycle_apply_detfree` at threshold `e^c`. The two-sided
+(`ErgodicTheory.mem_lambdaBarSublevel_iff`, det-free). The lower half `c ≤ liminf` is the det-free
+band bound `ErgodicTheory.log_le_liminf_log_cocycle_apply_detfree` at threshold `e^c`. The two-sided
 boundedness hypotheses squeeze the two into a genuine limit
-(`ErgodicTheory.tendsto_inv_mul_log_norm_cocycle_apply`). **No `det A ≠ 0`, no inverse integrability.**
-The band-projector convergence `hP, hPv` is the genuine residual of the singular forward filtration,
-guaranteed on the tempered class (`ErgodicTheory.tendsto_vSlowSingularStep_of_tempered`). -/
+(`ErgodicTheory.tendsto_inv_mul_log_norm_cocycle_apply`). **No `det A ≠ 0`, no inverse
+integrability.** The band-projector convergence `hP, hPv` is the genuine residual of the singular
+forward filtration, guaranteed on the tempered class
+(`ErgodicTheory.tendsto_vSlowSingularStep_of_tempered`). -/
 theorem singular_perDirection_exponent_eq_lambda_of_mem_stratum [NeZero d]
     (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X)
     {c : ℝ} (hc : 0 ≤ c) {x : X} (hx : HasFiniteTopGrowth A T x)

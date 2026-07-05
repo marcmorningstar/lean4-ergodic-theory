@@ -14,9 +14,11 @@ This module assembles the **a.e.-measurable orthogonal projector** of the singul
 multiplicative ergodic theorem from the two pieces built upstream:
 
 * the **measurable graph** of the Lyapunov sublevel filtration
-  `ErgodicTheory.measurableSet_graph_lambdaSublevel` (under the everywhere `IsUltrametricGrowth` gate);
+  `ErgodicTheory.measurableSet_graph_lambdaSublevel` (under the everywhere `IsUltrametricGrowth`
+  gate);
 * the projection of the graph being **universally measurable**, hence the distance maps
-  `x ↦ infDist c (V x)` being `AEMeasurable` (`ErgodicTheory.aemeasurable_infDist_of_measurableGraph`),
+  `x ↦ infDist c (V x)` being `AEMeasurable`
+  (`ErgodicTheory.aemeasurable_infDist_of_measurableGraph`),
   using the now-proved universal measurability `MeasureTheory.AnalyticSet.nullMeasurableSet`
   (`ErgodicTheory.MeasureTheory.AnalyticUniversallyMeasurable`).
 
@@ -55,8 +57,8 @@ The forward filtration's measurable graph requires the everywhere `IsUltrametric
 convergent Furstenberg–Kesten). With it, and for any s-finite `μ` (in particular the probability
 measure of the MET), the headline is `sorry`-free: the universal measurability
 `MeasureTheory.AnalyticSet.nullMeasurableSet` (analytic sets are universally measurable —
-Lusin/Choquet) is now proved in `ErgodicTheory.MeasureTheory.AnalyticUniversallyMeasurable` and threaded
-through `ErgodicTheory.Singular.MeasurableProjection`.
+Lusin/Choquet) is now proved in `ErgodicTheory.MeasureTheory.AnalyticUniversallyMeasurable` and
+threaded through `ErgodicTheory.Singular.MeasurableProjection`.
 
 Literature: C. González-Tokman, A. Quas, *A semi-invertible operator Oseledets theorem*
 (ETDS 2014), Appendix B; D. Ruelle, *Ergodic theory of differentiable dynamical systems*,

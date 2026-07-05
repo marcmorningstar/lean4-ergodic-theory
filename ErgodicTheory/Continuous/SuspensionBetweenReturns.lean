@@ -25,8 +25,8 @@ The proof rests on the cover-cocycle identity `coverCocycle_base` of
 `ErgodicTheory.Continuous.SuspensionCoverFlow` (which reduces `coverCocycle (x, 0) t` to the
 cross-section flow cocycle `flowCocycleSection t x`), the definitional unfolding of
 `flowCocycleSection` to `suspensionCocycleReturn A T (lapCount t x) x`, and the uniqueness of the
-sandwiched lap index `lapCount_unique` of `ErgodicTheory.Continuous.SuspensionCoverCocycle` (which pins
-`lapCount t x = n` from the two return-time bounds), together with the return identity
+sandwiched lap index `lapCount_unique` of `ErgodicTheory.Continuous.SuspensionCoverCocycle`
+(which pins `lapCount t x = n` from the two return-time bounds), together with the return identity
 `suspensionCocycleReturn_returnTime` of `ErgodicTheory.Continuous.SuspensionCocycle`.
 
 ## Main results

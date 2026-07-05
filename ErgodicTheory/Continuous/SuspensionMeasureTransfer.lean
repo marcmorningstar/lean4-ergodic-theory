@@ -11,8 +11,8 @@ import ErgodicTheory.Continuous.SuspensionBddRoofExponent
 
 This module supplies the **cross-section** plumbing that connects the section-level full-time
 special-flow exponent `λ_flow = λ_base / ∫τ`
-(`ErgodicTheory.coverCocycle_tendsto_exponent_of_bddRoof`, a `μ`-a.e. statement over the *base*) to the
-suspension quotient space `ErgodicTheory.SuspensionSpace` and its invariant probability measure
+(`ErgodicTheory.coverCocycle_tendsto_exponent_of_bddRoof`, a `μ`-a.e. statement over the *base*) to
+the suspension quotient space `ErgodicTheory.SuspensionSpace` and its invariant probability measure
 `ErgodicTheory.suspensionMeasure`. It lands the genuinely self-contained building blocks that the
 existing API already supports, and documents precisely the disintegration gap that the full
 `μ̂`-a.e. space-level statement still needs.

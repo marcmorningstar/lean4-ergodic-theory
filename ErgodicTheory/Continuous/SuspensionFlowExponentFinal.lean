@@ -14,7 +14,8 @@ special-flow Lyapunov-exponent headline, making the result **fully unconditional
 measurability data: it is now driven only by `hA : Measurable A` (the measurability of the base
 cocycle generator) together with the bounded-roof and a.e.-Birkhoff hypotheses.
 
-The previous unconditional headline `ErgodicTheory.ae_suspensionMeasure_hasFlowExponent_unconditional`
+The previous unconditional headline
+`ErgodicTheory.ae_suspensionMeasure_hasFlowExponent_unconditional`
 (`ErgodicTheory.Continuous.SuspensionFlowExponentValue`) had already discharged the quotient-image
 measurability `hmeas`, but still carried the *base* exponent-set measurability
 
@@ -22,7 +23,8 @@ measurability `hmeas`, but still carried the *base* exponent-set measurability
 
 as an explicit input, because the cover cocycle has no in-library measurability-in-`x` lemma. That
 hypothesis is now supplied internally by `measurableSet_coverCocycle_exponent`
-(`ErgodicTheory.Continuous.SuspensionExponentSetMeasurable`), which proves the exponent set measurable
+(`ErgodicTheory.Continuous.SuspensionExponentSetMeasurable`), which proves the exponent
+set measurable
 by rewriting it — pointwise — as the discrete return-time exponent set (the between-returns squeeze)
 and invoking `MeasureTheory.measurableSet_tendsto`. Threading `hA` through closes the gap.
 
@@ -60,7 +62,8 @@ include hτ in
 /-- **The fully unconditional space-level special-flow Lyapunov exponent.** (`HasFlowExponent` is
 existential over representatives: for `μ̂`-a.e. class *some* representative realises `λ_base / ∫τ`;
 cross-representative uniqueness needs base-cocycle invertibility.) This is
-`ErgodicTheory.ae_suspensionMeasure_hasFlowExponent_unconditional` with the explicit base exponent-set
+`ErgodicTheory.ae_suspensionMeasure_hasFlowExponent_unconditional` with the explicit
+base exponent-set
 measurability hypothesis `hPmeas` replaced by `hA : Measurable A`. Under a bounded roof
 `c ≤ τ ≤ C` (`0 < c`), positive integral `0 < ∫τ`, measurable base cocycle generator `A`, and the
 base-a.e. Birkhoff limits — discrete base growth rate `→ λ_base` and roof average `→ ∫τ` — for
@@ -68,7 +71,8 @@ base-a.e. Birkhoff limits — discrete base growth rate `→ λ_base` and roof a
 `λ_base / ∫τ`: `∀ᵐ q ∂μ̂, HasFlowExponent q (λ_base / ∫τ)`.
 
 The base exponent-set measurability is supplied internally by
-`measurableSet_coverCocycle_exponent` (`ErgodicTheory.Continuous.SuspensionExponentSetMeasurable`): the
+`measurableSet_coverCocycle_exponent` (`ErgodicTheory.Continuous.SuspensionExponentSetMeasurable`):
+the
 full-time cover-cocycle exponent set is rewritten — pointwise — as the discrete return-time exponent
 set (the between-returns squeeze) and is measurable by `MeasureTheory.measurableSet_tendsto`. So no
 measurability datum beyond `Measurable A` need be assumed. -/

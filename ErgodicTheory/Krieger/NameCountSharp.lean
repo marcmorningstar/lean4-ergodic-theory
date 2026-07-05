@@ -39,14 +39,17 @@ Einsiedler–Lindenstrauss–Ward, *Entropy in Ergodic Theory*, §2–3; Downaro
    the upper half of the Shannon–McMillan–Breiman theorem *in measure*. It is **parameterized** here
    as the hypothesis `UpperSMBInMeasure` (a sorry-free `Prop`); the unconditional sharp rate `h`
    (rather than the crude `log (card ι)` of `ErgodicTheory.Krieger.SMB`) is now **proved** —
-   `ErgodicTheory.Krieger.UpperSMB.upperSMBInMeasure_of_ergodic` discharges this hypothesis for every
+   `ErgodicTheory.Krieger.UpperSMB.upperSMBInMeasure_of_ergodic` discharges this hypothesis
+   for every
    ergodic `T`, from the full pointwise SMB `ae_tendsto_div_infoFun_self` (formerly the `R5`
-   Chung `L¹`-domination residual of `ErgodicTheory.Krieger.SMBSharp`). See the module note below for
+   Chung `L¹`-domination residual of `ErgodicTheory.Krieger.SMBSharp`). See the module note
+   below for
    the analytic content and the cheaper (martingale-free) block-product route that also fits.
 
 ## Main definitions
 
-* `ErgodicTheory.Krieger.goodNames` — the Finset of rank-`N` names whose cell has measure `≥ exp(−N·R)`.
+* `ErgodicTheory.Krieger.goodNames` — the Finset of rank-`N` names whose cell has measure
+  `≥ exp(−N·R)`.
 * `ErgodicTheory.Krieger.UpperSMBInMeasure` — the in-measure SMB upper bound at rate `h`, the exact
   analytic input the covering half needs (now discharged for ergodic `T` by
   `ErgodicTheory.Krieger.UpperSMB.upperSMBInMeasure_of_ergodic`).
@@ -245,7 +248,8 @@ integral-level rate identity `ksEntropyPartition_eq_condEntropy_iSup` and the Fe
 
 See the module note below for the cheapest known route to discharge it (the martingale-free
 block-product competing-measure bound fed to the engine
-`ErgodicTheory.Krieger.ae_forall_eventually_div_infoFun_le`, which gives the *sharp* a.e. upper bound
+`ErgodicTheory.Krieger.ae_forall_eventually_div_infoFun_le`, which gives the *sharp* a.e.
+upper bound
 `limsup (1/N)·infoFunₙ ≤ h` and hence this in-measure form by dominated convergence on the
 bounded-below indicator). -/
 def UpperSMBInMeasure : Prop :=
@@ -330,7 +334,8 @@ from the full pointwise SMB `ae_tendsto_div_infoFun_self`. The two routes below 
 analytic content; Route 2 is the one the repository took.
 
 **Why the crude bound and plain Markov are not enough.**
-`ErgodicTheory.Krieger.ae_limsup_div_infoFun_le_log_card` (Birkhoff-free, Markov + Borel–Cantelli) gives
+`ErgodicTheory.Krieger.ae_limsup_div_infoFun_le_log_card` (Birkhoff-free, Markov +
+Borel–Cantelli) gives
 only the rate `log (card ι) ≥ h` — the integrand `exp(infoFunₙ − N·R)` of the engine is *fixed*, so
 the uniform competing measure is hard-wired into it and the rate cannot drop below `log (card ι)` by
 that instantiation alone. Plain Markov on `infoFunₙ` is also too weak: `∫ (1/N)·infoFunₙ =
@@ -348,7 +353,8 @@ automatically, and the engine gives, a.e., `limsup (1/N)·log gₙ ≤ 0`, i.e.
 `limsup (1/N)·infoFunₙ ≤ limsup −(1/N) log qₙ = limsup (1/N) ∑_{blocks} I_{P_m}(T^{jm}·)`.
 The right side is a **Birkhoff average of `I_{P_m}` along `T^m`**, which converges a.e. (ergodic
 case) to `(1/m)·∫ I_{P_m} = (1/m)·H(P_m) = ksEntropySeq m / m`
-(`ErgodicTheory.Entropy.tendsto_birkhoffAverage_ae_integral` + `integral_infoFun_eq`). Letting `m → ∞`
+(`ErgodicTheory.Entropy.tendsto_birkhoffAverage_ae_integral` + `integral_infoFun_eq`).
+Letting `m → ∞`
 with `ksEntropySeq m / m → h` (`ErgodicTheory.Entropy.tendsto_ksEntropySeq`) yields the **sharp a.e.
 upper bound** `limsup (1/N)·infoFunₙ ≤ h`, hence `UpperSMBInMeasure` (the a.e. limsup bound gives,
 for each `ε`, `(1/N)·infoFunₙ ≤ h+ε` eventually a.e.; the bounded indicators
@@ -366,7 +372,8 @@ measure* is needed.
 **Route 2 — full pointwise SMB via `SMBSharp` (heavier, and the route taken).** The now-proved `R5`
 of `ErgodicTheory.Krieger.SMBSharp` (Chung's `L¹` maximal-function domination, proved on top of the
 telescoping there) gives the full a.e. SMB `(1/N)·infoFunₙ → h`, from which `UpperSMBInMeasure` is
-immediate (`ErgodicTheory.Krieger.UpperSMB.upperSMBInMeasure_of_ergodic`). Route 1 would be lighter for
+immediate (`ErgodicTheory.Krieger.UpperSMB.upperSMBInMeasure_of_ergodic`). Route 1 would be
+lighter for
 *this* corollary because it avoids the martingale entirely; both require the ergodic theorem.
 
 **Minimal analytic input named.** Either (Route 1) the `m`-block product partition-function identity

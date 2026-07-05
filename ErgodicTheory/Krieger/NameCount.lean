@@ -33,12 +33,13 @@ true atom measure `pₙ = μ(atomₙ)`, because such a ratio automatically integ
   satisfies: for every `ε > 0`, *eventually* `(1/n) · log (gₙ x).toReal ≤ ε`.  Pure Markov +
   Borel–Cantelli, *no* ergodic theorem and *no* martingale convergence.
 
-* `ErgodicTheory.Krieger.ae_limsup_div_log_toReal_le_zero` — the `limsup` repackaging, under the extra
-  hypothesis `1 ≤ gₙ x` (which makes the sequence bounded below, so its `limsup` is not a junk
+* `ErgodicTheory.Krieger.ae_limsup_div_log_toReal_le_zero` — the `limsup` repackaging, under the
+  extra hypothesis `1 ≤ gₙ x` (which makes the sequence bounded below, so its `limsup` is not a junk
   value): `limsup_n (1/n) · log (gₙ x).toReal ≤ 0` a.e.
 
-* `ErgodicTheory.Krieger.ae_forall_eventually_div_infoFun_le` — the **information-function name-count
-  bound** at an abstract rate `R`: given measurable `f : ℕ → α → ℝ` (the information functions) and
+* `ErgodicTheory.Krieger.ae_forall_eventually_div_infoFun_le` — the **information-function
+  name-count bound** at an abstract rate `R`: given measurable `f : ℕ → α → ℝ` (the information
+  functions) and
   the partition-function bound `∫⁻ exp(fₙ − n·R) ∂μ ≤ 1`, almost every `x` satisfies, for every
   `ε > 0`, eventually `(1/n) · fₙ x ≤ R + ε`.  Instantiating `R = log #cells` gives the crude
   Birkhoff-free name-count bound `limsup (1/n)·infoFunₙ ≤ log #cells`.
@@ -233,8 +234,8 @@ theorem ae_limsup_div_log_toReal_le_zero {g : ℕ → α → ℝ≥0∞} (hg : �
 
 The engine above is applied here to an *abstract* information function `infoFun : ℕ → α → ℝ`
 (the eventual concrete object is `infoFunₙ x = -log (μ atomₙ).toReal` from
-`ErgodicTheory.Krieger.InfoFunction`, built in a sibling file; we keep this result decoupled from it).
-The single hypothesis is the **partition-function bound at rate `R`**:
+`ErgodicTheory.Krieger.InfoFunction`, built in a sibling file; we keep this result decoupled
+from it). The single hypothesis is the **partition-function bound at rate `R`**:
 `∫⁻ exp(infoFunₙ − n·R) ∂μ ≤ 1`.  Feeding `gₙ x = ofReal (exp (infoFunₙ x − n·R))` to the engine
 gives, for a.e. `x`, that eventually `(1/n)·infoFunₙ x ≤ R + ε`, for every `ε > 0`.
 

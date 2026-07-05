@@ -15,7 +15,8 @@ transformation (an automorphism of a Lebesgue space): a system of finite Kolmogo
 entropy `h(T) < log k` admits a generating partition into `k` cells. The classical generating
 condition for an automorphism saturates the σ-algebra over **both** time directions,
 `⨆_{n : ℤ} (T ^ n)⁻¹ σ(P) = full σ-algebra`, in contrast to the one-sided ℕ-version
-`ErgodicTheory.Entropy.IsGenerating` used by the (non-invertible-friendly) Kolmogorov–Sinai interface.
+`ErgodicTheory.Entropy.IsGenerating` used by the (non-invertible-friendly)
+Kolmogorov–Sinai interface.
 
 This file supplies the ℤ-iterate plumbing needed to even *state* the two-sided condition, and the
 two-sided generating predicate `IsGeneratingTwoSided` itself (issue #15).
@@ -57,7 +58,8 @@ condition is the weaker, correct one.
 * `ErgodicTheory.Krieger.ziter_add`: the cocycle law `ziter e (m + n) = ziter e m ∘ ziter e n`.
 * `ErgodicTheory.Krieger.measurePreserving_ziter`: each two-sided iterate is measure preserving.
 * `ErgodicTheory.Krieger.measurable_ziter`: each two-sided iterate is measurable.
-* `ErgodicTheory.Krieger.isGeneratingOneSided_le_twoSided`: the forward one-sided saturation is `≤` the
+* `ErgodicTheory.Krieger.isGeneratingOneSided_le_twoSided`: the forward one-sided saturation is
+  `≤` the
   two-sided one (forward generation is *stronger* than two-sided generation).
 
 ## References
@@ -169,7 +171,8 @@ measurable structure: `⨆ n : ℤ, comap (ziter e n) σ(P) = mα`.
 
 This is the correct generating condition for an **invertible** measure-preserving system, and the
 hypothesis of Krieger's finite generator theorem (issue #15). It saturates over both time
-directions, in contrast to the one-sided ℕ-version `ErgodicTheory.Entropy.IsGenerating` (which suffices
+directions, in contrast to the one-sided ℕ-version `ErgodicTheory.Entropy.IsGenerating`
+(which suffices
 for non-invertible endomorphisms but provably fails to recover the full σ-algebra for an
 automorphism such as the two-sided Bernoulli shift). -/
 def IsGeneratingTwoSided [Fintype ι] (e : α ≃ᵐ α)

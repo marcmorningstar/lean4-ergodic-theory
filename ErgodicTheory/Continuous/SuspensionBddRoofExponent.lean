@@ -12,7 +12,8 @@ This module closes the **section-level** full-time special-flow Lyapunov exponen
 `λ_flow = λ_base / ∫τ` (the headline of Issue #5) under the natural extra hypothesis that the roof
 `τ` is **bounded above**, `τ ≤ C`. The reduction lemmas
 `ErgodicTheory.coverCocycle_norm_eq_lapCount` and `ErgodicTheory.log_coverCocycle_div_eq_lapCount`
-(of `ErgodicTheory.Continuous.SuspensionFullTimeExponent`) already factor the full-time Birkhoff ratio
+(of `ErgodicTheory.Continuous.SuspensionFullTimeExponent`) already factor the full-time
+Birkhoff ratio
 exactly as
 
 `log‖coverCocycle (x,0) t‖ / t
@@ -45,7 +46,8 @@ analogue is the design reference of Bessa–Varandas (suspension Lyapunov expone
 * `ErgodicTheory.lapCount_returnTime_div_tendsto_one`: the **time-distortion factor tends to `1`**,
   `returnTime (lapCount t x) x / t → 1` as the real `t → ∞` (squeeze between `1 − C/t` and `1`).
 * `ErgodicTheory.lapCount_tendsto_atTop`: the lap count diverges, `lapCount t x → ∞` as `t → ∞`.
-* `ErgodicTheory.coverCocycle_tendsto_exponent_of_bddRoof`: the **headline full-time section exponent**.
+* `ErgodicTheory.coverCocycle_tendsto_exponent_of_bddRoof`: the
+  **headline full-time section exponent**.
   Under the base growth, roof-average, and bounded-roof hypotheses, the full-time flow log-norm
   rescaled by `t` converges `μ`-a.e. to `lam / ∫τ`,
   `Real.log ‖coverCocycle (x,0) t‖ / t → lam / ∫τ` as the real `t → ∞`.

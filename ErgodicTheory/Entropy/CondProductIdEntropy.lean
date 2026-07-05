@@ -40,11 +40,14 @@ The argument mirrors the absolute upper bound but with the conditional Le Maîtr
 
 ## Main results
 
-* `ErgodicTheory.Entropy.condKsEntropyPartition_le_ksEntropyPartition`: conditioning does not increase
+* `ErgodicTheory.Entropy.condKsEntropyPartition_le_ksEntropyPartition`: conditioning does not
+  increase
   the relative Kolmogorov–Sinai entropy.
-* `ErgodicTheory.Entropy.condKsEntropyPartition_prodBPart_eq_zero`: the conditional rectangle entropy
+* `ErgodicTheory.Entropy.condKsEntropyPartition_prodBPart_eq_zero`: the conditional rectangle
+  entropy
   vanishes (B).
-* `ErgodicTheory.Entropy.tendsto_condEntropy_prodBPart_sup_zero`: the conditional defect tends to `0`
+* `ErgodicTheory.Entropy.tendsto_condEntropy_prodBPart_sup_zero`: the conditional defect tends
+  to `0`
   (C).
 * `ErgodicTheory.Entropy.condKsEntropy_prod_id_eq_zero`: `h(T × id | comap fst mX) = 0` (D).
 

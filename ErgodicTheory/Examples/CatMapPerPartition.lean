@@ -11,7 +11,8 @@ import ErgodicTheory.Entropy.Ruelle.Crude
 
 This module instantiates the unconditional arithmetic backbone of the Margulis–Ruelle inequality
 `ErgodicTheory.Entropy.ksEntropyPartition_le_of_atomCount_growth` on the **genuine** Arnold cat map
-`catTorus : 𝕋² → 𝕋²` (`ErgodicTheory/Examples/CatMapToral.lean`, the hyperbolic toral automorphism with
+`catTorus : 𝕋² → 𝕋²` (`ErgodicTheory/Examples/CatMapToral.lean`, the hyperbolic toral
+automorphism with
 matrix `M = !![2,1;1,1]`), at the exact rate `log λ₊ = log((3 + √5)/2)`.
 
 It is the cat-map analogue of the already-shipped doubling-map per-partition theorem
@@ -24,10 +25,12 @@ genuine toral dynamics instead of the doubling map.
 
 The rate `log((3 + √5)/2)` is **the genuine top Lyapunov exponent `λ₊` of the cat map**:
 `(3 + √5)/2` is the larger eigenvalue of `M = !![2,1;1,1]`, and the sibling module
-`ErgodicTheory/Examples/CatMapDerivativeCocycle.lean` proves — fully sorry-free — that the top Lyapunov
+`ErgodicTheory/Examples/CatMapDerivativeCocycle.lean` proves — fully sorry-free — that
+the top Lyapunov
 exponent of the **genuine Fréchet-derivative cocycle** of the cat map's ℝ²-linear lift `catLift`,
 realized over the genuine ergodic base `catTorus`, is exactly `log((3 + √5)/2) > 0`
-(`ErgodicTheory.CatMapToral.catLift_derivativeCocycle_topExponent_pos`). So the rate appearing here is
+(`ErgodicTheory.CatMapToral.catLift_derivativeCocycle_topExponent_pos`). So the rate
+appearing here is
 not an abstract constant: it is the actual Lyapunov datum of the cat map, with an independent honest
 proof in the repo.
 
@@ -36,7 +39,8 @@ proof in the repo.
 `catTorus_ksEntropyPartition_le_logLambda` is a **thin specialization** of the unconditional
 backbone `ErgodicTheory.Entropy.ksEntropyPartition_le_of_atomCount_growth` at the rate
 `R = log((3 + √5)/2)`,
-over the genuine ergodic toral base via `ErgodicTheory.CatMapToral.measurePreserving_catTorus`. There is
+over the genuine ergodic toral base via `ErgodicTheory.CatMapToral.measurePreserving_catTorus`.
+There is
 **no** hidden geometric content beyond the two explicit, named hypotheses:
 
 * `hC : 1 ≤ C` — the constant in the atom-count bound;
@@ -57,7 +61,8 @@ The sharp system equality `h_μ(catTorus) = log λ₊` (the cat-map Pesin/Ledrap
 * **Upper-bound, system level.** The bridge from the per-partition bound to the *system* entropy is
   the Kolmogorov–Sinai generator identity `h(T) = h(α, T)` for a generating partition `α`, which is
   fully proved in the repo as `ErgodicTheory.Entropy.ksEntropy_eq_ksEntropyPartition_of_generating`
-  (`ErgodicTheory/Entropy/GeneratorTheorem.lean`). So a system-level upper bound `h(catTorus) ≤ log λ₊`
+  (`ErgodicTheory/Entropy/GeneratorTheorem.lean`). So a system-level upper bound
+  `h(catTorus) ≤ log λ₊`
   is *one* `IsGenerating volume catTorus P` hypothesis away — and *that* hypothesis is exactly the
   deferred Adler–Weiss Markov-partition / SFT construction (a finite generating partition for the
   cat map), which Mathlib lacks.
@@ -73,7 +78,8 @@ The sharp system equality `h_μ(catTorus) = log λ₊` (the cat-map Pesin/Ledrap
 
 * `ErgodicTheory.CatMapToral.log_lambda_cat_pos` — positivity of the rate: `0 < log((3 + √5)/2)`
   (hyperbolicity, `(3 + √5)/2 > 1`).
-* `ErgodicTheory.CatMapToral.catTorus_ksEntropyPartition_le_logLambda` — the **per-partition** Ruelle
+* `ErgodicTheory.CatMapToral.catTorus_ksEntropyPartition_le_logLambda` — the **per-partition**
+  Ruelle
   bound `h(α, catTorus) ≤ log((3 + √5)/2) = log λ₊` for the genuine cat map, from the genuine
   Ruelle atom-count growth `hgrow` at rate `log λ₊`.
 
@@ -87,9 +93,11 @@ The sharp system equality `h_μ(catTorus) = log λ₊` (the cat-map Pesin/Ledrap
 open MeasureTheory Filter Topology
 
 /-- Normalise the circle measure to total mass `1` (`AddCircle.haarAddCircle`), matching the
-`MeasureSpace UnitAddCircle` convention of `ErgodicTheory/Examples/CatMapToral.lean` so that the ambient
+`MeasureSpace UnitAddCircle` convention of `ErgodicTheory/Examples/CatMapToral.lean` so that
+the ambient
 `volume : Measure T2` here is *the same* product Haar probability measure for which
-`measurePreserving_catTorus` is stated.  (Importing `ErgodicTheory/Examples/Elementary.lean`, which uses
+`measurePreserving_catTorus` is stated.  (Importing `ErgodicTheory/Examples/Elementary.lean`,
+which uses
 the default `AddCircle.measureSpace 1`, would make `volume : Measure T2` ambiguous — hence we
 re-establish exactly these instances and route everything through `measurePreserving_catTorus`.) -/
 noncomputable local instance instMeasureSpaceUnitAddCircleCatPerPartition :
@@ -125,15 +133,18 @@ partition* is bounded by the top Lyapunov exponent `log λ₊ = log((3 + √5)/2
 
 This is the **per-partition** Ruelle bound, **not** the system inequality `h(catTorus) ≤ log λ₊`
 (the bridge to the system entropy is the generator identity
-`ErgodicTheory.Entropy.ksEntropy_eq_ksEntropyPartition_of_generating`, fully proved in the repo, applied
+`ErgodicTheory.Entropy.ksEntropy_eq_ksEntropyPartition_of_generating`, fully proved in the repo,
+applied
 under an `IsGenerating volume catTorus P` hypothesis — the deferred Adler–Weiss Markov-partition
 datum). The rate `log((3 + √5)/2)` is the *genuine top Lyapunov exponent* of the cat map
 (`ErgodicTheory.CatMapToral.catLift_derivativeCocycle_topExponent_pos`), not an abstract constant.
 
 The atom-count growth `hgrow` is the genuinely geometric Ruelle input, left as an honest named
 hypothesis exactly as in `ErgodicTheory.Entropy.Ruelle.Crude` and in the doubling-map theorem
-`ErgodicTheory.doublingMap_ksEntropyPartition_le_sumPosExp`. The reduction itself is the unconditional
-arithmetic backbone `ErgodicTheory.Entropy.ksEntropyPartition_le_of_atomCount_growth`; this theorem adds
+`ErgodicTheory.doublingMap_ksEntropyPartition_le_sumPosExp`. The reduction itself is the
+unconditional
+arithmetic backbone `ErgodicTheory.Entropy.ksEntropyPartition_le_of_atomCount_growth`; this
+theorem adds
 no hidden content beyond `hC` and `hgrow`. -/
 theorem catTorus_ksEntropyPartition_le_logLambda {ι : Type*} [Fintype ι] [Nonempty ι]
     (P : Entropy.MeasurePartition (volume : Measure T2) ι) {C : ℝ} (hC : 1 ≤ C)

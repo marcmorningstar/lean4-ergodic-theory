@@ -23,7 +23,8 @@ never lands on the indeterminate `⊤ − ⊤` or `⊥ − ⊥` forms.
 
 ## Main definitions
 
-* `ErgodicTheory.singularDirExponent` — the per-direction forward singular exponent `λ_i`, the `EReal`
+* `ErgodicTheory.singularDirExponent` — the per-direction forward singular exponent `λ_i`,
+  the `EReal`
   difference `γ_{i+1} − γ_i`, defined for every `x` with no invertibility hypothesis.
 
 ## Main results
@@ -33,7 +34,8 @@ never lands on the indeterminate `⊤ − ⊤` or `⊥ − ⊥` forms.
 * `ErgodicTheory.ae_singularDirExponent_eq_coe` — under ergodicity and forward integrability,
   `λ_i = (Γ_{i+1}⁺ − Γ_i⁺ : EReal)` `μ`-a.e. for a real constant; in particular `λ_i` is `μ`-a.e. an
   a.e.-**constant** finite real.
-* `ErgodicTheory.ae_singularDirExponent_lt_top`, `ErgodicTheory.ae_singularDirExponent_ne_bot` — `μ`-a.e.
+* `ErgodicTheory.ae_singularDirExponent_lt_top`, `ErgodicTheory.ae_singularDirExponent_ne_bot`
+  — `μ`-a.e.
   finiteness (`λ_i < ⊤` and `⊥ < λ_i`), since `λ_i` a.e. equals a real coercion.
 
 ## Implementation notes

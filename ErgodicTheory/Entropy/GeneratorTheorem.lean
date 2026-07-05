@@ -17,8 +17,8 @@ partition `P` (`IsGenerating μ T P`, i.e. the forward-`T`-saturated σ-algebra 
 the ambient σ-algebra `mα`), the entropy of the system is already attained on `P`:
 `h(T) = h(T, P)`.
 
-The classical statement is `ErgodicTheory.Entropy.Generator` left as a hypothesis-form interface; here
-it is *proved* by assembling the issue-#13 unconditional Abramov–Rokhlin machinery.
+The classical statement is `ErgodicTheory.Entropy.Generator` left as a hypothesis-form interface;
+here it is *proved* by assembling the issue-#13 unconditional Abramov–Rokhlin machinery.
 
 ## Proof outline (Route A)
 
@@ -47,8 +47,8 @@ it is *proved* by assembling the issue-#13 unconditional Abramov–Rokhlin machi
 * `ErgodicTheory.Entropy.condEntropy_full_eq_zero`: `H(R | mα) = 0` for the full σ-algebra (N6.1).
 * `ErgodicTheory.Entropy.ksEntropyPartition_le_of_generating`: the crux — `h(T, Q) ≤ h(T, P)` for a
   generating `P` and any finite partition `Q`.
-* `ErgodicTheory.Entropy.ksEntropy_eq_ksEntropyPartition_of_generating`: the headline generator theorem
-  `h(T) = h(T, P)`.
+* `ErgodicTheory.Entropy.ksEntropy_eq_ksEntropyPartition_of_generating`: the headline generator
+  theorem `h(T) = h(T, P)`.
 
 ## References
 

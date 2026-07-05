@@ -17,7 +17,8 @@ addition formula
 `h(T) = h(S) + h(T | comap π 𝓑_Y)`
 
 for a factor map `π : (α, T, μ) → (β, S, ν)`, with the genuinely analytic partition-level input
-*discharged* rather than supplied. The previous form `ErgodicTheory.Entropy.abramov_rokhlin` took the
+*discharged* rather than supplied. The previous form `ErgodicTheory.Entropy.abramov_rokhlin`
+took the
 partition-level identity (B6a) as a hypothesis `hBA`; the form here replaces it with the natural
 structural hypothesis `IsGenerating ν S R` (the partition `R` generates the base system), which is
 exactly the saturation needed for the moving-index Cesàro/martingale limit to converge.

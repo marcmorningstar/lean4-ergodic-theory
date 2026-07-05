@@ -31,7 +31,8 @@ inequality for the concave function `negMulLog` applied to the disintegration of
 ## Main results
 
 * `ErgodicTheory.Entropy.condEntropy_nonneg`: conditional entropy is nonnegative.
-* `ErgodicTheory.Entropy.condEntropy_le_log_card`: a partition into `k` cells has conditional entropy
+* `ErgodicTheory.Entropy.condEntropy_le_log_card`: a partition into `k` cells has conditional
+  entropy
   at most `log k`.
 * `ErgodicTheory.Entropy.condEntropy_bot`: conditioning on the trivial σ-algebra `⊥` recovers the
   ordinary entropy.

@@ -31,7 +31,8 @@ the design reference of Bessa–Varandas (suspension Lyapunov exponents).
 
 ## Main results
 
-* `ErgodicTheory.coverCocycle_returnTime_tendsto_exponent`: the **headline return-time flow exponent**.
+* `ErgodicTheory.coverCocycle_returnTime_tendsto_exponent`: the
+  **headline return-time flow exponent**.
   Given any base log-norm growth rate `lam` (a hypothesis, as in `returnTime_tendsto_exponent`),
   the roof average tendsto, and `∫ τ ≠ 0`, the *cover flow cocycle* log-norm rescaled by the return
   time converges `μ`-a.e. to `lam / ∫ τ`:

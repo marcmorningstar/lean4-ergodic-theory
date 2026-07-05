@@ -15,8 +15,10 @@ limiting spectral projectors from the candidates.
 
 ## Main definitions
 
-* `ErgodicTheory.bandProjector` — the band spectral projector of `qpow A T n x` cut at a threshold `χ`.
-* `ErgodicTheory.sortedGramEigenbasis`, `ErgodicTheory.sortedTopFrame` — the sorted Gram eigenbasis and the
+* `ErgodicTheory.bandProjector` — the band spectral projector of `qpow A T n x` cut at a threshold
+  `χ`.
+* `ErgodicTheory.sortedGramEigenbasis`, `ErgodicTheory.sortedTopFrame` — the sorted Gram eigenbasis
+  and the
   orthonormal frame spanning the top eigenvalue-block.
 
 ## Main results
@@ -25,7 +27,8 @@ limiting spectral projectors from the candidates.
   `ErgodicTheory.bandProjector_rank` — the band-projector algebra.
 * `ErgodicTheory.norm_cfc_le_of_forall_eigenvalue_abs_le` — the spectral-block operator-norm bound.
 * `ErgodicTheory.exists_tendsto_cfc_of_summable` — CFC convergence from summable increments.
-* `ErgodicTheory.sin_sq_le_rayleigh_deficit_div_gap`, `ErgodicTheory.offdiag_sin_le_residual_div_gap` — the
+* `ErgodicTheory.sin_sq_le_rayleigh_deficit_div_gap`,
+  `ErgodicTheory.offdiag_sin_le_residual_div_gap` — the
   abstract Rayleigh-deficit / sin-Θ core.
 -/
 

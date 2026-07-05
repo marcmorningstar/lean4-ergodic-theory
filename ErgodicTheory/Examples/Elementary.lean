@@ -29,7 +29,8 @@ The three systems are:
   exponent: rotations are isometries);
 * the **Arnold cat-map matrix** `M = !![2,1;1,1]`, whose exponents are `log((3 ± √5)/2)`.
 
-A key linear-algebra helper, `ErgodicTheory.absMatrix_eq_self_of_posSemidef`, shows that for a positive
+A key linear-algebra helper, `ErgodicTheory.absMatrix_eq_self_of_posSemidef`, shows that
+for a positive
 semidefinite generator the absolute value `|M| = cfc |·| M` is `M` itself, so its sorted
 eigenvalues are the eigenvalues of `M`. All three generators above are positive semidefinite, so
 the headline spectra are stated directly in terms of the eigenvalues of `M`.
@@ -301,7 +302,8 @@ theorem irrationalRotation_exponents_eq_zero (i : Fin (Fintype.card (Fin 1))) :
 
 The Arnold cat map is the toral automorphism of `𝕋²` induced by the matrix `!![2,1;1,1]`. Its
 ergodicity is formalized separately as `ErgodicTheory.CatMapToral.ergodic_catTorus`
-(`ErgodicTheory/Examples/CatMapToral.lean`); here we keep the example elementary and realize the cat-map
+(`ErgodicTheory/Examples/CatMapToral.lean`); here we keep the example elementary and realize
+the cat-map
 *matrix* as a constant cocycle over the simpler doubling-map base. The Lyapunov exponents depend
 only on the generator, so they are the genuine cat-map exponents.
 
@@ -405,9 +407,11 @@ exponents nonetheless coincide with the cat-map exponents, because they are dete
 genuine toral-automorphism dynamics — ergodicity of the hyperbolic toral automorphism, and its
 genuine Fréchet-derivative cocycle — *is* formalized elsewhere in this repository, on Mathlib's
 `UnitAddTorus (Fin 2)` and multivariate `ℤ²` Fourier basis: see
-`ErgodicTheory.CatMapToral.ergodic_catTorus`, `ErgodicTheory.CatMapToral.catTorus_constCocycle_exponents`,
+`ErgodicTheory.CatMapToral.ergodic_catTorus`,
+`ErgodicTheory.CatMapToral.catTorus_constCocycle_exponents`,
 and `ErgodicTheory.CatMapToral.catLift_derivativeCocycle_topExponent_pos`
-(`ErgodicTheory/Examples/CatMapToral.lean`, `ErgodicTheory/Examples/CatMapDerivativeCocycle.lean`). This
+(`ErgodicTheory/Examples/CatMapToral.lean`, `ErgodicTheory/Examples/CatMapDerivativeCocycle.lean`).
+This
 elementary constant-cocycle version is retained as the simplest illustration. -/
 theorem catMapMatrix_exponents :
     exponents ergodic_catMapBase (const_det_ne_zero catMapGen_det_ne_zero)

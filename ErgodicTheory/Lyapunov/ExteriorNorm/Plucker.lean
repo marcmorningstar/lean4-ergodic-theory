@@ -22,8 +22,8 @@ ceiling of the compound of a gapped symmetric map in compound-matrix coordinates
   eigenvalue gap, the top eigenpair and second-eigenvalue ceiling of the compound, in
   compound-matrix coordinates (the Plücker bridge).
 * `ErgodicTheory.ExteriorNorm.norm_offdiag_residual_compound_le`,
-  `ErgodicTheory.ExteriorNorm.perturbed_compound_gram_ceiling` — the off-diagonal numerator bound and
-  the `ν`-ceiling feeding the band-projector increment estimate.
+  `ErgodicTheory.ExteriorNorm.perturbed_compound_gram_ceiling` — the off-diagonal numerator bound
+  and the `ν`-ceiling feeding the band-projector increment estimate.
 -/
 
 open Module InnerProductSpace
@@ -1166,7 +1166,8 @@ theorem plucker_eigenpair_ceiling_standard' {n : ℕ} (Q : Matrix (Fin d) (Fin d
     exact hv₀ceil w hw
 
 /-- **(C) — the Plücker frame ↔ wedge determinant bridge through the *standard* trivialization.**
-The `hdet` plumbing fact for `ErgodicTheory.norm_bandProjector_succ_sub_le`, expressed through the same
+The `hdet` plumbing fact for `ErgodicTheory.norm_bandProjector_succ_sub_le`, expressed
+through the same
 trivialization `onbTriv basisFun` in which `plucker_eigenpair_ceiling_standard'` produces its top
 eigenvectors: `det(UᵀV) = ⟪onbTriv basisFun (⋀ V-cols), onbTriv basisFun (⋀ U-cols)⟫`. Together with
 `plucker_eigenpair_ceiling_standard'` (whose `v₀`/`vt` ARE these column wedges), this discharges the

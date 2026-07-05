@@ -31,7 +31,8 @@ absolute case, the supremum may be infinite, so it is valued in `EReal`.
 * `ErgodicTheory.Entropy.le_condKsEntropy`: every partition-relative entropy `h(α, T | 𝒜)` is below
   `h(T | 𝒜)`.
 * `ErgodicTheory.Entropy.condKsEntropy_nonneg`: `0 ≤ h(T | 𝒜)`, witnessed by the trivial partition.
-* `ErgodicTheory.Entropy.condKsEntropy_bot`: conditioning on `⊥` recovers the absolute entropy `h(T)`.
+* `ErgodicTheory.Entropy.condKsEntropy_bot`: conditioning on `⊥` recovers the absolute entropy
+  `h(T)`.
 
 ## References
 

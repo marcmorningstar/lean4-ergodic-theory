@@ -9,7 +9,8 @@ import ErgodicTheory.Entropy.Partition
 # Cell-measure sum and joins of finite measurable partitions
 
 This file continues the measure-theoretic foundation for Kolmogorov–Sinai entropy started in
-`ErgodicTheory.Entropy.Partition`. It records that the cells of a `MeasurePartition` of a probability
+`ErgodicTheory.Entropy.Partition`. It records that the cells of a `MeasurePartition` of a
+probability
 space have `μ`-measures summing to `1`, and introduces the cell family `joinCells s t` of the
 **join** (common refinement) `α ∨ β` of two partitions, whose cells are the intersections
 `Aᵢ ∩ Bⱼ`.
@@ -24,9 +25,11 @@ Following the Le Maître notes on the Kolmogorov–Sinai theorem, the join keeps
 
 ## Main results
 
-* `ErgodicTheory.Entropy.MeasurePartition.sum_toReal_measure_eq_one`: the cell measures of a partition
+* `ErgodicTheory.Entropy.MeasurePartition.sum_toReal_measure_eq_one`: the cell measures
+  of a partition
   of a probability space sum to `1`.
-* `ErgodicTheory.Entropy.entropy_le_log_card_partition`: a partition into `k` cells has entropy at most
+* `ErgodicTheory.Entropy.entropy_le_log_card_partition`: a partition into `k` cells has
+  entropy at most
   `log k`.
 
 ## References

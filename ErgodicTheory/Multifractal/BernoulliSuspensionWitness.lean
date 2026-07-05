@@ -51,8 +51,8 @@ The first equality is `(measurePreserving_suspensionBaseProj ν).measure_preimag
 * `ErgodicTheory.Multifractal.measure_bernSuspensionWitness_cell`: the cell-mass identity
   `(μ̂ (P.cells j)).toReal = (ν {(Fintype.equivFin α₀).symm j}).toReal`.
 * `ErgodicTheory.Multifractal.isHeterogeneous_bernSuspensionWitness`: heterogeneity of `P`.
-* `ErgodicTheory.Multifractal.renyiDimFlow_bernSuspension_eq_base`: the flow Rényi spectrum equals the
-  one-sided base spectrum at every `q` (the transfer).
+* `ErgodicTheory.Multifractal.renyiDimFlow_bernSuspension_eq_base`: the flow Rényi spectrum
+  equals the one-sided base spectrum at every `q` (the transfer).
 * `ErgodicTheory.Multifractal.renyiDimFlow_bernSuspension_zero_ne_one`: the headline non-vacuous
   `q`-dependence at the *explicit* exponents `q = 0, 1`, reduced to the biased fact `Hnu ν < log 2`.
 * `ErgodicTheory.Multifractal.renyiDimFlow_bernSuspension_q_dependent`: its `∃`-corollary.

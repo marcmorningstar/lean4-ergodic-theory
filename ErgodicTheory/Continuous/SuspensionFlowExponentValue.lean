@@ -40,7 +40,8 @@ genuine flow image `q = ζ_s (suspensionSection x)` of a cross-section point und
 
 ## Main results
 
-* `ErgodicTheory.ae_suspensionMeasure_hasFlowExponent_unconditional`: the **unconditional** space-level
+* `ErgodicTheory.ae_suspensionMeasure_hasFlowExponent_unconditional`: the **unconditional**
+  space-level
   headline. Same statement as `ae_suspensionMeasure_hasFlowExponent` but with the quotient-image
   measurability hypothesis `hmeas` discharged (via Module 1); for `μ̂`-a.e. `q ∈ SuspensionSpace`,
   `HasFlowExponent q (λ_base / ∫τ)`.
@@ -80,7 +81,8 @@ include hτ in
 /-- **The unconditional space-level special-flow Lyapunov exponent.** (`HasFlowExponent` is
 existential over representatives: for `μ̂`-a.e. class *some* representative realises `λ_base / ∫τ`;
 cross-representative uniqueness needs base-cocycle invertibility.) This is
-`ErgodicTheory.ae_suspensionMeasure_hasFlowExponent` with its quotient-image measurability hypothesis
+`ErgodicTheory.ae_suspensionMeasure_hasFlowExponent` with its quotient-image measurability
+hypothesis
 `hmeas` removed: under a bounded roof `c ≤ τ ≤ C` (`0 < c`), positive integral `0 < ∫τ`, the
 base exponent-set measurability `hPmeas`, and the base-a.e. Birkhoff limits — discrete base growth
 rate `→ λ_base` and roof average `→ ∫τ` — for `μ̂ = suspensionMeasure`-almost every orbit class

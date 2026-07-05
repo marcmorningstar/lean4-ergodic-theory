@@ -31,8 +31,9 @@ the *exponent*, not the matrix, passes to the quotient — is the design referen
 
 ## Main results
 
-* `ErgodicTheory.norm_pos_of_isUnit_det`: an invertible matrix (`IsUnit M.det`) over a nonempty index
-  type has strictly positive operator norm (it is nonzero, since the zero matrix has determinant
+* `ErgodicTheory.norm_pos_of_isUnit_det`: an invertible matrix (`IsUnit M.det`) over a nonempty
+  index type has strictly positive operator norm (it is nonzero, since the zero matrix has
+  determinant
   `0`, which is not a unit). Provided in the `[NeZero d]` form used downstream.
 * `ErgodicTheory.coverCocycle_suspensionAct_log_discrepancy`: the **`t`-independent additive
   `log`-discrepancy bound**. Under base-cocycle invertibility and strict positivity of the two
@@ -43,8 +44,8 @@ the *exponent*, not the matrix, passes to the quotient — is the design referen
   an individual `log`-norm can be negative). Obtained by taking `Real.log` of the two op-norm
   brackets
   (`coverCocycle_suspensionAct_opNorm_le` / `_opNorm_ge`) via `Real.log_le_log` and `Real.log_mul`.
-* `ErgodicTheory.coverCocycle_suspensionAct_tendsto_exponent`: **the limit transfer** (headline). If the
-  cover-cocycle growth rate `(1/t) log ‖coverCocycle (x, s) t‖` converges to `L` as `t → ∞`, and
+* `ErgodicTheory.coverCocycle_suspensionAct_tendsto_exponent`: **the limit transfer** (headline). If
+  the cover-cocycle growth rate `(1/t) log ‖coverCocycle (x, s) t‖` converges to `L` as `t → ∞`, and
   the base cocycle is invertible with both cover-cocycle norms eventually strictly positive, then
   `(1/t) log ‖coverCocycle (suspensionAct (n : ℤ) (x, s)) t‖` converges to the *same* `L`. Proved
   by a `Filter.Tendsto` squeeze: the per-`t` average at the re-based point lies within
@@ -55,8 +56,9 @@ the *exponent*, not the matrix, passes to the quotient — is the design referen
 The space-level statement on `SuspensionSpace T hτ` is assembled elsewhere
 (`coverCocycle_tendsto_exponent_of_bddRoof` for the bounded-roof section exponent, and the
 base-a.e.→μ̂-a.e. disintegration `ae_suspensionMeasure_*` of
-`ErgodicTheory.Continuous.SuspensionDisintegration`); this file supplies only the representative-free
-*re-basing invariance* of the growth rate. The strict-positivity hypotheses on the two
+`ErgodicTheory.Continuous.SuspensionDisintegration`); this file supplies only the
+representative-free *re-basing invariance* of the growth rate. The strict-positivity hypotheses
+on the two
 cover-cocycle norms are taken **explicitly** rather than derived here: positivity of
 `‖coverCocycle p t‖` holds when the base matrices `A` are invertible (every `flowCocycleSection` is
 then a product of invertible `A`-factors, hence nonzero with positive operator norm), but that
@@ -146,7 +148,8 @@ theorem coverCocycle_suspensionAct_log_discrepancy [NeZero d] (hc : ∀ x, c ≤
     linarith [hge]
 
 set_option maxHeartbeats 400000 in -- the squeeze threads several `Tendsto` combinators plus a
--- per-`t` `abs_le`/`div` sandwich over the long `coverCocycle` terms; the default budget is exceeded
+-- per-`t` `abs_le`/`div` sandwich over the long `coverCocycle` terms; the default budget is
+-- exceeded
 /-- **The Lyapunov-exponent limit transfer (headline).** If the cover-cocycle growth rate
 `(1/t) log ‖coverCocycle (x, s) t‖` converges to `L` as `t → ∞`, the base cocycle `cocycle A T n x`
 is invertible, and both cover-cocycle norms are eventually strictly positive (for all large `t`),

@@ -44,7 +44,8 @@ a.e. formulation for the (a.e.) multiplicative ergodic theorem.
 
 ## Why this is the right reduction
 
-`infDist c (V x) = ‖c − (V x).starProjection c‖` (`ErgodicTheory.infDist_eq_norm_sub_starProjection`),
+`infDist c (V x) = ‖c − (V x).starProjection c‖`
+(`ErgodicTheory.infDist_eq_norm_sub_starProjection`),
 so the weak measurability proved here is interderivable with measurability of the orthogonal
 projector itself: the node is irreducible, and reducing it to *one* universally-true classical
 measure-theory lemma (analytic ⟹ universally measurable) is the sharpest possible isolation —
@@ -55,8 +56,8 @@ argument bypasses entirely.
 
 * `ErgodicTheory.analyticSet_infDist_lt`: under `[StandardBorelSpace X]`, a measurable graph makes
   `{x | infDist c (V x) < r}` an `AnalyticSet` (`sorry`-free).
-* `ErgodicTheory.nullMeasurableSet_infDist_lt`: the sublevel sets are `NullMeasurableSet` (using the now
-  proved `MeasureTheory.AnalyticSet.nullMeasurableSet`).
+* `ErgodicTheory.nullMeasurableSet_infDist_lt`: the sublevel sets are `NullMeasurableSet` (using
+  the now proved `MeasureTheory.AnalyticSet.nullMeasurableSet`).
 * `ErgodicTheory.aemeasurable_infDist_of_measurableGraph`: **the deliverable** — a measurable graph
   yields `AEMeasurable (fun x => infDist c (V x)) μ` for every `c` and every s-finite measure `μ`.
 

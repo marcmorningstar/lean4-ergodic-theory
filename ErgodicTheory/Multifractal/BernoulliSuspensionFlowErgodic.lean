@@ -11,8 +11,8 @@ import Mathlib.Dynamics.Ergodic.Ergodic
 # Ergodicity of the constant-roof Bernoulli suspension flow (and the time-`1` failure)
 
 This module completes the dynamical picture of the constant-roof (`τ ≡ 1`) suspension flow
-`bernSuspensionFlow ν` built in `ErgodicTheory.Multifractal.BernoulliSuspensionFlow`. It establishes the
-sharp contrast between the *full* `ℝ`-flow and its *time-`1` map*:
+`bernSuspensionFlow ν` built in `ErgodicTheory.Multifractal.BernoulliSuspensionFlow`. It establishes
+the sharp contrast between the *full* `ℝ`-flow and its *time-`1` map*:
 
 * **The full `ℝ`-flow is ergodic iff the base shift is ergodic.** A measurable set invariant under
   *all* time-`t` maps `ζ_t` (`t ∈ ℝ`) is null or conull, provided the two-sided Bernoulli base shift
@@ -58,12 +58,13 @@ the quotient map `π = suspensionMk`:
 
 ## Main results
 
-* `ErgodicTheory.Multifractal.suspensionMeasure_eq_bernZ_base_of_flowInvariant`: for a flow-invariant
-  measurable `A`, `μ̂ A = bernZ ν B` with `B = {x | π (x, 0) ∈ A}` the (shift-invariant) base set.
-* `ErgodicTheory.Multifractal.ergodic_bernSuspensionFlow`: **the conditional flow ergodicity** — every
-  all-`t`-invariant measurable set is null or conull, given base ergodicity.
-* `ErgodicTheory.Multifractal.not_ergodic_bernSuspensionFlow_one`: **the time-`1` map is not ergodic**
-  (the saturated section set `{[x, s] | s < 1/2}` is a nontrivial invariant set).
+* `ErgodicTheory.Multifractal.suspensionMeasure_eq_bernZ_base_of_flowInvariant`: for a
+  flow-invariant measurable `A`, `μ̂ A = bernZ ν B` with `B = {x | π (x, 0) ∈ A}` the
+  (shift-invariant) base set.
+* `ErgodicTheory.Multifractal.ergodic_bernSuspensionFlow`: **the conditional flow ergodicity** —
+  every all-`t`-invariant measurable set is null or conull, given base ergodicity.
+* `ErgodicTheory.Multifractal.not_ergodic_bernSuspensionFlow_one`: **the time-`1` map is not
+  ergodic** (the saturated section set `{[x, s] | s < 1/2}` is a nontrivial invariant set).
 -/
 
 open MeasureTheory Set Function

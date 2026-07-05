@@ -17,8 +17,8 @@ ingredient that lets the eigenvalues pass to the Oseledets matrix limit.
 
 ## Main results
 
-* `ErgodicTheory.Weyl.abs_eigenvalues₀_sub_le` — the Weyl perturbation inequality: sorted eigenvalues
-  of Hermitian matrices are 1-Lipschitz in the `L²` operator norm.
+* `ErgodicTheory.Weyl.abs_eigenvalues₀_sub_le` — the Weyl perturbation inequality: sorted
+  eigenvalues of Hermitian matrices are 1-Lipschitz in the `L²` operator norm.
 * `ErgodicTheory.Weyl.tendsto_eigenvalues₀` — continuity of the sorted eigenvalues along limits.
 -/
 

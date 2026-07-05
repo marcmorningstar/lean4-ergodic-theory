@@ -33,7 +33,8 @@ limit `specList A T x i` on each stratum.
   liminf lower bound
   `specList A T x i ≤ liminf (1/n) log‖A⁽ⁿ⁾ v‖`, derived from a band-projector
   convergence hypothesis via `ErgodicTheory.log_le_liminf_log_cocycle_apply`.
-* `ErgodicTheory.tendsto_inv_mul_log_norm_cocycle_apply_of_bandProjector`: the exact per-vector growth
+* `ErgodicTheory.tendsto_inv_mul_log_norm_cocycle_apply_of_bandProjector`: the exact per-vector
+  growth
   limit, combining the limsup
   upper bound, the two-sided boundedness, and the liminf lower bound.
 -/

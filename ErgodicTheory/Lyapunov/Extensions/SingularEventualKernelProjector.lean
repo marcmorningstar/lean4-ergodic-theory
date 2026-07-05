@@ -98,7 +98,8 @@ private theorem starProjection_congr_left {E : Type*} [NormedAddCommGroup E]
 /-- The **eventual kernel** of the cocycle transported to `EuclideanSpace ℝ (Fin d)`: the supremum
 (union) over all step counts `n` of the finite-step Euclidean kernels `cocycleKerEuclid A T n x`.
 This is the Euclidean-space avatar of `ErgodicTheory.eventualKer`, packaged so that `orthProjMatrix`
-(the orthogonal-projection matrix encoding of `ErgodicTheory.MeasurableSubspace`) applies to it; it is
+(the orthogonal-projection matrix encoding of `ErgodicTheory.MeasurableSubspace`)
+applies to it; it is
 the bottom flag space `V_{k+1}(ω) = {0}`-analogue of the singular Oseledets filtration (Quas,
 *Multiplicative Ergodic Theorems and Applications*, 2013, Theorem 2). -/
 noncomputable def eventualKerEuclid (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (x : X) :

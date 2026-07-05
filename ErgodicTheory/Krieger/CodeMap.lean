@@ -13,7 +13,8 @@ Krieger's finite generator theorem (issue #15): the code partition of a measurab
 the two-sided itinerary map, together with the one measurability fact that lets a product-measurable
 decoder of the itinerary pull back to a `twoSidedSat`-measurable set. This is exactly what the
 cross-layer mod-0 coding reduction `ErgodicTheory.Krieger.codesTwoSidedMod0c_of_aeRecovery`
-(`Generator.lean`) — which feeds the headline `ErgodicTheory.Krieger.krieger_finite_generator` through
+(`Generator.lean`) — which feeds the headline
+`ErgodicTheory.Krieger.krieger_finite_generator` through
 `ErgodicTheory.Krieger.ColumnCodeData` (`Recovery.lean`) — consumes. Everything here is proved
 sorry-free and **unconditionally**; the genuinely dynamical/combinatorial inputs (the code symbol
 `c : α → Fin k` and the a.e.-recovering decoder) live downstream.
@@ -22,7 +23,8 @@ sorry-free and **unconditionally**; the genuinely dynamical/combinatorial inputs
 
 Given a fixed (countable or finite) generator `Q`, the classical construction codes the columns of a
 Rokhlin tower: on each tower column one reads the `Q`-`N`-name, maps it through the **sentinel
-prefix-code** (`ErgodicTheory.Krieger.exists_sentinelEncoding`) to a length-`O(N)` block over `Fin k`,
+prefix-code** (`ErgodicTheory.Krieger.exists_sentinelEncoding`) to a length-`O(N)` block
+over `Fin k`,
 and *defines* the code symbol `c : α → Fin k` so that `c (eⁱ x)` is the `i`-th block symbol. The
 sentinel marks the column boundaries, so a decoder reading the two-sided `P`-itinerary
 `n ↦ c (eⁿ x)` can re-find the boundaries (`ErgodicTheory.Krieger.sentinelEncodeList_injective`) and

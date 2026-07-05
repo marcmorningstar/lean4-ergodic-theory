@@ -32,7 +32,8 @@ to cover `g '' B(x, ε)`, which Liao–Qiu bound by the **positive-part singular
 
 The genuinely **sharp anisotropic** count `≲ ∏ᵢ max(1, σᵢ(L))` (a thin pancake needs *few* balls
 along its thin directions) is proved in the sibling module
-`ErgodicTheory.Entropy.Ruelle.SharpCovering` (`ErgodicTheory.coveringCount_image_ball_le_volProd`, via the
+`ErgodicTheory.Entropy.Ruelle.SharpCovering` (`ErgodicTheory.coveringCount_image_ball_le_volProd`,
+via the
 constructive `ErgodicTheory.svd_exists` + an ellipsoid-domination volume bound, with dimensional
 constant `6^d`), which is the count the sharp Margulis–Ruelle track uses.
 

@@ -13,7 +13,8 @@ For a **singular** (non-invertible, `det A = 0` allowed) cocycle, the singular f
 flag's intermediate slow space `Vⱼ(ω)` (Quas, *MET and Applications*, 2013, **Theorem 2**; Ruelle,
 Publ. IHES 50, 1979, **Lemma 1.4**) is — by the landed structural reduction
 `ErgodicTheory.tendsto_orthProjMatrix_vSlowSingularStep_of_tendsto_bandProjector`
-(`ErgodicTheory/Lyapunov/Extensions/SingularSlowSpace.lean`) — reduced **unconditionally** to one input:
+(`ErgodicTheory/Lyapunov/Extensions/SingularSlowSpace.lean`) — reduced **unconditionally** to
+one input:
 the convergence of the *fast* band projector
 `bandProjector A T (𝟙_{(c,∞)}) n x` at a Lyapunov-gap cut `c`.
 
@@ -26,7 +27,8 @@ and pins the genuine residual obstruction with a `cruxStatus`-quality precision.
 
 ## The det-free reformulation (Angle A — forward growth / reverse sandwich)
 
-The abstract per-step bound `ErgodicTheory.norm_bandProjector_succ_sub_le` reads, with the compound-norm
+The abstract per-step bound `ErgodicTheory.norm_bandProjector_succ_sub_le` reads, with the
+compound-norm
 abbreviations `cM = ‖compound k Mₙ‖`, `cB = ‖compound k B‖`, `r = σₖ/σₖ₋₁` (`B = A(Tⁿx)`,
 `Mₙ = cocycle A T n x`),
 
@@ -40,11 +42,13 @@ denominator lower bound** `hμ₀lb`:
 Everything else — the off-diagonal numerator `‖C v₀ − ⟪C v₀,v₀⟫v₀‖ ≤ cM²·r·cB²` and the `ν`-ceiling
 `ν = μ₁·cB² = cM²r²·cB²` — is **det-free / forward**. We make this exact:
 
-* `ErgodicTheory.numerator_div_gap_le_detfree` — the gap-denominator collapse with the inverse replaced
+* `ErgodicTheory.numerator_div_gap_le_detfree` — the gap-denominator collapse with the inverse
+  replaced
   by an **abstract** lower-bound coefficient `s` (`μ̃₀ ≥ s²·cM²`): the increment ratio collapses to
   `(cB/s)²·r / (1 − (cB/s)²r²)`. Here `cB/s` is the det-free analogue of the compound condition
   number `κ = cB·cBi`, with `s = σ_min(compound k B) = 1/cBi`.
-* `ErgodicTheory.norm_bandProjector_succ_sub_le_detfree` — the per-step band-projector increment bound
+* `ErgodicTheory.norm_bandProjector_succ_sub_le_detfree` — the per-step band-projector
+  increment bound
   driven by the **abstract** `s`: it consumes *only* the lower bound `s²·cM² ≤ μ̃₀` (and `s > 0`,
   `s² cM² > ν`, the regime). No inverse symbol; the inverse engine survives in this lemma **only as
   the supplier of one number `s` with `μ̃₀ ≥ s²·cM²`.**
@@ -79,9 +83,11 @@ construction of `Vⱼ` consumes.
 ## What this module lands (det-free)
 
 * `ErgodicTheory.numerator_div_gap_le_detfree` — det-free gap-denominator collapse (sorry-free).
-* `ErgodicTheory.norm_bandProjector_succ_sub_le_detfree` — det-free per-step band-projector increment
+* `ErgodicTheory.norm_bandProjector_succ_sub_le_detfree` — det-free per-step band-projector
+  increment
   bound parametrised by the abstract lower-bound coefficient `s` (sorry-free).
-* `ErgodicTheory.tendsto_vSlowSingularStep_of_bandProjector_increments_detfree` — the **unconditional**
+* `ErgodicTheory.tendsto_vSlowSingularStep_of_bandProjector_increments_detfree`
+  — the **unconditional**
   `Vⱼ` convergence: from summable det-free per-step bounds (with the abstract `s`) to a converging
   slow projector. Chains `norm_bandProjector_succ_sub_le_detfree` ⇒ the abstract Cauchy packaging
   `exists_tendsto_bandProjector` ⇒ the landed structural reduction

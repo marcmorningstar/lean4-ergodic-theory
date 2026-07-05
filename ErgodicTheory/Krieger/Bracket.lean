@@ -8,7 +8,8 @@ import ErgodicTheory.Krieger.Weave
 /-!
 # The aligned-marker construction of a `BracketedTowerSystem` (C3, sub-problem B, closure)
 
-`ErgodicTheory.Krieger.Weave` reduced sub-problem B of the unconditional Krieger theorem to producing a
+`ErgodicTheory.Krieger.Weave` reduced sub-problem B of the unconditional Krieger theorem to
+producing a
 single `BracketedTowerSystem e μ Q k`: one fixed measurable master `code : α → Fin k`,
 *self-bracketed* on a refining sequence of Rokhlin towers with summable misses. The three genuinely
 hard fields are the self-bracketing conditions on the **single** `code`, simultaneously across the
@@ -54,7 +55,8 @@ The reduction proved here is the **structural exit**: a coherent aligned marker 
 bracketed master code ⟹ `BracketedTowerSystem` ⟹ `CodesTwoSidedMod0c`. What `AlignedTowerCastle`
 *carries* as the field `marker_top` ∧ `marker_pred` ∧ `interior_notMarker` is **exactly** the
 genuinely-dynamical content the construction must deliver and which the repository's
-`ErgodicTheory.Krieger.rokhlin_tower` API does **not** supply: a single measurable set `M` that is the
+`ErgodicTheory.Krieger.rokhlin_tower` API does **not** supply: a single measurable set `M` that is
+the
 top/predecessor marker for *every* refining stage while avoiding *every* stage's interior — i.e. the
 **Kakutani–Rokhlin castle** in which each column of tower `m+1` is a concatenation of whole
 tower-`m` columns plus a marked remainder, so that the tower tops nest (`N_{m+1}` a multiple-plus of
@@ -66,7 +68,8 @@ are **not** aligned across distinct heights `N`. Consequently the marker set "co
 `m`" is, in general, an interior floor of tower `m'`, exactly the conflict the alignment is meant to
 exclude. Building `M` therefore needs a genuine **nested castle refinement** (stack whole tower-`m`
 columns to form tower `m+1`), for which Mathlib has **no analogue** and the repository has no lemma
-(verified: no `nest`/`castle`/`stack`/aligned-tower construction exists in `ErgodicTheory/Krieger/`).
+(verified: no `nest`/`castle`/`stack`/aligned-tower construction exists in
+`ErgodicTheory/Krieger/`).
 This is the precise, non-fakeable dynamical residual of sub-problem B; `AlignedTowerCastle` is the
 faithful hypothesis boundary, sharper than `BracketedTowerSystem` in that the *single* carried datum
 is the coherent geometric marker set `M`, with all symbolic coding discharged here.

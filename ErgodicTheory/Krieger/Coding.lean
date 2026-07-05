@@ -77,12 +77,14 @@ to a mod-0 generator `P` once every cell of `Q` is recovered mod 0 by the two-si
 
 ## Main results
 
-* `ErgodicTheory.Krieger.comap_twoSidedSat_le`: (literal) shift-invariance of the two-sided saturation.
+* `ErgodicTheory.Krieger.comap_twoSidedSat_le`: (literal) shift-invariance of the two-sided
+  saturation.
 * `ErgodicTheory.Krieger.comap_eventuallyMeasurableSpace_twoSidedSat_le`: mod-0 shift-invariance.
 * `ErgodicTheory.Krieger.twoSidedSat_mono_of_codes`: mod-0 recovery monotonicity.
-* `ErgodicTheory.Krieger.IsGeneratingTwoSidedMod0.of_codes`: recovery lifts a mod-0 two-sided generator.
-* `ErgodicTheory.Krieger.isGeneratingTwoSidedMod0_of_literal`: faithfulness — the (non-standard) literal
-  condition is *stronger* than the (standard) mod-0 one.
+* `ErgodicTheory.Krieger.IsGeneratingTwoSidedMod0.of_codes`: recovery lifts a mod-0 two-sided
+  generator.
+* `ErgodicTheory.Krieger.isGeneratingTwoSidedMod0_of_literal`: faithfulness — the (non-standard)
+  literal condition is *stronger* than the (standard) mod-0 one.
 
 ## References
 

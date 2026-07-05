@@ -18,7 +18,8 @@ lies below the `j`-th gap, i.e. the spectral subspaces of the cocycle **Gram** m
 `(cocycle A T n x)ᵀ (cocycle A T n x)` corresponding to eigenvalues `≤ t` for the appropriate
 threshold `t = (gap)²`. This file delivers, for each *fixed step* `n` and *arbitrary* threshold
 `t ≥ 0`, a measurable choice of that finite-step approximant — the direct generalization of the
-bottom kernel stratum (`ErgodicTheory.cocycleKerEuclid`, threshold `0`) to an arbitrary sublevel `t`.
+bottom kernel stratum (`ErgodicTheory.cocycleKerEuclid`, threshold `0`) to an
+arbitrary sublevel `t`.
 
 ## Strategy
 
@@ -35,13 +36,15 @@ range-subspace measurability follows from the projector/range bridge
 
 ## Main definitions
 
-* `ErgodicTheory.cocycleSublevelEuclid`: the `n`-step Gram sublevel spectral subspace at threshold `t`,
+* `ErgodicTheory.cocycleSublevelEuclid`: the `n`-step Gram sublevel spectral subspace
+  at threshold `t`,
   i.e. the range of the spectral `≤ t` projector `cfc (Set.indicator (Set.Iic t) 1) (Gram)`,
   transported to a subspace of `EuclideanSpace ℝ (Fin d)`. At `t = 0` this is the cocycle kernel.
 
 ## Main results
 
-* `ErgodicTheory.measurableSubspace_cocycleSublevelEuclid`: for each fixed `n` and threshold `t`, the
+* `ErgodicTheory.measurableSubspace_cocycleSublevelEuclid`: for each fixed `n` and
+  threshold `t`, the
   family `x ↦ cocycleSublevelEuclid A T n t x` is a `MeasurableSubspace`.
 
 ## gap

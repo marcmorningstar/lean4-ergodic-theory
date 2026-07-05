@@ -33,7 +33,8 @@ hence the zero polynomial; evaluating at `t = -x₀` isolates `c₀ · ∏_{j≠
   `x ↦ (t ↦ (x + t)⁻¹)` are `ℂ`-linearly independent over a finite set of distinct positive reals.
 * `ErgodicTheory.OperatorEntropy.Lieb.resolvent_span_top`: their evaluation family spans the full
   finite-dimensional function space.
-* `ErgodicTheory.OperatorEntropy.Lieb.exists_resolvent_combo`: every target function on the finite set
+* `ErgodicTheory.OperatorEntropy.Lieb.exists_resolvent_combo`: every target function
+  on the finite set
   is a finite `ℂ`-linear combination of resolvents (`t > 0`).
 -/
 

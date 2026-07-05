@@ -25,8 +25,8 @@ continuous-functional-calculus measurability arguments in `ErgodicTheory.Lyapuno
 
 * `ErgodicTheory.inner_projComp_eq` — `⟪v, P_K (P_L (P_K v))⟫ = ‖P_L (P_K v)‖²`.
 * `ErgodicTheory.one_eigenspace_projComp` — `P_K (P_L (P_K v)) = v ↔ v ∈ K ⊓ L`.
-* `ErgodicTheory.tendsto_pow_orthProj_inf` — the matrix powers of `P_K P_L P_K` tend to the projection
-  matrix onto `K ⊓ L`.
+* `ErgodicTheory.tendsto_pow_orthProj_inf` — the matrix powers of `P_K P_L P_K` tend to
+  the projection matrix onto `K ⊓ L`.
 * `ErgodicTheory.MeasurableSubspace.inf` — `x ↦ K x ⊓ L x` is a `MeasurableSubspace`.
 -/
 

@@ -51,7 +51,8 @@ differential — i.e. the local volume-expansion is governed by the positive-par
 product `∏ᵢ max(1, σᵢ)` whose log is the object of part (A). Iterating this along an orbit through
 Lyapunov / Pesin charts upgrades the per-step bound to `exp(n · (Σ λᵢ⁺ + ε))` for the refinement
 `⋁_{k<n} T⁻ᵏ α` of a fine partition `α`. Feeding that atom-count into `entropy_le_log_card`
-(`ErgodicTheory.Entropy.Partition`) and the Fekete limit (`ErgodicTheory.Entropy.ksEntropyPartition`)
+(`ErgodicTheory.Entropy.Partition`) and the Fekete limit
+(`ErgodicTheory.Entropy.ksEntropyPartition`)
 reproduces `hgeo`. Formalizing this covering bound requires smooth-ergodic-theory infrastructure
 (Lyapunov charts, the Mañé/Katok covering argument, orbit-averaging) that Mathlib does not have;
 it is a multi-month build, out of scope here.

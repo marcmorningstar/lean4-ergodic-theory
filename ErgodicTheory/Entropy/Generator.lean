@@ -37,14 +37,16 @@ saturation), so the predicate is genuinely a hypothesis, not a triviality.
 
 ## Main definitions
 
-* `ErgodicTheory.Entropy.IsGenerating`: `P` generates the dynamics — the smallest forward-`T`-invariant
+* `ErgodicTheory.Entropy.IsGenerating`: `P` generates the dynamics — the smallest
+  forward-`T`-invariant
   σ-algebra containing `σ(P)` is the ambient σ-algebra.
 
 ## Main results
 
 * `ErgodicTheory.Entropy.generateFrom_cells_le_generated`: `σ(P) ≤ ⨆ n, comap (T^[n]) σ(P)`, the
   cheap inclusion of the static generating σ-algebra into the forward-saturated one.
-* `ErgodicTheory.Entropy.IsGenerating.le`: a generating partition's forward-saturated σ-algebra is the
+* `ErgodicTheory.Entropy.IsGenerating.le`: a generating partition's forward-saturated σ-algebra is
+  the
   ambient σ-algebra (unfolded form).
 
 ## References

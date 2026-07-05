@@ -12,7 +12,8 @@ import Mathlib.Data.Fin.Tuple.Basic
 # Kolmogorov–Sinai entropy via the Fekete limit
 
 This file completes the measure-theoretic foundation for Kolmogorov–Sinai entropy started in
-`ErgodicTheory.Entropy.Partition`, `ErgodicTheory.Entropy.Join`, `ErgodicTheory.Entropy.Subadditive`,
+`ErgodicTheory.Entropy.Partition`, `ErgodicTheory.Entropy.Join`,
+`ErgodicTheory.Entropy.Subadditive`,
 `ErgodicTheory.Entropy.Subadditive2`, and `ErgodicTheory.Entropy.Fekete`. It defines the entropy
 `h(α, T)` of a measure-preserving transformation `T` relative to a finite measurable partition
 `α` as the **Fekete limit** of the iterated-join entropy sequence.
@@ -32,14 +33,16 @@ hypothesis discharged from nonnegativity.
 
 * `ErgodicTheory.Entropy.ksJoin`: the flat `Fin n`-indexed iterated join, a measurable partition.
 * `ErgodicTheory.Entropy.ksEntropySeq`: the entropy sequence `n ↦ H(⋁ₖ₌₀ⁿ⁻¹ T⁻ᵏ α)`.
-* `ErgodicTheory.Entropy.ksEntropyPartition`: the Kolmogorov–Sinai entropy `h(α, T)`, the Fekete limit.
+* `ErgodicTheory.Entropy.ksEntropyPartition`: the Kolmogorov–Sinai entropy `h(α, T)`,
+  the Fekete limit.
 
 ## Main results
 
 * `ErgodicTheory.Entropy.ksEntropySeq_subadditive`: `ksEntropySeq (n + m) ≤ ksEntropySeq n +
   ksEntropySeq m`.
 * `ErgodicTheory.Entropy.ksSubadditive`: the sequence is a `Subadditive` sequence.
-* `ErgodicTheory.Entropy.tendsto_ksEntropySeq`: `n ↦ ksEntropySeq n / n` tends to `ksEntropyPartition`.
+* `ErgodicTheory.Entropy.tendsto_ksEntropySeq`: `n ↦ ksEntropySeq n / n`
+  tends to `ksEntropyPartition`.
 
 ## References
 

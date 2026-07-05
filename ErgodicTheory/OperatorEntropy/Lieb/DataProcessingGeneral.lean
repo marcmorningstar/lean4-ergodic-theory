@@ -27,8 +27,10 @@ converge — by the continuity above and the continuity of the partial trace —
 
 ## Main results
 
-* `ErgodicTheory.OperatorEntropy.Lieb.trace_cfc_re_eq_sum` — `Tr(f(M)) = ∑ᵢ f(λᵢ(M))` for Hermitian `M`.
-* `ErgodicTheory.OperatorEntropy.Lieb.continuousOn_traceMulCfcLog` — the entropy term is continuous on
+* `ErgodicTheory.OperatorEntropy.Lieb.trace_cfc_re_eq_sum` — `Tr(f(M)) = ∑ᵢ f(λᵢ(M))`
+  for Hermitian `M`.
+* `ErgodicTheory.OperatorEntropy.Lieb.continuousOn_traceMulCfcLog` — the entropy term is
+  continuous on
   the density matrices (the Weierstrass step).
 * `ErgodicTheory.OperatorEntropy.Lieb.relEntropyMonotone_partialTrace` — the target `Prop`.
 -/

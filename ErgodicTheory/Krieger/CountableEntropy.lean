@@ -44,18 +44,20 @@ being a real number); the finiteness criterion is therefore stated as a `Summabl
 ## Main results
 
 * `ErgodicTheory.Krieger.cHμ_nonneg`: countable entropy is nonnegative for a probability measure.
-* `ErgodicTheory.Krieger.cHμ_eq_entropy`: for a `Fintype`-indexed family the countable entropy agrees
-  with the finite `ErgodicTheory.Entropy.entropy`, so the countable theory genuinely extends the finite
-  one.
-* `ErgodicTheory.Krieger.summable_negMulLog_of_le`: **the comparison core.** If `0 ≤ p i ≤ c i ≤ e⁻¹`
+* `ErgodicTheory.Krieger.cHμ_eq_entropy`: for a `Fintype`-indexed family the countable entropy
+  agrees with the finite `ErgodicTheory.Entropy.entropy`, so the countable theory genuinely
+  extends the finite one.
+* `ErgodicTheory.Krieger.summable_negMulLog_of_le`: **the comparison core.**
+  If `0 ≤ p i ≤ c i ≤ e⁻¹`
   for all `i` and `i ↦ negMulLog (c i)` is summable, then `i ↦ negMulLog (p i)` is summable. This is
   the directly-consumable finiteness input: a partition cell used with probability `≤ cᵢ`, where
   `∑ negMulLog cᵢ < ∞`, contributes a summable entropy tail.
 * `ErgodicTheory.Krieger.summable_negMulLog_of_summable_index_mul`: **Downarowicz Fact 1.1.4.** If a
   countable nonnegative sub-probability family `p : ℕ → ℝ` satisfies `∑ i, i · pᵢ < ∞`, then its
   entropy `i ↦ negMulLog (pᵢ)` is summable, hence `H(p) < ∞`.
-* `ErgodicTheory.Krieger.cHμ_summable_of_summable_index_mul`: the same criterion phrased on a partition
-  `μ`-measure family: if `∑ i, i · μ(sᵢ).toReal < ∞`, the countable entropy `cHμ μ s` is a genuine
+* `ErgodicTheory.Krieger.cHμ_summable_of_summable_index_mul`: the same criterion phrased on a
+  partition `μ`-measure family: if `∑ i, i · μ(sᵢ).toReal < ∞`, the countable entropy `cHμ μ s` is
+  a genuine
   finite sum.
 
 ## References

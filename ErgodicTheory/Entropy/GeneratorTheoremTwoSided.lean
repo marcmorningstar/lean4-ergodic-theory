@@ -14,11 +14,13 @@ import ErgodicTheory.Krieger.ZIterate
 
 This file builds the **two-sided** (invertible) Kolmogorov–Sinai generator theorem: for a
 measure-preserving *automorphism* `e : α ≃ᵐ α` of a standard Borel probability space and a
-*two-sided generating* finite partition `P` (`ErgodicTheory.Krieger.IsGeneratingTwoSided e P`, i.e. the
+*two-sided generating* finite partition `P` (`ErgodicTheory.Krieger.IsGeneratingTwoSided e P`,
+i.e. the
 σ-algebra saturated under *both* time directions `⨆_{j : ℤ} eʲ σ(P)` is the ambient σ-algebra), the
 entropy of the system is already attained on `P`: `h(e) = h(e, P)`.
 
-The classical one-sided generator theorem (`ErgodicTheory.Entropy.GeneratorTheorem`) requires forward
+The classical one-sided generator theorem (`ErgodicTheory.Entropy.GeneratorTheorem`) requires
+forward
 saturation `⨆_{n : ℕ} (eⁿ)⁻¹ σ(P) = mα`, which provably fails for genuine automorphisms such as the
 two-sided Bernoulli shift; the correct hypothesis is the two-sided one. This module supplies the
 *first half* of the reduction:

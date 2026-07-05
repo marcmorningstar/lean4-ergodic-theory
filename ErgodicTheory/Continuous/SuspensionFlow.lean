@@ -9,7 +9,8 @@ import ErgodicTheory.Continuous.SuspensionSpace
 # The suspension flow
 
 This module builds the natural one-parameter flow on the suspension (mapping-torus) space of
-`ErgodicTheory.Continuous.SuspensionSpace`. On the product `X × ℝ` the flow is the `ℝ`-translation in
+`ErgodicTheory.Continuous.SuspensionSpace`. On the product `X × ℝ` the flow is
+the `ℝ`-translation in
 the second (time) coordinate,
 
 `S t (x, s) = (x, s + t)`,

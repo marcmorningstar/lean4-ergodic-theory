@@ -24,8 +24,8 @@ to show that its **orthogonal-projection matrix** `x ↦ orthProjMatrix (K x)` i
 This file delivers exactly that for each *fixed step* `n`: the orthogonal projector onto the
 `n`-step cocycle kernel — viewed as a subspace `cocycleKerEuclid A T n x` of the Euclidean space
 `EuclideanSpace ℝ (Fin d)` — depends measurably on `x`. The eventual kernel is the (monotone) union
-of these finite-step kernels (`ErgodicTheory.eventualKer`), so this per-step projector measurability is
-the analytic engine for the measurability of the bottom flag space.
+of these finite-step kernels (`ErgodicTheory.eventualKer`), so this per-step projector measurability
+is the analytic engine for the measurability of the bottom flag space.
 
 ## Strategy
 
@@ -58,7 +58,8 @@ The kernel projector is realised *spectrally*, so its measurability reduces to t
 
 * `ErgodicTheory.orthProjMatrix_cocycleKerEuclid_eq_spectralProjector`: the pointwise bridge
   `orthProjMatrix (cocycleKerEuclid A T n x) = cfc (Set.indicator (Set.Iic 0) 1) (Sᴴ S)`.
-* `ErgodicTheory.measurable_orthProjMatrix_cocycleKer`: `x ↦ orthProjMatrix (cocycleKerEuclid A T n x)`
+* `ErgodicTheory.measurable_orthProjMatrix_cocycleKer`:
+  `x ↦ orthProjMatrix (cocycleKerEuclid A T n x)`
   is measurable, obtained by rewriting with the bridge and applying
   `ErgodicTheory.measurable_spectralProjector`.
 
@@ -81,8 +82,8 @@ variable {X : Type*} {d : ℕ}
 
 /-- The kernel of the `n`-step cocycle, transported to a subspace of `EuclideanSpace ℝ (Fin d)`
 via the star-algebra equivalence `Matrix.toEuclideanCLM`. This is the Euclidean-space avatar of
-`ErgodicTheory.cocycleKer`, packaged so that `orthProjMatrix` (the orthogonal-projection matrix used by
-`ErgodicTheory.MeasurableSubspace`) applies to it directly. -/
+`ErgodicTheory.cocycleKer`, packaged so that `orthProjMatrix` (the orthogonal-projection matrix
+used by `ErgodicTheory.MeasurableSubspace`) applies to it directly. -/
 noncomputable def cocycleKerEuclid (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (n : ℕ)
     (x : X) : Submodule ℝ (EuclideanSpace ℝ (Fin d)) :=
   LinearMap.ker (Matrix.toEuclideanCLM (𝕜 := ℝ) (cocycle A T n x)).toLinearMap

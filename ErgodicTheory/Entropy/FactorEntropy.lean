@@ -25,8 +25,8 @@ coincide for every `n`, hence so do their Fekete limits.
 
 ## Main definitions
 
-* `ErgodicTheory.Entropy.MeasurePartition.pulledBack`: the partition of `α` with cells `π⁻¹(R.cells)`,
-  for a measure-preserving `π : α → β` and a partition `R` of `β`.
+* `ErgodicTheory.Entropy.MeasurePartition.pulledBack`: the partition of `α` with cells
+  `π⁻¹(R.cells)`, for a measure-preserving `π : α → β` and a partition `R` of `β`.
 
 ## Main results
 

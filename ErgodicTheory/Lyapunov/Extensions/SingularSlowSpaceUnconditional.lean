@@ -47,8 +47,9 @@ bound the aperture. This is the same wall the Wave-4 wedge route (`SingularSlowS
 
 What **is** unconditional and sorry-free here:
 
-* `ErgodicTheory.tendsto_vSlowSingularStep_of_summable_increment` — the **soft-analysis core**: from a
-  per-step increment upper bound `b n ≥ ‖P_slow(n+1) − P_slow(n)‖` (equivalently the fast band
+* `ErgodicTheory.tendsto_vSlowSingularStep_of_summable_increment` — the **soft-analysis core**:
+  from a per-step increment upper bound `b n ≥ ‖P_slow(n+1) − P_slow(n)‖`
+  (equivalently the fast band
   increment, by the complement bridge) with `(1/n)·log b n → L < 0`, the slow projectors converge to
   the **explicit complement** `1 − Pfast` of the fast band limit. **No invertibility, no det, no
   tempering** — pure root test + the landed structural reduction. This is genuinely unconditional;
@@ -65,20 +66,25 @@ What **is** unconditional and sorry-free here:
   see `bandProjector_increment_eq_aperture` for why no inverse-free per-step replacement exists.
 
 * `ErgodicTheory.measurableSubspace_vSlowSingularStep` (re-exported context) and
-  `ErgodicTheory.vSlowSingularStep_antitone` give the measurability and the antitone flag of the limit
+  `ErgodicTheory.vSlowSingularStep_antitone` give the measurability and the antitone flag of
+  the limit
   `Vⱼ` for free, from the landed `SingularSlowSpace.lean` (they are deterministic / unconditional).
 
 ## Main results
 
-* `ErgodicTheory.tendsto_vSlowSingularStep_of_summable_increment` — unconditional soft core: summable
+* `ErgodicTheory.tendsto_vSlowSingularStep_of_summable_increment` — unconditional soft core:
+  summable
   per-step increment bound ⇒ `Vⱼ` converges to `1 − Pfast`.
-* `ErgodicTheory.tendsto_log_detfree_step_bound` — the negative log-limit of the det-free `s`-engine's
+* `ErgodicTheory.tendsto_log_detfree_step_bound` — the negative log-limit of the det-free
+  `s`-engine's
   per-step bound, from the strict gap + tempering.
-* `ErgodicTheory.summable_detfree_step_bound` — the det-free per-step bound is summable under strict gap
+* `ErgodicTheory.summable_detfree_step_bound` — the det-free per-step bound is summable under
+  strict gap
   + tempering (root test).
 * `ErgodicTheory.tendsto_vSlowSingularStep_of_tempered` — the tempered-class `Vⱼ`: convergence to
   `1 − Pfast` carrying the strict-gap + tempering hypotheses.
-* `ErgodicTheory.ForwardRatioPerStepBound` / `ErgodicTheory.bandProjector_increment_eq_aperture` — the
+* `ErgodicTheory.ForwardRatioPerStepBound` / `ErgodicTheory.bandProjector_increment_eq_aperture`
+  — the
   precise residual record: the forward-ratio per-step bound `(R5A)` is the aperture, governed by the
   inverse (condition number of `B`), not the forward ratio.
 
@@ -152,10 +158,12 @@ per-step bound `√(2k)·κ²·r/(1 − κ²r²)` with `κ = cB·cBi = cB/s` and
   `(1/n)log√(2k) + (1/n)log κ² + (1/n)log r − (1/n)log(1 − κ²r²)`.
 
 Under a **strict spectral gap** `lamK < lamK1` at the cut (`(1/n)log r → lamK − lamK1`, from the
-a.e.-constant genuine singular spectrum `ErgodicTheory.ae_singularSpectralValue_eq_const` selecting the
+a.e.-constant genuine singular spectrum `ErgodicTheory.ae_singularSpectralValue_eq_const`
+selecting the
 two cut indices) and **tempering** `(1/n)log κ → 0` (subexponential compound condition number), the
 first, second, and fourth terms vanish, leaving the negative limit `lamK − lamK1`. The argument is
-exactly the scalar layer of `ErgodicTheory.tendsto_log_bCocycle_point`, isolated here on the abstract
+exactly the scalar layer of `ErgodicTheory.tendsto_log_bCocycle_point`, isolated here on the
+abstract
 sequences so it needs *no* `det ≠ 0` (the inverse, if any, sits inside the abstract `κ`). -/
 
 /-- **The negative log-limit of the det-free per-step bound.** For abstract positive sequences `κ`

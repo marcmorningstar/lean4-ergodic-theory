@@ -33,8 +33,8 @@ the doubling map) with real toral dynamics.
   `mFourier n` to `mFourier (catℤ ·ᵥ n)` (the matrix is symmetric, so the index action by `Mᵀ` is
   the action by `M`).  For a measurable invariant set `s`, the indicator `1_s ∈ L²` has Fourier
   coefficients constant along the orbit `p ↦ catℤᵖ ·ᵥ n`.  For `n ≠ 0` that orbit is **infinite**
-  (`ErgodicTheory.CatMapToral.orbit_infinite`, the hyperbolicity input), and `ℓ²`-summability forces the
-  coefficient to `0`.  Hence only the `n = 0` coefficient survives, so `1_s` is a.e. constant and
+  (`ErgodicTheory.CatMapToral.orbit_infinite`, the hyperbolicity input), and `ℓ²`-summability forces
+  the coefficient to `0`. Hence only the `n = 0` coefficient survives, so `1_s` is a.e. constant and
   `s` is a.e. empty or full.
 
 ## Main results

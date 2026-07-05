@@ -11,7 +11,8 @@ import ErgodicTheory.Entropy.KSEntropyBounds
 # Relative Kolmogorov–Sinai entropy via the Fekete limit
 
 This file builds the **conditional** (relative) Kolmogorov–Sinai entropy ladder, a faithful mirror
-of the absolute ladder of `ErgodicTheory.Entropy.KSEntropy` and `ErgodicTheory.Entropy.KSEntropyBounds`.
+of the absolute ladder of `ErgodicTheory.Entropy.KSEntropy` and
+`ErgodicTheory.Entropy.KSEntropyBounds`.
 Given a sub-σ-algebra `𝒜 ≤ mα` and the conditional Shannon entropy `condEntropy μ 𝒜 s` of
 `ErgodicTheory.Entropy.CondPartition`, the relative entropy `h(α, T | 𝒜)` of a measure-preserving
 transformation `T` relative to a finite measurable partition `α` is the **Fekete limit** of the
@@ -35,7 +36,8 @@ pull-back would require.
 
 * `ErgodicTheory.Entropy.condKsEntropySeq`: the conditional iterated-join entropy sequence
   `n ↦ H(⋁ₖ₌₀ⁿ⁻¹ T⁻ᵏ α | 𝒜)`.
-* `ErgodicTheory.Entropy.condKsEntropyPartition`: the relative Kolmogorov–Sinai entropy `h(α, T | 𝒜)`,
+* `ErgodicTheory.Entropy.condKsEntropyPartition`: the relative Kolmogorov–Sinai entropy
+  `h(α, T | 𝒜)`,
   the Fekete limit.
 
 ## Main results

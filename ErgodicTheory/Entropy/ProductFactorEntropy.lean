@@ -22,9 +22,11 @@ Theory*, Theorem 4.23). Combined with the reverse bound `h(T × id) ≤ h(T)` it
 `h(T × id) = h(T)`.
 
 The proof pulls each finite partition `R` of the base back along the factor map `fst`. By the
-factor-relative entropy invariance (`ErgodicTheory.Entropy.factor_relative_eq`) the partition-relative
+factor-relative entropy invariance (`ErgodicTheory.Entropy.factor_relative_eq`)
+the partition-relative
 entropy `h(R, T)` equals `h(fst⁻¹ R, T × id)`, and the latter is bounded above by the entropy of the
-product system (`ErgodicTheory.Entropy.le_ksEntropy`). Taking the supremum over all base partitions `R`
+product system (`ErgodicTheory.Entropy.le_ksEntropy`). Taking the supremum over all
+base partitions `R`
 gives `h(T) ≤ h(T × id)`.
 
 ## Main results

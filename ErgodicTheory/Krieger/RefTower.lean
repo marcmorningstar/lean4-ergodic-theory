@@ -10,13 +10,14 @@ import Mathlib.Data.List.GetD
 # The escape-symbol single-stage column code and the refining-tower assembly (C3, sub-problem B)
 
 This file builds the **escape-symbol single-stage column alignment** — the genuine repair of the
-two-sided bracketing defect (W7) flagged for `ErgodicTheory.Krieger.sentinelParseAt_itin_eq` — and the
-refining-tower assembly that bundles a sequence of single-stage codes into a
+two-sided bracketing defect (W7) flagged for `ErgodicTheory.Krieger.sentinelParseAt_itin_eq` —
+and the refining-tower assembly that bundles a sequence of single-stage codes into a
 `ErgodicTheory.Krieger.RefiningTowerCode`, hence sub-problem B's `CodesTwoSidedMod0c`.
 
 ## The W7 defect this repairs
 
-`ErgodicTheory.Krieger.sentinelParseAt_itin_of_encode` needs the previous column's terminating sentinel
+`ErgodicTheory.Krieger.sentinelParseAt_itin_of_encode` needs the previous column's terminating
+sentinel
 one coordinate below floor `0` of the current column (`hprev`). With a *single skyscraper* this
 FAILS on the bottom-most complete block of each first-return column: there, coordinate `-1` is the
 top of the **incomplete residual stub** of the previous first-return column, which carries no
@@ -135,7 +136,8 @@ stage event `T` the position-aware parser of the fixed `code` recovers the cell 
 
 The proof reads off `x = e^{floor x} (base x)` (`at_floor`), discharges the sentinel-placement
 hypotheses `htop`/`hdata` from the `sentinelEncode` structure via
-`ErgodicTheory.Krieger.sentinelParseAt_itin_of_encode`, and discharges `hprev` from the escape-symbol
+`ErgodicTheory.Krieger.sentinelParseAt_itin_of_encode`, and discharges `hprev` from the
+escape-symbol
 bracketing `brackets` (`code (e⁻¹ base) = s`): the previous column's terminator sits exactly one
 coordinate below floor `0`. The decode then recovers the cell index by `decodes`. -/
 theorem StageCode.tiled {e : α ≃ᵐ α} {code : α → Fin k} {decode : List (Fin k) → ℕ → κ}
@@ -212,7 +214,8 @@ noncomputable def RefiningTowerCode.ofStages
   stage_tiled := fun m => (stages m).tiled
 
 /-- **A refining-tower code from a sequence of stages yields `CodesTwoSidedMod0c`.** Composing
-`RefiningTowerCode.ofStages` with `ErgodicTheory.Krieger.RefiningTowerCode.codes` closes sub-problem B's
+`RefiningTowerCode.ofStages` with `ErgodicTheory.Krieger.RefiningTowerCode.codes` closes
+sub-problem B's
 symbolic side: the cross-layer countable mod-0 code of `Q` by the code partition. The entire
 residual is concentrated in producing the single fixed interleaving `code` and its per-stage
 `StageCode`s. -/

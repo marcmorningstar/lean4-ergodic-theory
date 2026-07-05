@@ -33,8 +33,9 @@ of a measurably-varying subspace family (a.e.) measurable.
 
 * `ErgodicTheory.infDist_eq_norm_sub_starProjection`: `infDist c K = ‖c − K.starProjection c‖`.
 * `ErgodicTheory.norm_starProjection_sq`: Pythagoras, `‖K.starProjection c‖² = ‖c‖² − infDist c K²`.
-* `ErgodicTheory.starProjection_apply_coord`: the projector-coordinate polarisation identity, writing
-  `(K.starProjection u) b` as a real combination of three squared-norm–minus–`infDist²` terms.
+* `ErgodicTheory.starProjection_apply_coord`: the projector-coordinate polarisation identity,
+  writing `(K.starProjection u) b` as a real combination of three squared-norm–minus–`infDist²`
+  terms.
 
 Literature: Kuratowski–Ryll-Nardzewski, *A general theorem on selectors* (1965); Castaing–Valadier,
 *Convex Analysis and Measurable Multifunctions*; C. González-Tokman, A. Quas, *A semi-invertible

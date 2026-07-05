@@ -27,7 +27,8 @@ input — that the partition refines under `T^[n]` into at most `C · exp(n · d
 
 ## The two layers
 
-1. `ErgodicTheory.Entropy.ksEntropyPartition_le_of_atomCount_growth` (fully general, sorry-free): the
+1. `ErgodicTheory.Entropy.ksEntropyPartition_le_of_atomCount_growth` (fully general,
+   sorry-free): the
    **arithmetic backbone**.  If the non-empty atom count of the refined partition
    `⋁ₖ₌₀ⁿ⁻¹ T⁻ᵏ P` is eventually bounded by `C · exp(n · R)` with `C ≥ 1` and `R ≥ 0`, then
    `h(P, T) ≤ R`.  This consumes `AtomCountEntropy`'s

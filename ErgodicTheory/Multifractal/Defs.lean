@@ -37,7 +37,8 @@ notion for the continuous parameter `q : ℝ`.
 * `ErgodicTheory.Multifractal.partitionFunction_nonneg`: `Z_q ≥ 0` when `0 ≤ p i`.
 * `ErgodicTheory.Multifractal.partitionFunction_eq_sum_rpow`: for `q ≠ 0` the guard is removable,
   `Z_q = ∑ i, (p i) ^ q`, since `Real.zero_rpow` makes empty cells vanish anyway.
-* `ErgodicTheory.Multifractal.partitionFunction_one_eq_one`: `Z_1 = 1` for a probability weight family.
+* `ErgodicTheory.Multifractal.partitionFunction_one_eq_one`: `Z_1 = 1` for a probability weight
+  family.
 * `ErgodicTheory.Multifractal.massExponent_one_eq_zero`: `τ(1) = 0` for a probability weight family.
 -/
 

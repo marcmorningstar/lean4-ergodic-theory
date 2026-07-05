@@ -16,7 +16,8 @@ filtration at a Lyapunov cut `c` is the `lambdaBar`-sublevel
 
   `lambdaSublevel A T x c = {v : lambdaBar A T x v ≤ c}`   (det-free; `lambdaBar` is det-free,
 
-`ErgodicTheory/Lyapunov/GrowthFunction.lean`). Track 6B asks the **last open** measurability question of
+`ErgodicTheory/Lyapunov/GrowthFunction.lean`). Track 6B asks the **last open** measurability
+question of
 the unconditional singular flag: is `x ↦ {v : lambdaBar A T x v ≤ c}` a `MeasurableSubspace`?
 
 This module **resolves the measurability question to a single, precisely-named convergence input**
@@ -68,7 +69,8 @@ measurable as a pointwise limit of measurable matrix-valued maps
 2. **The limit is the `lambdaBar`-sublevel.** Even granting convergence, identifying the limit slow
    space with `{lambdaBar ≤ c}` is the per-vector *spectral upper bound*
    `ErgodicTheory.limsup_le_of_mem_vslow` (`vslow ⊆ lambdaSublevel`,
-   `ErgodicTheory/Lyapunov/LimitSlowSpaceSpectralBound.lean`), whose only route is the full Ruelle Lemma
+   `ErgodicTheory/Lyapunov/LimitSlowSpaceSpectralBound.lean`), whose only route is the full
+   Ruelle Lemma
    1.4 cofactor chain on the orthogonal change of basis between the time-`n` Gram eigenbasis and the
    **limit eigenbasis of `Λ = oseledetsLimit`** — and `Λ` itself exists only for invertible cocycles
    (`tendsto_oseledetsLimit` carries `hA : ∀ x, (A x).det ≠ 0`), because the per-`σ` exponent limit
@@ -87,12 +89,14 @@ stratum where the limsup growth is `0`, not `−∞`).
 
 ## Main results
 
-* `ErgodicTheory.measurableSubspace_of_tendsto_orthProjMatrix` — soft pointwise-limit measurability of a
+* `ErgodicTheory.measurableSubspace_of_tendsto_orthProjMatrix` — soft pointwise-limit
+  measurability of a
   subspace family (general, reusable).
 * `ErgodicTheory.measurableSubspace_lambdaSublevel_of_tendsto` — the det-free reduction of
   `{v : lambdaBar ≤ c}` measurability to the slow-projector convergence-to-the-sublevel `hconv` (the
   finite-step multiplier cut at `Real.exp c`, matching the exponent sublevel at `c`).
-* `ErgodicTheory.orthProjMatrix_vSlowSingularStep_tendsto_iff_bandProjector` — `hconv` is equivalent to
+* `ErgodicTheory.orthProjMatrix_vSlowSingularStep_tendsto_iff_bandProjector` — `hconv`
+  is equivalent to
   the convergence of the finite-step slow projectors to `orthProjMatrix (lambdaSublevel A T x c)`,
   re-stated through the complement bridge `1 − bandProjector` to expose the aperture wall.
 
@@ -118,7 +122,8 @@ variable {X : Type*} [MeasurableSpace X] {d : ℕ}
 A subspace family is a `MeasurableSubspace` whenever its `orthProjMatrix` is, for every base point,
 the pointwise (in the sequence index) limit of a sequence of measurable matrix-valued families. This
 is the entrywise `measurable_of_tendsto_metrizable` template, identical in shape to
-`ErgodicTheory.MeasurableSubspace.inf` and `ErgodicTheory.measurable_orthProjMatrix_eventualKer`; we isolate
+`ErgodicTheory.MeasurableSubspace.inf` and `ErgodicTheory.measurable_orthProjMatrix_eventualKer`;
+we isolate
 it so any convergent measurable projector sequence yields measurability of its limit subspace. -/
 
 /-- **Pointwise-limit measurability of a subspace family.** If `V : X → Submodule …` and there is a

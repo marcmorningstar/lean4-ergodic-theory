@@ -44,7 +44,8 @@ so some cell has measure in `(0, δ)`.
 
 ## Main statement
 
-* `ErgodicTheory.Krieger.exists_small_pos_measurableSet` : on a standard Borel probability space with a
+* `ErgodicTheory.Krieger.exists_small_pos_measurableSet` : on a standard Borel probability
+  space with a
   non-atomic measure, every positive threshold bounds a positive-measure measurable set from below.
 
 This is a building block for the Rokhlin tower / Krieger generator development (issue #15).

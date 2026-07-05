@@ -31,10 +31,13 @@ identity map has zero partition entropy (`ksEntropyPartition_id_eq_zero`).  Refi
 
 ## Main results
 
-* `ErgodicTheory.Entropy.ksEntropySeq_id_of_pos`: for `n ≥ 1`, the `n`-fold iterated-join entropy under
+* `ErgodicTheory.Entropy.ksEntropySeq_id_of_pos`: for `n ≥ 1`, the `n`-fold iterated-join
+  entropy under
   the identity map equals the static entropy `H(η)`.
-* `ErgodicTheory.Entropy.ksEntropyPartition_id_eq_zero`: the identity map has zero partition entropy.
-* `ErgodicTheory.Entropy.ksEntropyPartition_rectangle_eq`: the frozen-factor rectangle entropy equals
+* `ErgodicTheory.Entropy.ksEntropyPartition_id_eq_zero`: the identity map has zero
+  partition entropy.
+* `ErgodicTheory.Entropy.ksEntropyPartition_rectangle_eq`: the frozen-factor rectangle
+  entropy equals
   the base entropy.
 
 ## References

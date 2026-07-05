@@ -15,7 +15,8 @@ the dynamical refinement `⋁ₖ₌₀ⁿ⁻¹ T⁻ᵏ α` and the Fekete limit 
 `ErgodicTheory.Entropy.KSEntropy` (using the flat `Fin n`-indexed iterated join `ksJoin`).
 
 It continues the measure-theoretic foundation for Kolmogorov–Sinai entropy started in
-`ErgodicTheory.Entropy.Partition`, `ErgodicTheory.Entropy.Join`, `ErgodicTheory.Entropy.Subadditive`, and
+`ErgodicTheory.Entropy.Partition`, `ErgodicTheory.Entropy.Join`,
+`ErgodicTheory.Entropy.Subadditive`, and
 `ErgodicTheory.Entropy.Subadditive2`.
 
 ## Main definitions

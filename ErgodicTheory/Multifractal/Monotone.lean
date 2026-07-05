@@ -34,7 +34,8 @@ across `q = 1` as well — i.e. the *full* `Antitone` over all of `ℝ`.
 * `ErgodicTheory.Multifractal.logPartitionFunction_secantSlope_monotoneOn`: the reusable core, the
   secant slope `q ↦ log Z_q / (q - 1)` of the (convex) `log Z` anchored at the probability point
   `q = 1` is monotone on `{q | q ≠ 1}`.
-* `ErgodicTheory.Multifractal.hasDerivAt_logPartitionFunction_one`: the derivative of `q ↦ log Z_q` at
+* `ErgodicTheory.Multifractal.hasDerivAt_logPartitionFunction_one`: the derivative
+  of `q ↦ log Z_q` at
   `q = 1` is `∑ i, p i * log (p i)` (the information-dimension numerator).
 * `ErgodicTheory.Multifractal.renyiDim_antitone`: the headline — `q ↦ D_q` is antitone on `ℝ`.
 -/

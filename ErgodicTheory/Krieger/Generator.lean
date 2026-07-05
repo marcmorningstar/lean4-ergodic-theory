@@ -20,18 +20,20 @@ producing a **countable** partition `Q` of the standard-Borel probability space 
 * **two-sidedly generates mod 0** under the ergodic aperiodic automorphism `e`
   (`IsGeneratingTwoSidedMod0c e Q`, the `Countable`-indexed analogue of the `Fintype`-indexed
   `ErgodicTheory.Krieger.IsGeneratingTwoSidedMod0` of `Coding.lean`), and
-* has **finite static (Shannon) entropy** — formalized, as in `ErgodicTheory.Krieger.CountableEntropy`,
+* has **finite static (Shannon) entropy** — formalized, as in
+  `ErgodicTheory.Krieger.CountableEntropy`,
   as `Summable (fun i => Real.negMulLog (μ (Q i)).toReal)` (whence `cHμ μ Q` is a genuine finite
   sum).
 
 Only then is `Q` coded into `Fin k` (the M1+M2 Rokhlin-tower / name-count combinatorics already in
-`ErgodicTheory.Krieger.Coding`/`NameCount`/`RokhlinTower`); this file is the **static input**, not the
-coding step.
+`ErgodicTheory.Krieger.Coding`/`NameCount`/`RokhlinTower`); this file is the **static input**,
+not the coding step.
 
 ## The `Countable`-indexed coding layer
 
 The mod-0 coding development of `Coding.lean` is stated for a `Fintype`-indexed
-`ErgodicTheory.Entropy.MeasurePartition`. Since the generator `Q` is **countably infinite**, this file
+`ErgodicTheory.Entropy.MeasurePartition`. Since the generator `Q` is **countably infinite**,
+this file
 re-establishes the few structural facts at the level of a *bare* `Countable`-indexed family of cells
 `Q : κ → Set α` (we never need the partition axioms for the generation statement — only that each
 cell is measurable, supplied where used). Concretely:
@@ -163,7 +165,8 @@ under `e` when every cell of `Q` is recovered, up to a μ-null set, by the two-s
 The left-hand σ-algebra is the *static* σ-algebra `σ(Q) = generateFrom (range Q)` of the countable
 family — exactly the `n = 0` term of `ctwoSidedSat e Q`, matching how `IsGeneratingTwoSidedMod0c`
 and `ctwoSidedSat` are phrased. The right-hand side is the μ-completion of the *finite* partition's
-two-sided saturation `ErgodicTheory.Krieger.twoSidedSat`. This is the conclusion of the symbolic block
+two-sided saturation `ErgodicTheory.Krieger.twoSidedSat`. This is the conclusion of the symbolic
+block
 code: off a null set, the two-sided `P`-itinerary of a point determines its `Q`-name, hence which
 `Q`-cell it lies in. -/
 def CodesTwoSidedMod0c (e : α ≃ᵐ α) (Q : κ → Set α) (P : MeasurePartition μ ι) : Prop :=
@@ -177,8 +180,8 @@ contained in that completion: `ctwoSidedSat e Q ≤ completion (twoSidedSat e P)
 Each `ℤ`-term `comap (eᵐ) σ(Q)` of `ctwoSidedSat e Q` is bounded, by `comap`-monotonicity in the
 hypothesis, by `comap (eᵐ) (completion (twoSidedSat e P))`, which is bounded by
 `completion (twoSidedSat e P)` by mod-0 shift-invariance of the *finite* saturation
-(`ErgodicTheory.Krieger.comap_eventuallyMeasurableSpace_twoSidedSat_le`). Taking the supremum over `m`
-gives the claim. This is the cross-layer analogue of
+(`ErgodicTheory.Krieger.comap_eventuallyMeasurableSpace_twoSidedSat_le`). Taking the supremum
+over `m` gives the claim. This is the cross-layer analogue of
 `ErgodicTheory.Krieger.twoSidedSat_mono_of_codes`. -/
 theorem ctwoSidedSat_mono_of_codesc (e : α ≃ᵐ α)
     (he : MeasurePreserving (e : α → α) μ μ) (P : MeasurePartition μ ι) (Q : κ → Set α)
@@ -201,8 +204,8 @@ the two-sided itinerary of the *finite* partition `P` recovers each cell of `Q` 
 completion-monotonicity (`ErgodicTheory.Krieger.eventuallyMeasurableSpace_mono`), and
 completion-idempotence (`ErgodicTheory.Krieger.eventuallyMeasurableSpace_idem`). Chaining gives
 `mα ≤ completion (twoSidedSat e P)`, i.e. `IsGeneratingTwoSidedMod0 e P`. This is the cross-layer
-analogue of `ErgodicTheory.Krieger.IsGeneratingTwoSidedMod0.of_codes`, bridging the `Countable` layer
-(`Generator.lean`) to the `Fintype` layer (`Coding.lean`). -/
+analogue of `ErgodicTheory.Krieger.IsGeneratingTwoSidedMod0.of_codes`, bridging the `Countable`
+layer (`Generator.lean`) to the `Fintype` layer (`Coding.lean`). -/
 theorem IsGeneratingTwoSidedMod0c.of_codesc {e : α ≃ᵐ α}
     (he : MeasurePreserving (e : α → α) μ μ) {P : MeasurePartition μ ι} {Q : κ → Set α}
     (hQ : IsGeneratingTwoSidedMod0c μ e Q) (hrec : CodesTwoSidedMod0c e Q P) :

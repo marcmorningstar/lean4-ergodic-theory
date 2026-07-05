@@ -65,7 +65,8 @@ invertibility** `hA : ∀ x, (A x).det ≠ 0`.
 
 The invertibility is load-bearing in **exactly one** estimate, the *rank-1 lower bound on the
 perturbed top eigenvalue* `μ̃₀ ≥ cM²/cBi²`
-(`ErgodicTheory.ExteriorNorm.norm_sq_compound_mul_ge` / `…rayleigh_deficit_le`), whose only route uses
+(`ErgodicTheory.ExteriorNorm.norm_sq_compound_mul_ge` / `…rayleigh_deficit_le`), whose only
+route uses
 the compound *inverse* `cBi = ‖compound k (A(Tⁿx))⁻¹‖` through the factorisation
 `compound k M = compound k B⁻¹ · compound k (B·M)` (`compoundMatrix_eq_inv_mul`). That bound is
 what makes the spectral-gap denominator `μ̃₀ − ν` of the Davis–Kahan sin-Θ step positive and large
@@ -87,13 +88,17 @@ the single remaining input — and its single invertibility-using estimate — p
 
 * `ErgodicTheory.orthProjMatrix_vSlowSingularStep` — the complement bridge
   `orthProjMatrix (vSlowSingularStep …) = 1 − bandProjector …`.
-* `ErgodicTheory.norm_vSlowSingularStep_proj_succ_sub_eq_band` — slow increment = fast band increment
+* `ErgodicTheory.norm_vSlowSingularStep_proj_succ_sub_eq_band` — slow increment = fast band
+  increment
   in norm.
-* `ErgodicTheory.summable_vSlowSingularStep_increment_iff_band` — summability transfer (definitional).
-* `ErgodicTheory.exists_tendsto_orthProjMatrix_vSlowSingularStep_of_summable` — the limit slow projector
+* `ErgodicTheory.summable_vSlowSingularStep_increment_iff_band` — summability transfer
+  (definitional).
+* `ErgodicTheory.exists_tendsto_orthProjMatrix_vSlowSingularStep_of_summable` — the limit
+  slow projector
   from summable fast-band increments (the `Vⱼ` construction crux, *given* the fast summability).
 * `ErgodicTheory.measurableSubspace_vSlowSingularStep` — measurability of each `n`-step slow space.
-* `ErgodicTheory.vSlowSingularStep_antitone` — the `n`-step slow spaces are **antitone** in the cut `c`
+* `ErgodicTheory.vSlowSingularStep_antitone` — the `n`-step slow spaces are **antitone** in
+  the cut `c`
   (a larger Lyapunov threshold admits more slow directions): the finite-step flag.
 -/
 

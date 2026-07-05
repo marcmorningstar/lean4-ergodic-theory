@@ -18,7 +18,8 @@ of base points carrying the full-time cover-cocycle growth rate `L`,
 is measurable. The cover cocycle has no in-library measurability-in-`x` lemma, so this cannot be
 attacked directly. Instead the set is first rewritten — *pointwise in `x`* — as the discrete
 return-time exponent set (`coverCocycle_exponent_set_eq`, the between-returns squeeze of
-`ErgodicTheory.Continuous.SuspensionExponentSetEquiv`), whose convergence is of an `ℕ`-indexed sequence
+`ErgodicTheory.Continuous.SuspensionExponentSetEquiv`), whose convergence is of an `ℕ`-indexed
+sequence
 of measurable functions and hence measurable by `MeasureTheory.measurableSet_tendsto`, with the
 per-index measurability supplied by `measurable_logNorm_div_returnTime`
 (`ErgodicTheory.Continuous.SuspensionReturnTimeMeasurable`).
