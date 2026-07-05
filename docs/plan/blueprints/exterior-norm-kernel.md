@@ -1,6 +1,6 @@
 # ExteriorNorm bridge kernel — `‖⋀^k f‖ = ∏σ` decomposition
 
-> Fully-mapped plan for the lone `sorry` in `Oseledets/Lyapunov/ExteriorNorm.lean`
+> Fully-mapped plan for the lone `sorry` in `ErgodicTheory/Lyapunov/ExteriorNorm.lean`
 > (`exteriorOpNorm_hodge_eq_prod_singularValues`). The bridge is a genuine missing-Mathlib
 > multilinear-algebra development (det-Gram inner product on exterior powers + the operator-norm
 > identity). This doc records the exact decomposition so the build is resumable across passes.

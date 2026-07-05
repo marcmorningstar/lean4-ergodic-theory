@@ -21,7 +21,7 @@ Theory*, Thm 35.46; see also 28.8), proves sorry-free everything Mathlib current
 isolates the two genuine descriptive-set-theory walls as precisely-documented BLOCKED leaves.
 
 It is the everywhere-Borel counterpart of the **a.e.** route already discharged sorry-free in
-`Frontier.Issue6.MeasurableProjection` and migrated to `Oseledets.Singular`: there the projection is
+`Frontier.Issue6.MeasurableProjection` and migrated to `ErgodicTheory.Singular`: there the projection is
 merely *analytic*, hence (Choquet capacitability,
 `MeasureTheory.AnalyticSet.nullMeasurableSet`) *universally measurable* — `NullMeasurableSet` for
 every s-finite measure, which suffices for the a.e. theorem. The present file targets genuine

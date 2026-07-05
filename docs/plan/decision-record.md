@@ -68,7 +68,7 @@ save a layer. Both still require the maximal ergodic inequality (M1).
 ## Decision 4 — Mathlib-style layout & namespaces
 
 Develop mirroring where this would live in Mathlib (`Mathlib/Dynamics/Ergodic/…`),
-rooted in our lib under `Oseledets/`. Declarations in the natural Mathlib namespaces
+rooted in our lib under `ErgodicTheory/`. Declarations in the natural Mathlib namespaces
 (`MeasureTheory`, `Ergodic`, `Dynamics`). Lint-clean, docstringed, one result per
 concept (no parallel proofs). Concrete file layout in `implementation-plan.md`.
 

@@ -3,7 +3,7 @@ Copyright (c) 2026 Marcel Morgenstern. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Marcel Morgenstern
 -/
-import Oseledets.Entropy.Ruelle.MargulisRuelleSharp
+import ErgodicTheory.Entropy.Ruelle.MargulisRuelleSharp
 
 /-!
 # Pesin's entropy formula, part 1: the SRB / Pesin data interface
@@ -11,7 +11,7 @@ import Oseledets.Entropy.Ruelle.MargulisRuelleSharp
 This is the first of three modules assembling **Pesin's entropy formula**
 `h_μ(T) = ∫ (∑_i λ_i⁺) dμ` for a smooth ergodic self-map `T` preserving an SRB (e.g. volume /
 Lebesgue) measure, as the natural completion of the Margulis–Ruelle *inequality*
-`h_μ(T) ≤ ∫ ∑_i λ_i⁺ dμ` already proved sorry-free in `Oseledets.margulisRuelle_sharp`.
+`h_μ(T) ≤ ∫ ∑_i λ_i⁺ dμ` already proved sorry-free in `ErgodicTheory.margulisRuelle_sharp`.
 
 The equality `=` is `≤` (Ruelle, done) together with the **hard reverse inequality**
 `∑_i λ_i⁺ ≤ h_μ(T)`, which holds **exactly for SRB measures** (Ledrappier–Strelcyn–Young: the
@@ -78,7 +78,7 @@ integrand `χ(x)` of Pesin's formula is the a.e. orbit growth rate of the **unst
 
 Concretely, `UnstableJacobianRate T χ` asserts that the candidate integrand `χ : … → ℝ` is
 `μ`-a.e. equal to the constant `sumPosExp`. (Since the spectrum is ergodic, `∑ λ_i⁺` is
-a.e.-constant — `Oseledets.sumPosExp` is exactly that constant — so the integrand is a.e. the
+a.e.-constant — `ErgodicTheory.sumPosExp` is exactly that constant — so the integrand is a.e. the
 constant `sumPosExp`; the genuinely geometric content is that `χ` *is* the unstable-Jacobian rate,
 which is recorded by whoever supplies this interface from Pesin theory.)
 
@@ -91,12 +91,12 @@ measurable Pesin splitting nor the restricted-determinant cocycle. It is supplie
 interface, not proved. -/
 def UnstableJacobianRate {μ : Measure (EuclideanSpace ℝ (Fin d))} [IsProbabilityMeasure μ]
     {T : EuclideanSpace ℝ (Fin d) → EuclideanSpace ℝ (Fin d)} (hT : Ergodic T μ)
-    (hdet : ∀ x, (Oseledets.derivativeCocycle T x).det ≠ 0)
-    (hint : Oseledets.IntegrableLogNorm (Oseledets.derivativeCocycle T) μ)
-    (hint' : Oseledets.IntegrableLogNorm (fun x => (Oseledets.derivativeCocycle T x)⁻¹) μ)
+    (hdet : ∀ x, (ErgodicTheory.derivativeCocycle T x).det ≠ 0)
+    (hint : ErgodicTheory.IntegrableLogNorm (ErgodicTheory.derivativeCocycle T) μ)
+    (hint' : ErgodicTheory.IntegrableLogNorm (fun x => (ErgodicTheory.derivativeCocycle T x)⁻¹) μ)
     (χ : EuclideanSpace ℝ (Fin d) → ℝ) : Prop :=
-  ∀ᵐ x ∂μ, χ x = Oseledets.sumPosExp hT hdet
-    (Oseledets.measurable_derivativeCocycle T) hint hint'
+  ∀ᵐ x ∂μ, χ x = ErgodicTheory.sumPosExp hT hdet
+    (ErgodicTheory.measurable_derivativeCocycle T) hint hint'
 
 /-- **Absolutely continuous conditional measures on unstable manifolds — an opaque marker.**
 

@@ -51,7 +51,7 @@ jobs:
         with:
           build: true
           # Style linting (Mathlib's `linter.mathlibStandardSet`) is enforced by the build itself:
-          # lakefile.toml promotes warnings to errors on the `Oseledets` lib, so a lint regression
+          # lakefile.toml promotes warnings to errors on the `ErgodicTheory` lib, so a lint regression
           # already fails this build. (`lint:` here is lean-action's separate environment linter.)
           lint: false
 

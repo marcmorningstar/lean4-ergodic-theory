@@ -20,7 +20,7 @@ Module.Basis.toFlag; Hermitian spectral theorem / PosSemidef / singularValues /
 gramSchmidt / finrank.
 
 MUST BUILD: Kingman subadditive ergodic theorem (absent); Birkhoff pointwise
-ergodic theorem (only mean/von Neumann exists); Oseledets/Lyapunov/Furstenberg
+ergodic theorem (only mean/von Neumann exists); ErgodicTheory/Lyapunov/Furstenberg
 (none); measurable family of subspaces / measurable flag structure (no Borel
 structure on Flag/Grassmannian); subspace-Grassmannian (Module.Grassmannian uses
 quotient convention); packaged Integrable(log⁺‖A‖) + posLog measurability.

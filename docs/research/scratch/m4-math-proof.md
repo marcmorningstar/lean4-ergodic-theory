@@ -1,9 +1,9 @@
 # M4 Kingman — complete, gap-free, Lean-ready proof design
 
-Author: mathematician subagent. Target: `Oseledets/Ergodic/Kingman.lean`.
+Author: mathematician subagent. Target: `ErgodicTheory/Ergodic/Kingman.lean`.
 Pinned tree: `/workspaces/lean4-oseledets/.lake/packages/mathlib` (v4.30.0-rc2).
 Every Mathlib name cited was grepped on disk this session; every reused Oseledets lemma
-was read in `Oseledets/Ergodic/{Birkhoff,MaximalErgodic}.lean`.
+was read in `ErgodicTheory/Ergodic/{Birkhoff,MaximalErgodic}.lean`.
 
 ---
 
@@ -299,11 +299,11 @@ Adding back `B`: `f₊ ≤ f₋` a.e. With `f₋ ≤ f₊` (everywhere): `f₊ =
 
 ## 5. Reuse / de-privatization edits to existing files
 
-In `Oseledets/Ergodic/Birkhoff.lean`, change `private theorem` → `theorem` for:
+In `ErgodicTheory/Ergodic/Birkhoff.lean`, change `private theorem` → `theorem` for:
 `measure_setOf_lt_limsup_eq_zero`, `condExp_invariants_comp_self`, `ae_forall_orbit_eq`,
 `ae_bddAbove_birkhoffAverage`, `ae_bddBelow_birkhoffAverage`, `limsup_eq_of_sub_tendsto_zero`.
 (Optionally also `birkhoffSum_ae_eq_nsmul` for the telescoping.) Alternatively, lift the
-generic ones into a new `Oseledets/Ergodic/Invariance.lean`; minimal-diff choice is to
+generic ones into a new `ErgodicTheory/Ergodic/Invariance.lean`; minimal-diff choice is to
 de-privatize in place.
 In `MaximalErgodic.lean`: no change (`measurable_birkhoffSum`, `integrable_birkhoffSum`,
 `birkhoffSum_congr_ae` already public).

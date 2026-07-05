@@ -5,7 +5,7 @@ Authors: Marcel Morgenstern
 -/
 import Frontier.Issue4.AtomCountEntropy
 import Frontier.Issue4.CoveringFromVolume
-import Oseledets.Smooth.DerivativeCocycle
+import ErgodicTheory.Smooth.DerivativeCocycle
 import Mathlib.Analysis.SpecialFunctions.Log.PosLog
 
 /-!
@@ -23,18 +23,18 @@ It validates the whole covering pipeline (`Frontier.Issue4.CoveringFromVolume` +
 Margulis–Ruelle counting argument into a sorry-free bound, leaving the single genuinely-geometric
 input — that the partition refines under `T^[n]` into at most `C · exp(n · d · R)` non-empty atoms
 — as an explicit, honest, finite-`n` hypothesis (`hgrow`), exactly as
-`Oseledets.margulisRuelle_le_sumPosExp` isolates its own geometric input `hgeo`.
+`ErgodicTheory.margulisRuelle_le_sumPosExp` isolates its own geometric input `hgeo`.
 
 ## The two layers
 
-1. `Oseledets.Entropy.ksEntropyPartition_le_of_atomCount_growth` (fully general, sorry-free): the
+1. `ErgodicTheory.Entropy.ksEntropyPartition_le_of_atomCount_growth` (fully general, sorry-free): the
    **arithmetic backbone**.  If the non-empty atom count of the refined partition
    `⋁ₖ₌₀ⁿ⁻¹ T⁻ᵏ P` is eventually bounded by `C · exp(n · R)` with `C ≥ 1` and `R ≥ 0`, then
    `h(P, T) ≤ R`.  This consumes `AtomCountEntropy`'s
    `ksEntropyPartition_le_limsup_log_atomCount` and the elementary limit
    `(1/n)(log C + n R) → R`.
 
-2. `Oseledets.crudeRuelle_le_log_deriv_rate`: the **crude Ruelle bound**.  Specializing the
+2. `ErgodicTheory.crudeRuelle_le_log_deriv_rate`: the **crude Ruelle bound**.  Specializing the
    geometric rate to `R = d · B`, where `B` is a uniform bound `log⁺‖D_x T‖ ≤ B` (honest under a
    globally bounded derivative — see *non-compactness* below), gives `h(P, T) ≤ d · B`, conditional
    on the geometric atom-count growth hypothesis at that rate.
@@ -55,9 +55,9 @@ unconditional.
 
 ## Main results
 
-* `Oseledets.Entropy.ksEntropyPartition_le_of_atomCount_growth` — the arithmetic backbone:
+* `ErgodicTheory.Entropy.ksEntropyPartition_le_of_atomCount_growth` — the arithmetic backbone:
   `atomCount ≤ C · exp(n R)` ⇒ `h(P, T) ≤ R`.
-* `Oseledets.crudeRuelle_le_log_deriv_rate` — the crude Ruelle bound `h(P, T) ≤ d · B` under a
+* `ErgodicTheory.crudeRuelle_le_log_deriv_rate` — the crude Ruelle bound `h(P, T) ≤ d · B` under a
   uniform `log⁺‖DT‖ ≤ B` bound and the geometric atom-count growth hypothesis at rate `d · B`.
 
 ## References
@@ -72,7 +72,7 @@ unconditional.
 open MeasureTheory Filter Topology
 open scoped Matrix.Norms.L2Operator
 
-namespace Oseledets.Entropy
+namespace ErgodicTheory.Entropy
 
 variable {α : Type*} [MeasurableSpace α]
 
@@ -135,9 +135,9 @@ theorem ksEntropyPartition_le_of_atomCount_growth {ι : Type*} [Fintype ι] [Non
     _ ≤ limsup w atTop := limsup_le_limsup hvw hvcob hw_tendsto.isBoundedUnder_le
     _ = R := hw_tendsto.limsup_eq
 
-end Oseledets.Entropy
+end ErgodicTheory.Entropy
 
-namespace Oseledets
+namespace ErgodicTheory
 
 variable {d : ℕ}
 
@@ -174,4 +174,4 @@ theorem crudeRuelle_le_log_deriv_rate {μ : Measure (EuclideanSpace ℝ (Fin d))
   have _ := hB
   exact Entropy.ksEntropyPartition_le_of_atomCount_growth hT P hC hgrow
 
-end Oseledets
+end ErgodicTheory

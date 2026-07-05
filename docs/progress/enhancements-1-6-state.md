@@ -30,7 +30,7 @@ Worktrees i4/i5/i6 all synced to `613b47a`. Nothing running; tree clean.
 
 ## ✅ CAMPAIGN COMPLETE (2026-06-21) — all six issues solved/formalized, full `lake build` GREEN (3140 jobs)
 
-All of #1–#6 are landed in the linted, axiom-audited `Oseledets` library (`linter.mathlibStandardSet` +
+All of #1–#6 are landed in the linted, axiom-audited `ErgodicTheory` library (`linter.mathlibStandardSet` +
 `warningAsError`; every headline `#print axioms = [propext, Classical.choice, Quot.sound]`). Phase 2 went
 beyond the Phase-1 walls: the Ruelle inequality geometric core and the singular measurable filtration were
 **formalized** by building the missing Mathlib-scale infrastructure (top-down via the `Frontier` staging lib,
@@ -53,10 +53,10 @@ then migrated). Two independent QA layers (adversarial soundness audit + a 7-len
 Branch `issues/met-enhancements-extended`. Two parallel waves (13 Lean agents, one warm `lwt` worktree each,
 RAM-bounded), a consultant fork, a delegated integration agent, and a two-pass QA workflow (adversarial
 soundness skeptics + 6-lens quality reviewers + an honesty critic) whose findings were all fixed before push.
-Full `lake build Oseledets` + `AxiomAudit` **green**; every new headline `#print axioms = [propext,
+Full `lake build ErgodicTheory` + `AxiomAudit` **green**; every new headline `#print axioms = [propext,
 Classical.choice, Quot.sound]`.
 
-**Closed sorry-free in the linted `Oseledets` library (7):**
+**Closed sorry-free in the linted `ErgodicTheory` library (7):**
 - **#1 top general spectrum** — `topExponent_constantCocycle_eq_log_spectralRadius`: for any **invertible**
   real `M`, the top exponent of the constant cocycle `= log (spectralRadius ℂ M)` (ℝ→ℂ complexification +
   Gelfand). *Honest scope:* invertibility is structurally required (the spectrum object needs `IntegrableLogNorm
@@ -65,7 +65,7 @@ Classical.choice, Quot.sound]`.
   real Arnold automorphism on 𝕋² = (ℝ/ℤ)², measure-preserving + **ergodic** via the Koopman/Fourier-character
   argument (Mathlib's multivariate `mFourierBasis`). Replaces the old constant-cocycle stand-in. **A documented
   Phase-1 wall, fully closed.**
-- **#3 2-torus Fourier** — `Oseledets/Fourier/Torus2.lean`: characters as an orthonormal + **complete** Hilbert
+- **#3 2-torus Fourier** — `ErgodicTheory/Fourier/Torus2.lean`: characters as an orthonormal + **complete** Hilbert
   basis, Parseval, the orthogonal-to-all-characters ⇒ 0 interface (completeness free from `AddCircleMulti`).
 - **#4 non-vacuous Ruelle instance** — `doublingMap_ksEntropyPartition_le_sumPosExp`: the **per-partition**
   bound `h(α,T) ≤ Σλᵢ⁺ = log 2` for the doubling map (a genuine `log2 ≤ log2`, not `0 ≤ 0`). *Honest scope:*
@@ -102,7 +102,7 @@ leaf each):**
 
 **Honest "what remains":** the four `Frontier` leaves above (Yamamoto's limit; measurable `mfderiv`; the Pesin
 SRB reverse inequality; Arsenin–Kunugui) are each a single genuinely-missing Mathlib-scale theorem, correctly
-left as an explicit `sorry`/hypothesis **outside** the authoritative build. Nothing in the green `Oseledets`
+left as an explicit `sorry`/hypothesis **outside** the authoritative build. Nothing in the green `ErgodicTheory`
 library is faked or axiomatized. The a.e. formulations are the standard MET notions and are closed.
 
 > The detailed Phase-1 narrative below records the *journey* (the wall characterization that motivated the
@@ -144,7 +144,7 @@ gated hard on sorry-free; they land only if they genuinely compile.
 
 7 new sorry-free modules, all `[propext, Classical.choice, Quot.sound]`:
 
-- **#5 — CLOSED.** `Oseledets/Continuous/{SuspensionReturnTimeMeasurable, SuspensionExponentSetEquiv,
+- **#5 — CLOSED.** `ErgodicTheory/Continuous/{SuspensionReturnTimeMeasurable, SuspensionExponentSetEquiv,
   SuspensionExponentSetMeasurable, SuspensionFlowExponentFinal}.lean`. `hPmeas` discharged via
   `measurableSet_coverCocycle_exponent` (ℝ-atTop → countable-ℕ return-time set-equality + `measurableSet_tendsto`)
   ⇒ `ae_suspensionMeasure_hasFlowExponent_of_measurable` / `_flowOrbit_of_measurable`: the space-level
@@ -158,7 +158,7 @@ gated hard on sorry-free; they land only if they genuinely compile.
   λ^gen=(1,−½,−½,−½)) rather than fake it; `SingularSpectralValues` honestly NOT landed (needs genuine per-σ
   exponents without invertibility). The intermediate flag `V_j` stays a genuine wall (no metric Grassmannian
   in Mathlib + det-free slow-side gap-rate Cauchy estimate = re-deriving Ruelle Thm 1.6 sans invertibility).
-- **#4 — honest sharpening LANDED.** `Oseledets/Entropy/MargulisRuelleSharpened.lean`: the positive-part
+- **#4 — honest sharpening LANDED.** `ErgodicTheory/Entropy/MargulisRuelleSharpened.lean`: the positive-part
   singular-value product identity `∑ posLog σᵢ = log ∏ max 1 σᵢ` (det-free, abstract + `toEuclideanLin` forms)
   + `margulisRuelle_le_sumPosExp'` (minimal atom-count restatement making the single open input a per-partition
   counting bound). **`hgeo` NOT axiomatized.** Minimal absent atom recorded for the issue writeup: the dynamical
@@ -167,7 +167,7 @@ gated hard on sorry-free; they land only if they genuinely compile.
 
 ### ✅ WAVE 2 LANDED + #6 WALL PRECISELY CHARACTERIZED (`lake build` green, 3110 jobs)
 
-- **#6 genuine spectrum LANDED:** `Oseledets/Lyapunov/Extensions/SingularSpectralValues.lean` (green,
+- **#6 genuine spectrum LANDED:** `ErgodicTheory/Lyapunov/Extensions/SingularSpectralValues.lean` (green,
   sorry-free, axiom-clean). `singularSpectralValue` = the −∞-aware (ENNReal.log) genuine per-direction
   exponent whose increments ARE antitone — `singularSpectralValue_antitone` is **deterministic** (no
   det≠0/integrability/ergodicity), plus `measurable_singularSpectralValue`, `ae_singularSpectralValue_lt_top`,
@@ -372,7 +372,7 @@ MET, which assumes base invertibility for exactly this reason). NOTHING faked or
 - Integrators occasionally hit `#guard_msgs` print-width line-wrap on long theorem names (the expected
   `/-- info: ... -/` must match the wrapped `[propext,\n Classical.choice,\n Quot.sound]`). They self-fix
   it, but a helper that emits the audit block in the correct wrap would save a round.
-- Merge conflicts only ever occur in the two index files (`Oseledets.lean`, `test/AxiomAudit.lean`) at the
+- Merge conflicts only ever occur in the two index files (`ErgodicTheory.lean`, `test/AxiomAudit.lean`) at the
   append point — always a trivial union. A per-issue audit-section convention (stable anchors) would make
   these conflict-free.
 - With per-agent worktrees now available, campaigns can give each module-draft its own tree and build in

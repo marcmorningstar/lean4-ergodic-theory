@@ -3,7 +3,7 @@ Copyright (c) 2026 Marcel Morgenstern. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Marcel Morgenstern
 -/
-import Oseledets.Entropy.KSEntropyBounds
+import ErgodicTheory.Entropy.KSEntropyBounds
 
 /-!
 # Partition entropy bounded by the growth rate of the non-empty atom count
@@ -20,28 +20,28 @@ Mañé proof in Contractor's REU notes): the geometric content of that inequalit
 many atoms of a small partition survive under `T^[n]`, and this file packages the abstract step
 that turns such an atom count into a bound on `h(α, T)`. It uses only the present entropy API:
 
-* the Jensen bound `entropy_le_log_card` (`Oseledets.Entropy.Partition`), which gives
+* the Jensen bound `entropy_le_log_card` (`ErgodicTheory.Entropy.Partition`), which gives
   `H(α) ≤ log #α`, here strengthened to count only the non-empty cells (the empty ones, of measure
   zero, contribute `negMulLog 0 = 0` to the entropy), and
 * the Fekete limit `ksEntropyPartition = limₙ (1 / n) · H(⋁ₖ₌₀ⁿ⁻¹ T⁻ᵏ P)`
-  (`Oseledets.Entropy.KSEntropy`).
+  (`ErgodicTheory.Entropy.KSEntropy`).
 
 Combining `H(⋁ₖ₌₀ⁿ⁻¹) ≤ log (#non-empty atoms)` with the convergence of the averaged sequence and
 passing to the `limsup` gives the displayed bound.
 
 ## Main definitions
 
-* `Oseledets.Entropy.atomCount`: the number of non-empty atoms of the flat `n`-fold join
+* `ErgodicTheory.Entropy.atomCount`: the number of non-empty atoms of the flat `n`-fold join
   `⋁ₖ₌₀ⁿ⁻¹ T⁻ᵏ P`, as a `ℕ` (the cardinality of the `Finset` of indices `f : Fin n → ι` whose
   cell is non-empty).
 
 ## Main results
 
-* `Oseledets.Entropy.entropy_le_log_card_filter`: a Jensen entropy bound counting only the cells
+* `ErgodicTheory.Entropy.entropy_le_log_card_filter`: a Jensen entropy bound counting only the cells
   outside of which the family is `μ`-null.
-* `Oseledets.Entropy.entropy_le_log_atomCount`: the single-`n` bound
+* `ErgodicTheory.Entropy.entropy_le_log_atomCount`: the single-`n` bound
   `H(⋁ₖ₌₀ⁿ⁻¹ T⁻ᵏ P) ≤ log (atomCount …)`.
-* `Oseledets.Entropy.ksEntropyPartition_le_limsup_log_atomCount`: the dynamical bound
+* `ErgodicTheory.Entropy.ksEntropyPartition_le_limsup_log_atomCount`: the dynamical bound
   `h(α, T) ≤ limsupₙ (1 / n) · log (atomCount …)`.
 
 ## References
@@ -53,7 +53,7 @@ passing to the `limsup` gives the displayed bound.
 open MeasureTheory Function Filter Topology
 open scoped Classical
 
-namespace Oseledets.Entropy
+namespace ErgodicTheory.Entropy
 
 variable {α : Type*} {ι : Type*} [MeasurableSpace α]
 
@@ -200,4 +200,4 @@ theorem ksEntropyPartition_le_limsup_log_atomCount [Fintype ι] [Nonempty ι] {�
   calc ksEntropyPartition hT P = limsup u atTop := htends.limsup_eq.symm
     _ ≤ limsup v atTop := limsup_le_limsup hle htends.isCoboundedUnder_le hv_bdd
 
-end Oseledets.Entropy
+end ErgodicTheory.Entropy

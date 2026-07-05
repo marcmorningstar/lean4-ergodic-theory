@@ -38,10 +38,10 @@ C2a; C1 is independent of the others).
 
 ---
 
-## 1. Common infrastructure (NEW, target file `Oseledets/Corollaries.lean`)
+## 1. Common infrastructure (NEW, target file `ErgodicTheory/Corollaries.lean`)
 
-New module `Oseledets/Corollaries.lean`, `import Oseledets.MultiplicativeErgodic`, imported from
-`Oseledets.lean`. (If upstreamed: `Mathlib/Dynamics/Ergodic/Oseledets/Corollaries.lean`.)
+New module `ErgodicTheory/Corollaries.lean`, `import ErgodicTheory.MultiplicativeErgodic`, imported from
+`ErgodicTheory.lean`. (If upstreamed: `Mathlib/Dynamics/Ergodic/Oseledets/Corollaries.lean`.)
 
 ### 1.1 The bundled predicate (typechecked verbatim)
 
@@ -67,7 +67,7 @@ def IsOseledetsFiltration (μ : Measure X) (T : X → X) (A : X → Matrix (Fin 
 ```
 
 The conjunction is **byte-identical** to the conclusion of `oseledets_filtration`
-(`Oseledets/MultiplicativeErgodic.lean:53-67`), so:
+(`ErgodicTheory/MultiplicativeErgodic.lean:53-67`), so:
 
 ```lean
 theorem oseledets_filtration' … :
@@ -116,7 +116,7 @@ theorem IsOseledetsFiltration.ae_mem_iff_limsup_le
 Notes on the shape:
 * The `v = 0 ∨ …` disjunct is forced: `Real.log ‖0‖ = Real.log 0 = 0`, so the bare limsup
   condition would wrongly exclude `0` whenever `lam i < 0`. This mirrors the repo's own
-  `lambdaSublevel` membership (`mem_lambdaSublevel`, `Oseledets/Lyapunov/Filtration.lean:109`).
+  `lambdaSublevel` membership (`mem_lambdaSublevel`, `ErgodicTheory/Lyapunov/Filtration.lean:109`).
 * Indexing: levels `0 … k-1` are covered as `i.castSucc`; level `k` is `⊥` and is already a
   conjunct of the block, so it needs no clause.
 * **No hypotheses beyond `hV`** — no ergodicity, no measurability, no invertibility, not even a
@@ -137,13 +137,13 @@ Total: ~60 lines on top of §1.2. **No repo analytic lemma is consumed.**
 
 *Cross-check against the construction* (not needed for the proof, but confirms consistency):
 for the constructed witness the same identification is exactly the proved slow-flag chain —
-forward inclusion `limsup_le_of_mem_Vslow` (`Oseledets/Lyapunov/CapstoneWiring.lean:212`)
-massaged by `vslow_subset_lambdaSublevel_of_upper` (`Oseledets/Lyapunov/AssemblyFromUpper.lean:66`);
-reverse inclusion `ae_lambdaSublevel_le_Vslow` (`Oseledets/Lyapunov/SpectralIdentification.lean:349`);
-combined by `hslowflag_of_upper` (`Oseledets/Lyapunov/AssemblyFromUpper.lean:113`), instantiated at
-`Oseledets/Lyapunov/AssemblyTopGap.lean:149-152`; dictionary limsup ↔ `lambdaBar` is
-`limsup_log_norm_cocycle_eq_lambdaBar` (`Oseledets/Lyapunov/ForwardAngle.lean:289`) plus
-`mem_lambdaSublevel` (`Oseledets/Lyapunov/Filtration.lean:109`).
+forward inclusion `limsup_le_of_mem_Vslow` (`ErgodicTheory/Lyapunov/CapstoneWiring.lean:212`)
+massaged by `vslow_subset_lambdaSublevel_of_upper` (`ErgodicTheory/Lyapunov/AssemblyFromUpper.lean:66`);
+reverse inclusion `ae_lambdaSublevel_le_Vslow` (`ErgodicTheory/Lyapunov/SpectralIdentification.lean:349`);
+combined by `hslowflag_of_upper` (`ErgodicTheory/Lyapunov/AssemblyFromUpper.lean:113`), instantiated at
+`ErgodicTheory/Lyapunov/AssemblyTopGap.lean:149-152`; dictionary limsup ↔ `lambdaBar` is
+`limsup_log_norm_cocycle_eq_lambdaBar` (`ErgodicTheory/Lyapunov/ForwardAngle.lean:289`) plus
+`mem_lambdaSublevel` (`ErgodicTheory/Lyapunov/Filtration.lean:109`).
 
 ### 2.3 C2b exact statement (typechecked)
 
@@ -192,9 +192,9 @@ Total: ~150–200 lines on top of C2a. EXISTING cited: `tendsto_nhds_unique`,
 
 ### 2.5 Names and placement
 
-* `Oseledets.IsOseledetsFiltration.ae_mem_iff_limsup_le` (C2a)
-* `Oseledets.IsOseledetsFiltration.unique` (C2b)
-* both in `Oseledets/Corollaries.lean`, section `Uniqueness`.
+* `ErgodicTheory.IsOseledetsFiltration.ae_mem_iff_limsup_le` (C2a)
+* `ErgodicTheory.IsOseledetsFiltration.unique` (C2b)
+* both in `ErgodicTheory/Corollaries.lean`, section `Uniqueness`.
 
 ---
 
@@ -218,7 +218,7 @@ theorem IsOseledetsFiltration.tendsto_log_opNorm_cocycle
 ```
 
 (`‖cocycle A T n x‖` is the scoped `Matrix.Norms.L2Operator` norm, exactly as in
-`furstenbergKesten_top`, `Oseledets/Cocycle/FurstenbergKesten.lean:289`.) `hA` is needed
+`furstenbergKesten_top`, `ErgodicTheory/Cocycle/FurstenbergKesten.lean:289`.) `hA` is needed
 (norm positivity / nonvanishing of images); ergodicity and integrability are **not**.
 
 ### 3.2 Proof ladder
@@ -233,9 +233,9 @@ theorem IsOseledetsFiltration.tendsto_log_opNorm_cocycle
        ‖M‖ ≤ ∑ j, ‖Matrix.toEuclideanCLM (𝕜 := ℝ) M (EuclideanSpace.basisFun (Fin d) ℝ j)‖
    ```
    Proof: `Matrix.l2_opNorm_toEuclideanCLM` (Mathlib; already used at
-   `Oseledets/Lyapunov/GrowthFunction.lean:104`) + `ContinuousLinearMap.opNorm_le_bound` +
+   `ErgodicTheory/Lyapunov/GrowthFunction.lean:104`) + `ContinuousLinearMap.opNorm_le_bound` +
    basis expansion + `norm_sum_le` + the coordinate bound `PiLp.norm_apply_le` (Mathlib).
-   Upstreamable; place in `Oseledets/Cocycle/Norm.lean`.
+   Upstreamable; place in `ErgodicTheory/Cocycle/Norm.lean`.
 3. **Upper half.** Fix good `x`, `ε > 0`. Each `e_j := EuclideanSpace.basisFun … j` is nonzero,
    so by §1.2.2 + conjunct 5 + `hV.1.antitone`, eventually
    `(1/n) log ‖M_n e_j‖ ≤ lam ⟨0,hk⟩ + ε/2` for **all** `j` simultaneously
@@ -244,7 +244,7 @@ theorem IsOseledetsFiltration.tendsto_log_opNorm_cocycle
    `(1/n) log ‖M_n‖ ≤ (log d)/n + lam₀ + ε/2 ≤ lam₀ + ε` eventually
    (`Real.log_le_log`, `Real.add_pow_le_pow_mul_pow_of_sq_le_sq`-free, just
    `Finset.sum_le_card_nsmul` + log monotonicity). NEW ~90 lines (log bookkeeping; positivity
-   from `norm_cocycle_pos`, `Oseledets/Cocycle/FurstenbergKesten.lean:44` — needs
+   from `norm_cocycle_pos`, `ErgodicTheory/Cocycle/FurstenbergKesten.lean:44` — needs
    `NeZero d`, available since `0 < d` follows from `0 < k` at a good point, cf. step 1
    reversed: `k > 0` plus `V 1 x < V 0 x = ⊤` forces `d > 0`).
 4. **Lower half.** Pick `v` in the top stratum (`SetLike.exists_of_lt` on
@@ -253,23 +253,23 @@ theorem IsOseledetsFiltration.tendsto_log_opNorm_cocycle
    `‖M_n v‖ ≤ ‖M_n‖ ‖v‖` (`ContinuousLinearMap.le_opNorm` +
    `Matrix.l2_opNorm_toEuclideanCLM`), so
    `(1/n) log ‖M_n‖ ≥ (1/n) log ‖M_n v‖ - (1/n) log ‖v‖ ≥ lam₀ - ε` eventually. Image
-   nonvanishing: `det_cocycle_ne_zero` (`Oseledets/Cocycle/FurstenbergKesten.lean:36`) +
-   `injective_toEuclideanLin` (`Oseledets/Lyapunov/OseledetsLimit.lean:228`). NEW ~50 lines.
+   nonvanishing: `det_cocycle_ne_zero` (`ErgodicTheory/Cocycle/FurstenbergKesten.lean:36`) +
+   `injective_toEuclideanLin` (`ErgodicTheory/Lyapunov/OseledetsLimit.lean:228`). NEW ~50 lines.
 5. **Assemble** via the ε-characterization of `Tendsto` on ℝ (`Metric.tendsto_atTop`,
    `Real.dist_eq`, `abs_sub_lt_iff`). ~20 lines.
 
 Total: ~180–250 lines. **Neither Furstenberg–Kesten nor any singular-value lemma is needed**
 (§6.2). Optional 5-line follow-up: combining with `furstenbergKesten_top`
-(`Oseledets/Cocycle/FurstenbergKesten.lean:289`) and `tendsto_nhds_unique` identifies the FK
+(`ErgodicTheory/Cocycle/FurstenbergKesten.lean:289`) and `tendsto_nhds_unique` identifies the FK
 constant with `lam ⟨0,hk⟩` (`oseledets_top_exponent_eq_furstenbergKesten`).
 
 ### 3.3 Names and placement
 
-* `Oseledets.IsOseledetsFiltration.k_pos`
-* `Matrix.l2_opNorm_le_sum_norm_basisFun` (in `Oseledets/Cocycle/Norm.lean`; Mathlib-bound)
-* `Oseledets.IsOseledetsFiltration.tendsto_log_opNorm_cocycle`
-* optional `Oseledets.oseledets_top_exponent_eq_furstenbergKesten`
-* in `Oseledets/Corollaries.lean`, section `TopExponent`.
+* `ErgodicTheory.IsOseledetsFiltration.k_pos`
+* `Matrix.l2_opNorm_le_sum_norm_basisFun` (in `ErgodicTheory/Cocycle/Norm.lean`; Mathlib-bound)
+* `ErgodicTheory.IsOseledetsFiltration.tendsto_log_opNorm_cocycle`
+* optional `ErgodicTheory.oseledets_top_exponent_eq_furstenbergKesten`
+* in `ErgodicTheory/Corollaries.lean`, section `TopExponent`.
 
 ---
 
@@ -278,15 +278,15 @@ constant with `lam ⟨0,hk⟩` (`oseledets_top_exponent_eq_furstenbergKesten`).
 ### 4.1 Shape decision: separate corollary, NOT a strengthened conjunct
 
 The task's premise is **confirmed**: the witness handed to `oseledets_filtration` is
-`V' A T lam0` (`Oseledets/Lyapunov/SlowFlagBridge.lean:78`, threaded through
-`oseledets_filtration_of_interfaces'`, `Oseledets/Lyapunov/FiltrationAssemblyBridge.lean:261`),
+`V' A T lam0` (`ErgodicTheory/Lyapunov/SlowFlagBridge.lean:78`, threaded through
+`oseledets_filtration_of_interfaces'`, `ErgodicTheory/Lyapunov/FiltrationAssemblyBridge.lean:261`),
 whose interior level `i` is `Vslow A T (exp (expEnum lam0 d i)) x` — the **range of the
-orthogonal band projector** `slowProjector` (`Oseledets/Lyapunov/ForwardV.lean:174`), i.e. the
+orthogonal band projector** `slowProjector` (`ErgodicTheory/Lyapunov/ForwardV.lean:174`), i.e. the
 spectral projection of the sanitized limit `lambdaHat` below the deterministic cutoff. A.e. its
 rank is `#{j : Fin d | lam0 j ≤ expEnum lam0 d i}` — deterministic — via
-`spectrum_lambdaHat_eq_ae` (`Oseledets/Lyapunov/SpectrumResiduals.lean:34`),
+`spectrum_lambdaHat_eq_ae` (`ErgodicTheory/Lyapunov/SpectrumResiduals.lean:34`),
 `ae_lamSing_eq_lam0` (`SpectrumResiduals.lean:304`), and a rank computation that would mimic
-`bandProjector_rank` (`Oseledets/Lyapunov/OseledetsLimit.lean:811`, whose proof via
+`bandProjector_rank` (`ErgodicTheory/Lyapunov/OseledetsLimit.lean:811`, whose proof via
 `cfc_eq_eigenvectorUnitary_conj`, `OseledetsLimit.lean:799`, is generic in the Hermitian
 matrix).
 
@@ -347,7 +347,7 @@ dimensions of *some* witness could vary measurably across distinct ergodic compo
    `toMatrix basisFun basisFun (toEuclideanCLM M) = M` via `Matrix.toLpLin_eq_toLin`
    (NB: `Matrix.toEuclideanLin_eq_toLin` is **deprecated** in the pinned Mathlib — use the
    `toLpLin` name) + `LinearMap.toMatrix_toLin`. Place next to `orthProjMatrix` in
-   `Oseledets/Lyapunov/MeasurableSubspace.lean`.
+   `ErgodicTheory/Lyapunov/MeasurableSubspace.lean`.
 2. **Measurability of the dimension** (NEW, ~25 lines, **fully proved** in
    `/tmp/probe_ergconst.lean` (ii)):
    ```lean
@@ -360,7 +360,7 @@ dimensions of *some* witness could vary measurably across distinct ergodic compo
 3. **Equivariance transport** (NEW, ~25 lines): `(A x).det ≠ 0` makes
    `toEuclideanCLM (A x)` a linear auto-equivalence (`LinearEquiv.ofLinear` with inverse
    `toEuclideanCLM (A x)⁻¹`; the two cancellation identities are re-derivations of the
-   *private* `Aclm_inv_left/right`, `Oseledets/Lyapunov/Filtration.lean:292-302` — re-prove
+   *private* `Aclm_inv_left/right`, `ErgodicTheory/Lyapunov/Filtration.lean:292-302` — re-prove
    locally, 6 lines each, via `Matrix.nonsing_inv_mul`/`mul_nonsing_inv`). Then
    `LinearEquiv.finrank_map_eq` (Mathlib `LinearAlgebra/Dimension/Finrank.lean:121`) turns
    conjunct 4 into: a.e., `finrank (V i (T x)) = finrank (V i x)`.
@@ -378,15 +378,15 @@ dimensions of *some* witness could vary measurably across distinct ergodic compo
    (`Finset.sum_range_succ_comm`-style induction; ~30 lines, `omega`-heavy).
 
 Total: ~200–260 lines. EXISTING repo lemmas consumed: none beyond the `MeasurableSubspace`
-definition (`Oseledets/Lyapunov/MeasurableSubspace.lean:34`) and `orthProjMatrix` (`:26`).
+definition (`ErgodicTheory/Lyapunov/MeasurableSubspace.lean:34`) and `orthProjMatrix` (`:26`).
 
 ### 4.4 Names and placement
 
-* `Oseledets.trace_orthProjMatrix` → `Oseledets/Lyapunov/MeasurableSubspace.lean`
-* `Oseledets.MeasurableSubspace.measurable_finrank` → ibid.
-* `Oseledets.IsOseledetsFiltration.exists_finrank_ae_eq`,
-  `Oseledets.IsOseledetsFiltration.exists_multiplicity`,
-  `Oseledets.oseledets_filtration_with_multiplicities` → `Oseledets/Corollaries.lean`,
+* `ErgodicTheory.trace_orthProjMatrix` → `ErgodicTheory/Lyapunov/MeasurableSubspace.lean`
+* `ErgodicTheory.MeasurableSubspace.measurable_finrank` → ibid.
+* `ErgodicTheory.IsOseledetsFiltration.exists_finrank_ae_eq`,
+  `ErgodicTheory.IsOseledetsFiltration.exists_multiplicity`,
+  `ErgodicTheory.oseledets_filtration_with_multiplicities` → `ErgodicTheory/Corollaries.lean`,
   section `Multiplicities`.
 
 ---

@@ -1,6 +1,6 @@
 # Blueprint — M5: Furstenberg–Kesten (extremal Lyapunov exponents)
 
-**Layer:** L3 / milestone M5. **File:** `Oseledets/Cocycle/FurstenbergKesten.lean`.
+**Layer:** L3 / milestone M5. **File:** `ErgodicTheory/Cocycle/FurstenbergKesten.lean`.
 **Goal:** discharge the two `sorry`s
 
 - `furstenbergKesten_top`  : `∃ lam, ∀ᵐ x, (1/n) log‖A⁽ⁿ⁾(x)‖ → lam`  (top exponent),
@@ -8,7 +8,7 @@
 
 This is the **first application of Kingman** (`tendsto_kingman` /
 `tendsto_kingman_ergodic`, assumed available with the signatures in
-`Oseledets/Ergodic/Kingman.lean`). It is pure plumbing on top of Kingman: build the
+`ErgodicTheory/Ergodic/Kingman.lean`). It is pure plumbing on top of Kingman: build the
 subadditive cocycle `gₙ = log‖A⁽ⁿ⁾‖`, check the three Kingman hypotheses
 (subadditive / integrable / bounded-below), then collapse to a constant.
 
@@ -19,7 +19,7 @@ source under `.lake/packages/mathlib/Mathlib`. Verified names carry **[V]**.
 
 ## 0. Conventions and the convention-mismatch we must respect
 
-Project cocycle identity (`Oseledets/Cocycle/Basic.lean`, **[V]**):
+Project cocycle identity (`ErgodicTheory/Cocycle/Basic.lean`, **[V]**):
 
 ```
 cocycle_add : cocycle A T (m + n) x = cocycle A T m (T^[n] x) * cocycle A T n x
@@ -27,7 +27,7 @@ cocycle_add : cocycle A T (m + n) x = cocycle A T m (T^[n] x) * cocycle A T n x
 
 (newest factor on the **left**; the shift `T^[n]` is on the **first/left** factor.)
 
-Kingman's subadditive-cocycle predicate (`Oseledets/Ergodic/Kingman.lean`, **[V]**):
+Kingman's subadditive-cocycle predicate (`ErgodicTheory/Ergodic/Kingman.lean`, **[V]**):
 
 ```
 structure IsSubadditiveCocycle (T : X → X) (g : ℕ → X → ℝ) : Prop where
@@ -68,16 +68,16 @@ top exponent this lower bound is supplied by the **bottom integrability**
 
 ## 1. New Lean statements / defs this layer needs
 
-These are auxiliary lemmas to add to `Oseledets/Cocycle/` (a new section in
+These are auxiliary lemmas to add to `ErgodicTheory/Cocycle/` (a new section in
 `FurstenbergKesten.lean`, or — preferred — a small new file
-`Oseledets/Cocycle/Norm.lean` imported by it, to keep the measurability bridge reusable
+`ErgodicTheory/Cocycle/Norm.lean` imported by it, to keep the measurability bridge reusable
 for M6+). Signatures use the project conventions: `Matrix (Fin d) (Fin d) ℝ`, the
 scoped `Matrix.Norms.L2Operator` norm, `instMeasurableSpaceMatrix` (the Pi structure).
 
 ```lean
 open MeasureTheory Filter Topology
 open scoped Matrix.Norms.L2Operator
-namespace Oseledets
+namespace ErgodicTheory
 variable {X : Type*} [MeasurableSpace X] {μ : Measure X} {T : X → X} {d : ℕ}
 
 /-- **Measurability bridge.** The L2 operator norm is measurable as a function on the
@@ -193,7 +193,7 @@ Mathlib lemmas: `continuous_norm`, `Continuous.measurable`, `Pi.opensMeasurableS
 `(Real.measurable_log).comp (measurable_l2_opNorm.comp (measurable_cocycle hA hTmeas n))`.
 
 - `Real.measurable_log` **[V]** (`Mathlib/MeasureTheory/Function/SpecialFunctions/Basic.lean:39`).
-- `measurable_cocycle` **[V]** (`Oseledets/Cocycle/Basic.lean`).
+- `measurable_cocycle` **[V]** (`ErgodicTheory/Cocycle/Basic.lean`).
 - gives `AEStronglyMeasurable` via `Measurable.aestronglyMeasurable` /
   `.stronglyMeasurable.aestronglyMeasurable` **[V]** (real codomain).
 
@@ -390,9 +390,9 @@ bound for `hbdd` is symmetric, supplied by `hint` (`log⁺‖A‖`). The roles o
 | `Integrable.mono'` | `MeasureTheory/Function/L1Space/Integrable.lean:100` | dominate `gₙ` by `Bₙ⁺+Bₙ⁻` |
 | `Pi.opensMeasurableSpace` / `borel_eq_borel_pi` | `…/BorelSpace/Basic.lean:357/634` | Pi = Borel for the norm bridge |
 | `BorelSpace (E →L[𝕜] F)` | `…/BorelSpace/ContinuousLinearMap.lean` | fallback route for `measurable_l2_opNorm` |
-| `tendsto_kingman_ergodic` | `Oseledets/Ergodic/Kingman.lean` (assumed) | the engine — returns the constant directly |
-| `measurable_cocycle` | `Oseledets/Cocycle/Basic.lean` | measurability of iterates |
-| `cocycle_add` / `cocycle_succ` / `cocycle_zero` | `Oseledets/Cocycle/Basic.lean` | cocycle identity |
+| `tendsto_kingman_ergodic` | `ErgodicTheory/Ergodic/Kingman.lean` (assumed) | the engine — returns the constant directly |
+| `measurable_cocycle` | `ErgodicTheory/Cocycle/Basic.lean` | measurability of iterates |
+| `cocycle_add` / `cocycle_succ` / `cocycle_zero` | `ErgodicTheory/Cocycle/Basic.lean` | cocycle identity |
 
 (Names without a line number are referenced from `docs/plan/api-notes.md` / the L0
 ladder and should be re-confirmed against the green build; the matrix/log/posLog ones
@@ -440,7 +440,7 @@ above were read directly from disk.)
   and the target `oseledets_filtration`, which already pass both `hA` and `hint'`). The
   alternative — keep the lean hypotheses and state the limit in `EReal` allowing `-∞` —
   is mathematically the honest Ruelle/Filip top-exponent statement but requires an
-  `EReal` Kingman, which the current `Oseledets/Ergodic/Kingman.lean` does **not**
+  `EReal` Kingman, which the current `ErgodicTheory/Ergodic/Kingman.lean` does **not**
   provide (it is `ℝ`-valued with `hbdd`). So: **add the two hypotheses** to keep M5 on
   the `ℝ`-valued Kingman. Flag this to the caller — it is a deliberate strengthening of
   the existing `sorry`'d signature.

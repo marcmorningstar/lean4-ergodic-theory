@@ -14,8 +14,8 @@ GitHub issue: <https://github.com/marcmorningstar/lean4-oseledets/issues/22>
 - **3 sibling issues already CLOSED on `main`** (#23 operator entropy, #24 CNT/ALF, #21 conditional
   fibre). This branch is `wip/issue-22` off `main`.
 - **Phase A (relEntropy foundations) — DONE, green, axiom-clean** in
-  `Oseledets/OperatorEntropy/RelativeEntropy.lean` (committed here, **un-wired** — not yet imported by
-  `Oseledets.lean`; see §6).
+  `ErgodicTheory/OperatorEntropy/RelativeEntropy.lean` (committed here, **un-wired** — not yet imported by
+  `ErgodicTheory.lean`; see §6).
 - **The unconditional DPI is a genuine multi-month Mathlib-scale keystone.** Confirmed by 5-route deep
   research + 3 de-risk scouts: every route to the *unconditional* `monotonicity_relEntropy_under_CPTP`
   funnels through a theorem **absent from Mathlib** (operator-Jensen / Lieb concavity, OR the complex
@@ -38,16 +38,16 @@ Finite-dim density operators over ℂ (PSD, unit-trace matrices). Deliver sorry-
 - consumer corollary `no_section_of_strict_relEntropy_drop`: a CP coarse-graining with a strict
   relative-entropy drop has no CP trace-preserving section.
 
-Builds on the **#23 `Oseledets/OperatorEntropy/` library** (`DensityMatrix`, `vonNeumannEntropy`,
+Builds on the **#23 `ErgodicTheory/OperatorEntropy/` library** (`DensityMatrix`, `vonNeumannEntropy`,
 `klein_scalar`, `partialTrace`, `eigenvalues_kronecker_multiset`, …). The downstream consumer
 `AutonomousDynamics.OperatorEntropy.FiniteDimEntropy` lives in a **separate repo not checked out here**;
 these are the **upstream primitives**.
 
 ---
 
-## 2. What is DONE (Phase A) — `Oseledets/OperatorEntropy/RelativeEntropy.lean`
+## 2. What is DONE (Phase A) — `ErgodicTheory/OperatorEntropy/RelativeEntropy.lean`
 
-Green (`lake build Oseledets.OperatorEntropy.RelativeEntropy` → 8447 jobs, 0 sorry); every headline
+Green (`lake build ErgodicTheory.OperatorEntropy.RelativeEntropy` → 8447 jobs, 0 sorry); every headline
 axiom-clean `[propext, Classical.choice, Quot.sound]`.
 
 Canonical objects (spectral/overlap form; `relEntropy_eq_traceLog` bridges to the textbook cfc-trace
@@ -137,7 +137,7 @@ integral). Keep this as the fallback.
 
 ## 5. Module decomposition + grind order (the plan)
 
-New modules under `Oseledets/OperatorEntropy/Lieb/`:
+New modules under `ErgodicTheory/OperatorEntropy/Lieb/`:
 
 | # | Module | Content | Effort | Deps |
 |---|---|---|---|---|
@@ -172,11 +172,11 @@ the cfc-trace form as canonical and keep the spectral form as the proved-equal l
 
 ## 6. Wiring / build (when resuming)
 
-Phase A's `RelativeEntropy.lean` is committed **un-wired** (not imported by `Oseledets.lean`, so a full
-`lake build` ignores it). To build it: `lake build Oseledets.OperatorEntropy.RelativeEntropy`. When the
+Phase A's `RelativeEntropy.lean` is committed **un-wired** (not imported by `ErgodicTheory.lean`, so a full
+`lake build` ignores it). To build it: `lake build ErgodicTheory.OperatorEntropy.RelativeEntropy`. When the
 layer is ready to integrate, an **integration worker** (not the orchestrator) should add the import to
-`Oseledets.lean` + the `#guard_msgs in #print axioms` guards to `test/AxiomAudit.lean`, then the full
-`lake build Oseledets AxiomAudit` gate.
+`ErgodicTheory.lean` + the `#guard_msgs in #print axioms` guards to `test/AxiomAudit.lean`, then the full
+`lake build ErgodicTheory AxiomAudit` gate.
 
 ---
 
@@ -220,7 +220,7 @@ layer is ready to integrate, an **integration worker** (not the orchestrator) sh
 ---
 
 ## 9. Artifacts in this commit
-- `Oseledets/OperatorEntropy/RelativeEntropy.lean` — Phase A foundations (green, un-wired).
+- `ErgodicTheory/OperatorEntropy/RelativeEntropy.lean` — Phase A foundations (green, un-wired).
 - `docs/issue22/lieb_keystone_skeleton.lean` — the verified K0–K7 keystone skeleton (re-elaborate to confirm).
 - `docs/issue22/research_plan_log.md` — the full living research/plan log (route analysis, the Frenkel
   detour, the keystone greenlight).

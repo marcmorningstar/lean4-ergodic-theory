@@ -24,7 +24,7 @@ the singular values of \(A^{(n)}(x)\); the heart of this section is that they co
 the exponentials of the deterministic Lyapunov exponents.
 
 \begin{theorem}[Deterministic singular-value exponents]\label{exists_lam_tendsto_singularValue}
-  \lean{Oseledets.exists_lam_tendsto_singularValue}\leanok
+  \lean{ErgodicTheory.exists_lam_tendsto_singularValue}\leanok
   There is an antitone sequence \(\lambda^0 : \N\to\R\) (antitone on \([0,d)\)) such that, for
   every \(i<d\) and \(\mu\)-a.e.\ \(x\),
   \[
@@ -45,7 +45,7 @@ the exponentials of the deterministic Lyapunov exponents.
 \end{proof}
 
 \begin{lemma}[Block-value step function reproduces the spectrum]\label{stepVal_exp_lam}
-  \lean{Oseledets.stepVal_exp_lam}\leanok
+  \lean{ErgodicTheory.stepVal_exp_lam}\leanok
   Let \(\mathrm{stepVal}\,\lambda^0\,D\) be the step function
   \(e^{\lambda^0_{D-1}} + \sum_{k=1}^{D-1}(e^{\lambda^0_{k-1}}-e^{\lambda^0_k})\,
   \mathbf 1_{(c_k,\infty)}\) with thresholds \(c_k = e^{(\lambda^0_k+\lambda^0_{k-1})/2}\) strictly
@@ -62,7 +62,7 @@ the exponentials of the deterministic Lyapunov exponents.
 \end{proof}
 
 \begin{lemma}[Spectral deviation bound]\label{norm_sub_cfc_le_sum_eigenvalue_dev}
-  \lean{Oseledets.norm_sub_cfc_le_sum_eigenvalue_dev}\leanok
+  \lean{ErgodicTheory.norm_sub_cfc_le_sum_eigenvalue_dev}\leanok
   For a self-adjoint matrix \(M\) and any function \(g\),
   \[
     \norm{M - g(M)} \;\le\; \sum_j \abs{\mu_j - g(\mu_j)},
@@ -77,7 +77,7 @@ the exponentials of the deterministic Lyapunov exponents.
 \end{proof}
 
 \begin{lemma}[Per-term band-projector convergence]\label{ae_forall_tendsto_block_term}
-  \lean{Oseledets.ae_forall_tendsto_block_term}\leanok
+  \lean{ErgodicTheory.ae_forall_tendsto_block_term}\leanok
   For \(\mu\)-a.e.\ \(x\) and every threshold index \(k\in[1,d)\), the block term
   \((e^{\lambda^0_{k-1}}-e^{\lambda^0_k})\cdot P^{c_k}_n(x)\) converges, where \(P^{c}_n\) is the
   band projector \(\mathbf 1_{(c,\infty)}(q_n(x))\).
@@ -92,7 +92,7 @@ the exponentials of the deterministic Lyapunov exponents.
 \end{proof}
 
 \begin{theorem}[Existence of the Oseledets limit]\label{tendsto_qpow}
-  \lean{Oseledets.tendsto_qpow}\leanok
+  \lean{ErgodicTheory.tendsto_qpow}\leanok
   For \(\mu\)-a.e.\ \(x\) the approximants \(q_n(x)\) converge in the matrix metric to a single
   matrix \(\Lambda(x)\).
 \end{theorem}
@@ -111,13 +111,13 @@ the exponentials of the deterministic Lyapunov exponents.
 \end{proof}
 
 \begin{definition}[The named Oseledets limit]\label{oseledetsLimit}
-  \lean{Oseledets.oseledetsLimit}\leanok
+  \lean{ErgodicTheory.oseledetsLimit}\leanok
   \(\Lambda(x) := (\,\lim_n (q_n(x))_{ij}\,)_{ij}\) is the entrywise real \(\limsup\)/limit of the
   matrix entries of \(q_n(x)\); it is a total, measurable function of \(x\).
 \end{definition}
 
 \begin{theorem}[The limit is the a.e.\ limit of the approximants]\label{tendsto_oseledetsLimit}
-  \lean{Oseledets.tendsto_oseledetsLimit}\leanok
+  \lean{ErgodicTheory.tendsto_oseledetsLimit}\leanok
   For \(\mu\)-a.e.\ \(x\), \(q_n(x)\to \Lambda(x)\) in the matrix metric, and \(\Lambda\) is
   measurable.
 \end{theorem}
@@ -131,7 +131,7 @@ the exponentials of the deterministic Lyapunov exponents.
 \end{proof}
 
 \begin{proposition}[Structure of the limit]\label{oseledetsLimit_posSemidef}
-  \lean{Oseledets.oseledetsLimit_posSemidef}\leanok
+  \lean{ErgodicTheory.oseledetsLimit_posSemidef}\leanok
   For \(\mu\)-a.e.\ \(x\), \(\Lambda(x)\) is self-adjoint and positive semidefinite.
 \end{proposition}
 \begin{proof}\leanok
@@ -148,7 +148,7 @@ The lower half of the exact growth law isolates one band of the spectrum of \(q_
 that a vector with nonzero projection onto the band grows at least at the band rate.
 
 \begin{lemma}[Gram quadratic-form band bound]\label{inner_cfc_ge_band}
-  \lean{Oseledets.inner_cfc_ge_band}\leanok
+  \lean{ErgodicTheory.inner_cfc_ge_band}\leanok
   For self-adjoint \(Q\), a band indicator \(\chi=\mathbf 1_{(c,\infty)}\), and a continuous
   \(f\ge 0\) on \(\mathrm{spec}(Q)\) with \(a\le f(t)\) whenever \(c<t\),
   \[
@@ -164,7 +164,7 @@ that a vector with nonzero projection onto the band grows at least at the band r
 \end{proof}
 
 \begin{lemma}[Band lower bound for the cocycle]\label{cocycle_apply_sq_ge_band}
-  \lean{Oseledets.cocycle_apply_sq_ge_band}\leanok
+  \lean{ErgodicTheory.cocycle_apply_sq_ge_band}\leanok
   For \(c\ge0\) and \(n\ge1\),
   \[
     c^{2n}\,\norm{P^{c}_n(x)\,v}^2 \;\le\; \norm{A^{(n)}(x)\,v}^2 .
@@ -181,7 +181,7 @@ that a vector with nonzero projection onto the band grows at least at the band r
 \end{proof}
 
 \begin{lemma}[The band correction vanishes]\label{tendsto_inv_mul_log_norm_bandProjector_apply}
-  \lean{Oseledets.tendsto_inv_mul_log_norm_bandProjector_apply}\leanok
+  \lean{ErgodicTheory.tendsto_inv_mul_log_norm_bandProjector_apply}\leanok
   If \(P^{c}_n(x)\to P\) with \(Pv\neq0\), then
   \(\tfrac1n\log\norm{P^{c}_n(x)\,v}\to 0\).
 \end{lemma}
@@ -192,7 +192,7 @@ that a vector with nonzero projection onto the band grows at least at the band r
 \end{proof}
 
 \begin{proposition}[Per-vector liminf lower bound]\label{log_le_liminf_log_cocycle_apply}
-  \lean{Oseledets.log_le_liminf_log_cocycle_apply}\leanok
+  \lean{ErgodicTheory.log_le_liminf_log_cocycle_apply}\leanok
   If \(P^{c}_n(x)\to P\) with \(c>0\) and \(Pv\neq0\), and the cocycle growth sequence is
   cobounded, then
   \[
@@ -212,7 +212,7 @@ that a vector with nonzero projection onto the band grows at least at the band r
 \end{proof}
 
 \begin{lemma}[Band-projector nesting, kernel propagation]\label{limitBandProjector_apply_eq_zero_of_le}
-  \lean{Oseledets.limitBandProjector_apply_eq_zero_of_le}\leanok
+  \lean{ErgodicTheory.limitBandProjector_apply_eq_zero_of_le}\leanok
   For thresholds \(c\le c'\) with limit band projectors \(P,P'\), if \(Pv=0\) then \(P'v=0\).
 \end{lemma}
 \begin{proof}\leanok
@@ -234,7 +234,7 @@ restricted-operator-norm files were removed from the development as dead code; t
 retained only so cross-references resolve.
 
 \begin{lemma}[Tempering]\label{tempering_posLog}
-  \lean{Oseledets.ae_tendsto_orbit_div_atTop_zero}\leanok
+  \lean{ErgodicTheory.ae_tendsto_orbit_div_atTop_zero}\leanok
   If \(T\) is measure-preserving and \(g\in L^1(\mu)\), then for \(\mu\)-a.e.\ \(x\),
   \(\tfrac1n\,g(T^n x)\to 0\).
 \end{lemma}
@@ -262,7 +262,7 @@ retained only so cross-references resolve.
 \end{proof}
 
 \begin{theorem}[Spectral upper bound on each stratum]\label{spectral_upper_bound_of_squeeze}
-  \lean{Oseledets.limsup_log_norm_cocycle_apply_le_specList_of_mem_stratum}\leanok
+  \lean{ErgodicTheory.limsup_log_norm_cocycle_apply_le_specList_of_mem_stratum}\leanok
   For \(\mu\)-a.e.\ \(x\), every index \(i\) and every vector \(v\) in the \(i\)-th stratum
   \(\mathrm{vflag}\,i.\mathrm{castSucc}\setminus\mathrm{vflag}\,i.\mathrm{succ}\) one has
   \[
@@ -280,7 +280,7 @@ retained only so cross-references resolve.
 \end{proof}
 
 \begin{theorem}[Upper bound on the slow space]\label{vslow_subset_lambdaSublevel_of_upper}
-  \lean{Oseledets.vslow_subset_lambdaSublevel_of_upper}\leanok
+  \lean{ErgodicTheory.vslow_subset_lambdaSublevel_of_upper}\leanok
   On the ultrametric-growth good set, every vector \(v\) of the \(\Lambda\)-slow band
   \(\mathrm{vslow}(e^t)\) with \(\limsup_n\tfrac1n\log\norm{A^{(n)}v}\le t\) lies in the growth
   sublevel \(\{v:\overline\lambda(x,v)\le t\}\).
@@ -299,7 +299,7 @@ The bridge is that the finite-\(n\) band projectors converge a.e.\ to the functi
 indicator of \(\Lambda\).
 
 \begin{theorem}[Band projectors converge to the CFC indicator]\label{ae_tendsto_bandProjector_cfc_indicator}
-  \lean{Oseledets.ae_tendsto_bandProjector_cfc_indicator}\leanok
+  \lean{ErgodicTheory.ae_tendsto_bandProjector_cfc_indicator}\leanok
   For \(\mu\)-a.e.\ \(x\), every \(c>0\) that is not one of the limiting eigenvalues
   \(e^{\lambda_{\mathrm{sing}}(x,i)}\) of \(\Lambda(x)\) satisfies
   \[
@@ -319,7 +319,7 @@ indicator of \(\Lambda\).
 \end{proof}
 
 \begin{theorem}[Reverse slow-flag inclusion]\label{ae_lambdaSublevel_le_vslow}
-  \lean{Oseledets.ae_lambdaSublevel_le_vslow}\leanok
+  \lean{ErgodicTheory.ae_lambdaSublevel_le_vslow}\leanok
   For \(\mu\)-a.e.\ \(x\) and every \(t\),
   \(\mathrm{lambdaSublevel}(x,t) \le \mathrm{vslow}(x,e^t)\).
 \end{theorem}
@@ -335,7 +335,7 @@ indicator of \(\Lambda\).
 \end{proof}
 
 \begin{theorem}[The slow flag equals the limsup sublevel]\label{vslow_eq_lambdaSublevel_of_upper}
-  \lean{Oseledets.vslow_eq_lambdaSublevel_of_upper}\leanok
+  \lean{ErgodicTheory.vslow_eq_lambdaSublevel_of_upper}\leanok
   Under the spectral upper bound and the reverse inclusion, for \(\mu\)-a.e.\ \(x\) and every
   \(t\),
   \[
@@ -360,7 +360,7 @@ graded overlap is controlled by a leakage induction; Ruelle's cofactor estimate 
 one-sided forward decay into the full pairwise rate.
 
 \begin{lemma}[Ruelle reverse cofactor bound]\label{entry_reverse_bound_of_orthogonal}
-  \lean{Oseledets.RuelleCofactor.entry_reverse_bound_of_orthogonal}\leanok
+  \lean{ErgodicTheory.RuelleCofactor.entry_reverse_bound_of_orthogonal}\leanok
   Let \(S\) be orthogonal (\(S S^{\top}=1\)) with the graded forward decay
   \(\abs{S_{ab}}\le c\cdot e^{-\max(g_b-g_a,0)}\). Then every entry obeys the reverse bound at the
   full pairwise rate:
@@ -377,7 +377,7 @@ one-sided forward decay into the full pairwise rate.
 \end{proof}
 
 \begin{definition}[Top-gap fast-band-mass envelope]\label{TopGapMassEnvelope}
-  \lean{Oseledets.TopGapMassEnvelope}\leanok
+  \lean{ErgodicTheory.TopGapMassEnvelope}\leanok
   \(\mathrm{TopGapMassEnvelope}\,A\,T\,\lambda^0\,x\) asserts the uniform geometric leakage of
   fast-band mass across each genuine gap: for every cut tolerance \(\delta\) there is a constant
   \(C\) controlling, eventually and uniformly, the band mass that crosses the top gap of each
@@ -385,7 +385,7 @@ one-sided forward decay into the full pairwise rate.
 \end{definition}
 
 \begin{lemma}[Multi-source geometric envelope]\label{multi_source_envelope}
-  \lean{Oseledets.ChainCore.multi_source_envelope}\leanok
+  \lean{ErgodicTheory.ChainCore.multi_source_envelope}\leanok
   If a nonnegative sequence \(a\) obeys a one-step recursion fed by finitely many source sequences
   each decaying geometrically with ratio \(\rho<1\), then \(a_n\) is bounded by a fixed multiple of
   the summed source envelopes for all \(n\).
@@ -397,7 +397,7 @@ one-sided forward decay into the full pairwise rate.
 \end{proof}
 
 \begin{lemma}[Per-stratum envelope step]\label{perStratumEnvelope_step}
-  \lean{Oseledets.perStratumEnvelope_step}\leanok
+  \lean{ErgodicTheory.perStratumEnvelope_step}\leanok
   At a fixed cut strictly inside a gap of width \(\ge G\), the one-step band-mass increment is the
   current mass damped by \(e^{-G}\) plus a tempered source term; iterating produces the per-stratum
   leakage envelope.
@@ -412,7 +412,7 @@ one-sided forward decay into the full pairwise rate.
 \end{proof}
 
 \begin{theorem}[The top-gap envelope, a.e.]\label{topGapMassEnvelope_ae}
-  \lean{Oseledets.topGapMassEnvelope_ae}\leanok
+  \lean{ErgodicTheory.topGapMassEnvelope_ae}\leanok
   For \(\mu\)-a.e.\ \(x\), the top-gap fast-band-mass envelope
   \(\mathrm{TopGapMassEnvelope}\,A\,T\,\lambda^0\,x\) holds.
 \end{theorem}
@@ -433,7 +433,7 @@ The deterministic exponent set is constant in \(x\) by construction, so once the
 is identified with it, ergodic constancy is automatic.
 
 \begin{lemma}[Spectrum identity from two inclusions]\label{lyapunovSpectrum_eq_of_subsets}
-  \lean{Oseledets.lyapunovSpectrum_eq_of_subsets}\leanok
+  \lean{ErgodicTheory.lyapunovSpectrum_eq_of_subsets}\leanok
   If at \(x\) every realized exponent is a deterministic one and every deterministic exponent is
   attained, then \(\mathrm{lyapunovSpectrum}(x) = \mathrm{distinctExp}\,\lambda^0\,d\).
 \end{lemma}
@@ -444,7 +444,7 @@ is identified with it, ergodic constancy is automatic.
 \end{proof}
 
 \begin{theorem}[Ergodic constancy of the spectrum]\label{lyapunovSpectrum_eq_distinctExp_of_lambdaBar}
-  \lean{Oseledets.lyapunovSpectrum_eq_distinctExp_of_lambdaBar}\leanok
+  \lean{ErgodicTheory.lyapunovSpectrum_eq_distinctExp_of_lambdaBar}\leanok
   Given a.e.\ that every realized value of the upper growth function is a deterministic exponent
   (upper inclusion) and every deterministic exponent is attained (lower inclusion), for
   \(\mu\)-a.e.\ \(x\),
@@ -471,7 +471,7 @@ flag, and the lower bound supplies attainment. Together they discharge the three
 (spectrum, slow flag, exact growth) of the filtration assembly.
 
 \begin{theorem}[Filtration from the spectral upper bound]\label{oseledets_filtration_of_upper}
-  \lean{Oseledets.oseledets_filtration_of_upper'}\leanok
+  \lean{ErgodicTheory.oseledets_filtration_of_upper'}\leanok
   Assume the per-vector spectral upper bound on the slow flag, the reverse slow-flag inclusion, the
   two spectrum inclusions, and the band-projector convergence datum. Then there exist
   \(k\), strictly decreasing \(\lambda:\mathrm{Fin}\,k\to\R\), and a measurable family
@@ -492,7 +492,7 @@ flag, and the lower bound supplies attainment. Together they discharge the three
 \end{proof}
 
 \begin{theorem}[Filtration from the top-gap envelope]\label{oseledets_filtration_of_topgap}
-  \lean{Oseledets.oseledets_filtration_of_topgap}\leanok
+  \lean{ErgodicTheory.oseledets_filtration_of_topgap}\leanok
   Under the standing ergodic, invertible, log-integrable hypotheses, and assuming the top-gap
   envelope \(\mathrm{TopGapMassEnvelope}\) quantified over \(\lambda^0\), the full Oseledets
   filtration conclusion holds.
@@ -512,7 +512,7 @@ flag, and the lower bound supplies attainment. Together they discharge the three
 \end{proof}
 
 \begin{theorem}[One-sided Oseledets multiplicative ergodic theorem]\label{oseledets_filtration}
-  \lean{Oseledets.oseledets_filtration}\leanok
+  \lean{ErgodicTheory.oseledets_filtration}\leanok
   Let \(\mu\) be a probability measure, \(T:X\to X\) ergodic measure-preserving, and
   \(A:X\to\mathrm{Mat}_{d\times d}(\R)\) measurable with \(\det(A x)\neq 0\) and
   \(\log^{+}\norm{A},\,\log^{+}\norm{A^{-1}}\in L^1(\mu)\). Then there are \(k\) distinct Lyapunov

@@ -18,7 +18,7 @@ ergodic self-map `T` of `EuclideanSpace ℝ (Fin d)` preserving an SRB (e.g. vol
 
 It assembles the two directions:
 
-* **`≤` (Margulis–Ruelle, DONE).** `h_μ(T) ≤ ∑_i λ_i⁺` is `Oseledets.margulisRuelle_sharp`, proved
+* **`≤` (Margulis–Ruelle, DONE).** `h_μ(T) ≤ ∑_i λ_i⁺` is `ErgodicTheory.margulisRuelle_sharp`, proved
   sorry-free modulo the honest non-compactness atom-count input `hgeo` (the Riquelme-necessary
   bounded-distortion regime). This direction holds for *every* invariant measure, no SRB hypothesis.
 
@@ -42,7 +42,7 @@ a.e.-constancy of the integrand `χ` (`UnstableJacobianRate`).
 ## Status of the chain
 
 The `≤` half is sorry-free (modulo its honest atom-count hypothesis, identical to the
-already-landed `Oseledets.margulisRuelle_sharp`). The `≥` half rests on the single BLOCKED leaf
+already-landed `ErgodicTheory.margulisRuelle_sharp`). The `≥` half rests on the single BLOCKED leaf
 `sumPosExp_le_ksEntropy_of_SRB` (Mañé's lower bound + the unstable-Jacobian estimate; Pesin /
 Ledrappier–Young theory, Mathlib-absent). The capstone equalities chain the two with `le_antisymm`
 and the integral-vs-constant bridge — that chaining is sorry-free; only the `≥` leaf carries the
@@ -69,9 +69,9 @@ section Pesin
 
 variable {μ : Measure (EuclideanSpace ℝ (Fin d))} [IsProbabilityMeasure μ]
     {T : EuclideanSpace ℝ (Fin d) → EuclideanSpace ℝ (Fin d)} (hT : Ergodic T μ)
-    (hdet : ∀ x, (Oseledets.derivativeCocycle T x).det ≠ 0)
-    (hint : Oseledets.IntegrableLogNorm (Oseledets.derivativeCocycle T) μ)
-    (hint' : Oseledets.IntegrableLogNorm (fun x => (Oseledets.derivativeCocycle T x)⁻¹) μ)
+    (hdet : ∀ x, (ErgodicTheory.derivativeCocycle T x).det ≠ 0)
+    (hint : ErgodicTheory.IntegrableLogNorm (ErgodicTheory.derivativeCocycle T) μ)
+    (hint' : ErgodicTheory.IntegrableLogNorm (fun x => (ErgodicTheory.derivativeCocycle T x)⁻¹) μ)
 
 /-- **Pesin's entropy formula, spectral form.**
 
@@ -83,7 +83,7 @@ entropy equals the sum of the strictly positive Lyapunov exponents:
 
 The proof is `le_antisymm` of the two directions:
 
-* `≤` : `Oseledets.margulisRuelle_sharp` (the Margulis–Ruelle inequality, proved sorry-free modulo
+* `≤` : `ErgodicTheory.margulisRuelle_sharp` (the Margulis–Ruelle inequality, proved sorry-free modulo
   the honest atom-count hypothesis `hgeo`; holds for every invariant measure).
 * `≥` : `sumPosExp_le_ksEntropy_of_SRB` (the SRB-only reverse inequality; its proof is the BLOCKED
   Pesin / Ledrappier–Young content).
@@ -95,16 +95,16 @@ finite right-hand side, so `le_antisymm` lands the equality in `EReal`. -/
 theorem pesin_entropy_formula_spectral (hdiff : Differentiable ℝ T)
     {χ : EuclideanSpace ℝ (Fin d) → ℝ}
     (hSRB : SRBProperty T μ) (hχ : UnstableJacobianRate hT hdet hint hint' χ)
-    (hgeo : ∀ (n : ℕ) (P : Oseledets.Entropy.MeasurePartition μ (Fin n)),
+    (hgeo : ∀ (n : ℕ) (P : ErgodicTheory.Entropy.MeasurePartition μ (Fin n)),
       ∃ (ε : ℝ≥0) (Ccov : ℝ), 0 < ε ∧ 0 ≤ Ccov ∧
         (∀ᵐ x ∂μ, ∀ᶠ m : ℕ in atTop,
-          (Oseledets.Entropy.atomCount hT.toMeasurePreserving P m : ℝ)
-            ≤ Ccov * Oseledets.coveringReal T m ε x)) :
-    Oseledets.Entropy.ksEntropy hT.toMeasurePreserving
-      = ((Oseledets.sumPosExp hT hdet
-          (Oseledets.measurable_derivativeCocycle T) hint hint' : ℝ) : EReal) :=
+          (ErgodicTheory.Entropy.atomCount hT.toMeasurePreserving P m : ℝ)
+            ≤ Ccov * ErgodicTheory.coveringReal T m ε x)) :
+    ErgodicTheory.Entropy.ksEntropy hT.toMeasurePreserving
+      = ((ErgodicTheory.sumPosExp hT hdet
+          (ErgodicTheory.measurable_derivativeCocycle T) hint hint' : ℝ) : EReal) :=
   le_antisymm
-    (Oseledets.margulisRuelle_sharp hT hdet hint hint' hdiff hgeo)
+    (ErgodicTheory.margulisRuelle_sharp hT hdet hint hint' hdiff hgeo)
     (sumPosExp_le_ksEntropy_of_SRB hT hdet hint hint' hSRB hχ)
 
 /-- **Pesin's entropy formula, integral form** — the genuine `h_μ(T) = ∫ ∑_i λ_i⁺ dμ`.
@@ -123,19 +123,19 @@ form inherits the exact gap structure of the spectral form (`≤` done, `≥` th
 theorem pesin_entropy_formula (hdiff : Differentiable ℝ T)
     {χ : EuclideanSpace ℝ (Fin d) → ℝ} (hχint : Integrable χ μ)
     (hSRB : SRBProperty T μ) (hχ : UnstableJacobianRate hT hdet hint hint' χ)
-    (hgeo : ∀ (n : ℕ) (P : Oseledets.Entropy.MeasurePartition μ (Fin n)),
+    (hgeo : ∀ (n : ℕ) (P : ErgodicTheory.Entropy.MeasurePartition μ (Fin n)),
       ∃ (ε : ℝ≥0) (Ccov : ℝ), 0 < ε ∧ 0 ≤ Ccov ∧
         (∀ᵐ x ∂μ, ∀ᶠ m : ℕ in atTop,
-          (Oseledets.Entropy.atomCount hT.toMeasurePreserving P m : ℝ)
-            ≤ Ccov * Oseledets.coveringReal T m ε x)) :
-    Oseledets.Entropy.ksEntropy hT.toMeasurePreserving = ((∫ x, χ x ∂μ : ℝ) : EReal) := by
+          (ErgodicTheory.Entropy.atomCount hT.toMeasurePreserving P m : ℝ)
+            ≤ Ccov * ErgodicTheory.coveringReal T m ε x)) :
+    ErgodicTheory.Entropy.ksEntropy hT.toMeasurePreserving = ((∫ x, χ x ∂μ : ℝ) : EReal) := by
   -- `hχint` records that the Pesin integrand `χ` is integrable, making `∫ χ dμ` genuinely the
   -- Lebesgue integral of the formula (not a vacuous zero); the a.e.-constancy bridge below does
   -- not consume it, but it is a load-bearing part of the *statement*.
   let _ := hχint
   -- The integral of the a.e.-constant `χ` over a probability measure is `sumPosExp`.
   have hbridge : (∫ x, χ x ∂μ)
-      = Oseledets.sumPosExp hT hdet (Oseledets.measurable_derivativeCocycle T) hint hint' := by
+      = ErgodicTheory.sumPosExp hT hdet (ErgodicTheory.measurable_derivativeCocycle T) hint hint' := by
     rw [integral_congr_ae hχ, integral_const, probReal_univ, one_smul]
   rw [hbridge]
   exact pesin_entropy_formula_spectral hT hdet hint hint' hdiff hSRB hχ hgeo

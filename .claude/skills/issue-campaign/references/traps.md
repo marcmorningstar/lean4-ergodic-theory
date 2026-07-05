@@ -86,4 +86,4 @@ Phase 5 (integrate). Each entry: the symptom, the cause, the fix.
   verdict (#16's "no smooth structure" deferral was wrong; the real wall was narrower).
 
 - **Mathlib has no measure-theoretic entropy** (only topological). All KS-entropy machinery is the
-  project's own `Oseledets/Entropy/`. Don't expect `MeasureTheory.measureEntropy`.
+  project's own `ErgodicTheory/Entropy/`. Don't expect `MeasureTheory.measureEntropy`.

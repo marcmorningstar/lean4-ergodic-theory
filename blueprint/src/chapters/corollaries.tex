@@ -6,12 +6,12 @@ The Oseledets multiplicative ergodic theorem $\texttt{oseledets\_filtration}$ de
 \section{The bundled predicate and uniqueness}
 
 \begin{definition}[Bundled Oseledets filtration]\label{IsOseledetsFiltration}
-  \lean{Oseledets.IsOseledetsFiltration}\leanok
+  \lean{ErgodicTheory.IsOseledetsFiltration}\leanok
   For a measure $\mu$, map $T$, generator $A$, count $k$, exponent list $\lambda : \mathrm{Fin}\,k \to \R$ and flag $V : \mathrm{Fin}(k+1) \to X \to \mathrm{Submodule}$, the predicate $\mathrm{IsOseledetsFiltration}\ \mu\ T\ A\ k\ \lambda\ V$ asserts: $\lambda$ is strictly antitone; each level $V_i$ is a measurable subspace family; and $\mu$-a.e.\ $x$ carries the strictly decreasing $A$-equivariant flag $\R^d = V_0(x) \supsetneq \cdots \supsetneq V_k(x) = 0$ with exact growth rate $\lambda_i$ on the stratum $V_i \setminus V_{i+1}$. This is byte-identical to the conclusion of the main theorem.
 \end{definition}
 
 \begin{theorem}[Repackaged existence]\label{oseledets_filtration'}
-  \lean{Oseledets.oseledets_filtration'}\leanok
+  \lean{ErgodicTheory.oseledets_filtration'}\leanok
   Under the standing hypotheses (ergodic $T$, invertible measurable $A$ with $\log^+\norm{A}, \log^+\norm{A^{-1}} \in L^1$), there exist $k, \lambda, V$ with $\mathrm{IsOseledetsFiltration}\ \mu\ T\ A\ k\ \lambda\ V$.
 \end{theorem}
 \begin{proof}\leanok
@@ -20,7 +20,7 @@ The Oseledets multiplicative ergodic theorem $\texttt{oseledets\_filtration}$ de
 \end{proof}
 
 \begin{theorem}[Canonical sublevel characterization]\label{ae_mem_iff_limsup_le}
-  \lean{Oseledets.IsOseledetsFiltration.ae_mem_iff_limsup_le}\leanok
+  \lean{ErgodicTheory.IsOseledetsFiltration.ae_mem_iff_limsup_le}\leanok
   If $\mathrm{IsOseledetsFiltration}\ \mu\ T\ A\ k\ \lambda\ V$ holds, then $\mu$-a.e.\ each interior flag level is exactly a growth-sublevel set: for every $i$ and vector $v$,
   \[ v \in V_i(x) \iff v = 0 \ \lor\ \limsup_n \tfrac1n \log\norm{A^{(n)}(x)v} \le \lambda_i. \]
 \end{theorem}
@@ -30,7 +30,7 @@ The Oseledets multiplicative ergodic theorem $\texttt{oseledets\_filtration}$ de
 \end{proof}
 
 \begin{theorem}[Uniqueness of the spectrum and filtration]\label{unique}
-  \lean{Oseledets.IsOseledetsFiltration.unique}\leanok
+  \lean{ErgodicTheory.IsOseledetsFiltration.unique}\leanok
   On a probability space, any two Oseledets filtration data $(k, \lambda, V)$ and $(k_2, \lambda_2, V_2)$ for the same cocycle agree: $k = k_2$, the exponents coincide under the index cast, and $\mu$-a.e.\ the flags agree level by level.
 \end{theorem}
 \begin{proof}\leanok
@@ -41,7 +41,7 @@ The Oseledets multiplicative ergodic theorem $\texttt{oseledets\_filtration}$ de
 \section{The top exponent as operator-norm growth}
 
 \begin{lemma}[Nontriviality]\label{k_pos}
-  \lean{Oseledets.IsOseledetsFiltration.k_pos}\leanok
+  \lean{ErgodicTheory.IsOseledetsFiltration.k_pos}\leanok
   On a probability space with $0 < d$, any Oseledets filtration has $0 < k$.
 \end{lemma}
 \begin{proof}\leanok
@@ -50,7 +50,7 @@ The Oseledets multiplicative ergodic theorem $\texttt{oseledets\_filtration}$ de
 \end{proof}
 
 \begin{theorem}[Top exponent = norm growth]\label{tendsto_log_opNorm_cocycle}
-  \lean{Oseledets.IsOseledetsFiltration.tendsto_log_opNorm_cocycle}\leanok
+  \lean{ErgodicTheory.IsOseledetsFiltration.tendsto_log_opNorm_cocycle}\leanok
   On a probability space, with $A$ invertible and $0 < k$, $\mu$-a.e.\ the operator-norm growth rate of the cocycle converges to the top exponent:
   \[ \tfrac1n \log\norm{A^{(n)}(x)} \to \lambda_0. \]
 \end{theorem}
@@ -60,7 +60,7 @@ The Oseledets multiplicative ergodic theorem $\texttt{oseledets\_filtration}$ de
 \end{proof}
 
 \begin{corollary}[Identification of the Furstenberg--Kesten constant]\label{oseledets_top_exponent_eq_furstenbergKesten}
-  \lean{Oseledets.oseledets_top_exponent_eq_furstenbergKesten}\leanok
+  \lean{ErgodicTheory.oseledets_top_exponent_eq_furstenbergKesten}\leanok
   Any constant $c$ to which $\tfrac1n\log\norm{A^{(n)}(x)}$ converges $\mu$-a.e.\ (e.g.\ the Furstenberg--Kesten constant) equals $\lambda_0$.
 \end{corollary}
 \begin{proof}\leanok
@@ -71,7 +71,7 @@ The Oseledets multiplicative ergodic theorem $\texttt{oseledets\_filtration}$ de
 \section{A.e.-constant multiplicities}
 
 \begin{theorem}[Deterministic dimension profile]\label{exists_finrank_ae_eq}
-  \lean{Oseledets.IsOseledetsFiltration.exists_finrank_ae_eq}\leanok
+  \lean{ErgodicTheory.IsOseledetsFiltration.exists_finrank_ae_eq}\leanok
   For ergodic $T$ and invertible $A$, every Oseledets filtration has a deterministic dimension profile: there is a strictly decreasing $m : \mathrm{Fin}(k+1) \to \N$ with $m_0 = d$, $m_k = 0$ and, $\mu$-a.e., $\mathrm{finrank}\,V_i(x) = m_i$.
 \end{theorem}
 \begin{proof}\leanok
@@ -80,7 +80,7 @@ The Oseledets multiplicative ergodic theorem $\texttt{oseledets\_filtration}$ de
 \end{proof}
 
 \begin{corollary}[Per-exponent multiplicities]\label{exists_multiplicity}
-  \lean{Oseledets.IsOseledetsFiltration.exists_multiplicity}\leanok
+  \lean{ErgodicTheory.IsOseledetsFiltration.exists_multiplicity}\leanok
   For ergodic $T$ and invertible $A$, each exponent $\lambda_i$ carries a positive deterministic multiplicity $m_i = \dim V_i - \dim V_{i+1}$ with $\sum_i m_i = d$.
 \end{corollary}
 \begin{proof}\leanok
@@ -89,7 +89,7 @@ The Oseledets multiplicative ergodic theorem $\texttt{oseledets\_filtration}$ de
 \end{proof}
 
 \begin{theorem}[MET with multiplicities]\label{oseledets_filtration_with_multiplicities}
-  \lean{Oseledets.oseledets_filtration_with_multiplicities}\leanok
+  \lean{ErgodicTheory.oseledets_filtration_with_multiplicities}\leanok
   Under the standing hypotheses there exist $k, \lambda, V$ and a strictly decreasing $m$ with $m_0 = d$, $m_k = 0$, such that $\mathrm{IsOseledetsFiltration}\ \mu\ T\ A\ k\ \lambda\ V$ holds and $\mu$-a.e.\ $\mathrm{finrank}\,V_i(x) = m_i$.
 \end{theorem}
 \begin{proof}\leanok
@@ -100,12 +100,12 @@ The Oseledets multiplicative ergodic theorem $\texttt{oseledets\_filtration}$ de
 \section{The Lyapunov spectrum}
 
 \begin{definition}[Sorted spectrum]\label{exponents}
-  \lean{Oseledets.exponents}\leanok
+  \lean{ErgodicTheory.exponents}\leanok
   The full Lyapunov spectrum with multiplicity is the total function $\mathrm{exponents} : \mathrm{Fin}\,d \to \R$, whose $i$-th entry is the deterministic limit of $\tfrac1n\log\sigma_i(A^{(n)})$, sorted non-increasingly. The top entry is $\mathrm{topExponent}$.
 \end{definition}
 
 \begin{theorem}[Defining $\sigma$-limit and order]\label{exponents_tendsto_log_singularValue}
-  \lean{Oseledets.exponents_tendsto_log_singularValue}\leanok
+  \lean{ErgodicTheory.exponents_tendsto_log_singularValue}\leanok
   For each sorted index $i$ and $\mu$-a.e.\ $x$, $\tfrac1n\log\sigma_i(A^{(n)}(x)) \to \mathrm{exponents}_i$; moreover $\mathrm{exponents}$ is antitone.
 \end{theorem}
 \begin{proof}\leanok
@@ -114,7 +114,7 @@ The Oseledets multiplicative ergodic theorem $\texttt{oseledets\_filtration}$ de
 \end{proof}
 
 \begin{theorem}[Eigenvalue tie]\label{exp_exponents_eq_eigenvalues₀_oseledetsLimit}
-  \lean{Oseledets.exp_exponents_eq_eigenvalues₀_oseledetsLimit}\leanok
+  \lean{ErgodicTheory.exp_exponents_eq_eigenvalues₀_oseledetsLimit}\leanok
   $\mu$-a.e., $\exp(\mathrm{exponents}_i)$ is the $i$-th sorted eigenvalue of the Oseledets limit matrix $\Lambda(x)$.
 \end{theorem}
 \begin{proof}\leanok
@@ -125,7 +125,7 @@ The Oseledets multiplicative ergodic theorem $\texttt{oseledets\_filtration}$ de
 \section{Exponent sums}
 
 \begin{theorem}[Sign characterizations of exponent sums]\label{sumPosExp_pos_iff}
-  \lean{Oseledets.sumPosExp_pos_iff}\leanok
+  \lean{ErgodicTheory.sumPosExp_pos_iff}\leanok
   The sum $\mathrm{sumPosExp}$ of the strictly positive exponents is nonnegative, vanishes iff all exponents are $\le 0$, and is strictly positive iff some exponent is positive (and dually $\mathrm{sumNegExp} \le 0$ with the mirror characterizations).
 \end{theorem}
 \begin{proof}\leanok
@@ -134,7 +134,7 @@ The Oseledets multiplicative ergodic theorem $\texttt{oseledets\_filtration}$ de
 \end{proof}
 
 \begin{theorem}[Telescoping identity for partial sums]\label{gammaK_eq_sum_top_exponents}
-  \lean{Oseledets.gammaK_eq_sum_top_exponents}\leanok
+  \lean{ErgodicTheory.gammaK_eq_sum_top_exponents}\leanok
   For $k \le d$, the ergodic growth rate $\Gamma_k$ of the product of the top-$k$ singular values equals the sum of the top-$k$ exponents: $\Gamma_k = \sum_{i<k} \mathrm{exponents}_i$.
 \end{theorem}
 \begin{proof}\leanok
@@ -145,12 +145,12 @@ The Oseledets multiplicative ergodic theorem $\texttt{oseledets\_filtration}$ de
 \section{Exterior (wedge) growth}
 
 \begin{definition}[Exterior cocycle generator]\label{extGen}
-  \lean{Oseledets.extGen}\leanok
+  \lean{ErgodicTheory.extGen}\leanok
   The $k$-th exterior generator $\mathrm{extGen}\,k\,A$ sends $x$ to the $k$-th compound matrix $C_k(A x)$ of $k\times k$ minors. Its iterated cocycle is the compound of the iterate: $\mathrm{cocycle}(\mathrm{extGen}\,k\,A)\,T\,n\,x = C_k(A^{(n)}(x))$.
 \end{definition}
 
 \begin{theorem}[$k$-volume growth rate]\label{tendsto_log_opNorm_compound_cocycle}
-  \lean{Oseledets.tendsto_log_opNorm_compound_cocycle}\leanok
+  \lean{ErgodicTheory.tendsto_log_opNorm_compound_cocycle}\leanok
   For $k \le d$ and $\mu$-a.e.\ $x$, the operator-norm growth of the compound cocycle converges to $\Gamma_k$: $\tfrac1n\log\norm{C_k(A^{(n)}(x))} \to \Gamma_k$, the $k$-dimensional volume growth rate.
 \end{theorem}
 \begin{proof}\leanok
@@ -159,7 +159,7 @@ The Oseledets multiplicative ergodic theorem $\texttt{oseledets\_filtration}$ de
 \end{proof}
 
 \begin{corollary}[Positive sum as a maximal partial sum]\label{sumPosExp_eq_gammaK_card_pos}
-  \lean{Oseledets.sumPosExp_eq_gammaK_card_pos}\leanok
+  \lean{ErgodicTheory.sumPosExp_eq_gammaK_card_pos}\leanok
   Writing $k_+ = \#\{i : 0 < \mathrm{exponents}_i\}$, the positive-exponent sum equals the partial sum $\Gamma_{k_+} = \sum_{i<k_+}\mathrm{exponents}_i$.
 \end{corollary}
 \begin{proof}\leanok
@@ -170,7 +170,7 @@ The Oseledets multiplicative ergodic theorem $\texttt{oseledets\_filtration}$ de
 \section{The trace--determinant identity}
 
 \begin{lemma}[Product of singular values is the absolute determinant]\label{sprod_d_eq_abs_det}
-  \lean{Oseledets.sprod_d_eq_abs_det}\leanok
+  \lean{ErgodicTheory.sprod_d_eq_abs_det}\leanok
   For every $n$, $x$: $\mathrm{sprod}\,A\,T\,d\,n\,x = \abs{\det A^{(n)}(x)}$.
 \end{lemma}
 \begin{proof}\leanok
@@ -178,7 +178,7 @@ The Oseledets multiplicative ergodic theorem $\texttt{oseledets\_filtration}$ de
 \end{proof}
 
 \begin{theorem}[Determinant identity]\label{sumAllExp_eq_integral_log_abs_det}
-  \lean{Oseledets.sumAllExp_eq_integral_log_abs_det}\leanok
+  \lean{ErgodicTheory.sumAllExp_eq_integral_log_abs_det}\leanok
   The sum of all Lyapunov exponents equals the integral of $\log\abs{\det}$ of the generator:
   \[ \sum_i \mathrm{exponents}_i = \int_X \log\abs{\det A(x)}\,d\mu. \]
 \end{theorem}
@@ -188,7 +188,7 @@ The Oseledets multiplicative ergodic theorem $\texttt{oseledets\_filtration}$ de
 \end{proof}
 
 \begin{corollary}[Volume contraction]\label{tendsto_abs_det_cocycle_atTop_zero}
-  \lean{Oseledets.tendsto_abs_det_cocycle_atTop_zero}\leanok
+  \lean{ErgodicTheory.tendsto_abs_det_cocycle_atTop_zero}\leanok
   If $\sum_i \mathrm{exponents}_i < 0$ then $\mu$-a.e.\ $\abs{\det A^{(n)}(x)} \to 0$.
 \end{corollary}
 \begin{proof}\leanok
@@ -199,7 +199,7 @@ The Oseledets multiplicative ergodic theorem $\texttt{oseledets\_filtration}$ de
 \section{The inverse / time-reversed spectrum}
 
 \begin{theorem}[Inverse cocycle exponents]\label{tendsto_log_singularValue_inv_cocycle}
-  \lean{Oseledets.tendsto_log_singularValue_inv_cocycle}\leanok
+  \lean{ErgodicTheory.tendsto_log_singularValue_inv_cocycle}\leanok
   For each sorted index $i$ and $\mu$-a.e.\ $x$, the singular-value exponents of the inverse-matrix cocycle are the negated, reversed exponents of $A$:
   \[ \tfrac1n\log\sigma_i\!\big((A^{(n)}(x))^{-1}\big) \to -\,\mathrm{exponents}_{\mathrm{rev}\,i}. \]
 \end{theorem}
@@ -209,7 +209,7 @@ The Oseledets multiplicative ergodic theorem $\texttt{oseledets\_filtration}$ de
 \end{proof}
 
 \begin{corollary}[Top of the reversed spectrum is minus the bottom]\label{topExponent_inv_eq_neg_bot}
-  \lean{Oseledets.topExponent_inv_eq_neg_bot}\leanok
+  \lean{ErgodicTheory.topExponent_inv_eq_neg_bot}\leanok
   $\mu$-a.e.\ the largest exponent of the inverse cocycle is $-\,\mathrm{exponents}_{d-1}$, the negative of the smallest forward exponent.
 \end{corollary}
 \begin{proof}\leanok
@@ -220,12 +220,12 @@ The Oseledets multiplicative ergodic theorem $\texttt{oseledets\_filtration}$ de
 \section{Restriction to invariant subbundles}
 
 \begin{definition}[Invariant subbundle]\label{InvariantSubbundle}
-  \lean{Oseledets.InvariantSubbundle}\leanok
+  \lean{ErgodicTheory.InvariantSubbundle}\leanok
   An invariant subbundle is a measurable family of fibre subspaces $W(x) \le \R^d$ that is $A$-equivariant a.e.: $A(x)\,W(x) = W(Tx)$.
 \end{definition}
 
 \begin{lemma}[Dimension interlacing]\label{restricted_finrank_le}
-  \lean{Oseledets.restricted_finrank_le}\leanok
+  \lean{ErgodicTheory.restricted_finrank_le}\leanok
   At each ambient flag level, the dimension captured by the subbundle is bounded by the ambient dimension: $\dim\big(W(x) \cap V_i(x)\big) \le \dim V_i(x)$, so the restricted multiplicities are a sub-multiset of the ambient ones.
 \end{lemma}
 \begin{proof}\leanok
@@ -233,7 +233,7 @@ The Oseledets multiplicative ergodic theorem $\texttt{oseledets\_filtration}$ de
 \end{proof}
 
 \begin{theorem}[Restricted strict Oseledets filtration]\label{restricted_strict_filtration}
-  \lean{Oseledets.restricted_strict_filtration}\leanok
+  \lean{ErgodicTheory.restricted_strict_filtration}\leanok
   For ergodic $T$, invertible $A$, and an invariant subbundle $W$, collapsing the constant-dimension levels of $i \mapsto W \cap V_i$ yields a genuine \emph{strict} Oseledets filtration inside $W$: a strictly antitone $\lambda'$ and a measurable family $V'$ with, $\mu$-a.e., $V'_0(x) = W(x)$, $V'_{k'}(x) = 0$, strictly descending and $A$-equivariant, with exact growth rate $\lambda'_i$ per stratum and all levels $\le W(x)$.
 \end{theorem}
 \begin{proof}\leanok
@@ -244,7 +244,7 @@ The Oseledets multiplicative ergodic theorem $\texttt{oseledets\_filtration}$ de
 \section{The non-ergodic spectrum}
 
 \begin{theorem}[Non-ergodic exponents]\label{exists_exponents_nonergodic}
-  \lean{Oseledets.exists_exponents_nonergodic}\leanok
+  \lean{ErgodicTheory.exists_exponents_nonergodic}\leanok
   For merely measure-preserving $T$ (no ergodicity) and invertible measurable $A$ with the standing integrability, there is a family of $T$-invariant integrable functions $\lambda_i : X \to \R$ such that for each $i < d$ and $\mu$-a.e.\ $x$, $\tfrac1n\log\sigma_i(A^{(n)}(x)) \to \lambda_i(x)$. The exponents become invariant functions rather than constants.
 \end{theorem}
 \begin{proof}\leanok
@@ -253,7 +253,7 @@ The Oseledets multiplicative ergodic theorem $\texttt{oseledets\_filtration}$ de
 \end{proof}
 
 \begin{corollary}[Non-ergodic positive-exponent sum]\label{exists_sumPosExp_nonergodic}
-  \lean{Oseledets.exists_sumPosExp_nonergodic}\leanok
+  \lean{ErgodicTheory.exists_sumPosExp_nonergodic}\leanok
   Summing the positive parts $\max(\lambda_i(x),0)$ over $i < d$ yields a single $T$-invariant integrable function $G_+ : X \to \R$, the non-ergodic analogue of the positive-exponent sum.
 \end{corollary}
 \begin{proof}\leanok
@@ -264,7 +264,7 @@ The Oseledets multiplicative ergodic theorem $\texttt{oseledets\_filtration}$ de
 \section{Regularity of the exponents}
 
 \begin{theorem}[Fekete infimum representation]\label{gammaK_eq_iInf}
-  \lean{Oseledets.gammaK_eq_iInf}\leanok
+  \lean{ErgodicTheory.gammaK_eq_iInf}\leanok
   The partial-sum growth rate is the infimum over $n$ of the normalized integrals:
   \[ \Gamma_k = \inf_n \frac{1}{n+1}\int_X \log\mathrm{sprod}_k(n+1,x)\,d\mu. \]
 \end{theorem}
@@ -274,7 +274,7 @@ The Oseledets multiplicative ergodic theorem $\texttt{oseledets\_filtration}$ de
 \end{proof}
 
 \begin{theorem}[Upper semicontinuity of partial sums and top exponent]\label{gammaK_upperSemicontinuous}
-  \lean{Oseledets.gammaK_upperSemicontinuous}\leanok
+  \lean{ErgodicTheory.gammaK_upperSemicontinuous}\leanok
   Along a filter of generators $B_i \to A$ for which each fixed-$n$ integral is continuous, the partial-sum rate is upper semicontinuous: $\limsup_i \Gamma_k(B_i) \le \Gamma_k(A)$; specializing $k=1$ gives the same for the top exponent. This is USC, not continuity --- equality can fail when a spectral gap closes.
 \end{theorem}
 \begin{proof}\leanok
@@ -283,7 +283,7 @@ The Oseledets multiplicative ergodic theorem $\texttt{oseledets\_filtration}$ de
 \end{proof}
 
 \begin{theorem}[Lower semicontinuity of the bottom exponent]\label{botExp_lowerSemicontinuous}
-  \lean{Oseledets.botExp_lowerSemicontinuous}\leanok
+  \lean{ErgodicTheory.botExp_lowerSemicontinuous}\leanok
   The bottom exponent $\lambda_d = \Gamma_d - \Gamma_{d-1}$ is lower semicontinuous in the generator: $\lambda_d(A) \le \liminf_i \lambda_d(B_i)$.
 \end{theorem}
 \begin{proof}\leanok
@@ -294,7 +294,7 @@ The Oseledets multiplicative ergodic theorem $\texttt{oseledets\_filtration}$ de
 \section{Singular one-sided bounds}
 
 \begin{theorem}[Forward top value]\label{tendsto_top_posLogNorm}
-  \lean{Oseledets.tendsto_top_posLogNorm}\leanok
+  \lean{ErgodicTheory.tendsto_top_posLogNorm}\leanok
   For ergodic $T$ and a possibly-singular measurable generator with only $\log^+\norm{A} \in L^1$ (no invertibility, no inverse integrability), the normalized positive-part log-norms $\tfrac1n\log^+\norm{A^{(n)}(x)}$ converge $\mu$-a.e.\ to a constant $\lambda_1^+$.
 \end{theorem}
 \begin{proof}\leanok
@@ -302,7 +302,7 @@ The Oseledets multiplicative ergodic theorem $\texttt{oseledets\_filtration}$ de
 \end{proof}
 
 \begin{theorem}[Upper bound on the singular top exponent]\label{limsup_logNorm_le_top}
-  \lean{Oseledets.limsup_logNorm_le_top}\leanok
+  \lean{ErgodicTheory.limsup_logNorm_le_top}\leanok
   Under the same singular hypotheses there is $\lambda_1^+$ with, $\mu$-a.e.,
   \[ \limsup_n\Big(\tfrac1n\log\norm{A^{(n)}(x)} : \mathrm{EReal}\Big) \le \lambda_1^+. \]
   The $\limsup$ is taken in $\mathrm{EReal}$ so the bound is unconditional even when the growth tends to $-\infty$; this is one-sided only.
@@ -313,7 +313,7 @@ The Oseledets multiplicative ergodic theorem $\texttt{oseledets\_filtration}$ de
 \end{proof}
 
 \begin{theorem}[Sharp $\limsup$ in the expanding case]\label{limsup_logNorm_eq_top_of_pos}
-  \lean{Oseledets.limsup_logNorm_eq_top_of_pos}\leanok
+  \lean{ErgodicTheory.limsup_logNorm_eq_top_of_pos}\leanok
   There is a forward top value $\lambda_1^+$ (the a.e.\ limit of $\tfrac1n\log^+\norm{A^{(n)}}$) such that, whenever $\lambda_1^+ > 0$, $\mu$-a.e.\ the genuine log-norm $\limsup$ is exactly $\lambda_1^+$:
   \[ \limsup_n\Big(\tfrac1n\log\norm{A^{(n)}(x)} : \mathrm{EReal}\Big) = \lambda_1^+. \]
   The positivity hypothesis is essential; in the contracting case $\lambda_1^+ = 0$ the genuine growth may tend to $-\infty$ and equality fails.
@@ -324,7 +324,7 @@ The Oseledets multiplicative ergodic theorem $\texttt{oseledets\_filtration}$ de
 \end{proof}
 
 \begin{theorem}[Singular top-$k$ volume upper bound]\label{limsup_logSprod_le_top}
-  \lean{Oseledets.limsup_logSprod_le_top}\leanok
+  \lean{ErgodicTheory.limsup_logSprod_le_top}\leanok
   For ergodic $T$ and a possibly-singular generator with $\log^+\norm{A} \in L^1$, there is a constant $\Gamma_k^+$ with, $\mu$-a.e.,
   \[ \limsup_n\Big(\tfrac1n\log\mathrm{sprod}_k(x) : \mathrm{EReal}\Big) \le \Gamma_k^+. \]
   The top-$k$ volume growth is bounded above unconditionally (the $\mathrm{EReal}$ $\limsup$ allows volume collapse), again one-sided only.

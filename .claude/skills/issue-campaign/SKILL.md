@@ -138,8 +138,8 @@ You (orchestrator) do all of this:
 1. **Integration worktree.** `lwt add issue-<N>` off `main`; keep the *main* checkout on `main`
    so worker `lwt`-adds branch cleanly. Copy each green module from its worker worktree into the
    integration tree (file-copy staging; rename on collision — see traps).
-2. **Wire aggregators by hand.** Add imports to `Oseledets.lean` and any sub-aggregator
-   (`Oseledets/Multifractal.lean`, …); add the `#print axioms` guards + imports to
+2. **Wire aggregators by hand.** Add imports to `ErgodicTheory.lean` and any sub-aggregator
+   (`ErgodicTheory/Multifractal.lean`, …); add the `#print axioms` guards + imports to
    `test/AxiomAudit.lean`. Verify each new headline's axiom set first with `lake env lean`.
 3. **Definitive gate.** Run the full `lake build` (lib + `AxiomAudit`) in the integration tree
    *and* a final one in the `main` checkout after merging. Both must be green.

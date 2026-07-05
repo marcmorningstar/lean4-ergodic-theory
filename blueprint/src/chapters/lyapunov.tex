@@ -22,7 +22,7 @@ real vector space has only finitely many values, and its sublevel sets are
 subspaces. We isolate this with no reference to dynamics.
 
 \begin{definition}[Ultrametric growth function]\label{IsUltrametricGrowth}
-  \lean{Oseledets.IsUltrametricGrowth}\leanok
+  \lean{ErgodicTheory.IsUltrametricGrowth}\leanok
   Let $E$ be a real vector space. A function $g\colon E\to\R$ is an
   \emph{ultrametric growth function} when it is scaling-invariant,
   \[ g(c\cdot v) = g(v) \qquad (c\neq 0), \]
@@ -34,7 +34,7 @@ subspaces. We isolate this with no reference to dynamics.
 \end{definition}
 
 \begin{lemma}[Strict ultrametric equality]\label{add_eq_max_of_ne}
-  \lean{Oseledets.IsUltrametricGrowth.add_eq_max_of_ne}\leanok
+  \lean{ErgodicTheory.IsUltrametricGrowth.add_eq_max_of_ne}\leanok
   If $g$ is an ultrametric growth function and $g(v)\neq g(w)$ (with
   $v,w,v+w$ nonzero), then $g(v+w)=\max(g(v),g(w))$.
   \begin{proof}\leanok
@@ -49,7 +49,7 @@ subspaces. We isolate this with no reference to dynamics.
 \end{lemma}
 
 \begin{lemma}[Sum of distinct-value vectors]\label{sum_ne_zero_and_g_eq_sup'}
-  \lean{Oseledets.IsUltrametricGrowth.sum_ne_zero_and_g_eq_sup'}\leanok
+  \lean{ErgodicTheory.IsUltrametricGrowth.sum_ne_zero_and_g_eq_sup'}\leanok
   Let $g$ be an ultrametric growth function, $s$ a nonempty finite index set,
   and $v\colon s\to E$ a family of nonzero vectors with $g\circ v$ injective on
   $s$. Then $\sum_{i\in s} v_i \neq 0$ and
@@ -66,7 +66,7 @@ subspaces. We isolate this with no reference to dynamics.
 \end{lemma}
 
 \begin{lemma}[Distinct values are independent]\label{linearIndependent_of_injOn}
-  \lean{Oseledets.IsUltrametricGrowth.linearIndependent_of_injOn}\leanok
+  \lean{ErgodicTheory.IsUltrametricGrowth.linearIndependent_of_injOn}\leanok
   If $g$ is an ultrametric growth function and $v\colon \iota\to E$ is a family
   of nonzero vectors with $g\circ v$ injective, then $v$ is linearly
   independent over $\R$.
@@ -81,7 +81,7 @@ subspaces. We isolate this with no reference to dynamics.
 \end{lemma}
 
 \begin{lemma}[Finiteness of the value set]\label{finite_range}
-  \lean{Oseledets.IsUltrametricGrowth.finite_range}\leanok
+  \lean{ErgodicTheory.IsUltrametricGrowth.finite_range}\leanok
   If $E$ is finite-dimensional and $g$ is an ultrametric growth function, then
   $\{g(v) : v\neq 0\}$ is finite, with at most $\dim_{\R} E$ elements.
   \begin{proof}\leanok
@@ -93,7 +93,7 @@ subspaces. We isolate this with no reference to dynamics.
 \end{lemma}
 
 \begin{definition}[Sublevel submodule]\label{sublevel}
-  \lean{Oseledets.IsUltrametricGrowth.sublevel}\leanok
+  \lean{ErgodicTheory.IsUltrametricGrowth.sublevel}\leanok
   \uses{IsUltrametricGrowth}
   For an ultrametric growth function $g$ and threshold $t\in\R$, the
   \emph{sublevel set}
@@ -119,7 +119,7 @@ rate of the cocycle.
 \end{definition}
 
 \begin{definition}[Upper Lyapunov growth function]\label{lambdaBar}
-  \lean{Oseledets.lambdaBar}\leanok
+  \lean{ErgodicTheory.lambdaBar}\leanok
   \uses{growthSeq}
   The \emph{upper Lyapunov growth function} is the $\limsup$ of the growth
   sequence,
@@ -134,7 +134,7 @@ $\mathrm{growthSeq}$ between two sequences differing from the Furstenberg--Keste
 data by a term tending to $0$. This yields both boundedness and finiteness.
 
 \begin{lemma}[Scaling invariance]\label{lambdaBar_smul}
-  \lean{Oseledets.lambdaBar_smul}\leanok
+  \lean{ErgodicTheory.lambdaBar_smul}\leanok
   For $c\neq 0$ and $v\neq 0$, $\bar\lambda(c\cdot v)=\bar\lambda(v)$.
   \begin{proof}\leanok
   \uses{lambdaBar, growthSeq}
@@ -147,7 +147,7 @@ data by a term tending to $0$. This yields both boundedness and finiteness.
 \end{lemma}
 
 \begin{lemma}[Finiteness sandwich]\label{lambdaBar_mem_Icc}
-  \lean{Oseledets.lambdaBar_mem_Icc}\leanok
+  \lean{ErgodicTheory.lambdaBar_mem_Icc}\leanok
   Assume $T$ ergodic on a probability space, $A$ measurable and invertible, with
   $\log\norm{A}$ and $\log\norm{A^{-1}}$ integrable. Then there exist
   $\lambda_{\mathrm{bot}}\le\lambda_{\mathrm{top}}$ such that for a.e.\ $x$ and
@@ -166,7 +166,7 @@ data by a term tending to $0$. This yields both boundedness and finiteness.
 \end{lemma}
 
 \begin{lemma}[Non-Archimedean inequality]\label{lambdaBar_add_le}
-  \lean{Oseledets.lambdaBar_add_le}\leanok
+  \lean{ErgodicTheory.lambdaBar_add_le}\leanok
   For nonzero $v,w,v+w$, if the three growth sequences are bounded, then
   $\bar\lambda(v+w)\le\max(\bar\lambda(v),\bar\lambda(w))$.
   \begin{proof}\leanok
@@ -181,7 +181,7 @@ data by a term tending to $0$. This yields both boundedness and finiteness.
 \end{lemma}
 
 \begin{theorem}[$\bar\lambda$ is an ultrametric growth function, a.e.]\label{isUltrametricGrowth_lambdaBar}
-  \lean{Oseledets.isUltrametricGrowth_lambdaBar}\leanok
+  \lean{ErgodicTheory.isUltrametricGrowth_lambdaBar}\leanok
   Under the hypotheses of \ref{lambdaBar_mem_Icc}, for a.e.\ $x$ the function
   $v\mapsto\bar\lambda(v)$ is an ultrametric growth function.
   \begin{proof}\leanok
@@ -195,7 +195,7 @@ data by a term tending to $0$. This yields both boundedness and finiteness.
 \end{theorem}
 
 \begin{theorem}[$A$-equivariance, a.e.]\label{lambdaBar_equivariant_ae}
-  \lean{Oseledets.lambdaBar_equivariant_ae}\leanok
+  \lean{ErgodicTheory.lambdaBar_equivariant_ae}\leanok
   Under the same hypotheses, for a.e.\ $x$ and every $v\neq 0$,
   \[ \bar\lambda_x(v) = \bar\lambda_{Tx}(A x\cdot v). \]
   \begin{proof}\leanok
@@ -213,7 +213,7 @@ data by a term tending to $0$. This yields both boundedness and finiteness.
 \section{The Lyapunov spectrum and the descending exponent list}
 
 \begin{definition}[Lyapunov spectrum]\label{lyapunovSpectrum}
-  \lean{Oseledets.lyapunovSpectrum}\leanok
+  \lean{ErgodicTheory.lyapunovSpectrum}\leanok
   \uses{lambdaBar, finite_range}
   The \emph{Lyapunov spectrum} at $x$ is the finite set of realized values
   \[ \mathrm{lyapunovSpectrum}(A,T,x)
@@ -224,7 +224,7 @@ data by a term tending to $0$. This yields both boundedness and finiteness.
 \end{definition}
 
 \begin{definition}[Multiplicity count and descending list]\label{specList}
-  \lean{Oseledets.specList}\leanok
+  \lean{ErgodicTheory.specList}\leanok
   \uses{lyapunovSpectrum}
   Write $k=\mathrm{specCard}(A,T,x)$ for the number of distinct exponents (the
   cardinality of the spectrum). The \emph{exponent list}
@@ -238,7 +238,7 @@ data by a term tending to $0$. This yields both boundedness and finiteness.
 \section{The limsup filtration}
 
 \begin{definition}[Sublevel subspace]\label{lambdaSublevel}
-  \lean{Oseledets.lambdaSublevel}\leanok
+  \lean{ErgodicTheory.lambdaSublevel}\leanok
   \uses{lambdaBar, sublevel}
   The \emph{sublevel subspace} at threshold $t$,
   \[ \mathrm{lambdaSublevel}(A,T,x,t)
@@ -248,7 +248,7 @@ data by a term tending to $0$. This yields both boundedness and finiteness.
 \end{definition}
 
 \begin{definition}[Oseledets filtration / limsup flag]\label{vflag}
-  \lean{Oseledets.vflag}\leanok
+  \lean{ErgodicTheory.vflag}\leanok
   \uses{lambdaSublevel, specList}
   The \emph{limsup flag} at $x$ is the family
   $\mathrm{vflag}(A,T,x)\colon\mathrm{Fin}\,(k+1)\to\mathrm{Submodule}$ with
@@ -262,7 +262,7 @@ data by a term tending to $0$. This yields both boundedness and finiteness.
 \end{definition}
 
 \begin{lemma}[Extremal levels]\label{vflag_zero}
-  \lean{Oseledets.vflag_zero}\leanok
+  \lean{ErgodicTheory.vflag_zero}\leanok
   On the good set, $\mathrm{vflag}(A,T,x)(0)=\top$; and unconditionally
   $\mathrm{vflag}(A,T,x)(\mathrm{last})=\bot$ (\texttt{vflag\_last}).
   \begin{proof}\leanok
@@ -275,7 +275,7 @@ data by a term tending to $0$. This yields both boundedness and finiteness.
 \end{lemma}
 
 \begin{theorem}[Strict decrease]\label{vflag_strictAnti}
-  \lean{Oseledets.vflag_strictAnti}\leanok
+  \lean{ErgodicTheory.vflag_strictAnti}\leanok
   On the good set, $\mathrm{vflag}(A,T,x)(i{+}1) \subsetneq
   \mathrm{vflag}(A,T,x)(i)$ for each interior index $i$.
   \begin{proof}\leanok
@@ -290,7 +290,7 @@ data by a term tending to $0$. This yields both boundedness and finiteness.
 \end{theorem}
 
 \begin{lemma}[Stratum exactness]\label{lambdaBar_eq_on_stratum}
-  \lean{Oseledets.lambdaBar_eq_on_stratum}\leanok
+  \lean{ErgodicTheory.lambdaBar_eq_on_stratum}\leanok
   On the good set, if $v\in\mathrm{vflag}(A,T,x)(i)$ but
   $v\notin\mathrm{vflag}(A,T,x)(i{+}1)$, then $\bar\lambda_x(v)=\mathrm{specList}(i)=\lambda_i$.
   \begin{proof}\leanok
@@ -304,7 +304,7 @@ data by a term tending to $0$. This yields both boundedness and finiteness.
 \end{lemma}
 
 \begin{theorem}[$A$-equivariance of spectrum and flag, a.e.]\label{vflag_equivariant}
-  \lean{Oseledets.vflag_equivariant}\leanok
+  \lean{ErgodicTheory.vflag_equivariant}\leanok
   Under the standing hypotheses, for a.e.\ $x$ the spectrum is invariant,
   $\mathrm{lyapunovSpectrum}(A,T,x)=\mathrm{lyapunovSpectrum}(A,T,Tx)$
   (\texttt{lyapunovSpectrum\_equivariant\_ae}), and the action of $A x$ maps each
@@ -329,7 +329,7 @@ no measurable structure on submodules, so we encode a subspace by its
 orthogonal-projection matrix.
 
 \begin{definition}[Projection matrix encoding]\label{orthProjMatrix}
-  \lean{Oseledets.orthProjMatrix}\leanok
+  \lean{ErgodicTheory.orthProjMatrix}\leanok
   For $K\le\R^d$, $\mathrm{orthProjMatrix}(K)$ is the matrix of the orthogonal
   projection onto $K$, namely the preimage of $K.\mathtt{starProjection}$ under
   the star-algebra isomorphism $\mathtt{toEuclideanCLM}$. A subspace is
@@ -340,7 +340,7 @@ orthogonal-projection matrix.
 \end{definition}
 
 \begin{definition}[Measurable family of subspaces]\label{MeasurableSubspace}
-  \lean{Oseledets.MeasurableSubspace}\leanok
+  \lean{ErgodicTheory.MeasurableSubspace}\leanok
   \uses{orthProjMatrix}
   A subspace-valued map $V\colon X\to\mathrm{Submodule}\,\R\,\R^d$ is a
   \emph{measurable family of subspaces} when $x\mapsto\mathrm{orthProjMatrix}(V x)$
@@ -350,7 +350,7 @@ orthogonal-projection matrix.
 \end{definition}
 
 \begin{lemma}[Scalar growth is measurable]\label{measurable_lambdaBar_apply}
-  \lean{Oseledets.measurable_lambdaBar_apply}\leanok
+  \lean{ErgodicTheory.measurable_lambdaBar_apply}\leanok
   For fixed $v$, the map $x\mapsto\bar\lambda_x(v)$ is measurable.
   \begin{proof}\leanok
   \uses{lambdaBar}
@@ -364,7 +364,7 @@ orthogonal-projection matrix.
 \end{lemma}
 
 \begin{lemma}[Polynomial in a measurable matrix]\label{measurable_aeval_matrix}
-  \lean{Oseledets.measurable_aeval_matrix}\leanok
+  \lean{ErgodicTheory.measurable_aeval_matrix}\leanok
   For a fixed real polynomial $q$, the map $a\mapsto q(a)$ on
   $\mathrm{Mat}_{d\times d}(\R)$ is measurable.
   \begin{proof}\leanok
@@ -376,7 +376,7 @@ orthogonal-projection matrix.
 \end{lemma}
 
 \begin{theorem}[CFC measurability via interpolating polynomial]\label{measurable_cfc_eqOn_polynomial}
-  \lean{Oseledets.measurable_cfc_eqOn_polynomial}\leanok
+  \lean{ErgodicTheory.measurable_cfc_eqOn_polynomial}\leanok
   Let $M\colon X\to\mathrm{Mat}_{d\times d}(\R)$ be measurable with each $M x$
   self-adjoint, and let $g\colon\R\to\R$. If a \emph{fixed} polynomial $q$
   agrees with $g$ on the spectrum of every $M x$, then
@@ -393,7 +393,7 @@ orthogonal-projection matrix.
 \end{theorem}
 
 \begin{theorem}[CFC measurability for continuous functions]\label{measurable_cfc_continuous}
-  \lean{Oseledets.measurable_cfc_continuous}\leanok
+  \lean{ErgodicTheory.measurable_cfc_continuous}\leanok
   Let $M$ be measurable with each $M x$ self-adjoint, and $f\colon\R\to\R$
   continuous. Then $x\mapsto\mathrm{cfc}\,f\,(M x)$ is measurable.
   \begin{proof}\leanok

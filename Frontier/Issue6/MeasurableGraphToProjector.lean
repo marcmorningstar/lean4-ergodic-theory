@@ -3,7 +3,7 @@ Copyright (c) 2026 Marcel Morgenstern. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Marcel Morgenstern
 -/
-import Oseledets.Lyapunov.ForwardMeasurable
+import ErgodicTheory.Lyapunov.ForwardMeasurable
 import Mathlib.Analysis.InnerProductSpace.GramSchmidtOrtho
 import Mathlib.MeasureTheory.Constructions.BorelSpace.Metric
 import Mathlib.MeasureTheory.Function.SpecialFunctions.Inner
@@ -20,7 +20,7 @@ projector is the (manifestly measurable) Gram matrix of the frame.
 
 This is the converter on which the unconditional singular Oseledets filtration ("issue #6")
 turns: the measurable graph of the eventual-kernel family
-(`Oseledets.measurableSet_graph_eventualKer`) plus constant kernel dimension yields, by a
+(`ErgodicTheory.measurableSet_graph_eventualKer`) plus constant kernel dimension yields, by a
 finite measurable stratification + Gram–Schmidt, exactly such a measurable orthonormal frame.
 The clean, fully `sorry`-free heart of the converter — *measurable orthonormal frame ⇒
 measurable projector* — is `measurable_orthProjMatrix_of_orthonormalFrame`, and (granted the
@@ -34,41 +34,41 @@ Borel — a *true* statement Mathlib cannot yet prove (it has only the Lusin–S
 machinery, under which a projection is merely analytic). It is isolated in
 `exists_measurable_independentSpanningFrame_of_measurableGraph` and flagged there. The
 a.e./universally-measurable weakening of that node *is* available and `sorry`-free
-(`Frontier.Issue6.MeasurableProjection`, migrated to `Oseledets.Singular.MeasurableProjection`).
+(`Frontier.Issue6.MeasurableProjection`, migrated to `ErgodicTheory.Singular.MeasurableProjection`).
 
 ## Main definitions
 
-* `Oseledets.IsMeasurableOrthonormalFrame`: a family `e : X → Fin m → EuclideanSpace ℝ (Fin d)`
+* `ErgodicTheory.IsMeasurableOrthonormalFrame`: a family `e : X → Fin m → EuclideanSpace ℝ (Fin d)`
   is a measurable orthonormal frame for `V` when each component map is measurable and, for
   every `x`, `e x` is orthonormal and spans `V x`.
 
 ## Main results
 
-* `Oseledets.starProjection_eq_sum_inner_smul_of_span`: for an orthonormal family `e` whose
+* `ErgodicTheory.starProjection_eq_sum_inner_smul_of_span`: for an orthonormal family `e` whose
   span is `K`, the orthogonal projection onto `K` is `v ↦ ∑ i, ⟪e i, v⟫ • e i`.
-* `Oseledets.orthProjMatrix_entry_eq_sum`: the `(a, b)` entry of `orthProjMatrix K` equals
+* `ErgodicTheory.orthProjMatrix_entry_eq_sum`: the `(a, b)` entry of `orthProjMatrix K` equals
   `∑ i, e i a * e i b` for such a frame — the Gram (outer-product sum) formula.
-* `Oseledets.measurable_orthProjMatrix_of_orthonormalFrame`: **the converter's core** —
+* `ErgodicTheory.measurable_orthProjMatrix_of_orthonormalFrame`: **the converter's core** —
   a measurable orthonormal frame for `V` makes `x ↦ orthProjMatrix (V x)` measurable
   (hence `MeasurableSubspace V`).
-* `Oseledets.measurable_gramSchmidt`, `Oseledets.measurable_gramSchmidtNormed`: Gram–Schmidt
+* `ErgodicTheory.measurable_gramSchmidt`, `ErgodicTheory.measurable_gramSchmidtNormed`: Gram–Schmidt
   is measurable in its input frame (`sorry`-free).
-* `Oseledets.isMeasurableOrthonormalFrame_gramSchmidtNormed`: a measurable, pointwise
+* `ErgodicTheory.isMeasurableOrthonormalFrame_gramSchmidtNormed`: a measurable, pointwise
   independent, pointwise spanning frame orthonormalises to a measurable orthonormal frame
   (`sorry`-free) — this discharges the orthonormalisation half of the converter.
-* `Oseledets.HasMeasurableSpanningFrame`: the KRN/Castaing **conclusion** as a hypothesis — `V`
+* `ErgodicTheory.HasMeasurableSpanningFrame`: the KRN/Castaing **conclusion** as a hypothesis — `V`
   admits a measurable, pointwise independent, pointwise spanning frame.
-* `Oseledets.measurable_orthProjMatrix_of_frame`, `Oseledets.measurableSubspace_of_frame`:
+* `ErgodicTheory.measurable_orthProjMatrix_of_frame`, `ErgodicTheory.measurableSubspace_of_frame`:
   **the conditional everywhere-Borel projector, `sorry`-free** — granted
   `HasMeasurableSpanningFrame`, `x ↦ orthProjMatrix (V x)` is measurable. The converter has *no*
   measure-theoretic gap beyond this hypothesis.
-* `Oseledets.measurableSubspace_of_measurableGraph_constDim`: **the target** — a measurable
+* `ErgodicTheory.measurableSubspace_of_measurableGraph_constDim`: **the target** — a measurable
   graph together with constant finite rank gives a measurable projector. It is reduced to the
   core via the frame-existence lemma below.
 
 ## The isolated measure-theoretic gap
 
-* `Oseledets.exists_measurable_independentSpanningFrame_of_measurableGraph` (`sorry`, BLOCKED):
+* `ErgodicTheory.exists_measurable_independentSpanningFrame_of_measurableGraph` (`sorry`, BLOCKED):
   production of the measurable spanning frame from a *bare* measurable graph at constant rank. The
   measurable-selection (KRN/Castaing) content is **not** the obstruction — it is `sorry`-free
   downstream in `Frontier.Issue6.CastaingSelection`
@@ -82,7 +82,7 @@ a.e./universally-measurable weakening of that node *is* available and `sorry`-fr
   Mathlib foothold. The node is *equivalent to the converter's target itself* (via
   `infDist c (V x) = ‖c − (V x).starProjection c‖`), confirming it is irreducible. The a.e.
   weakening (analytic ⟹ universally measurable) *is* `sorry`-free and already migrated
-  (`Oseledets.Singular.MeasurableProjection`).
+  (`ErgodicTheory.Singular.MeasurableProjection`).
 
 Literature: C. González-Tokman, A. Quas, *A semi-invertible operator Oseledets theorem*
 (ETDS 2014), Appendix B (measurable Grassmannian, nice bases) and G. Froyland, S. Lloyd,
@@ -93,7 +93,7 @@ measurability), adapted to the elementary finite-dimensional Euclidean setting.
 open scoped Matrix
 open Submodule
 
-namespace Oseledets
+namespace ErgodicTheory
 
 variable {d : ℕ}
 
@@ -184,7 +184,7 @@ structure IsMeasurableOrthonormalFrame {m : ℕ}
 orthogonal-projection matrix `x ↦ orthProjMatrix (V x)` measurable. Each matrix entry is the
 finite sum `∑ i, e x i a * e x i b` (`orthProjMatrix_entry_eq_sum`), a finite sum of products
 of measurable real functions, hence measurable; the matrix measurable structure is entrywise
-(`Oseledets.instMeasurableSpaceMatrix`). -/
+(`ErgodicTheory.instMeasurableSpaceMatrix`). -/
 theorem measurable_orthProjMatrix_of_orthonormalFrame {m : ℕ}
     {V : X → Submodule ℝ (EuclideanSpace ℝ (Fin d))}
     {e : X → Fin m → EuclideanSpace ℝ (Fin d)} (hframe : IsMeasurableOrthonormalFrame V e) :
@@ -381,7 +381,7 @@ the remaining gap is sharper than "Castaing representation absent":
   the Arsenin–Kunugui strengthening, which is absent from Mathlib. (The a.e./universally-measurable
   weakening *is* available — projection ⟹ analytic ⟹ universally measurable — and is proved
   `sorry`-free in `Frontier.Issue6.MeasurableProjection` /
-  `Oseledets.Singular.MeasurableProjection`; that is the correct hypothesis for the a.e.
+  `ErgodicTheory.Singular.MeasurableProjection`; that is the correct hypothesis for the a.e.
   multiplicative ergodic theorem and is already migrated into the linted library.)
 
 This node is *equivalent to the converter's own target*:
@@ -435,4 +435,4 @@ theorem measurableSubspace_of_measurableGraph_constDim
   obtain ⟨e, hframe⟩ := exists_measurable_orthonormalFrame_of_measurableGraph hgraph hdim
   exact measurable_orthProjMatrix_of_orthonormalFrame hframe
 
-end Oseledets
+end ErgodicTheory

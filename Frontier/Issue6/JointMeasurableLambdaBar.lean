@@ -3,9 +3,9 @@ Copyright (c) 2026 Marcel Morgenstern. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Marcel Morgenstern
 -/
-import Oseledets.Lyapunov.GrowthFunction
-import Oseledets.Lyapunov.Measurable
-import Oseledets.Lyapunov.Extensions.SingularKernelMeasurableGraph
+import ErgodicTheory.Lyapunov.GrowthFunction
+import ErgodicTheory.Lyapunov.Measurable
+import ErgodicTheory.Lyapunov.Extensions.SingularKernelMeasurableGraph
 import Mathlib.MeasureTheory.Constructions.BorelSpace.Order
 
 /-!
@@ -13,8 +13,8 @@ import Mathlib.MeasureTheory.Constructions.BorelSpace.Order
 
 The upper Lyapunov growth function
 `lambdaBar A T x v = limsup_n (1/n) · log ‖A⁽ⁿ⁾(x) · v‖`
-(`Oseledets.lambdaBar`, in `Oseledets.Lyapunov.GrowthFunction`) is known to be measurable in
-the base point `x` for each *fixed* vector `v` (`Oseledets.measurable_lambdaBar_apply`). The
+(`ErgodicTheory.lambdaBar`, in `ErgodicTheory.Lyapunov.GrowthFunction`) is known to be measurable in
+the base point `x` for each *fixed* vector `v` (`ErgodicTheory.measurable_lambdaBar_apply`). The
 measurable singular forward Oseledets filtration, however, needs the **joint** measurability
 in the pair `(x, v)`: the slow flag at `x` is the sublevel set `{v | lambdaBar A T x v ≤ c}`,
 and measurable selection of that set-valued map requires its graph
@@ -23,7 +23,7 @@ follows at once from joint measurability of `lambdaBar`.
 
 ## Main result
 
-* `Oseledets.jointMeasurable_lambdaBar`: the map
+* `ErgodicTheory.jointMeasurable_lambdaBar`: the map
   `(x, v) ↦ lambdaBar A T x v` is measurable on `X × EuclideanSpace ℝ (Fin d)`, given a
   measurable cocycle generator `A` and a measurable base dynamics `T`.
 
@@ -43,7 +43,7 @@ with `WithLp.toLp_ofLp`). Therefore the norm factors as
 where:
 * `ofLp : EuclideanSpace ℝ (Fin d) → (Fin d → ℝ)` is continuous, hence measurable;
 * `(x, w) ↦ (cocycle A T n x) *ᵥ w` is jointly measurable
-  (`Oseledets.measurable_cocycleMulVec`);
+  (`ErgodicTheory.measurable_cocycleMulVec`);
 * `toLp 2 : (Fin d → ℝ) → EuclideanSpace ℝ (Fin d)` and the norm are continuous.
 
 Source: S. Filip, *Notes on the Multiplicative Ergodic Theorem* (arXiv:1710.10694), §2.3
@@ -53,7 +53,7 @@ Source: S. Filip, *Notes on the Multiplicative Ergodic Theorem* (arXiv:1710.1069
 open MeasureTheory Filter Topology
 open scoped Matrix.Norms.L2Operator
 
-namespace Oseledets
+namespace ErgodicTheory
 
 variable {X : Type*} [MeasurableSpace X] {d : ℕ}
 
@@ -112,4 +112,4 @@ theorem jointMeasurable_lambdaBar [NeZero d] {A : X → Matrix (Fin d) (Fin d) �
     measurable_norm_toEuclideanCLM_cocycle hA hT n
   exact measurable_const.mul (Real.measurable_log.comp hnorm)
 
-end Oseledets
+end ErgodicTheory

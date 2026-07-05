@@ -22,17 +22,17 @@ no privileged unit step; the integer clock appears only as a technical reduction
 We do **not** redevelop the ergodic machinery for ℝ. Instead set `T := φ 1`,
 `Ã := A(1, ·)`, observe that the discrete iterated cocycle of `Ã` over `T` *equals* the
 flow cocycle sampled at integer times, apply the completed
-`Oseledets.oseledets_filtration'`, and lift the integer-time conclusion to the continuous
+`ErgodicTheory.oseledets_filtration'`, and lift the integer-time conclusion to the continuous
 parameter with a **between-times** estimate. This avoids a continuous-time Kingman
 theorem entirely (Mathlib has only the discrete Fekete `Subadditive.tendsto_lim`).
 
 ### Two pivotal repo lemmas already exist (collapse the two hardest nodes)
 
-* **Between-times sublinearity engine** — `Oseledets.ae_tendsto_orbit_div_atTop_zero`
-  (`Oseledets/Ergodic/Birkhoff.lean:203`):
+* **Between-times sublinearity engine** — `ErgodicTheory.ae_tendsto_orbit_div_atTop_zero`
+  (`ErgodicTheory/Ergodic/Birkhoff.lean:203`):
   `(hT : MeasurePreserving T μ μ) (hg : Integrable g μ) → ∀ᵐ x, Tendsto (n ↦ n⁻¹ · g (T^[n] x)) atTop (𝓝 0)`.
 * **Intrinsic growth characterization** (⇒ flow-invariance) —
-  `Oseledets.IsOseledetsFiltration.ae_mem_iff_limsup_le` (`Oseledets/Lyapunov/Corollaries.lean:266`):
+  `ErgodicTheory.IsOseledetsFiltration.ae_mem_iff_limsup_le` (`ErgodicTheory/Lyapunov/Corollaries.lean:266`):
   a.e. `v ∈ Vⁱ_x ↔ v = 0 ∨ limsup (n⁻¹ · log‖A⁽ⁿ⁾(x) v‖) ≤ λᵢ`.
 
 ### Mathlib pieces used (from the scout survey)
@@ -64,7 +64,7 @@ theorem entirely (Mathlib has only the discrete Fekete `Subadditive.tendsto_lim`
 ## The orientation / reduction identity (verified on paper)
 
 Cocycle identity `A(t+s, x) = A(t, φ_s x) · A(s, x)`, `A(0,·) = 1`. Newest factor on the
-left, matching `Oseledets.cocycle` (`cocycle A T (n+1) x = cocycle A T n (T x) · A x`).
+left, matching `ErgodicTheory.cocycle` (`cocycle A T (n+1) x = cocycle A T n (T x) · A x`).
 
 * **Integer sampling:** `A((n:ℝ), x) = cocycle (A 1) (φ 1) n x` by induction on `n`.
   Step: `A((n+1:ℝ),x) = A((n:ℝ)+1,x) = A(n, φ₁ x)·A(1,x) = cocycle … n (φ₁ x) · Ã x`.
@@ -76,7 +76,7 @@ left, matching `Oseledets.cocycle` (`cocycle A T (n+1) x = cocycle A T n (T x) �
   `n⁻¹·(g+g')((φ 1)^[n] x) → 0` a.e. by `ae_tendsto_orbit_div_atTop_zero`; together with
   `⌊t⌋₊/t → 1` this gives `(1/t) log‖A(t,x)v‖ → λᵢ` from the discrete limit.
 
-## Modules & phases (under `Oseledets/Continuous/`)
+## Modules & phases (under `ErgodicTheory/Continuous/`)
 
 | Phase | Module | Content |
 |---|---|---|
@@ -84,7 +84,7 @@ left, matching `Oseledets.cocycle` (`cocycle A T (n+1) x = cocycle A T n (T x) �
 | **P1** | `BetweenTimes.lean` | The sandwich estimate ⇒ for a.e. `x`, if `n⁻¹ log‖A(n,x)v‖ → L` (discrete) then `t⁻¹ log‖A(t,x)v‖ → L` over `atTop ℝ`. Uses `ae_tendsto_orbit_div_atTop_zero`, `tendsto_nat_floor_div_atTop`. |
 | **P2** | `Reduction.lean` | Derive `IntegrableLogNorm (A 1 ·)` and `… (A 1 ·)⁻¹` from `g,g'`; apply `oseledets_filtration'` to `(φ 1, A 1)`; expose the discrete `IsOseledetsFiltration` datum + a "discrete→continuous growth" wrapper (P1) on each stratum. |
 | **P3** | `MultiplicativeErgodicFlow.lean` | Headline **`oseledets_flow`**: `∃ k lam V`, `StrictAnti lam`, `MeasurableSubspace`, per-time flow-equivariance `∀ t, ∀ᵐ x, map (A t x) (Vⁱ x) = Vⁱ (φ t x)` (via `ae_mem_iff_limsup_le` + same-growth under time-shift), and `∀ᵐ x`, the flag + continuous-time exact growth. |
-| **P4** | wiring | Import the four modules from `Oseledets.lean` and `AxiomAudit.lean`; add `#guard_msgs in #print axioms` for `oseledets_flow` (+ exported lemmas), expect `[propext, Classical.choice, Quot.sound]`. Authoritative cold umbrella `lake build` + per-file linter QA. Mathlib-style commit. |
+| **P4** | wiring | Import the four modules from `ErgodicTheory.lean` and `AxiomAudit.lean`; add `#guard_msgs in #print axioms` for `oseledets_flow` (+ exported lemmas), expect `[propext, Classical.choice, Quot.sound]`. Authoritative cold umbrella `lake build` + per-file linter QA. Mathlib-style commit. |
 
 ## Headline statement (target)
 

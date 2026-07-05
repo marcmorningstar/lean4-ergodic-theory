@@ -2,7 +2,7 @@
 
 **Goal (full acceptance):** `monotonicity_relEntropy_under_CPTP` (DPI) + `petz_equality_recovery`
 sorry-free, axiom-clean, on `main`; consumer corollary `no_section_of_strict_relEntropy_drop`
-UNCONDITIONAL. Finite-dim density operators over ℂ. Build on #23 `Oseledets/OperatorEntropy/`.
+UNCONDITIONAL. Finite-dim density operators over ℂ. Build on #23 `ErgodicTheory/OperatorEntropy/`.
 
 **Strategy:** research-first (don't reinvent — formalize the cleanest documented proof), grind
 piece by piece, commit each green module, update this plan after every phase.
@@ -86,7 +86,7 @@ NO operator convexity / Lieb / Stinespring / Choi–Kraus / CStarMatrix bridge n
 - DECISION PENDING (user): ship foundations+follow-up vs commit multi-month keystone (operator-Jensen OR residue theorem).
 
 ## === KEYSTONE GREENLIT (user chose Lieb/operator-Jensen). Verified skeleton: issue22_lieb_skeleton.lean ===
-Route: Effros/HPJ. ~3-5 worker-weeks, 6 modules under Oseledets/OperatorEntropy/Lieb/. ONE hard thm (HPJ K1 via dilation S1-S5) + ONE wrinkle (Matrix↔CStarMatrix cfc bridge: CStarAlgebra(Matrix) does NOT exist; state over Matrix native cfc, transport −log convexity via CStarMatrix ofMatrix defeq).
+Route: Effros/HPJ. ~3-5 worker-weeks, 6 modules under ErgodicTheory/OperatorEntropy/Lieb/. ONE hard thm (HPJ K1 via dilation S1-S5) + ONE wrinkle (Matrix↔CStarMatrix cfc bridge: CStarAlgebra(Matrix) does NOT exist; state over Matrix native cfc, transport −log convexity via CStarMatrix ofMatrix defeq).
 Modules: 1 Lieb/OperatorConvex.lean [K0 OperatorConvexOn + K2 −log op-convex(via CFC.concaveOn_log)+bridge] · 2 Lieb/Dilation.lean [S1-S5 + hpj_affine + hpj_isometry, HPJ keystone, riskiest=S1] · 3 Lieb/Perspective.lean [K3 perspective joint op-convexity] · 4 Lieb/RelEntropy.lean [canonical relEntropy=cfc-trace form + leftMul/rightMul + K5 realization] · 5 Lieb/JointConvexity.lean [K6 joint convexity of relEntropy] · 6 Lieb/DPI.lean [K7 + finite-dim Stinespring + twirl].
 CANONICAL relEntropy = (trace(ρ*(cfc Real.log ρ − cfc Real.log σ))).re — UNIFY with Phase A (spectral form becomes a proved-equal bridge lemma for the Klein proof).
 S1 = ∃ U unitary 2N×2N with first block-col (A,B) given star A*A+star B*B=1 (Orthonormal.exists_orthonormalBasis_extension). ROUTE B fallback if S1 stalls: convexOn_ringInverse (Mathlib HAS) + Schur complement + −log integral rep + scalar trace inside.

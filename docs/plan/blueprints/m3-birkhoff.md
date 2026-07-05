@@ -1,12 +1,12 @@
 # Blueprint M3 — pointwise (Birkhoff) ergodic theorem + `condExp ∘ measure-preserving`
 
-Target file: `Oseledets/Ergodic/Birkhoff.lean`
+Target file: `ErgodicTheory/Ergodic/Birkhoff.lean`
 Layer `L1.2` (= `condExp_invariants_comp`, milestone M2) and `L1.3`
 (= `tendsto_birkhoffAverage_ae` + ergodic corollary, milestone M3).
 
 Everything here rests on the **maximal ergodic inequality** `M1`
-(`Oseledets.setIntegral_birkhoffSum_pos_nonneg`, in
-`Oseledets/Ergodic/MaximalErgodic.lean`, currently `sorry`) and on the Mathlib
+(`ErgodicTheory.setIntegral_birkhoffSum_pos_nonneg`, in
+`ErgodicTheory/Ergodic/MaximalErgodic.lean`, currently `sorry`) and on the Mathlib
 `condExp` substrate. All Mathlib declaration names below were grepped on disk in the
 pinned tree (`v4.30.0-rc2`); file paths are given so they can be re-checked.
 
@@ -23,7 +23,7 @@ ergodic-case derivation (limit `= ∫ g`) follows Robertson's Manchester notes
 
 ```lean
 open MeasureTheory Filter Topology
-namespace Oseledets
+namespace ErgodicTheory
 variable {X : Type*} [MeasurableSpace X] {μ : Measure X} {T : X → X}
 
 -- (a)  M2 / L1.2
@@ -169,7 +169,7 @@ The repo's M1 is the **Garsia form**
 setIntegral_birkhoffSum_pos_nonneg (hT) (hf : Integrable f μ) :
     0 ≤ ∫ x in {x | ∃ n : ℕ, 0 < birkhoffSum T f (n + 1) x}, f x ∂μ
 ```
-(`Oseledets/Ergodic/MaximalErgodic.lean:28`). Build the Walkden corollary on top:
+(`ErgodicTheory/Ergodic/MaximalErgodic.lean:28`). Build the Walkden corollary on top:
 
 ```lean
 lemma setIntegral_sup_birkhoffAverage_gt_nonneg

@@ -27,7 +27,7 @@ needed; the integer clock appears only as a technical reduction device. Througho
 \section{The continuous-time data}
 
 \begin{definition}[Measure-preserving one-parameter flow]\label{MeasurePreservingFlow}
-  \lean{Oseledets.MeasurePreservingFlow}\leanok
+  \lean{ErgodicTheory.MeasurePreservingFlow}\leanok
   A \emph{measure-preserving one-parameter flow} on a measurable space \( X \) for a measure
   \( \mu \) is a family \( \varphi : \R \to X \to X \) together with the data
   \( \varphi(0) = \mathrm{id} \), \( \varphi(s+t) = \varphi(s) \circ \varphi(t) \) for all
@@ -37,7 +37,7 @@ needed; the integer clock appears only as a technical reduction device. Througho
 \end{definition}
 
 \begin{lemma}[Integer times are iterates of the time-one map]\label{natCast_eq_iterate}
-  \lean{Oseledets.MeasurePreservingFlow.natCast_eq_iterate}\leanok
+  \lean{ErgodicTheory.MeasurePreservingFlow.natCast_eq_iterate}\leanok
   For a measure-preserving flow \( \varphi \) and \( n \in \N \), the integer-time map of the
   flow is the \( n \)-fold iterate of its time-one map: \( \varphi(n) = (\varphi(1))^{[n]} \).
 \end{lemma}
@@ -50,7 +50,7 @@ needed; the integer clock appears only as a technical reduction device. Througho
 \end{proof}
 
 \begin{definition}[Continuous-time linear cocycle over a flow]\label{FlowCocycle}
-  \lean{Oseledets.FlowCocycle}\leanok
+  \lean{ErgodicTheory.FlowCocycle}\leanok
   A \emph{continuous-time linear cocycle} over a measure-preserving flow \( \varphi \), valued in
   invertible \( d \times d \) real matrices, is a family
   \( A : \R \to X \to \mathrm{Mat}_d(\R) \) with \( A(0,x) = 1 \), the cocycle identity (newest
@@ -60,7 +60,7 @@ needed; the integer clock appears only as a technical reduction device. Througho
 \end{definition}
 
 \begin{proposition}[Reduction identity at integer times]\label{toCocycle_eq}
-  \lean{Oseledets.FlowCocycle.toCocycle_eq}\leanok
+  \lean{ErgodicTheory.FlowCocycle.toCocycle_eq}\leanok
   For a flow cocycle \( A \) over \( \varphi \), every \( n \in \N \) and every \( x \),
   \[ A(n, x) = \mathrm{cocycle}\,(A(1,\cdot))\,(\varphi(1))\, n\, x, \]
   i.e.\ at integer times the continuous-time cocycle equals the discrete iterated cocycle
@@ -81,7 +81,7 @@ both forward and inverse. These follow by evaluating the uniform dominating hypo
 \( s = 1 \).
 
 \begin{lemma}[Integrability of the time-one log-norm]\label{integrableLogNorm_timeOne}
-  \lean{Oseledets.integrableLogNorm_timeOne}\leanok
+  \lean{ErgodicTheory.integrableLogNorm_timeOne}\leanok
   If \( g \in L^1(\mu) \) dominates \( \log^{+}\norm{A(s,x)} \) for all \( s \in [0,1] \) and all
   \( x \), then the time-one map \( A(1,\cdot) \) has integrable positive log-norm.
 \end{lemma}
@@ -94,7 +94,7 @@ both forward and inverse. These follow by evaluating the uniform dominating hypo
 \end{proof}
 
 \begin{lemma}[Integrability of the inverse time-one log-norm]\label{integrableLogNorm_timeOne_inv}
-  \lean{Oseledets.integrableLogNorm_timeOne_inv}\leanok
+  \lean{ErgodicTheory.integrableLogNorm_timeOne_inv}\leanok
   If \( g' \in L^1(\mu) \) dominates \( \log^{+}\norm{(A(s,x))^{-1}} \) for all \( s \in [0,1] \)
   and all \( x \), then the inverse \( (A(1,\cdot))^{-1} \) has integrable positive log-norm.
 \end{lemma}
@@ -105,7 +105,7 @@ both forward and inverse. These follow by evaluating the uniform dominating hypo
 \end{proof}
 
 \begin{proposition}[Discrete filtration for the time-one data]\label{exists_isOseledetsFiltration_timeOne}
-  \lean{Oseledets.exists_isOseledetsFiltration_timeOne}\leanok
+  \lean{ErgodicTheory.exists_isOseledetsFiltration_timeOne}\leanok
   Let \( \mu \) be a probability measure, \( \varphi \) a measure-preserving flow with
   \( \varphi(1) \) ergodic, and \( A \) a flow cocycle with the two uniform integrable
   dominators \( g, g' \). Then there exist \( k \), exponents \( \lambda : \mathrm{Fin}\,k \to \R \),
@@ -127,7 +127,7 @@ to a continuous parameter. Both rest on the orbital sublinearity of an integrabl
 the flow's integer orbit.
 
 \begin{lemma}[Error sublinearity along the integer orbit]\label{ae_tendsto_flowError_zero}
-  \lean{Oseledets.ae_tendsto_flowError_zero}\leanok
+  \lean{ErgodicTheory.ae_tendsto_flowError_zero}\leanok
   For integrable \( g, g' \) and a measure-preserving flow \( \varphi \), for almost every
   \( x \) the combined fluctuation along the integer orbit vanishes:
   \[ n^{-1}\bigl(g(\varphi(n)x) + g'(\varphi(n)x)\bigr) \to 0 \quad (n \to \infty). \]
@@ -140,7 +140,7 @@ the flow's integer orbit.
 \end{proof}
 
 \begin{theorem}[Between-times sandwich: continuous growth equals integer-time growth]\label{tendsto_log_norm_atTop_of_discrete}
-  \lean{Oseledets.tendsto_log_norm_atTop_of_discrete}\leanok
+  \lean{ErgodicTheory.tendsto_log_norm_atTop_of_discrete}\leanok
   Fix a flow \( \varphi \), a flow cocycle \( A \) with uniform forward/inverse one-step controls
   \( g, g' \) on \( [0,1] \), a point \( x \), and a nonzero vector \( v \). Suppose the integer
   fluctuation error vanishes and the integer-time average converges,
@@ -170,7 +170,7 @@ matrix \( A(t_0,x) \) is a bounded bijection, so it perturbs the per-step log-no
 hence leaves the growth \( \limsup \) unchanged.
 
 \begin{lemma}[Fixed-time log-norm is sublinear]\label{ae_tendsto_logNorm_fixedTime_zero}
-  \lean{Oseledets.ae_tendsto_logNorm_fixedTime_zero}\leanok
+  \lean{ErgodicTheory.ae_tendsto_logNorm_fixedTime_zero}\leanok
   Fix a real time \( t_0 \). For almost every \( x \), both
   \( n^{-1}\log\norm{A(t_0, \varphi(n)x)} \) and \( n^{-1}\log\norm{(A(t_0, \varphi(n)x))^{-1}} \)
   tend to \( 0 \) as \( n \to \infty \).
@@ -188,7 +188,7 @@ hence leaves the growth \( \limsup \) unchanged.
 \end{proof}
 
 \begin{theorem}[Shift-invariance of the growth limsup]\label{glim_shift}
-  \lean{Oseledets.glim_shift}\leanok
+  \lean{ErgodicTheory.glim_shift}\leanok
   Fix a real time \( t_0 \). For almost every \( x \) and every test vector \( u \), the
   discrete-time growth \( \limsup \) of the cocycle applied to \( u \) at \( x \) equals that at
   \( \varphi(t_0)x \) applied to the pushed-forward vector \( A(t_0,x)\, u \).
@@ -207,7 +207,7 @@ hence leaves the growth \( \limsup \) unchanged.
 \end{proof}
 
 \begin{theorem}[Flow-equivariance of the filtration at every real time]\label{ae_flow_equivariant}
-  \lean{Oseledets.ae_flow_equivariant}\leanok
+  \lean{ErgodicTheory.ae_flow_equivariant}\leanok
   Let \( V \) be the Oseledets filtration of the time-one data, and fix \( t_0 \in \R \). Then for
   almost every \( x \) and every level \( i \),
   \[ \mathrm{map}\,(A(t_0,x))\,(V_i\, x) = V_i\,(\varphi(t_0)x). \]
@@ -225,7 +225,7 @@ hence leaves the growth \( \limsup \) unchanged.
 \section{The continuous-flow theorem}
 
 \begin{theorem}[Continuous-flow multiplicative ergodic theorem]\label{oseledets_flow}
-  \lean{Oseledets.oseledets_flow}\leanok
+  \lean{ErgodicTheory.oseledets_flow}\leanok
   Let \( \mu \) be a probability measure on \( X \), let \( \varphi \) be a measure-preserving
   one-parameter flow whose time-one map \( \varphi(1) \) is \( \mu \)-ergodic, and let \( A \) be a
   continuous-time linear cocycle over \( \varphi \) valued in invertible \( d \times d \) real

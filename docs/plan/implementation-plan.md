@@ -21,8 +21,8 @@ lives in `../progress/STATE.md`.
 ## Module layout (mirrors `Mathlib/Dynamics/Ergodic/…`)
 
 ```
-Oseledets.lean                         -- root: imports every module below
-Oseledets/
+ErgodicTheory.lean                         -- root: imports every module below
+ErgodicTheory/
   Ergodic/
     MaximalErgodic.lean        -- L1.1  maximal ergodic inequality (Hopf/Garsia)
     CondExpComp.lean           -- L1.2  condExp commutes with m.p. composition

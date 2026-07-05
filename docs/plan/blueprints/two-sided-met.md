@@ -1,6 +1,6 @@
 # Blueprint: the two-sided Oseledets theorem (splitting form)
 
-**Target.** `Oseledets.oseledets_splitting` — for an *invertible* ergodic
+**Target.** `ErgodicTheory.oseledets_splitting` — for an *invertible* ergodic
 measure-preserving system `T : X ≃ᵐ X` and a measurable invertible cocycle generator
 `A` with `log⁺‖A‖, log⁺‖A⁻¹‖ ∈ L¹(μ)`: exponents `λ₁ > ⋯ > λ_k`, and a measurable,
 `A`-equivariant **splitting** `ℝᵈ = E₁(x) ⊕ ⋯ ⊕ E_k(x)` with
@@ -62,7 +62,7 @@ makes the transversality crux work *without* moving-point singular-value argumen
 Hypothesis transfer — all proved for real in validation:
 
 * `det ≠ 0`: `Matrix.det_nonsing_inv` + `Ring.inverse_eq_inv'`;
-* measurability: `measurable_inv_matrix` (already in `Oseledets/Cocycle/Norm.lean`)
+* measurability: `measurable_inv_matrix` (already in `ErgodicTheory/Cocycle/Norm.lean`)
   composed with `T.symm.measurable`;
 * integrability swap: `MeasurePreserving.integrable_comp_of_integrable` (the idiom
   already used by `FurstenbergKesten.lean`), plus `Matrix.nonsing_inv_nonsing_inv`
@@ -103,7 +103,7 @@ the intersection is `⊥` a.e. directly. Ergodicity enters only through Kingman.
 
 #### 0.4.1 The hidden Kingman gap
 
-`Oseledets/Ergodic/Kingman.lean:3393` (docstring of `tendsto_kingman_ergodic`):
+`ErgodicTheory/Ergodic/Kingman.lean:3393` (docstring of `tendsto_kingman_ergodic`):
 *"That constant is the Fekete infimum …; identifying it with the infimum is
 **deferred**."* The two-sided theorem is the first consumer that needs the
 identification (to equate the Kingman constants of `gₙ` over `T` and of
@@ -261,9 +261,9 @@ All phases ≤ ~400 lines, each independently `lake build`-able (imports listed)
 each with explicit deliverable lemmas. `sorry`-free per phase; statements below
 are the validated skeleton forms.
 
-### P0 — `Oseledets/TwoSided/Invertible.lean` (~220 lines) — VALIDATED WITH REAL PROOFS
+### P0 — `ErgodicTheory/TwoSided/Invertible.lean` (~220 lines) — VALIDATED WITH REAL PROOFS
 
-Imports: `Oseledets.Cocycle.Basic`, `Oseledets.Cocycle.Norm`,
+Imports: `ErgodicTheory.Cocycle.Basic`, `ErgodicTheory.Cocycle.Norm`,
 `Mathlib.Dynamics.Ergodic.Ergodic`.
 
 * `backwardGen (A) (T : X ≃ᵐ X) : X → Matrix (Fin d) (Fin d) ℝ := fun x => (A (T.symm x))⁻¹`
@@ -282,10 +282,10 @@ Imports: `Oseledets.Cocycle.Basic`, `Oseledets.Cocycle.Norm`,
 
 Risk: **low** (already 90% proved).
 
-### P1 — `Oseledets/TwoSided/SpectralRank.lean` (~350 lines)
+### P1 — `ErgodicTheory/TwoSided/SpectralRank.lean` (~350 lines)
 
-Imports: `Oseledets.Lyapunov.ForwardV`, `Oseledets.Lyapunov.LimitEigenbasis`,
-`Oseledets.Lyapunov.OseledetsLimit`, `Mathlib.LinearAlgebra.Lagrange`.
+Imports: `ErgodicTheory.Lyapunov.ForwardV`, `ErgodicTheory.Lyapunov.LimitEigenbasis`,
+`ErgodicTheory.Lyapunov.OseledetsLimit`, `Mathlib.LinearAlgebra.Lagrange`.
 
 * `cfc_apply_of_eigenvector (M : Matrix (Fin d) (Fin d) ℝ) (hM : IsSelfAdjoint M)
   (f : ℝ → ℝ) {c : ℝ} {v} (hv : Matrix.toEuclideanLin M v = c • v) (hv0 : v ≠ 0) :
@@ -311,10 +311,10 @@ Fallback: if the `cfc`-eigenvector route fights the API, compute
 rank; trace of `cfc f Λ̂ = Σₑ f(exp lamSing e)` via diagonalization) — same
 ingredients, different normal form.
 
-### P2 — `Oseledets/TwoSided/StrongExport.lean` (~300 lines)
+### P2 — `ErgodicTheory/TwoSided/StrongExport.lean` (~300 lines)
 
-Imports: `Oseledets.Lyapunov.AssemblyTopGap` (transitively the whole pipeline),
-`Oseledets.TwoSided.SpectralRank`.
+Imports: `ErgodicTheory.Lyapunov.AssemblyTopGap` (transitively the whole pipeline),
+`ErgodicTheory.TwoSided.SpectralRank`.
 
 * `oseledets_filtration_dims` (validated statement; `[NeZero d]`): the one-sided
   theorem with the data exposed instead of quantified —
@@ -338,9 +338,9 @@ Risk: **low–medium** — pure orchestration; ~130 lines of the existing assemb
 mirrored (no upstream file is edited). Watch: `Fin.cast` bookkeeping (precedent:
 `FiltrationAssembly.lean`).
 
-### P3 — `Oseledets/TwoSided/KingmanMeans.lean` (~250 lines) — NEW ANALYTIC CONTENT
+### P3 — `ErgodicTheory/TwoSided/KingmanMeans.lean` (~250 lines) — NEW ANALYTIC CONTENT
 
-Imports: `Oseledets.Ergodic.Kingman`, `Oseledets.Ergodic.Birkhoff`.
+Imports: `ErgodicTheory.Ergodic.Kingman`, `ErgodicTheory.Ergodic.Birkhoff`.
 
 * `tendsto_kingman_ergodic_means` (validated statement):
   ```lean
@@ -364,9 +364,9 @@ Proof plan (both directions of `c = lim (∫gₙ)/n =: L`; the means converge by
 Risk: **medium** — `EReal/ofReal` Fatou bookkeeping (the Kingman file shows the
 pattern); self-contained; prime upstreaming candidate.
 
-### P4a — `Oseledets/TwoSided/RestrictedCocycle.lean` (~300 lines)
+### P4a — `ErgodicTheory/TwoSided/RestrictedCocycle.lean` (~300 lines)
 
-Imports: P0, P3, `Oseledets.Lyapunov.MeasurableSubspace`, `Oseledets.Cocycle.FurstenbergKesten`.
+Imports: P0, P3, `ErgodicTheory.Lyapunov.MeasurableSubspace`, `ErgodicTheory.Cocycle.FurstenbergKesten`.
 
 For a *fixed* measurable family `V : X → Submodule …` (consumed at `V := Vᵢ`):
 
@@ -392,7 +392,7 @@ Risk: **medium–high** (most delicate bookkeeping of the project: the ⊔-floor
 good-set induction). Mitigation: the floor is only needed to make hypotheses
 *everywhere*-true for Kingman; all identifications are a.e.
 
-### P4b — `Oseledets/TwoSided/RestrictedExponent.lean` (~300 lines)
+### P4b — `ErgodicTheory/TwoSided/RestrictedExponent.lean` (~300 lines)
 
 Imports: P4a, P2.
 
@@ -417,7 +417,7 @@ Imports: P4a, P2.
 
 Risk: **medium**.
 
-### P5 — `Oseledets/TwoSided/Transversality.lean` (~300 lines)
+### P5 — `ErgodicTheory/TwoSided/Transversality.lean` (~300 lines)
 
 Imports: P0, P2, P4b.
 
@@ -437,9 +437,9 @@ Imports: P0, P2, P4b.
 Risk: **medium** — a.e.-set juggling; mitigated by bundling all a.e. facts into one
 `filter_upwards` over the biinvariant good set.
 
-### P6 — `Oseledets/TwoSided/Reflection.lean` (~320 lines)
+### P6 — `ErgodicTheory/TwoSided/Reflection.lean` (~320 lines)
 
-Imports: P0, P2, `Oseledets.Ergodic.Birkhoff`; pure parts import only Mathlib.
+Imports: P0, P2, `ErgodicTheory.Ergodic.Birkhoff`; pure parts import only Mathlib.
 
 * `abs_det_eq_prod_singularValues : |M.det| = ∏ i, (toEuclideanLin M).singularValues i`
   (if not already derivable from `ExteriorNorm.lean`'s Gram-determinant section —
@@ -463,9 +463,9 @@ Imports: P0, P2, `Oseledets.Ergodic.Birkhoff`; pure parts import only Mathlib.
 
 Risk: **low–medium** (Finset/`Fin.rev` fiddle; zero deep content).
 
-### P7 — `Oseledets/TwoSided/MeasurableInf.lean` (~280 lines) — PARALLELIZABLE
+### P7 — `ErgodicTheory/TwoSided/MeasurableInf.lean` (~280 lines) — PARALLELIZABLE
 
-Imports: `Oseledets.Lyapunov.Measurable` only. Independent of P1–P6.
+Imports: `ErgodicTheory.Lyapunov.Measurable` only. Independent of P1–P6.
 
 * `inner_projComp_eq / one_eigenspace_projComp` : for projections `P_K, P_L`:
   `(P_K P_L P_K) v = v ↔ v ∈ K ⊓ L`.
@@ -482,7 +482,7 @@ established). Fallback: none needed beyond elbow grease; if the spectral-theorem
 resists, diagonalize `S` via `Matrix.IsHermitian.spectral_theorem` exactly as
 `LimitEigenbasis.lean` does.
 
-### P8 — `Oseledets/TwoSided/SplittingAssembly.lean` + statement (~400 lines)
+### P8 — `ErgodicTheory/TwoSided/SplittingAssembly.lean` + statement (~400 lines)
 
 Imports: P0–P7, `Mathlib.Algebra.DirectSum.Module`,
 `Mathlib.LinearAlgebra.FiniteDimensional.Lemmas`.

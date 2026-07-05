@@ -1,9 +1,9 @@
 # Blueprint v2 — M4: Kingman's subadditive ergodic theorem (`tendsto_kingman`)
 
-**Target file:** `Oseledets/Ergodic/Kingman.lean`
+**Target file:** `ErgodicTheory/Ergodic/Kingman.lean`
 **Layer / milestone:** L2 / M4 (analytic engine of the Oseledets MET).
 **Status of inputs:** M1/M2/M3 are all **proved sorry-free** in
-`Oseledets/Ergodic/{MaximalErgodic,Birkhoff}.lean`. Baseline `lake build` is green
+`ErgodicTheory/Ergodic/{MaximalErgodic,Birkhoff}.lean`. Baseline `lake build` is green
 (Kingman has the two target `sorry`s). All Mathlib names below were grepped on disk in
 the pinned tree (`v4.30.0-rc2`) **this session** and are confirmed present unless flagged.
 
@@ -142,7 +142,7 @@ Fatou `∫⁻ ofReal(B − f₊) = ofReal(∫g₁ + 1) < ∞` ✔. Non-vacuous a
 
 `Birkhoff.lean` lemmas needed only *via* M3's public face (`tendsto_birkhoffAverage_ae`)
 need no de-privatization. The de-privatization list is the 6 in the table (5 mandatory +
-1 optional). Alternative: lift the generic ones into `Oseledets/Ergodic/Invariance.lean`;
+1 optional). Alternative: lift the generic ones into `ErgodicTheory/Ergodic/Invariance.lean`;
 minimal-diff is in-place de-privatization.
 
 ---
@@ -271,13 +271,13 @@ Adding `B` (§1.3): `f₊ ≤ f₋` a.e.
 
 ## 5. Required edits to existing files
 
-* **`Oseledets/Ergodic/Birkhoff.lean`** — change `private theorem` → `theorem` for:
+* **`ErgodicTheory/Ergodic/Birkhoff.lean`** — change `private theorem` → `theorem` for:
   `condExp_invariants_comp_self`, `ae_forall_orbit_eq`, `ae_bddAbove_birkhoffAverage`,
   `ae_bddBelow_birkhoffAverage`, `limsup_eq_of_sub_tendsto_zero` (mandatory), and
   `measure_setOf_lt_limsup_eq_zero` (optional — only if the loose envelope is taken from it
   rather than re-derived from M3). Add `/-- … -/` docstrings if making them public triggers
   a lint (the repo lints public decls; they already have doc-comments — verify on build).
-* **`Oseledets/Ergodic/Kingman.lean`** — add imports:
+* **`ErgodicTheory/Ergodic/Kingman.lean`** — add imports:
   `import Mathlib.Analysis.Subadditive`,
   `import Mathlib.MeasureTheory.Integral.Lebesgue.Add` (Fatou),
   `import Mathlib.MeasureTheory.Function.ConditionalExpectation.Indicator` (`condExp_indicator`),
@@ -285,7 +285,7 @@ Adding `B` (§1.3): `f₊ ≤ f₋` a.e.
     (or `Mathlib.MeasureTheory.Integral.Bochner.Basic`, which already carries
     `integral_tendsto_of_tendsto_of_antitone`).
   The `[IsFiniteMeasure μ]` hypothesis is already on the fixed `tendsto_kingman` statement.
-* **`Oseledets/Ergodic/MaximalErgodic.lean`** — **no change**.
+* **`ErgodicTheory/Ergodic/MaximalErgodic.lean`** — **no change**.
 
 ---
 

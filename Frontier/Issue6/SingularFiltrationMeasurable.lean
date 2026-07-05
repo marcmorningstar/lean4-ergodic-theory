@@ -13,7 +13,7 @@ This module assembles the **a.e.-measurable orthogonal projector** of the singul
 multiplicative ergodic theorem from the two pieces built upstream:
 
 * the **measurable graph** of the Lyapunov sublevel filtration
-  `Oseledets.measurableSet_graph_lambdaSublevel` (under the everywhere `IsUltrametricGrowth` gate);
+  `ErgodicTheory.measurableSet_graph_lambdaSublevel` (under the everywhere `IsUltrametricGrowth` gate);
 * the projection of the graph being **universally measurable**, hence the distance maps
   `x ↦ infDist c (V x)` being `AEMeasurable` (`Frontier.aemeasurable_infDist_of_measurableGraph`),
   using the now-proved universal measurability `MeasureTheory.AnalyticSet.nullMeasurableSet`
@@ -23,7 +23,7 @@ multiplicative ergodic theorem from the two pieces built upstream:
 
 Each entry of the orthogonal-projection matrix is a coordinate of a projected standard basis
 vector:
-`Oseledets.orthProjMatrix K a b = (K.starProjection (EuclideanSpace.single b 1)) a`
+`ErgodicTheory.orthProjMatrix K a b = (K.starProjection (EuclideanSpace.single b 1)) a`
 (`Frontier.orthProjMatrix_apply_eq_starProjection_coord`). The polarisation identity
 `Frontier.starProjection_apply_coord` expands that coordinate as a fixed real-arithmetic
 combination of the three scalar distance maps `x ↦ infDist c (V x)` (for
@@ -33,7 +33,7 @@ a 1`). Each of those is `AEMeasurable` by the weak-measurability deliverable, an
 is closed under the finite arithmetic, so every matrix entry — hence the matrix
 (`aemeasurable_pi_iff`) — is `AEMeasurable`.
 
-This is the natural **a.e.** analogue of `Oseledets.MeasurableSubspace`
+This is the natural **a.e.** analogue of `ErgodicTheory.MeasurableSubspace`
 (`= Measurable fun x => orthProjMatrix (V x)`): the singular MET only ever needs the projector a.e.
 
 ## Main results
@@ -43,7 +43,7 @@ This is the natural **a.e.** analogue of `Oseledets.MeasurableSubspace`
 * `Frontier.aemeasurable_orthProjMatrix_of_measurableGraph`: **the general a.e. converter** — a
   measurable graph at a standard Borel base yields `AEMeasurable (fun x => orthProjMatrix (V x)) μ`
   for every s-finite `μ` (using the now-proved `AnalyticSet.nullMeasurableSet`).
-* `Oseledets.aemeasurable_orthProjMatrix_lambdaSublevel`: **the #6 headline** — for the Lyapunov
+* `ErgodicTheory.aemeasurable_orthProjMatrix_lambdaSublevel`: **the #6 headline** — for the Lyapunov
   sublevel filtration over a standard Borel ergodic base (everywhere `IsUltrametricGrowth` gate),
   the orthogonal projector `x ↦ orthProjMatrix (lambdaSublevel A T x c)` is `AEMeasurable`.
 
@@ -51,7 +51,7 @@ This is the natural **a.e.** analogue of `Oseledets.MeasurableSubspace`
 
 The forward filtration's measurable graph requires the everywhere `IsUltrametricGrowth` gate
 `hUM : ∀ x, IsUltrametricGrowth (lambdaBar A T x)` — the pointwise form of the a.e.
-`Oseledets.isUltrametricGrowth_lambdaBar`, automatic e.g. for a bounded generator (everywhere-
+`ErgodicTheory.isUltrametricGrowth_lambdaBar`, automatic e.g. for a bounded generator (everywhere-
 convergent Furstenberg–Kesten). With it, and for any s-finite `μ` (in particular the probability
 measure of the MET), the headline is `sorry`-free: the universal measurability
 `MeasureTheory.AnalyticSet.nullMeasurableSet` (analytic sets are universally measurable —
@@ -82,12 +82,12 @@ section Entry
 `⟪single a, w⟫ = w a` extracts the `a`-coordinate. -/
 theorem orthProjMatrix_apply_eq_starProjection_coord
     (K : Submodule ℝ (EuclideanSpace ℝ (Fin d))) (a b : Fin d) :
-    Oseledets.orthProjMatrix K a b
+    ErgodicTheory.orthProjMatrix K a b
       = (K.starProjection (EuclideanSpace.single b (1 : ℝ))) a := by
   -- `toEuclideanCLM (orthProjMatrix K) = starProjection K`, so the entry is an inner product.
-  have hclm : Matrix.toEuclideanCLM (𝕜 := ℝ) (Oseledets.orthProjMatrix K) = K.starProjection := by
-    rw [Oseledets.orthProjMatrix, StarAlgEquiv.apply_symm_apply]
-  have hentry : Oseledets.orthProjMatrix K a b
+  have hclm : Matrix.toEuclideanCLM (𝕜 := ℝ) (ErgodicTheory.orthProjMatrix K) = K.starProjection := by
+    rw [ErgodicTheory.orthProjMatrix, StarAlgEquiv.apply_symm_apply]
+  have hentry : ErgodicTheory.orthProjMatrix K a b
       = inner ℝ (EuclideanSpace.single a (1 : ℝ))
           (K.starProjection (EuclideanSpace.single b (1 : ℝ))) := by
     rw [← hclm, Matrix.inner_toEuclideanCLM]
@@ -112,14 +112,14 @@ Each entry is a projected-basis coordinate (`orthProjMatrix_apply_eq_starProject
 the polarisation identity `starProjection_apply_coord` writes as a fixed real combination of the
 `AEMeasurable` distance maps `x ↦ infDist c (V x)` (`aemeasurable_infDist_of_measurableGraph`);
 `AEMeasurable` arithmetic and `aemeasurable_pi_iff` (Matrix carries the Pi structure) conclude.
-This is the a.e. analogue of `Oseledets.MeasurableSubspace`. -/
+This is the a.e. analogue of `ErgodicTheory.MeasurableSubspace`. -/
 theorem aemeasurable_orthProjMatrix_of_measurableGraph (μ : Measure X) [SFinite μ]
     (hgraph : MeasurableSet {p : X × EuclideanSpace ℝ (Fin d) | p.2 ∈ V p.1}) :
-    AEMeasurable (fun x => Oseledets.orthProjMatrix (V x)) μ := by
+    AEMeasurable (fun x => ErgodicTheory.orthProjMatrix (V x)) μ := by
   -- Reduce to entrywise `AEMeasurable` (Matrix carries the Pi structure, defeq to `m → n → ℝ`).
   refine aemeasurable_pi_lambda _ fun a => aemeasurable_pi_lambda _ fun b => ?_
   -- Rewrite the entry via the projected-basis coordinate and the polarisation identity.
-  have hcoord : (fun x => Oseledets.orthProjMatrix (V x) a b)
+  have hcoord : (fun x => ErgodicTheory.orthProjMatrix (V x) a b)
       = fun x => ((‖(EuclideanSpace.single a (1 : ℝ))‖ ^ 2
             - infDist (EuclideanSpace.single a (1 : ℝ)) (V x : Set _) ^ 2)
           + (‖(EuclideanSpace.single b (1 : ℝ))‖ ^ 2
@@ -156,23 +156,23 @@ variable {μ : Measure X} [SFinite μ] {T : X → X}
 /-- **The singular issue #6 headline: an a.e.-measurable forward Lyapunov projector.** Over a
 standard Borel ergodic base `X` with an invertible measurable generator `A` (forward/inverse
 log-norm integrability of the invertible MET), and the everywhere `IsUltrametricGrowth` gate
-`hUM` (the pointwise form of the a.e. `Oseledets.isUltrametricGrowth_lambdaBar`, automatic e.g. for
+`hUM` (the pointwise form of the a.e. `ErgodicTheory.isUltrametricGrowth_lambdaBar`, automatic e.g. for
 a bounded generator), the orthogonal-projection matrix
 `x ↦ orthProjMatrix (lambdaSublevel A T x c)` of the forward Lyapunov sublevel filtration is
 `AEMeasurable`.
 
-The sublevel filtration has a measurable graph (`Oseledets.measurableSet_graph_lambdaSublevel`),
+The sublevel filtration has a measurable graph (`ErgodicTheory.measurableSet_graph_lambdaSublevel`),
 which the general a.e. converter `aemeasurable_orthProjMatrix_of_measurableGraph` turns into the
 a.e.-measurable projector (for any s-finite `μ`). The classical universal measurability of analytic
 sets `MeasureTheory.AnalyticSet.nullMeasurableSet` it relies on is proved in
 `Frontier.Issue6.AnalyticUniversallyMeasurable` and threaded through the converter. -/
-theorem _root_.Oseledets.aemeasurable_orthProjMatrix_lambdaSublevel
+theorem _root_.ErgodicTheory.aemeasurable_orthProjMatrix_lambdaSublevel
     [TopologicalSpace X] [PolishSpace X] [BorelSpace X] [NeZero d]
     {A : X → Matrix (Fin d) (Fin d) ℝ} (hA : Measurable A) (hT : Measurable T)
-    (hUM : ∀ x, Oseledets.IsUltrametricGrowth (Oseledets.lambdaBar A T x)) (c : ℝ) :
-    AEMeasurable (fun x => Oseledets.orthProjMatrix (Oseledets.lambdaSublevel A T x c)) μ :=
+    (hUM : ∀ x, ErgodicTheory.IsUltrametricGrowth (ErgodicTheory.lambdaBar A T x)) (c : ℝ) :
+    AEMeasurable (fun x => ErgodicTheory.orthProjMatrix (ErgodicTheory.lambdaSublevel A T x c)) μ :=
   aemeasurable_orthProjMatrix_of_measurableGraph μ
-    (Oseledets.measurableSet_graph_lambdaSublevel hA hT hUM c)
+    (ErgodicTheory.measurableSet_graph_lambdaSublevel hA hT hUM c)
 
 end Headline
 

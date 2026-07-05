@@ -11,14 +11,14 @@ problem that dominates this codebase: the three giant files
 
 | File | Lines | `private` decls | current override |
 |---|---:|---:|---|
-| `Oseledets/Lyapunov/OseledetsLimit.lean` | 3779 | 1 | `set_option linter.style.longFile 3900` |
-| `Oseledets/Ergodic/Kingman.lean` | 3455 | 113 | `set_option linter.style.longFile 3600` |
-| `Oseledets/Lyapunov/ExteriorNorm.lean` | 2751 | 39 | `set_option linter.style.longFile 2900` |
+| `ErgodicTheory/Lyapunov/OseledetsLimit.lean` | 3779 | 1 | `set_option linter.style.longFile 3900` |
+| `ErgodicTheory/Ergodic/Kingman.lean` | 3455 | 113 | `set_option linter.style.longFile 3600` |
+| `ErgodicTheory/Lyapunov/ExteriorNorm.lean` | 2751 | 39 | `set_option linter.style.longFile 2900` |
 
 (Counts verified locally: `wc -l` and `grep -rEc '^[[:space:]]*private '` on the
 three files; the overrides are on the last line of each file.)
 
-A crucial environmental fact, verified locally (`grep -rln '^module$' Oseledets/`
+A crucial environmental fact, verified locally (`grep -rln '^module$' ErgodicTheory/`
 returns nothing): **this project is on the classic source-file system, not the new
 module system.** That single fact governs the whole private-lemma strategy below,
 because under the classic system `private` is strictly file-local and cannot be
@@ -43,7 +43,7 @@ The merge-quality cleanup this report recommends has been carried out:
 * `## References` (prose) were added to the result-bearing modules, and `docs/references.bib`
   now holds the canonical bibtex entries (the per-file prose → `[…][key]` conversion happens at
   Mathlib-PR time, against Mathlib's own `references.bib`).
-* `linter.mathlibStandardSet` is enabled on the `Oseledets` lib with `warningAsError`
+* `linter.mathlibStandardSet` is enabled on the `ErgodicTheory` lib with `warningAsError`
   (`lakefile.toml`), so `lake build` — and hence CI — fails on any style-lint regression. The
   full library was verified to build clean under this setting.
 
@@ -114,14 +114,14 @@ enforced by linters in `.lake/packages/mathlib/Mathlib/Tactic/Linter/`.
   hypothetical `subadditive_kingman_…` would `lowerCamelCase` `kingman`). Split
   siblings stay `UpperCamelCase` (`Kingman/Subadditive.lean`).
 
-- **No Mathlib precedent for Kingman/Oseledets/Lyapunov** — none appear in Mathlib
+- **No Mathlib precedent for Kingman/ErgodicTheory/Lyapunov** — none appear in Mathlib
   source or `docs/references.bib` — so the project sets the canonical names; do so
   by analogy to `birkhoff`/`hahn`/`banach`.
   Evidence: grep over `.lake/packages/mathlib/Mathlib` and
   `docs/references.bib` for `kingman/oseledets/lyapunov` returns nothing (verified:
   `grep -rln … references.bib` is empty). Bearing: pick names now with the
   `birkhoff` pattern in mind, because a future upstream PR is reviewed against it —
-  data `kingman*`/`oseledets*` `lowerCamelCase`, files/dirs `Kingman`/`Oseledets`
+  data `kingman*`/`oseledets*` `lowerCamelCase`, files/dirs `Kingman`/`ErgodicTheory`
   `UpperCamelCase`, theorems conclusion-first.
 
 - **Predicates are prefixes; Prop-valued classes are `Is`-nouns**
@@ -209,8 +209,8 @@ Mathlib's de-facto policy is **"split, almost never raise the cap."**
   canonical relevant example (subdirs `BirkhoffSum/`, `Ergodic/`,
   `TopologicalEntropy/`, …; biggest file 892 lines, most < 300).
   Evidence: `Mathlib/Dynamics/` listing; line counts. Bearing: extend the existing
-  `Oseledets/Ergodic/` + `Oseledets/Lyapunov/` shape — e.g. add an
-  `Oseledets/Ergodic/Kingman/` subdir for split Kingman files.
+  `ErgodicTheory/Ergodic/` + `ErgodicTheory/Lyapunov/` shape — e.g. add an
+  `ErgodicTheory/Ergodic/Kingman/` subdir for split Kingman files.
 
 - **Use the `Defs.lean` / `Basic.lean` / `Lemmas.lean` (+ topic-named) idiom.**
   Pure definitions and core API in `Defs.lean`/`Basic.lean`; heavier downstream
@@ -223,9 +223,9 @@ Mathlib's de-facto policy is **"split, almost never raise the cap."**
 - **There is NO same-named aggregator `.lean` file beside a directory.** A directory
   is just leaf files; the library root imports each leaf.
   Evidence: no `Mathlib/Analysis/InnerProductSpace.lean` despite the 52-file
-  `InnerProductSpace/` dir; `Mathlib.lean` imports leaves directly — `Oseledets.lean`
-  mirrors this. Bearing: add each new leaf to `Oseledets.lean`'s import list (per
-  CLAUDE.md, every module must be transitively imported from `Oseledets.lean`).
+  `InnerProductSpace/` dir; `Mathlib.lean` imports leaves directly — `ErgodicTheory.lean`
+  mirrors this. Bearing: add each new leaf to `ErgodicTheory.lean`'s import list (per
+  CLAUDE.md, every module must be transitively imported from `ErgodicTheory.lean`).
   Mathlib's convention is to import leaves at the root rather than keep a thin
   re-import aggregator.
 
@@ -256,7 +256,7 @@ There are two regimes; **this project is in the classic one.**
   ("Without modifiers, the imported module's public scope is added to the current
   module's private scope … not made available to modules that import the current
   module."); local: no `module`/`public import`/`@[expose] public section` in
-  `Oseledets/`. **This is the single fact that dictates the split strategy: a
+  `ErgodicTheory/`. **This is the single fact that dictates the split strategy: a
   private helper used on both sides of a proposed cut must either keep
   producer+consumers in one file, or be de-privatized.**
 
@@ -339,7 +339,7 @@ linters (which fail the build), partly via the contribute/PR-review pages.
   Evidence: `.lake/packages/mathlib/Mathlib/Tactic/Linter/Header.lean:174-235`;
   <https://leanprover-community.github.io/contribute/style.html#header-and-imports>.
   Bearing: the project's headers already match (e.g.
-  `Oseledets/MultiplicativeErgodic.lean:1-5`). Every new split file must copy this
+  `ErgodicTheory/MultiplicativeErgodic.lean:1-5`). Every new split file must copy this
   verbatim (author "Marcel Morgenstern", appropriate year). No process register in
   the header.
 
@@ -413,15 +413,15 @@ linters (which fail the build), partly via the contribute/PR-review pages.
   <https://leanprover-community.github.io/contribute/doc.html> ("convey the
   mathematical meaning"). **This is the single largest documentation gap.** Local
   counter-examples (35+ hits across the library):
-  - `Oseledets/Ergodic/Kingman.lean:18-26` — "Kingman's theorem is the analytic
+  - `ErgodicTheory/Ergodic/Kingman.lean:18-26` — "Kingman's theorem is the analytic
     engine…", "Mathlib has only the deterministic Fekete lemma", "We record…", "a
     possible refinement".
-  - `Oseledets/Lyapunov/SlowFlagBridge.lean:55` — `## Deliverables`.
-  - `Oseledets/Lyapunov/Restriction.lean:18,37` — `## What is delivered (Stage (i),
+  - `ErgodicTheory/Lyapunov/SlowFlagBridge.lean:55` — `## Deliverables`.
+  - `ErgodicTheory/Lyapunov/Restriction.lean:18,37` — `## What is delivered (Stage (i),
     guaranteed)`.
-  - `Oseledets/Lyapunov/Regularity.lean:48` — `## Honest caveats (these are
+  - `ErgodicTheory/Lyapunov/Regularity.lean:48` — `## Honest caveats (these are
     mandatory…)`.
-  - `Oseledets/Lyapunov/TopGapEnvelope.lean:31` — `## The single localization budget
+  - `ErgodicTheory/Lyapunov/TopGapEnvelope.lean:31` — `## The single localization budget
     (the heart of the proof)`.
   Bearing: rewrite every module docstring in mathematical present tense — kill
   `## Deliverables`, `## Strategy`, `## What is delivered (Stage …)`, `## Honest
@@ -596,7 +596,7 @@ linter is designed to nag away.
 Additional linters with split-specific bite:
 - **`header`** — each new file needs its own valid copyright header + first-command
   module docstring; the linter only runs on files transitively imported from the root,
-  so all split files must be wired into `Oseledets.lean`. Evidence: `Header.lean:180-247,432-437`.
+  so all split files must be wired into `ErgodicTheory.lean`. Evidence: `Header.lean:180-247,432-437`.
 - **`missingEnd`** — each split piece must locally open AND close the
   namespaces/sections it needs. Evidence: `Style.lean:141-170`.
 - **`privateModule`** — no all-private file (gated on the module system via
@@ -644,9 +644,9 @@ dependency graph. The three files differ sharply on this.
 ### `OseledetsLimit.lean` (3779 lines, **1 private**) — splits almost freely
 With essentially no private friction, this is the clean case. Cut along the
 `## Main definitions` / `## Main results` seam into the standard idiom:
-- `Oseledets/Lyapunov/OseledetsLimit/Defs.lean` — the scalar-layer definitions
+- `ErgodicTheory/Lyapunov/OseledetsLimit/Defs.lean` — the scalar-layer definitions
   (`lamSing`, `qpow`, etc.) and their core API.
-- `Oseledets/Lyapunov/OseledetsLimit/Basic.lean` — the main limit-existence theorems
+- `ErgodicTheory/Lyapunov/OseledetsLimit/Basic.lean` — the main limit-existence theorems
   (`oseledetsLimitExists` and the central convergence results).
 - One or more topic siblings (e.g. growth estimates / corollaries) as needed to land
   each file under ~1200 lines.
@@ -662,7 +662,7 @@ Strategy:
 - Cut so each private cluster lands wholly inside one resulting file (keep those
   `private`).
 - For the handful of helpers that must cross the boundary, **demote to a non-private
-  `…Aux` namespace** (e.g. `Oseledets.ExteriorNormAux`), with `_aux`-suffixed names and
+  `…Aux` namespace** (e.g. `ErgodicTheory.ExteriorNormAux`), with `_aux`-suffixed names and
   a "Not intended for use outside this area" docstring, in a shared support file the
   children import and `open`.
 - Normalize the `## Implementation notes — the diamond trap` heading to
@@ -676,11 +676,11 @@ the private graph forces the most surgery. Recommended approach:
 1. **Compute the private-usage graph first.** Cut along concept seams that also separate
    private clusters: (a) Fekete / integrability setup; (b) subadditive-cocycle defs &
    API; (c) leader-set combinatorics; (d) the main a.e.-convergence theorem. Place each
-   in `Oseledets/Ergodic/Kingman/{Fekete,Subadditive,LeaderSet,Convergence}.lean` (a new
+   in `ErgodicTheory/Ergodic/Kingman/{Fekete,Subadditive,LeaderSet,Convergence}.lean` (a new
    sub-directory, matching `Dynamics/`-style layout).
 2. **For each cut-edge private, choose per the regime:**
    - **Classic (default, no migration):** demote the boundary helpers to a non-private
-     `Oseledets.Ergodic.KingmanAux` namespace (`_aux` names + "not for use outside this
+     `ErgodicTheory.Ergodic.KingmanAux` namespace (`_aux` names + "not for use outside this
      area" docstrings), placed in a shared `Kingman/Aux.lean` (or `Kingman/Lemmas.lean`)
      that the topic files import and `open`. Keep every cluster-internal private
      `private`. This is exactly the `FDerivMeasurableAux`/`PiLp.…_aux` pattern reviewers
@@ -688,7 +688,7 @@ the private graph forces the most surgery. Recommended approach:
    - **Module-system (strategic, optional):** if the refactor also migrates Kingman's
      files to `module` + `public import` (toolchain `v4.30.0-rc2` supports it), mark the
      cut-edge helpers `public` and/or share them via `import all` within the
-     `Oseledets` Lake package — name visible, body unexposed, public API unchanged. This
+     `ErgodicTheory` Lake package — name visible, body unexposed, public API unchanged. This
      is the purpose-built solution and the most future-proof, at the cost of a header
      migration.
 3. **Avoid an all-private file** (the `privateModule` concern): the shared `…Aux`/
@@ -754,6 +754,6 @@ required) verdict for this library, with the governing evidence.
 | `nameCheck`/`dupNamespace` | no `__`, no `Foo.Foo.x` (`Style.lean:492-517`, `Lint.lean:82-104`) | **PASS (verify)** | Check helper renames and re-opened namespaces. |
 | `hashCommand` | no `#`-commands except `#adaptation_note` (`HashCommandLinter.lean:60-81`) | **PASS (note)** | `AxiomAudit.lean`'s `#guard_msgs in #print axioms` must stay outside the merge-track linter scope. |
 | TEXT linters | trailing ws / `;`-space / CRLF / unicode (`TextBased.lean:280-339`) | **PASS (verify)** | Run `lake exe lint-style --fix` after the split. |
-| Wiring | every module imported from `Oseledets.lean` (CLAUDE.md) | **FIX (per new file)** | Add each new leaf to `Oseledets.lean`. |
+| Wiring | every module imported from `ErgodicTheory.lean` (CLAUDE.md) | **FIX (per new file)** | Add each new leaf to `ErgodicTheory.lean`. |
 | PR hygiene | small self-contained PRs, AI disclosure + `LLM-generated` label | **FIX (process)** | Land as a sequence of one-split-per-PR with `Moves:` footers; disclose AI use. |
 | Module-system migration (optional) | `module`/`public import`/`import all` | **OPTIONAL** | Strategic for Kingman's cross-file helpers; not required for a classic-regime split. |

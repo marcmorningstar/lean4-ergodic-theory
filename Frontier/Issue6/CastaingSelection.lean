@@ -76,7 +76,7 @@ and measurable-combination step is proved.
 * `Frontier.exists_measurable_independentSpanningFrame_of_measurableInfDist`: from
   `MeasurableInfDist` plus constant rank `m`, a measurable independent spanning frame exists
   (`sorry`-free) — the abstract KRN/Castaing deliverable.
-* `Oseledets.exists_measurable_independentSpanningFrame_of_measurableGraph`: the target verbatim,
+* `ErgodicTheory.exists_measurable_independentSpanningFrame_of_measurableGraph`: the target verbatim,
   obtained by feeding the (isolated, `sorry`) `measurableInfDist_of_measurableGraph` into the
   previous result.
 

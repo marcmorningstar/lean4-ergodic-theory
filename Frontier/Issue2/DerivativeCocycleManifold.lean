@@ -6,13 +6,13 @@ Authors: Marcel Morgenstern
 import Mathlib.Geometry.Manifold.MFDeriv.Basic
 import Mathlib.Geometry.Manifold.MFDeriv.SpecificFunctions
 import Mathlib.Analysis.InnerProductSpace.PiL2
-import Oseledets.Cocycle.Norm
-import Oseledets.MultiplicativeErgodic
+import ErgodicTheory.Cocycle.Norm
+import ErgodicTheory.MultiplicativeErgodic
 
 /-!
 # The derivative (tangent) cocycle of a smooth self-map of a manifold
 
-This is the **manifold generalisation** of `Oseledets/Smooth/DerivativeCocycle.lean`
+This is the **manifold generalisation** of `ErgodicTheory/Smooth/DerivativeCocycle.lean`
 (the `EuclideanSpace ℝ (Fin d)` case). For a `C¹` self-map `T : M → M` of a finite-dimensional
 manifold `M` modelled on a *real inner-product* model space `E` (so the tangent spaces inherit an
 inner product and `M` is morally Riemannian with the model metric), the family of manifold
@@ -34,7 +34,7 @@ There are three layers, mirroring the task brief:
 2. **The chain-rule cocycle identity** (`bundleDerivativeCocycle_iterate_succ`,
    `chainRule_cocycle_manifold`): the product of derivatives along the orbit equals
    `mfderiv I I (T^[n]) x`, proved by induction from `mfderiv_comp` exactly as in the Euclidean
-   file (`Oseledets.chainRule_cocycle`).
+   file (`ErgodicTheory.chainRule_cocycle`).
 
 3. **The matrix framing** (`derivativeCocycleManifold`): transport the endomorphism of `E` to a
    matrix `Matrix (Fin d) (Fin d) ℝ` through a *fixed* linear isometry
@@ -42,7 +42,7 @@ There are three layers, mirroring the task brief:
    star-algebra equivalence `Matrix.toEuclideanCLM`. This is the "measurable trivialisation /
    orthonormal frame field" of the task — and here it is even *globally constant* because the model
    fibre is fixed: the conjugating frame does not depend on `x`. The matrix cocycle then feeds the
-   matrix MET `Oseledets.oseledets_filtration` verbatim.
+   matrix MET `ErgodicTheory.oseledets_filtration` verbatim.
 
 ## The wall
 
@@ -230,7 +230,7 @@ manifold derivative of `T^[n+1]` factors through the orbit by the manifold chain
 (`mfderiv_comp`, using `T^[n+1] = T^[n] ∘ T`):
 `Dₓ(T^[n+1]) = D_{Tx}(T^[n]) ∘ Dₓ T`. The composition is well-typed because every tangent space is
 the same model space `E`. This drives the inductive matrix-cocycle identity below, exactly as
-`fderiv_comp` does in the Euclidean `Oseledets.chainRule_cocycle`. -/
+`fderiv_comp` does in the Euclidean `ErgodicTheory.chainRule_cocycle`. -/
 theorem bundleDerivativeCocycle_iterate_succ {T : M → M} (hT : MDifferentiable I I T)
     (n : ℕ) (x : M) :
     mfderiv I I (T^[n + 1]) x =
@@ -243,7 +243,7 @@ variable (I) in
 /-- The **derivative (tangent) cocycle generator** of `T : M → M`: the matrix representing the
 framed manifold derivative. This is the bundle generator `bundleDerivativeCocycle I T x : E →L[ℝ] E`
 (the endomorphism of the model fibre carrying `mfderiv I I T x`) pushed through the framing algebra
-`frameAlg` to a square matrix. It feeds the matrix MET `Oseledets.oseledets_filtration`. -/
+`frameAlg` to a square matrix. It feeds the matrix MET `ErgodicTheory.oseledets_filtration`. -/
 def derivativeCocycleManifold (T : M → M) :
     M → Matrix (Fin (modelDim E)) (Fin (modelDim E)) ℝ :=
   fun x => frameAlg E (bundleDerivativeCocycle I T x)
@@ -259,15 +259,15 @@ omit [IsManifold I 1 M] in
 both the cocycle recursion (`cocycle_succ`) and the iterate (`bundleDerivativeCocycle_iterate_succ`),
 and using that `frameAlg E` is an algebra equivalence (`map_one`, `map_mul`). -/
 theorem chainRule_cocycle_manifold {T : M → M} (hT : MDifferentiable I I T) (n : ℕ) (x : M) :
-    Oseledets.cocycle (derivativeCocycleManifold I T) T n x =
+    ErgodicTheory.cocycle (derivativeCocycleManifold I T) T n x =
       frameAlg E (mfderiv I I (T^[n]) x) := by
   induction n generalizing x with
   | zero =>
-    rw [Oseledets.cocycle_zero, Function.iterate_zero, mfderiv_id]
+    rw [ErgodicTheory.cocycle_zero, Function.iterate_zero, mfderiv_id]
     -- `ContinuousLinearMap.id ℝ (TangentSpace I x)` is defeq to `(1 : E →L[ℝ] E)`
     exact (map_one (frameAlg E)).symm
   | succ n ih =>
-    rw [Oseledets.cocycle_succ, ih (T x), derivativeCocycleManifold_apply, ← map_mul,
+    rw [ErgodicTheory.cocycle_succ, ih (T x), derivativeCocycleManifold_apply, ← map_mul,
       bundleDerivativeCocycle_iterate_succ hT n x]
     -- the remaining goal `frameAlg E (a * b) = frameAlg E (a ∘L b)` is `rfl`:
     -- multiplication in `E →L[ℝ] E` is composition.
@@ -299,7 +299,7 @@ To feed the matrix MET, the generator `x ↦ derivativeCocycleManifold I T x` mu
 the Borel σ-algebra of `M`. Since `frameAlg E` and the matrix-entry projections are continuous, this
 reduces to measurability of the *manifold derivative* `x ↦ mfderiv I I T x` as a map
 `M → (E →L[ℝ] E)` — the exact manifold analogue of `measurable_fderiv` used in the Euclidean
-`Oseledets.measurable_derivativeCocycle`.
+`ErgodicTheory.measurable_derivativeCocycle`.
 
 **Mathlib provides no such lemma.** `mfderiv I I T x` is defined chart-locally as
 `if MDifferentiableAt I I T x then fderivWithin ℝ (writtenInExtChartAt I I x T) (range I) …  else 0`
@@ -365,16 +365,16 @@ theorem oseledets_filtration_derivativeCocycleManifold
     (hT : Ergodic T μ) (hdiff : MDifferentiable I I T)
     (hdet : ∀ x, (derivativeCocycleManifold I T x).det ≠ 0)
     (hAmeas : Measurable (derivativeCocycleManifold I T))
-    (hint : Oseledets.IntegrableLogNorm (derivativeCocycleManifold I T) μ)
-    (hint' : Oseledets.IntegrableLogNorm (fun x => (derivativeCocycleManifold I T x)⁻¹) μ) :
+    (hint : ErgodicTheory.IntegrableLogNorm (derivativeCocycleManifold I T) μ)
+    (hint' : ErgodicTheory.IntegrableLogNorm (fun x => (derivativeCocycleManifold I T x)⁻¹) μ) :
     (∀ (n : ℕ) (x : M),
-        Oseledets.cocycle (derivativeCocycleManifold I T) T n x
+        ErgodicTheory.cocycle (derivativeCocycleManifold I T) T n x
           = frameAlg E (mfderiv I I (T^[n]) x)) ∧
     ∃ (k : ℕ) (lam : Fin k → ℝ)
       (V : Fin (k + 1) →
         M → Submodule ℝ (EuclideanSpace ℝ (Fin (modelDim E)))),
       StrictAnti lam ∧
-      (∀ i, Oseledets.MeasurableSubspace fun x => V i x) ∧
+      (∀ i, ErgodicTheory.MeasurableSubspace fun x => V i x) ∧
       ∀ᵐ x ∂μ,
         V 0 x = ⊤ ∧ V (Fin.last k) x = ⊥ ∧
         (∀ i : Fin k, V i.succ x < V i.castSucc x) ∧
@@ -388,10 +388,10 @@ theorem oseledets_filtration_derivativeCocycleManifold
               (fun n : ℕ => (n : ℝ)⁻¹ *
                 Real.log
                   ‖Matrix.toEuclideanCLM (𝕜 := ℝ)
-                    (Oseledets.cocycle (derivativeCocycleManifold I T) T n x) v‖)
+                    (ErgodicTheory.cocycle (derivativeCocycleManifold I T) T n x) v‖)
               atTop (𝓝 (lam i))) :=
   ⟨fun n x => chainRule_cocycle_manifold hdiff n x,
-    Oseledets.oseledets_filtration hT (derivativeCocycleManifold I T) hdet hAmeas hint hint'⟩
+    ErgodicTheory.oseledets_filtration hT (derivativeCocycleManifold I T) hdet hAmeas hint hint'⟩
 
 end
 

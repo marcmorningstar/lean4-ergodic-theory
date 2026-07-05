@@ -16,7 +16,7 @@ chain rule (`mfderiv_comp`) the derivative of the `n`-th iterate `T^[n]` factors
 of derivatives along the orbit (`mfderiv_iterate_succ` below).
 
 To feed this into the matrix Oseledets multiplicative ergodic theorem
-(`Oseledets.oseledets_filtration`, which lives over `EuclideanSpace ℝ (Fin d)`), one must pick,
+(`ErgodicTheory.oseledets_filtration`, which lives over `EuclideanSpace ℝ (Fin d)`), one must pick,
 **measurably in `x`**, a linear frame of each tangent space `TangentSpace I x`. Such a choice — a
 *measurable framing* — turns the abstract tangent cocycle into a genuine measurable matrix-valued
 cocycle. The frame conjugates the abstract derivative `mfderiv I I T x` into a single fixed model
@@ -79,7 +79,7 @@ omit [MeasurableSpace E] [BorelSpace E] [MeasurableSpace M] [IsManifold I 1 M] i
 /-- **Chain-rule cocycle identity on the tangent bundle (composition form).** For an
 `MDifferentiable` self-map `T`, the derivative of `T^[n+1]` is the derivative of `T` at the
 endpoint `T^[n] x` post-composed with the derivative of `T^[n]` at `x`. Iterating this is exactly
-the tangent cocycle recursion (the manifold analogue of `Oseledets.chainRule_cocycle`). -/
+the tangent cocycle recursion (the manifold analogue of `ErgodicTheory.chainRule_cocycle`). -/
 theorem mfderiv_iterate_succ {T : M → M} (hT : MDifferentiable I I T) (n : ℕ) (x : M) :
     mfderiv I I (T^[n + 1]) x =
       (mfderiv I I T (T^[n] x)).comp (mfderiv I I (T^[n]) x) := by

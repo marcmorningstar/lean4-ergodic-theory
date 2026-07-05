@@ -1,5 +1,5 @@
 import Mathlib
-import Oseledets.OperatorEntropy
+import ErgodicTheory.OperatorEntropy
 open scoped MatrixOrder ComplexOrder
 open Matrix
 
@@ -22,7 +22,7 @@ ARCHITECTURE DECISION (probe-driven):
 -/
 
 noncomputable section
-namespace Oseledets.OperatorEntropy.Lieb
+namespace ErgodicTheory.OperatorEntropy.Lieb
 
 /-! ## K0 — operator convexity framework (matrix-convex of all orders, over `Matrix`) -/
 
@@ -130,10 +130,10 @@ theorem relEntropy_jointly_convex (ρ₁ σ₁ ρ₂ σ₂ : Matrix n n ℂ) (c 
 theorem monotonicity_relEntropy_partialTrace
     {nA nB : Type*} [Fintype nA] [DecidableEq nA] [Fintype nB] [DecidableEq nB]
     (ρ σ : Matrix (nA × nB) (nA × nB) ℂ) (hρ : ρ.PosDef) (hσ : σ.PosDef) :
-    relEntropy (Oseledets.OperatorEntropy.partialTraceRight ρ)
-        (Oseledets.OperatorEntropy.partialTraceRight σ) ≤ relEntropy ρ σ := by
+    relEntropy (ErgodicTheory.OperatorEntropy.partialTraceRight ρ)
+        (ErgodicTheory.OperatorEntropy.partialTraceRight σ) ≤ relEntropy ρ σ := by
   sorry -- K7: K6 (joint convexity) + twirl (partial trace = average of conjugations by a 1-design)
         --     + unitary invariance + relative-entropy additivity.  Mathlib lacks Stinespring/twirl.
 
-end Oseledets.OperatorEntropy.Lieb
+end ErgodicTheory.OperatorEntropy.Lieb
 end

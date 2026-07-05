@@ -10,7 +10,7 @@ This chapter develops that upgrade. The strategy applies the one-sided theorem t
 The base dynamics is an invertible measure-preserving system \(T : X \simeq_m X\) (a \texttt{MeasurableEquiv}) with \(T^{-1} = T.\mathrm{symm}\). The backward iterates of the cocycle \(A^{(n)}(x) = \mathrm{cocycle}\,A\,T\,n\,x\) are governed by the \emph{backward generator}, a generator over \(T^{-1}\) whose cocycle reflects the forward one through inverse and orbit reversal.
 
 \begin{definition}[Backward generator]\label{backwardGen}
-  \lean{Oseledets.backwardGen}\leanok
+  \lean{ErgodicTheory.backwardGen}\leanok
   For \(A : X \to \mathrm{Matrix}\,(\mathrm{Fin}\,d)\,(\mathrm{Fin}\,d)\,\R\) and \(T : X \simeq_m X\), the backward generator is
   \[
     \mathrm{backwardGen}\,A\,T\,x \;=\; \bigl(A(T^{-1}x)\bigr)^{-1}.
@@ -19,7 +19,7 @@ The base dynamics is an invertible measure-preserving system \(T : X \simeq_m X\
 \end{definition}
 
 \begin{lemma}[Cocycle recursion, newest factor on the right]\label{cocycle_succ'}
-  \lean{Oseledets.cocycle_succ'}\leanok
+  \lean{ErgodicTheory.cocycle_succ'}\leanok
   For any generator \(A\) and map \(T\), \(A^{(n+1)}(x) = A(T^{[n]}x)\cdot A^{(n)}(x)\).
 \end{lemma}
 \begin{proof}\leanok
@@ -28,7 +28,7 @@ The base dynamics is an invertible measure-preserving system \(T : X \simeq_m X\
 \end{proof}
 
 \begin{lemma}[Backward cocycle identity]\label{cocycle_backwardGen}
-  \lean{Oseledets.cocycle_backwardGen}\leanok
+  \lean{ErgodicTheory.cocycle_backwardGen}\leanok
   Writing \(B = \mathrm{backwardGen}\,A\,T\), the cocycle of \(B\) over \(T^{-1}\) satisfies
   \[
     B^{(n)}(x) \;=\; \bigl(A^{(n)}(T^{-n}x)\bigr)^{-1}, \qquad B^{(n)}(T^{n}y) \;=\; \bigl(A^{(n)}(y)\bigr)^{-1}.
@@ -40,7 +40,7 @@ The base dynamics is an invertible measure-preserving system \(T : X \simeq_m X\
 \end{proof}
 
 \begin{proposition}[Backward standing hypotheses]\label{backwardData_of}
-  \lean{Oseledets.backwardData_of}\leanok
+  \lean{ErgodicTheory.backwardData_of}\leanok
   If \(\det A(x) \neq 0\) for all \(x\), \(A\) is measurable, \(T\) is measure-preserving, and \(\log^+\norm{A}, \log^+\norm{A^{-1}} \in L^1(\mu)\), then the backward system \((T^{-1}, B)\) satisfies the same four hypotheses: \(\det B \neq 0\) everywhere, \(B\) measurable, and \(\log^+\norm{B}, \log^+\norm{B^{-1}} \in L^1(\mu)\).
 \end{proposition}
 \begin{proof}\leanok
@@ -60,7 +60,7 @@ The base dynamics is an invertible measure-preserving system \(T : X \simeq_m X\
 The crux argument needs the dimensions of the filtration spaces, which the headline one-sided statement quantifies away. We re-run the one-sided composition with concrete witnesses, exposing the spectrum \(\lambda\) and the filtration \(V\) together with a dimension formula.
 
 \begin{proposition}[Strong one-sided export]\label{oseledets_filtration_dims}
-  \lean{Oseledets.oseledets_filtration_dims}\leanok
+  \lean{ErgodicTheory.oseledets_filtration_dims}\leanok
   Under the one-sided hypotheses (with \([\mathrm{NeZero}\,d]\)) there exist a decreasing exponent sequence \(\mathrm{lam0} : \N \to \R\) realizing the a.e.\ per-index singular-value limits, and a measurable filtration \(V : \mathrm{Fin}(k+1) \to X \to \mathrm{Submodule}\,\R\,(\R^d)\) where \(k = \mathrm{numExp}\,\mathrm{lam0}\,d\), such that for a.e.\ \(x\): \(V_0 x = \top\), \(V_k x = \bot\), \(V\) is strictly decreasing and \(A\)-equivariant, every \(v \in V_{i}x \setminus V_{i+1}x\) grows at rate \(\mathrm{expEnum}\,\mathrm{lam0}\,d\,i\), and
   \[
     \mathrm{finrank}\,(V_{i}x) \;=\; \#\{\, j < d : \mathrm{lam0}\,j \le \mathrm{expEnum}\,\mathrm{lam0}\,d\,i \,\}.
@@ -72,7 +72,7 @@ The crux argument needs the dimensions of the filtration spaces, which the headl
 \end{proof}
 
 \begin{proposition}[Rank of the slow space]\label{ae_finrank_vslow}
-  \lean{Oseledets.ae_finrank_vslow}\leanok
+  \lean{ErgodicTheory.ae_finrank_vslow}\leanok
   For a.e.\ \(x\) and all \(t \in \R\),
   \[
     \mathrm{finrank}\,\bigl(\mathrm{vslow}\,A\,T\,(\exp t)\,x\bigr) \;=\; \#\{\, j < d : \mathrm{lam0}\,j \le t \,\}.
@@ -84,7 +84,7 @@ The crux argument needs the dimensions of the filtration spaces, which the headl
 \end{proof}
 
 \begin{lemma}[Functional calculus on an eigenvector]\label{cfc_apply_of_eigenvector}
-  \lean{Oseledets.cfc_apply_of_eigenvector}\leanok
+  \lean{ErgodicTheory.cfc_apply_of_eigenvector}\leanok
   If \(M\) is self-adjoint and \(M v = c\,v\) for \(v \neq 0\), then \((\mathrm{cfc}\,f\,M)\,v = f(c)\cdot v\).
 \end{lemma}
 \begin{proof}\leanok
@@ -96,7 +96,7 @@ The crux argument needs the dimensions of the filtration spaces, which the headl
 The repository's ergodic Kingman theorem exhibits a constant \(c\) with \((1/n)g_n \to c\) a.e., but defers identifying \(c\) with the Fekete infimum of the integral means. The two-sided theorem is the first consumer that needs the means form, in order to equate the Kingman constants of a subadditive cocycle over \(T\) and of its orbit-reversed version over \(T^{-1}\).
 
 \begin{proposition}[Kingman constant as the limit of integral means]\label{tendsto_kingman_ergodic_means}
-  \lean{Oseledets.tendsto_kingman_ergodic_means}\leanok
+  \lean{ErgodicTheory.tendsto_kingman_ergodic_means}\leanok
   Under the hypotheses of the ergodic Kingman theorem, there is a constant \(c\) with
   \[
     \frac{1}{n+1}\int_X g_{n+1}\,d\mu \longrightarrow c \qquad\text{and}\qquad \tfrac{1}{n}\,g_n(x) \longrightarrow c \ \text{ for a.e. } x.
@@ -112,7 +112,7 @@ The repository's ergodic Kingman theorem exhibits a constant \(c\) with \((1/n)g
 To measure the growth of \(A^{(n)}\) restricted to a filtration level \(V_i\), we form a restricted cocycle by post-composing the orthogonal projector onto \(V_i\). A \emph{floor} term repairs the failure of everywhere-subadditivity off the good set, so that Kingman applies without an a.e.\ caveat.
 
 \begin{definition}[Floored restricted log-cocycle]\label{restLog}
-  \lean{Oseledets.restLog}\leanok
+  \lean{ErgodicTheory.restLog}\leanok
   For a measurable family \(V : X \to \mathrm{Submodule}\,\R\,(\R^d)\), set \(\mathrm{restGen}\,A\,V\,x = A(x)\cdot P_{V(x)}\) (with \(P_K\) the orthogonal projector onto \(K\)), \(\mathrm{sFloor}\,A\,T\,n\,x = \prod_{j<n}\norm{(A(T^{[j]}x))^{-1}}^{-1}\), and
   \[
     \mathrm{restLog}\,A\,V\,T\,n\,x \;=\; \log\Bigl(\bignorm{\mathrm{cocycle}(\mathrm{restGen}\,A\,V)\,T\,n\,x} \;\sqcup\; \mathrm{sFloor}\,A\,T\,n\,x\Bigr).
@@ -120,7 +120,7 @@ To measure the growth of \(A^{(n)}\) restricted to a filtration level \(V_i\), w
 \end{definition}
 
 \begin{lemma}[Everywhere subadditivity]\label{isSubadditiveCocycle_restLog}
-  \lean{Oseledets.isSubadditiveCocycle_restLog}\leanok
+  \lean{ErgodicTheory.isSubadditiveCocycle_restLog}\leanok
   \(\mathrm{restLog}\,A\,V\,T\) is an everywhere subadditive cocycle: for all \(m,n,x\), \(\mathrm{restLog}\,(m+n)\,x \le \mathrm{restLog}\,m\,x + \mathrm{restLog}\,n\,(T^{[m]}x)\).
 \end{lemma}
 \begin{proof}\leanok
@@ -129,7 +129,7 @@ To measure the growth of \(A^{(n)}\) restricted to a filtration level \(V_i\), w
 \end{proof}
 
 \begin{lemma}[Restricted Kingman, both directions of time]\label{restLog_backward_kingman}
-  \lean{Oseledets.restLog_backward_kingman}\leanok
+  \lean{ErgodicTheory.restLog_backward_kingman}\leanok
   Kingman applied to \(\mathrm{restLog}\) over \(T\) yields a constant \(\chi_V\); the orbit-reversed cocycle \(h_n(x) = \mathrm{restLog}_n(T^{-n}x)\) is subadditive over \(T^{-1}\) with the same integral means, hence converges a.e.\ to the same \(\chi_V\).
 \end{lemma}
 \begin{proof}\leanok
@@ -138,7 +138,7 @@ To measure the growth of \(A^{(n)}\) restricted to a filtration level \(V_i\), w
 \end{proof}
 
 \begin{proposition}[Restricted exponent equals \(\lambda_i\)]\label{restricted_const_eq}
-  \lean{Oseledets.restricted_const_eq}\leanok
+  \lean{ErgodicTheory.restricted_const_eq}\leanok
   For the forward level \(V_i\), the restricted Kingman constant equals the \(i\)-th exponent: \(\chi_{V_i} = \mathrm{expEnum}\,\mathrm{lam0}\,d\,i\).
 \end{proposition}
 \begin{proof}\leanok
@@ -147,7 +147,7 @@ To measure the growth of \(A^{(n)}\) restricted to a filtration level \(V_i\), w
 \end{proof}
 
 \begin{proposition}[Backward-orbit growth envelope]\label{ae_limsup_restricted_backward_le}
-  \lean{Oseledets.ae_tendsto_restricted_backward}\leanok
+  \lean{ErgodicTheory.ae_tendsto_restricted_backward}\leanok
   For a.e.\ \(x\),
   \[
     \limsup_{n} \tfrac{1}{n}\log\bignorm{A^{(n)}(T^{-n}x)\cdot P_{V_i(T^{-n}x)}} \;\le\; \mathrm{expEnum}\,\mathrm{lam0}\,d\,i.
@@ -163,7 +163,7 @@ To measure the growth of \(A^{(n)}\) restricted to a filtration level \(V_i\), w
 The envelope feeds the central nonnegativity fact: a vector cannot decay backward strictly faster than \(-\lambda_i\) while lying in \(V_i\). The crux is pointwise — ergodicity is not used here — and directly kills nonzero intersection vectors of opposite-side sublevels.
 
 \begin{proposition}[Sublevels of opposite sign are transverse]\label{inf_eq_bot_of_neg_sum}
-  \lean{Oseledets.inf_eq_bot_of_neg_sum}\leanok
+  \lean{ErgodicTheory.inf_eq_bot_of_neg_sum}\leanok
   Fix \(x\). If the forward envelope for \(V_x\) holds at rate \(a\), \(U_x\) decays backward at rate \(\le b\), and \(a + b < 0\), then \(V_x \sqcap U_x = \bot\).
 \end{proposition}
 \begin{proof}\leanok
@@ -172,7 +172,7 @@ The envelope feeds the central nonnegativity fact: a vector cannot decay backwar
 \end{proof}
 
 \begin{proposition}[The a.e.\ crux]\label{ae_crux}
-  \lean{Oseledets.ae_crux}\leanok
+  \lean{ErgodicTheory.ae_crux}\leanok
   For a.e.\ \(x\), for every forward level \(i\) and backward level \(s\) with \(\mathrm{expEnum}\,\mathrm{lam0}\,d\,i + \mathrm{expEnum}\,\mathrm{mu0}\,d\,s < 0\),
   \[
     V_{i}x \;\sqcap\; W_{s}x \;=\; \bot.
@@ -184,7 +184,7 @@ The envelope feeds the central nonnegativity fact: a vector cannot decay backwar
 \end{proof}
 
 \begin{corollary}[Counting bound]\label{ae_counting}
-  \lean{Oseledets.ae_counting}\leanok
+  \lean{ErgodicTheory.ae_counting}\leanok
   For all \(a, b \in \R\) with \(a + b < 0\),
   \[
     \#\{\, j < d : \mathrm{lam0}\,j \le a \,\} \;+\; \#\{\, j < d : \mathrm{mu0}\,j \le b \,\} \;\le\; d.
@@ -200,7 +200,7 @@ The envelope feeds the central nonnegativity fact: a vector cannot decay backwar
 The backward spectrum must be aligned to the forward one. The determinant identity \(\sum_j \mathrm{lam0}\,j = \int \log\abs{\det A}\) — and its backward negation — together with the counting bound pin the backward exponents to the negated, reversed forward ones, by a purely combinatorial multiset argument that avoids any exterior-power calculus for \(\norm{\ext^q M^{-1}}\).
 
 \begin{proposition}[Forward determinant sum]\label{sum_lam0_eq_integral_log_abs_det}
-  \lean{Oseledets.sum_lam0_eq_integral_log_abs_det}\leanok
+  \lean{ErgodicTheory.sum_lam0_eq_integral_log_abs_det}\leanok
   Any exponent sequence \(\mathrm{lam0}\) realizing the a.e.\ singular-value limits satisfies \(\sum_{j<d}\mathrm{lam0}\,j = \int_X \log\abs{\det A(x)}\,d\mu\).
 \end{proposition}
 \begin{proof}\leanok
@@ -208,7 +208,7 @@ The backward spectrum must be aligned to the forward one. The determinant identi
 \end{proof}
 
 \begin{proposition}[Backward sum is the negated forward sum]\label{sum_mu0_eq_neg_sum_lam0}
-  \lean{Oseledets.sum_mu0_eq_neg_sum_lam0}\leanok
+  \lean{ErgodicTheory.sum_mu0_eq_neg_sum_lam0}\leanok
   For a backward exponent sequence \(\mathrm{mu0}\), \(\sum_{j<d}\mathrm{mu0}\,j = -\sum_{j<d}\mathrm{lam0}\,j\).
 \end{proposition}
 \begin{proof}\leanok
@@ -217,7 +217,7 @@ The backward spectrum must be aligned to the forward one. The determinant identi
 \end{proof}
 
 \begin{proposition}[Reflection lemma]\label{reflect_of_counting_and_sum}
-  \lean{Oseledets.reflect_of_counting_and_sum}\leanok
+  \lean{ErgodicTheory.reflect_of_counting_and_sum}\leanok
   Let \(p, q : \N \to \R\) be antitone on \([0,d)\). If \(\#\{p \le a\} + \#\{q \le b\} \le d\) whenever \(a + b < 0\), and \(\sum_{j<d} q\,j = -\sum_{j<d} p\,j\), then \(q\,j = -p\,(d-1-j)\) for all \(j < d\).
 \end{proposition}
 \begin{proof}\leanok
@@ -225,7 +225,7 @@ The backward spectrum must be aligned to the forward one. The determinant identi
 \end{proof}
 
 \begin{corollary}[Aligned backward index]\label{sidx_exp}
-  \lean{Oseledets.sidx_exp}\leanok
+  \lean{ErgodicTheory.sidx_exp}\leanok
   Under the reflection \(\mathrm{mu0}\,j = -\mathrm{lam0}\,(d-1-j)\), the backward count of distinct exponents equals the forward one, and the index \(\mathrm{sidx}\,i = \mathrm{cast}\,(\mathrm{Fin.rev}\,i)\) satisfies \(\mathrm{expEnum}\,\mathrm{mu0}\,d\,(\mathrm{sidx}\,i) = -\mathrm{expEnum}\,\mathrm{lam0}\,d\,i\).
 \end{corollary}
 \begin{proof}\leanok
@@ -238,7 +238,7 @@ The backward spectrum must be aligned to the forward one. The determinant identi
 The split bundle is \(x \mapsto V_i x \sqcap W_{\mathrm{sidx}\,i}\,x\). Measurable subspaces do not close under \(\sqcap\) for free, and Mathlib has no alternating-projection theorem; instead a single von Neumann-style power lemma supplies measurability.
 
 \begin{proposition}[Powers of the projector triple converge to the intersection projector]\label{tendsto_pow_orthProj_inf}
-  \lean{Oseledets.tendsto_pow_orthProj_inf}\leanok
+  \lean{ErgodicTheory.tendsto_pow_orthProj_inf}\leanok
   For subspaces \(K, L\) of \(\R^d\), with \(P_K, P_L\) the orthogonal projectors,
   \[
     \bigl(P_K\,P_L\,P_K\bigr)^{n} \longrightarrow P_{K \sqcap L} \qquad (n \to \infty).
@@ -250,7 +250,7 @@ The split bundle is \(x \mapsto V_i x \sqcap W_{\mathrm{sidx}\,i}\,x\). Measurab
 \end{proof}
 
 \begin{lemma}[The intersection fixes exactly \(K \sqcap L\)]\label{one_eigenspace_projComp}
-  \lean{Oseledets.one_eigenspace_projComp}\leanok
+  \lean{ErgodicTheory.one_eigenspace_projComp}\leanok
   \((P_K\,P_L\,P_K)\,v = v\) if and only if \(v \in K \sqcap L\).
 \end{lemma}
 \begin{proof}\leanok
@@ -258,7 +258,7 @@ The split bundle is \(x \mapsto V_i x \sqcap W_{\mathrm{sidx}\,i}\,x\). Measurab
 \end{proof}
 
 \begin{proposition}[Measurable intersection of measurable subspaces]\label{inf}
-  \lean{Oseledets.MeasurableSubspace.inf}\leanok
+  \lean{ErgodicTheory.MeasurableSubspace.inf}\leanok
   If \(x \mapsto V(x)\) and \(x \mapsto W(x)\) are measurable subspace families, then so is \(x \mapsto V(x) \sqcap W(x)\).
 \end{proposition}
 \begin{proof}\leanok
@@ -278,7 +278,7 @@ With the aligned reflection, the crux disjointness, and the dimension formulas i
 \end{proof}
 
 \begin{proposition}[Splitting at a point]\label{esplitAt}
-  \lean{Oseledets.esplitAt}\leanok
+  \lean{ErgodicTheory.esplitAt}\leanok
   Define \(E_i = V_i \sqcap W_{\mathrm{sidx}\,i}\). Then \(\mathrm{finrank}\,E_i \ge 1\), the telescoping identities \(V_i = E_i \sqcup V_{i+1}\) and \(E_i \sqcap V_{i+1} = \bot\) hold, and consequently \((E_i)\) is independent with \(\bigsqcup_i E_i = V_0 = \top\).
 \end{proposition}
 \begin{proof}\leanok
@@ -287,7 +287,7 @@ With the aligned reflection, the crux disjointness, and the dimension formulas i
 \end{proof}
 
 \begin{theorem}[The two-sided Oseledets splitting]\label{oseledets_splitting}
-  \lean{Oseledets.oseledets_splitting}\leanok
+  \lean{ErgodicTheory.oseledets_splitting}\leanok
   Let \(T : X \simeq_m X\) be an invertible ergodic measure-preserving transformation of a probability space, and let \(A : X \to \mathrm{Matrix}\,(\mathrm{Fin}\,d)\,(\mathrm{Fin}\,d)\,\R\) be measurable with \(\det A(x) \neq 0\) for all \(x\) and \(\log^+\norm{A}, \log^+\norm{A^{-1}} \in L^1(\mu)\). Then there exist \(k \in \N\), a strictly decreasing \(\lambda : \mathrm{Fin}\,k \to \R\), and measurable subspace families \(E : \mathrm{Fin}\,k \to X \to \mathrm{Submodule}\,\R\,(\R^d)\) such that for \(\mu\)-a.e.\ \(x\):
   \begin{itemize}
     \item \(\R^d = \bigoplus_{i} E_i(x)\) is an internal direct sum with every \(E_i(x) \neq \bot\);

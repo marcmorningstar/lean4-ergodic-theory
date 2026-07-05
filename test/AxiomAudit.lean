@@ -3,196 +3,196 @@ Copyright (c) 2026 Marcel Morgenstern. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Marcel Morgenstern
 -/
-import Oseledets.MultiplicativeErgodic
-import Oseledets.Lyapunov.Extensions.Corollaries
-import Oseledets.Lyapunov.Extensions.Spectrum
-import Oseledets.Lyapunov.Extensions.ExponentSums
-import Oseledets.Lyapunov.Extensions.ExteriorCocycle
-import Oseledets.Lyapunov.Extensions.DetIdentity
-import Oseledets.Lyapunov.Extensions.Inverse
-import Oseledets.Lyapunov.Extensions.Restriction
-import Oseledets.Lyapunov.Extensions.NonErgodic
-import Oseledets.Lyapunov.Extensions.Regularity
-import Oseledets.Lyapunov.Extensions.Singular
-import Oseledets.Lyapunov.Extensions.SingularExponent
-import Oseledets.Lyapunov.Extensions.SingularExponentBounds
-import Oseledets.Lyapunov.Extensions.SingularExponentTop
-import Oseledets.Lyapunov.Extensions.SingularDet
-import Oseledets.Lyapunov.Extensions.SingularDetGrowth
-import Oseledets.Lyapunov.Extensions.SingularExponentGenLog
-import Oseledets.Lyapunov.Extensions.SingularKernelStratum
-import Oseledets.Lyapunov.Extensions.SingularRank
-import Oseledets.Lyapunov.Extensions.SingularKernelSubmodule
-import Oseledets.Lyapunov.Extensions.SingularEventualKernel
-import Oseledets.Lyapunov.Extensions.SingularKernelEquivariant
-import Oseledets.Lyapunov.Extensions.SingularRankMeasurable
-import Oseledets.Lyapunov.Extensions.SingularRankMeasurable2
-import Oseledets.Lyapunov.Extensions.SingularRankMinor
-import Oseledets.Lyapunov.Extensions.SingularDimMeasurable
-import Oseledets.Lyapunov.Extensions.SingularKernelMeasurableGraph
-import Oseledets.Lyapunov.Extensions.SingularKernelProjector
-import Oseledets.Lyapunov.Extensions.SingularEventualKernelProjector
-import Oseledets.Lyapunov.Extensions.SingularSublevelProjector
-import Oseledets.Lyapunov.Extensions.SingularSublevelEventual
-import Oseledets.Lyapunov.Extensions.SingularSubspaceDist
-import Oseledets.Lyapunov.Extensions.SingularPerDirectionExponent
-import Oseledets.Lyapunov.Extensions.SingularSpectralValues
-import Oseledets.Lyapunov.Extensions.SingularSpectrumConstant
-import Oseledets.Lyapunov.Extensions.SingularSlowSpace
-import Oseledets.Lyapunov.Extensions.SingularBandConverge
-import Oseledets.Lyapunov.Extensions.SingularSlowSpaceUnconditional
-import Oseledets.Lyapunov.Extensions.SingularLambdaBarFiltration
-import Oseledets.Lyapunov.Extensions.SingularLambdaBarMeasurable
-import Oseledets.Lyapunov.Extensions.ConstantCocycle
-import Oseledets.TwoSided.Invertible
-import Oseledets.TwoSided.SpectralRank
-import Oseledets.TwoSided.MeasurableInf
-import Oseledets.TwoSided.StrongExport
-import Oseledets.TwoSided.KingmanMeans
-import Oseledets.TwoSided.Reflection
-import Oseledets.TwoSided.RestrictedCocycle
-import Oseledets.TwoSided.RestrictedExponent
-import Oseledets.TwoSided.Transversality
-import Oseledets.TwoSided.SplittingAssembly
-import Oseledets.Continuous.Flow
-import Oseledets.Continuous.Reduction
-import Oseledets.Continuous.BetweenTimes
-import Oseledets.Continuous.Equivariance
-import Oseledets.Continuous.MultiplicativeErgodicFlow
-import Oseledets.Continuous.Suspension
-import Oseledets.Continuous.SuspensionMeasure
-import Oseledets.Continuous.SuspensionSpace
-import Oseledets.Continuous.SuspensionFlow
-import Oseledets.Continuous.SuspensionFlowMP
-import Oseledets.Continuous.ReturnTimeExponent
-import Oseledets.Continuous.ReturnTimeTopExponent
-import Oseledets.Continuous.SuspensionCocycle
-import Oseledets.Continuous.SuspensionLapCount
-import Oseledets.Continuous.SuspensionFlowCocycle
-import Oseledets.Continuous.SuspensionFlowCocycleMul
-import Oseledets.Continuous.SuspensionCoverCocycle
-import Oseledets.Continuous.SuspensionCoverFlow
-import Oseledets.Continuous.SuspensionDescent
-import Oseledets.Continuous.SuspensionNlap
-import Oseledets.Continuous.SuspensionFlowExponent
-import Oseledets.Continuous.SuspensionBetweenReturns
-import Oseledets.Continuous.SuspensionFullTimeExponent
-import Oseledets.Continuous.SuspensionBddRoofExponent
-import Oseledets.Continuous.SuspensionMeasureTransfer
-import Oseledets.Continuous.SuspensionDisintegration
-import Oseledets.Continuous.SuspensionGrowthDescent
-import Oseledets.Continuous.SuspensionExponentDescent
-import Oseledets.Continuous.SuspensionSpaceExponent
-import Oseledets.Continuous.SuspensionSpaceExponentValue
-import Oseledets.Continuous.SuspensionQuotientImage
-import Oseledets.Continuous.SuspensionFlowExponentValue
-import Oseledets.Continuous.SuspensionReturnTimeMeasurable
-import Oseledets.Continuous.SuspensionExponentSetEquiv
-import Oseledets.Continuous.SuspensionExponentSetMeasurable
-import Oseledets.Continuous.SuspensionFlowExponentFinal
-import Oseledets.Smooth.DerivativeCocycle
-import Oseledets.Smooth.Expanding
-import Oseledets.Smooth.RokhlinExpanding
-import Oseledets.Examples.Elementary
-import Oseledets.Entropy.Partition
-import Oseledets.Entropy.Join
-import Oseledets.Entropy.Subadditive
-import Oseledets.Entropy.Subadditive2
-import Oseledets.Entropy.Fekete
-import Oseledets.Entropy.KSEntropy
-import Oseledets.Entropy.KSEntropyBounds
-import Oseledets.Entropy.KSEntropySystem
-import Oseledets.Entropy.KSEntropyProps
-import Oseledets.Entropy.KSEntropyJoin
-import Oseledets.Entropy.KSEntropyMono
-import Oseledets.Entropy.MargulisRuelleAbstract
-import Oseledets.Entropy.MargulisRuelleSharpened
-import Oseledets.MeasureTheory.CoveringFromVolume
-import Oseledets.MeasureTheory.AnalyticUniversallyMeasurable
-import Oseledets.Entropy.Ruelle.Count
-import Oseledets.Entropy.Ruelle.SharpCovering
-import Oseledets.Entropy.Ruelle.MargulisRuelleSharp
-import Oseledets.Singular.SingularFiltrationMeasurable
-import Oseledets.Lyapunov.Extensions.ConstantCocycleSpectralRadius
-import Oseledets.Lyapunov.Extensions.SingularStratumExponent
-import Oseledets.Continuous.SuspensionPartialSumExponent
-import Oseledets.Examples.RuelleDoubling
-import Oseledets.Examples.CatMapOrbit
-import Oseledets.Examples.CatMapToral
-import Oseledets.Examples.CatMapDerivativeCocycle
-import Oseledets.Examples.CatMapPerPartition
-import Oseledets.Examples.Rokhlin.AbstractEqui
-import Oseledets.Examples.Rokhlin.DoublingCrux
-import Oseledets.Examples.Rokhlin.DoublingEquality
-import Oseledets.Entropy.CondChainRule
-import Oseledets.Entropy.CondPullback
-import Oseledets.Entropy.CondJointPullback
-import Oseledets.Entropy.CondMono
-import Oseledets.Entropy.CondEntropyContinuous
-import Oseledets.Entropy.CondKSEntropySystem
-import Oseledets.Entropy.FactorEntropy
-import Oseledets.Entropy.FactorGeneratorSaturate
-import Oseledets.Entropy.CondGivenPartitionBridge
-import Oseledets.Entropy.AbramovRokhlin
-import Oseledets.Entropy.CondKSMovingLimit
-import Oseledets.Entropy.AbramovRokhlinGenerator
-import Oseledets.Entropy.GeneratorTheorem
-import Oseledets.Krieger.ZIterate
-import Oseledets.Krieger.InfoFunction
-import Oseledets.Krieger.NameCount
-import Oseledets.Krieger.RokhlinTower
-import Oseledets.Krieger.Coding
-import Oseledets.Krieger.Krieger
-import Oseledets.Krieger.CountableEntropy
-import Oseledets.Krieger.SMB
-import Oseledets.Krieger.Generator
-import Oseledets.Krieger.PrefixCode
-import Oseledets.Krieger.SMBSharp
-import Oseledets.Krieger.CodeMap
-import Oseledets.Krieger.NameCountSharp
-import Oseledets.Krieger.KeaneSerafin
-import Oseledets.Krieger.Recovery
-import Oseledets.Krieger.SMBPointwise
-import Oseledets.Krieger.ColumnCode
-import Oseledets.Krieger.TowerCode
-import Oseledets.Krieger.SMBLeaves
-import Oseledets.Krieger.CodeTerm
-import Oseledets.Krieger.UpperSMB
-import Oseledets.Krieger.Interleave
-import Oseledets.Krieger.RefTower
-import Oseledets.Krieger.StageBuild
-import Oseledets.Krieger.Weave
-import Oseledets.Krieger.Bracket
-import Oseledets.Multifractal
-import Oseledets.Entropy.GeneratorTheoremTwoSided
-import Oseledets.Continuous.SuspensionStandardBorel
-import Oseledets.Entropy.ProductIdEntropy
-import Oseledets.Multifractal.BernoulliSuspensionEntropy
-import Oseledets.Multifractal.BernoulliSuspensionCondEntropy
-import Oseledets.Entropy.CondProductIdEntropy
-import Oseledets.Entropy.CondChainRuleSup
-import Oseledets.Entropy.CondKSEntropyConjugacy
-import Oseledets.OperatorEntropy
-import Oseledets.OperatorEntropy.RelativeEntropy
-import Oseledets.OperatorEntropy.PetzRecovery
-import Oseledets.OperatorEntropy.Lieb.OperatorConvex
-import Oseledets.OperatorEntropy.RelEntropyAdditivity
-import Oseledets.OperatorEntropy.StinespringReduction
-import Oseledets.OperatorEntropy.Lieb.DilationProto
-import Oseledets.OperatorEntropy.Lieb.Dilation
-import Oseledets.OperatorEntropy.Lieb.Perspective
-import Oseledets.OperatorEntropy.Lieb.JointConvexity
-import Oseledets.OperatorEntropy.Lieb.DataProcessing
-import Oseledets.OperatorEntropy.Lieb.DataProcessingGeneral
-import Oseledets.OperatorEntropy.Lieb.DataProcessingCPTP
-import Oseledets.OperatorEntropy.Lieb.PetzEqualityRecovery28
-import Oseledets.OperatorEntropy.Lieb.PetzEqualitySufficiency
-import Oseledets.OperatorEntropy.Lieb.PetzEqualityGeneral
+import ErgodicTheory.MultiplicativeErgodic
+import ErgodicTheory.Lyapunov.Extensions.Corollaries
+import ErgodicTheory.Lyapunov.Extensions.Spectrum
+import ErgodicTheory.Lyapunov.Extensions.ExponentSums
+import ErgodicTheory.Lyapunov.Extensions.ExteriorCocycle
+import ErgodicTheory.Lyapunov.Extensions.DetIdentity
+import ErgodicTheory.Lyapunov.Extensions.Inverse
+import ErgodicTheory.Lyapunov.Extensions.Restriction
+import ErgodicTheory.Lyapunov.Extensions.NonErgodic
+import ErgodicTheory.Lyapunov.Extensions.Regularity
+import ErgodicTheory.Lyapunov.Extensions.Singular
+import ErgodicTheory.Lyapunov.Extensions.SingularExponent
+import ErgodicTheory.Lyapunov.Extensions.SingularExponentBounds
+import ErgodicTheory.Lyapunov.Extensions.SingularExponentTop
+import ErgodicTheory.Lyapunov.Extensions.SingularDet
+import ErgodicTheory.Lyapunov.Extensions.SingularDetGrowth
+import ErgodicTheory.Lyapunov.Extensions.SingularExponentGenLog
+import ErgodicTheory.Lyapunov.Extensions.SingularKernelStratum
+import ErgodicTheory.Lyapunov.Extensions.SingularRank
+import ErgodicTheory.Lyapunov.Extensions.SingularKernelSubmodule
+import ErgodicTheory.Lyapunov.Extensions.SingularEventualKernel
+import ErgodicTheory.Lyapunov.Extensions.SingularKernelEquivariant
+import ErgodicTheory.Lyapunov.Extensions.SingularRankMeasurable
+import ErgodicTheory.Lyapunov.Extensions.SingularRankMeasurable2
+import ErgodicTheory.Lyapunov.Extensions.SingularRankMinor
+import ErgodicTheory.Lyapunov.Extensions.SingularDimMeasurable
+import ErgodicTheory.Lyapunov.Extensions.SingularKernelMeasurableGraph
+import ErgodicTheory.Lyapunov.Extensions.SingularKernelProjector
+import ErgodicTheory.Lyapunov.Extensions.SingularEventualKernelProjector
+import ErgodicTheory.Lyapunov.Extensions.SingularSublevelProjector
+import ErgodicTheory.Lyapunov.Extensions.SingularSublevelEventual
+import ErgodicTheory.Lyapunov.Extensions.SingularSubspaceDist
+import ErgodicTheory.Lyapunov.Extensions.SingularPerDirectionExponent
+import ErgodicTheory.Lyapunov.Extensions.SingularSpectralValues
+import ErgodicTheory.Lyapunov.Extensions.SingularSpectrumConstant
+import ErgodicTheory.Lyapunov.Extensions.SingularSlowSpace
+import ErgodicTheory.Lyapunov.Extensions.SingularBandConverge
+import ErgodicTheory.Lyapunov.Extensions.SingularSlowSpaceUnconditional
+import ErgodicTheory.Lyapunov.Extensions.SingularLambdaBarFiltration
+import ErgodicTheory.Lyapunov.Extensions.SingularLambdaBarMeasurable
+import ErgodicTheory.Lyapunov.Extensions.ConstantCocycle
+import ErgodicTheory.TwoSided.Invertible
+import ErgodicTheory.TwoSided.SpectralRank
+import ErgodicTheory.TwoSided.MeasurableInf
+import ErgodicTheory.TwoSided.StrongExport
+import ErgodicTheory.TwoSided.KingmanMeans
+import ErgodicTheory.TwoSided.Reflection
+import ErgodicTheory.TwoSided.RestrictedCocycle
+import ErgodicTheory.TwoSided.RestrictedExponent
+import ErgodicTheory.TwoSided.Transversality
+import ErgodicTheory.TwoSided.SplittingAssembly
+import ErgodicTheory.Continuous.Flow
+import ErgodicTheory.Continuous.Reduction
+import ErgodicTheory.Continuous.BetweenTimes
+import ErgodicTheory.Continuous.Equivariance
+import ErgodicTheory.Continuous.MultiplicativeErgodicFlow
+import ErgodicTheory.Continuous.Suspension
+import ErgodicTheory.Continuous.SuspensionMeasure
+import ErgodicTheory.Continuous.SuspensionSpace
+import ErgodicTheory.Continuous.SuspensionFlow
+import ErgodicTheory.Continuous.SuspensionFlowMP
+import ErgodicTheory.Continuous.ReturnTimeExponent
+import ErgodicTheory.Continuous.ReturnTimeTopExponent
+import ErgodicTheory.Continuous.SuspensionCocycle
+import ErgodicTheory.Continuous.SuspensionLapCount
+import ErgodicTheory.Continuous.SuspensionFlowCocycle
+import ErgodicTheory.Continuous.SuspensionFlowCocycleMul
+import ErgodicTheory.Continuous.SuspensionCoverCocycle
+import ErgodicTheory.Continuous.SuspensionCoverFlow
+import ErgodicTheory.Continuous.SuspensionDescent
+import ErgodicTheory.Continuous.SuspensionNlap
+import ErgodicTheory.Continuous.SuspensionFlowExponent
+import ErgodicTheory.Continuous.SuspensionBetweenReturns
+import ErgodicTheory.Continuous.SuspensionFullTimeExponent
+import ErgodicTheory.Continuous.SuspensionBddRoofExponent
+import ErgodicTheory.Continuous.SuspensionMeasureTransfer
+import ErgodicTheory.Continuous.SuspensionDisintegration
+import ErgodicTheory.Continuous.SuspensionGrowthDescent
+import ErgodicTheory.Continuous.SuspensionExponentDescent
+import ErgodicTheory.Continuous.SuspensionSpaceExponent
+import ErgodicTheory.Continuous.SuspensionSpaceExponentValue
+import ErgodicTheory.Continuous.SuspensionQuotientImage
+import ErgodicTheory.Continuous.SuspensionFlowExponentValue
+import ErgodicTheory.Continuous.SuspensionReturnTimeMeasurable
+import ErgodicTheory.Continuous.SuspensionExponentSetEquiv
+import ErgodicTheory.Continuous.SuspensionExponentSetMeasurable
+import ErgodicTheory.Continuous.SuspensionFlowExponentFinal
+import ErgodicTheory.Smooth.DerivativeCocycle
+import ErgodicTheory.Smooth.Expanding
+import ErgodicTheory.Smooth.RokhlinExpanding
+import ErgodicTheory.Examples.Elementary
+import ErgodicTheory.Entropy.Partition
+import ErgodicTheory.Entropy.Join
+import ErgodicTheory.Entropy.Subadditive
+import ErgodicTheory.Entropy.Subadditive2
+import ErgodicTheory.Entropy.Fekete
+import ErgodicTheory.Entropy.KSEntropy
+import ErgodicTheory.Entropy.KSEntropyBounds
+import ErgodicTheory.Entropy.KSEntropySystem
+import ErgodicTheory.Entropy.KSEntropyProps
+import ErgodicTheory.Entropy.KSEntropyJoin
+import ErgodicTheory.Entropy.KSEntropyMono
+import ErgodicTheory.Entropy.MargulisRuelleAbstract
+import ErgodicTheory.Entropy.MargulisRuelleSharpened
+import ErgodicTheory.MeasureTheory.CoveringFromVolume
+import ErgodicTheory.MeasureTheory.AnalyticUniversallyMeasurable
+import ErgodicTheory.Entropy.Ruelle.Count
+import ErgodicTheory.Entropy.Ruelle.SharpCovering
+import ErgodicTheory.Entropy.Ruelle.MargulisRuelleSharp
+import ErgodicTheory.Singular.SingularFiltrationMeasurable
+import ErgodicTheory.Lyapunov.Extensions.ConstantCocycleSpectralRadius
+import ErgodicTheory.Lyapunov.Extensions.SingularStratumExponent
+import ErgodicTheory.Continuous.SuspensionPartialSumExponent
+import ErgodicTheory.Examples.RuelleDoubling
+import ErgodicTheory.Examples.CatMapOrbit
+import ErgodicTheory.Examples.CatMapToral
+import ErgodicTheory.Examples.CatMapDerivativeCocycle
+import ErgodicTheory.Examples.CatMapPerPartition
+import ErgodicTheory.Examples.Rokhlin.AbstractEqui
+import ErgodicTheory.Examples.Rokhlin.DoublingCrux
+import ErgodicTheory.Examples.Rokhlin.DoublingEquality
+import ErgodicTheory.Entropy.CondChainRule
+import ErgodicTheory.Entropy.CondPullback
+import ErgodicTheory.Entropy.CondJointPullback
+import ErgodicTheory.Entropy.CondMono
+import ErgodicTheory.Entropy.CondEntropyContinuous
+import ErgodicTheory.Entropy.CondKSEntropySystem
+import ErgodicTheory.Entropy.FactorEntropy
+import ErgodicTheory.Entropy.FactorGeneratorSaturate
+import ErgodicTheory.Entropy.CondGivenPartitionBridge
+import ErgodicTheory.Entropy.AbramovRokhlin
+import ErgodicTheory.Entropy.CondKSMovingLimit
+import ErgodicTheory.Entropy.AbramovRokhlinGenerator
+import ErgodicTheory.Entropy.GeneratorTheorem
+import ErgodicTheory.Krieger.ZIterate
+import ErgodicTheory.Krieger.InfoFunction
+import ErgodicTheory.Krieger.NameCount
+import ErgodicTheory.Krieger.RokhlinTower
+import ErgodicTheory.Krieger.Coding
+import ErgodicTheory.Krieger.Krieger
+import ErgodicTheory.Krieger.CountableEntropy
+import ErgodicTheory.Krieger.SMB
+import ErgodicTheory.Krieger.Generator
+import ErgodicTheory.Krieger.PrefixCode
+import ErgodicTheory.Krieger.SMBSharp
+import ErgodicTheory.Krieger.CodeMap
+import ErgodicTheory.Krieger.NameCountSharp
+import ErgodicTheory.Krieger.KeaneSerafin
+import ErgodicTheory.Krieger.Recovery
+import ErgodicTheory.Krieger.SMBPointwise
+import ErgodicTheory.Krieger.ColumnCode
+import ErgodicTheory.Krieger.TowerCode
+import ErgodicTheory.Krieger.SMBLeaves
+import ErgodicTheory.Krieger.CodeTerm
+import ErgodicTheory.Krieger.UpperSMB
+import ErgodicTheory.Krieger.Interleave
+import ErgodicTheory.Krieger.RefTower
+import ErgodicTheory.Krieger.StageBuild
+import ErgodicTheory.Krieger.Weave
+import ErgodicTheory.Krieger.Bracket
+import ErgodicTheory.Multifractal
+import ErgodicTheory.Entropy.GeneratorTheoremTwoSided
+import ErgodicTheory.Continuous.SuspensionStandardBorel
+import ErgodicTheory.Entropy.ProductIdEntropy
+import ErgodicTheory.Multifractal.BernoulliSuspensionEntropy
+import ErgodicTheory.Multifractal.BernoulliSuspensionCondEntropy
+import ErgodicTheory.Entropy.CondProductIdEntropy
+import ErgodicTheory.Entropy.CondChainRuleSup
+import ErgodicTheory.Entropy.CondKSEntropyConjugacy
+import ErgodicTheory.OperatorEntropy
+import ErgodicTheory.OperatorEntropy.RelativeEntropy
+import ErgodicTheory.OperatorEntropy.PetzRecovery
+import ErgodicTheory.OperatorEntropy.Lieb.OperatorConvex
+import ErgodicTheory.OperatorEntropy.RelEntropyAdditivity
+import ErgodicTheory.OperatorEntropy.StinespringReduction
+import ErgodicTheory.OperatorEntropy.Lieb.DilationProto
+import ErgodicTheory.OperatorEntropy.Lieb.Dilation
+import ErgodicTheory.OperatorEntropy.Lieb.Perspective
+import ErgodicTheory.OperatorEntropy.Lieb.JointConvexity
+import ErgodicTheory.OperatorEntropy.Lieb.DataProcessing
+import ErgodicTheory.OperatorEntropy.Lieb.DataProcessingGeneral
+import ErgodicTheory.OperatorEntropy.Lieb.DataProcessingCPTP
+import ErgodicTheory.OperatorEntropy.Lieb.PetzEqualityRecovery28
+import ErgodicTheory.OperatorEntropy.Lieb.PetzEqualitySufficiency
+import ErgodicTheory.OperatorEntropy.Lieb.PetzEqualityGeneral
 
 /-!
 # Axiom audit
 
-A guarded audit that the target theorem `Oseledets.oseledets_filtration` and every other
+A guarded audit that the target theorem `ErgodicTheory.oseledets_filtration` and every other
 headline of the formalization depend only on Lean/Mathlib's standard axioms — in particular on
 no `sorryAx` and no extra axioms. The audited declarations now span the whole development: the
 Oseledets filtration and its companion corollaries, the additive/exterior/inverse/singular
@@ -203,7 +203,7 @@ inequality, CNT dynamical entropy, and both directions of Petz's equality theore
 
 Each `#guard_msgs in #print axioms` block below pins a declaration's axiom set and **fails the
 build if it ever differs**. Almost every block expects `[propext, Classical.choice, Quot.sound]`;
-a few (e.g. `Oseledets.Krieger.sentinelEncodeList_injective`) honestly expect a smaller set. This
+a few (e.g. `ErgodicTheory.Krieger.sentinelEncodeList_injective`) honestly expect a smaller set. This
 `AxiomAudit` library is a `defaultTargets` entry (see `lakefile.toml`), so the check runs on every
 `lake build` as a continuously-enforced regression test rather than an informational dump (it
 produces no output on success).
@@ -214,421 +214,421 @@ number of audited headlines are honestly hypothesis-carrying (documented at thei
 sites).
 -/
 
-/-- info: 'Oseledets.oseledets_filtration' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.oseledets_filtration' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.oseledets_filtration
+#print axioms ErgodicTheory.oseledets_filtration
 
-/-- info: 'Oseledets.oseledets_filtration'' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.oseledets_filtration'' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.oseledets_filtration'
+#print axioms ErgodicTheory.oseledets_filtration'
 
-/-- info: 'Oseledets.oseledets_top_exponent_eq_furstenbergKesten' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.oseledets_top_exponent_eq_furstenbergKesten' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.oseledets_top_exponent_eq_furstenbergKesten
+#print axioms ErgodicTheory.oseledets_top_exponent_eq_furstenbergKesten
 
-/-- info: 'Oseledets.oseledets_filtration_with_multiplicities' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.oseledets_filtration_with_multiplicities' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.oseledets_filtration_with_multiplicities
+#print axioms ErgodicTheory.oseledets_filtration_with_multiplicities
 
-/-- info: 'Oseledets.IsOseledetsFiltration.ae_mem_iff_limsup_le' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.IsOseledetsFiltration.ae_mem_iff_limsup_le' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.IsOseledetsFiltration.ae_mem_iff_limsup_le
+#print axioms ErgodicTheory.IsOseledetsFiltration.ae_mem_iff_limsup_le
 
-/-- info: 'Oseledets.IsOseledetsFiltration.unique' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.IsOseledetsFiltration.unique' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.IsOseledetsFiltration.unique
+#print axioms ErgodicTheory.IsOseledetsFiltration.unique
 
-/-- info: 'Oseledets.IsOseledetsFiltration.tendsto_log_opNorm_cocycle' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.IsOseledetsFiltration.tendsto_log_opNorm_cocycle' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.IsOseledetsFiltration.tendsto_log_opNorm_cocycle
+#print axioms ErgodicTheory.IsOseledetsFiltration.tendsto_log_opNorm_cocycle
 
-/-- info: 'Oseledets.IsOseledetsFiltration.exists_finrank_ae_eq' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.IsOseledetsFiltration.exists_finrank_ae_eq' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.IsOseledetsFiltration.exists_finrank_ae_eq
+#print axioms ErgodicTheory.IsOseledetsFiltration.exists_finrank_ae_eq
 
-/-- info: 'Oseledets.IsOseledetsFiltration.exists_multiplicity' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.IsOseledetsFiltration.exists_multiplicity' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.IsOseledetsFiltration.exists_multiplicity
+#print axioms ErgodicTheory.IsOseledetsFiltration.exists_multiplicity
 
-/-- info: 'Oseledets.IsOseledetsFiltration.k_pos' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.IsOseledetsFiltration.k_pos' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.IsOseledetsFiltration.k_pos
+#print axioms ErgodicTheory.IsOseledetsFiltration.k_pos
 
 -- Additive extensions: the full Lyapunov spectrum object.
 
-/-- info: 'Oseledets.exponents_antitone' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.exponents_antitone' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.exponents_antitone
+#print axioms ErgodicTheory.exponents_antitone
 
-/-- info: 'Oseledets.exponents_tendsto_log_singularValue' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.exponents_tendsto_log_singularValue' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.exponents_tendsto_log_singularValue
+#print axioms ErgodicTheory.exponents_tendsto_log_singularValue
 
-/-- info: 'Oseledets.exp_exponents_eq_eigenvalues₀_oseledetsLimit' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.exp_exponents_eq_eigenvalues₀_oseledetsLimit' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.exp_exponents_eq_eigenvalues₀_oseledetsLimit
+#print axioms ErgodicTheory.exp_exponents_eq_eigenvalues₀_oseledetsLimit
 
 -- Exponent sums, sign/vanishing, and the top-k telescoping (items 1, 3).
 
-/-- info: 'Oseledets.sumPosExp_nonneg' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.sumPosExp_nonneg' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.sumPosExp_nonneg
+#print axioms ErgodicTheory.sumPosExp_nonneg
 
-/-- info: 'Oseledets.sumPosExp_eq_zero_iff' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.sumPosExp_eq_zero_iff' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.sumPosExp_eq_zero_iff
+#print axioms ErgodicTheory.sumPosExp_eq_zero_iff
 
-/-- info: 'Oseledets.sumPosExp_pos_iff' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.sumPosExp_pos_iff' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.sumPosExp_pos_iff
+#print axioms ErgodicTheory.sumPosExp_pos_iff
 
-/-- info: 'Oseledets.sumNegExp_nonpos' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.sumNegExp_nonpos' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.sumNegExp_nonpos
+#print axioms ErgodicTheory.sumNegExp_nonpos
 
-/-- info: 'Oseledets.sumNegExp_eq_zero_iff' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.sumNegExp_eq_zero_iff' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.sumNegExp_eq_zero_iff
+#print axioms ErgodicTheory.sumNegExp_eq_zero_iff
 
-/-- info: 'Oseledets.sumNegExp_neg_iff' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.sumNegExp_neg_iff' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.sumNegExp_neg_iff
+#print axioms ErgodicTheory.sumNegExp_neg_iff
 
-/-- info: 'Oseledets.gammaK_eq_sum_top_exponents' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.gammaK_eq_sum_top_exponents' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.gammaK_eq_sum_top_exponents
+#print axioms ErgodicTheory.gammaK_eq_sum_top_exponents
 
 -- Exterior/wedge growth (item 2) and the trace/determinant identity (item 7).
 
-/-- info: 'Oseledets.cocycle_extGen_eq_compound' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.cocycle_extGen_eq_compound' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.cocycle_extGen_eq_compound
+#print axioms ErgodicTheory.cocycle_extGen_eq_compound
 
-/-- info: 'Oseledets.tendsto_log_opNorm_compound_cocycle' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.tendsto_log_opNorm_compound_cocycle' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.tendsto_log_opNorm_compound_cocycle
+#print axioms ErgodicTheory.tendsto_log_opNorm_compound_cocycle
 
-/-- info: 'Oseledets.sumPosExp_eq_gammaK_card_pos' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.sumPosExp_eq_gammaK_card_pos' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.sumPosExp_eq_gammaK_card_pos
+#print axioms ErgodicTheory.sumPosExp_eq_gammaK_card_pos
 
-/-- info: 'Oseledets.sumAllExp_eq_integral_log_abs_det' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.sumAllExp_eq_integral_log_abs_det' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.sumAllExp_eq_integral_log_abs_det
+#print axioms ErgodicTheory.sumAllExp_eq_integral_log_abs_det
 
-/-- info: 'Oseledets.tendsto_log_abs_det_cocycle' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.tendsto_log_abs_det_cocycle' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.tendsto_log_abs_det_cocycle
+#print axioms ErgodicTheory.tendsto_log_abs_det_cocycle
 
-/-- info: 'Oseledets.tendsto_abs_det_cocycle_atTop_zero' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.tendsto_abs_det_cocycle_atTop_zero' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.tendsto_abs_det_cocycle_atTop_zero
+#print axioms ErgodicTheory.tendsto_abs_det_cocycle_atTop_zero
 
 -- Inverse / time reversal (item 8).
 
-/-- info: 'Oseledets.singularValues_inv' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.singularValues_inv' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.singularValues_inv
+#print axioms ErgodicTheory.singularValues_inv
 
-/-- info: 'Oseledets.tendsto_log_singularValue_inv_cocycle' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.tendsto_log_singularValue_inv_cocycle' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.tendsto_log_singularValue_inv_cocycle
+#print axioms ErgodicTheory.tendsto_log_singularValue_inv_cocycle
 
-/-- info: 'Oseledets.topExponent_inv_eq_neg_bot' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.topExponent_inv_eq_neg_bot' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.topExponent_inv_eq_neg_bot
+#print axioms ErgodicTheory.topExponent_inv_eq_neg_bot
 
 -- Restriction to an invariant subbundle (item 5).
 
-/-- info: 'Oseledets.restrictedSpectrum_subset_ae' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.restrictedSpectrum_subset_ae' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.restrictedSpectrum_subset_ae
+#print axioms ErgodicTheory.restrictedSpectrum_subset_ae
 
-/-- info: 'Oseledets.restricted_multiplicity_le' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.restricted_multiplicity_le' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.restricted_multiplicity_le
+#print axioms ErgodicTheory.restricted_multiplicity_le
 
-/-- info: 'Oseledets.restricted_finrank_invariant_ae' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.restricted_finrank_invariant_ae' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.restricted_finrank_invariant_ae
+#print axioms ErgodicTheory.restricted_finrank_invariant_ae
 
 -- Restriction Stage (ii): the full restricted (strict) Oseledets filtration (item 5, deferred part).
 
-/-- info: 'Oseledets.restricted_inf_measurableSubspace' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.restricted_inf_measurableSubspace' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.restricted_inf_measurableSubspace
+#print axioms ErgodicTheory.restricted_inf_measurableSubspace
 
-/-- info: 'Oseledets.restricted_inf_witness_equivariant' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.restricted_inf_witness_equivariant' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.restricted_inf_witness_equivariant
+#print axioms ErgodicTheory.restricted_inf_witness_equivariant
 
-/-- info: 'Oseledets.restricted_inf_witness_finrank_invariant_ae' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.restricted_inf_witness_finrank_invariant_ae' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.restricted_inf_witness_finrank_invariant_ae
+#print axioms ErgodicTheory.restricted_inf_witness_finrank_invariant_ae
 
-/-- info: 'Oseledets.restricted_inf_finrank_ae_eq' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.restricted_inf_finrank_ae_eq' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.restricted_inf_finrank_ae_eq
+#print axioms ErgodicTheory.restricted_inf_finrank_ae_eq
 
-/-- info: 'Oseledets.restricted_flag_structure_ae' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.restricted_flag_structure_ae' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.restricted_flag_structure_ae
+#print axioms ErgodicTheory.restricted_flag_structure_ae
 
-/-- info: 'Oseledets.restricted_strict_filtration' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.restricted_strict_filtration' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.restricted_strict_filtration
+#print axioms ErgodicTheory.restricted_strict_filtration
 
 -- Non-ergodic version (item 9A).
 
-/-- info: 'Oseledets.tendsto_gammaK_nonergodic' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.tendsto_gammaK_nonergodic' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.tendsto_gammaK_nonergodic
+#print axioms ErgodicTheory.tendsto_gammaK_nonergodic
 
-/-- info: 'Oseledets.exists_exponents_nonergodic' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.exists_exponents_nonergodic' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.exists_exponents_nonergodic
+#print axioms ErgodicTheory.exists_exponents_nonergodic
 
-/-- info: 'Oseledets.exists_sumPosExp_nonergodic' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.exists_sumPosExp_nonergodic' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.exists_sumPosExp_nonergodic
+#print axioms ErgodicTheory.exists_sumPosExp_nonergodic
 
 -- Regularity in the generator: Fekete inf + USC/LSC (item 4).
 
-/-- info: 'Oseledets.gammaK_eq_gammaKInf' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.gammaK_eq_gammaKInf' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.gammaK_eq_gammaKInf
+#print axioms ErgodicTheory.gammaK_eq_gammaKInf
 
-/-- info: 'Oseledets.gammaK_eq_iInf' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.gammaK_eq_iInf' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.gammaK_eq_iInf
+#print axioms ErgodicTheory.gammaK_eq_iInf
 
-/-- info: 'Oseledets.gammaK_upperSemicontinuous' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.gammaK_upperSemicontinuous' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.gammaK_upperSemicontinuous
+#print axioms ErgodicTheory.gammaK_upperSemicontinuous
 
-/-- info: 'Oseledets.topExponent_upperSemicontinuous' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.topExponent_upperSemicontinuous' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.topExponent_upperSemicontinuous
+#print axioms ErgodicTheory.topExponent_upperSemicontinuous
 
-/-- info: 'Oseledets.botExp_lowerSemicontinuous' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.botExp_lowerSemicontinuous' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.botExp_lowerSemicontinuous
+#print axioms ErgodicTheory.botExp_lowerSemicontinuous
 
-/-- info: 'Oseledets.botExp_eq_exponents_last' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.botExp_eq_exponents_last' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.botExp_eq_exponents_last
+#print axioms ErgodicTheory.botExp_eq_exponents_last
 
 -- Regularity regime 2: a.e.-convergence + uniform integrability (Vitali) continuity (item 4, deferred part).
 
-/-- info: 'Oseledets.ae_tendsto_logSprod_of_ae_tendsto_generator' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.ae_tendsto_logSprod_of_ae_tendsto_generator' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.ae_tendsto_logSprod_of_ae_tendsto_generator
+#print axioms ErgodicTheory.ae_tendsto_logSprod_of_ae_tendsto_generator
 
-/-- info: 'Oseledets.tendsto_integral_logSprod_of_unifIntegrable' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.tendsto_integral_logSprod_of_unifIntegrable' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.tendsto_integral_logSprod_of_unifIntegrable
+#print axioms ErgodicTheory.tendsto_integral_logSprod_of_unifIntegrable
 
-/-- info: 'Oseledets.tendsto_integral_logSprod_of_ae_unifIntegrable' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.tendsto_integral_logSprod_of_ae_unifIntegrable' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.tendsto_integral_logSprod_of_ae_unifIntegrable
+#print axioms ErgodicTheory.tendsto_integral_logSprod_of_ae_unifIntegrable
 
-/-- info: 'Oseledets.gammaK_upperSemicontinuous_of_ae_unifIntegrable' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.gammaK_upperSemicontinuous_of_ae_unifIntegrable' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.gammaK_upperSemicontinuous_of_ae_unifIntegrable
+#print axioms ErgodicTheory.gammaK_upperSemicontinuous_of_ae_unifIntegrable
 
 -- Singular / one-sided upper bounds without invertibility (item 9B).
 
-/-- info: 'Oseledets.limsup_logNorm_le_top' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.limsup_logNorm_le_top' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.limsup_logNorm_le_top
+#print axioms ErgodicTheory.limsup_logNorm_le_top
 
-/-- info: 'Oseledets.limsup_logSprod_le_top' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.limsup_logSprod_le_top' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.limsup_logSprod_le_top
+#print axioms ErgodicTheory.limsup_logSprod_le_top
 
 -- Singular / one-sided: EReal lift of the log⁺ limits + the limsup = exponent sharpening (item 9B).
 
-/-- info: 'Oseledets.tendsto_top_posLogNorm_ereal' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.tendsto_top_posLogNorm_ereal' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.tendsto_top_posLogNorm_ereal
+#print axioms ErgodicTheory.tendsto_top_posLogNorm_ereal
 
-/-- info: 'Oseledets.limsup_eq_liminf_posLogNorm' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.limsup_eq_liminf_posLogNorm' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.limsup_eq_liminf_posLogNorm
+#print axioms ErgodicTheory.limsup_eq_liminf_posLogNorm
 
-/-- info: 'Oseledets.limsup_logNorm_eq_top_of_pos' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.limsup_logNorm_eq_top_of_pos' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.limsup_logNorm_eq_top_of_pos
+#print axioms ErgodicTheory.limsup_logNorm_eq_top_of_pos
 
-/-- info: 'Oseledets.tendsto_top_posLogSprod_ereal' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.tendsto_top_posLogSprod_ereal' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.tendsto_top_posLogSprod_ereal
+#print axioms ErgodicTheory.tendsto_top_posLogSprod_ereal
 
-/-- info: 'Oseledets.limsup_logSprod_eq_top_of_pos' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.limsup_logSprod_eq_top_of_pos' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.limsup_logSprod_eq_top_of_pos
+#print axioms ErgodicTheory.limsup_logSprod_eq_top_of_pos
 
 -- Singular: the EReal-valued forward singular exponent γ_k (item 9B, invertibility-free).
 
-/-- info: 'Oseledets.measurable_forwardSingularExponent' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.measurable_forwardSingularExponent' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.measurable_forwardSingularExponent
+#print axioms ErgodicTheory.measurable_forwardSingularExponent
 
-/-- info: 'Oseledets.forwardSingularExponent_nonneg' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.forwardSingularExponent_nonneg' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.forwardSingularExponent_nonneg
+#print axioms ErgodicTheory.forwardSingularExponent_nonneg
 
-/-- info: 'Oseledets.forwardSingularExponent_zero' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.forwardSingularExponent_zero' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.forwardSingularExponent_zero
+#print axioms ErgodicTheory.forwardSingularExponent_zero
 
-/-- info: 'Oseledets.ae_forwardSingularExponent_eq_coe' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.ae_forwardSingularExponent_eq_coe' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.ae_forwardSingularExponent_eq_coe
+#print axioms ErgodicTheory.ae_forwardSingularExponent_eq_coe
 
-/-- info: 'Oseledets.ae_forwardSingularExponent_lt_top' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.ae_forwardSingularExponent_lt_top' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.ae_forwardSingularExponent_lt_top
+#print axioms ErgodicTheory.ae_forwardSingularExponent_lt_top
 
-/-- info: 'Oseledets.ae_forwardSingularExponent_ne_bot' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.ae_forwardSingularExponent_ne_bot' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.ae_forwardSingularExponent_ne_bot
+#print axioms ErgodicTheory.ae_forwardSingularExponent_ne_bot
 
 -- Issue #6 (EReal exponent tie-in): the cumulative exponent γ_k is bounded by k · γ_1.
 
-/-- info: 'Oseledets.forwardPosLogNormLimsup' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.forwardPosLogNormLimsup' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.forwardPosLogNormLimsup
+#print axioms ErgodicTheory.forwardPosLogNormLimsup
 
-/-- info: 'Oseledets.forwardSingularExponent_le_natCast_mul' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.forwardSingularExponent_le_natCast_mul' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.forwardSingularExponent_le_natCast_mul
+#print axioms ErgodicTheory.forwardSingularExponent_le_natCast_mul
 
 -- Issue #6 (EReal exponent tie-in): top singular value = L2 opNorm, hence γ_1 = top exponent.
 
-/-- info: 'Oseledets.top_singularValue_eq_opNorm' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.top_singularValue_eq_opNorm' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.top_singularValue_eq_opNorm
+#print axioms ErgodicTheory.top_singularValue_eq_opNorm
 
-/-- info: 'Oseledets.sprod_one_eq_opNorm' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.sprod_one_eq_opNorm' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.sprod_one_eq_opNorm
+#print axioms ErgodicTheory.sprod_one_eq_opNorm
 
-/-- info: 'Oseledets.forwardSingularExponent_one_eq' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.forwardSingularExponent_one_eq' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.forwardSingularExponent_one_eq
+#print axioms ErgodicTheory.forwardSingularExponent_one_eq
 
-/-- info: 'Oseledets.ae_forwardSingularExponent_one_eq_topExponent' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.ae_forwardSingularExponent_one_eq_topExponent' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.ae_forwardSingularExponent_one_eq_topExponent
+#print axioms ErgodicTheory.ae_forwardSingularExponent_one_eq_topExponent
 
 -- Issue #6 (top cumulative exponent): the full singular product is |det|, hence γ_d via log⁺|det|.
 
-/-- info: 'Oseledets.forwardSingularExponent_full_eq' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.forwardSingularExponent_full_eq' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.forwardSingularExponent_full_eq
+#print axioms ErgodicTheory.forwardSingularExponent_full_eq
 
 -- Issue #6 (γ_d det-growth tie): a.e. γ_d = ↑Γ_d⁺, and the genuine log⁺|det| growth when positive.
 
-/-- info: 'Oseledets.ae_forwardSingularExponent_full_eq_coe' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.ae_forwardSingularExponent_full_eq_coe' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.ae_forwardSingularExponent_full_eq_coe
+#print axioms ErgodicTheory.ae_forwardSingularExponent_full_eq_coe
 
-/-- info: 'Oseledets.ae_forwardSingularExponent_full_eq_det_growth' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.ae_forwardSingularExponent_full_eq_det_growth' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.ae_forwardSingularExponent_full_eq_det_growth
+#print axioms ErgodicTheory.ae_forwardSingularExponent_full_eq_det_growth
 
 -- Issue #6 (genuine-log EReal exponent): the kernel/volume-collapse −∞ stratum hook (Quas/Raghunathan).
 
-/-- info: 'Oseledets.measurable_forwardSingularExponentLog' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.measurable_forwardSingularExponentLog' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.measurable_forwardSingularExponentLog
+#print axioms ErgodicTheory.measurable_forwardSingularExponentLog
 
-/-- info: 'Oseledets.forwardSingularExponentLog_le' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.forwardSingularExponentLog_le' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.forwardSingularExponentLog_le
+#print axioms ErgodicTheory.forwardSingularExponentLog_le
 
-/-- info: 'Oseledets.forwardSingularExponentLog_eq_bot_of_tendsto' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.forwardSingularExponentLog_eq_bot_of_tendsto' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.forwardSingularExponentLog_eq_bot_of_tendsto
+#print axioms ErgodicTheory.forwardSingularExponentLog_eq_bot_of_tendsto
 
 -- Issue #6 (kernel stratum): the measurable −∞ volume-collapse set {x | γ_d^log = ⊥}.
 
-/-- info: 'Oseledets.singularKernelSet' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.singularKernelSet' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.singularKernelSet
+#print axioms ErgodicTheory.singularKernelSet
 
-/-- info: 'Oseledets.measurableSet_singularKernelSet' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.measurableSet_singularKernelSet' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.measurableSet_singularKernelSet
+#print axioms ErgodicTheory.measurableSet_singularKernelSet
 
-/-- info: 'Oseledets.measurableSet_finiteSingularExponent' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.measurableSet_finiteSingularExponent' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.measurableSet_finiteSingularExponent
+#print axioms ErgodicTheory.measurableSet_finiteSingularExponent
 
-/-- info: 'Oseledets.sprod_zero_imp_logTerm_zero' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.sprod_zero_imp_logTerm_zero' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.sprod_zero_imp_logTerm_zero
+#print axioms ErgodicTheory.sprod_zero_imp_logTerm_zero
 
-/-- info: 'Oseledets.singularKernelSet_compl_eq' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.singularKernelSet_compl_eq' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.singularKernelSet_compl_eq
+#print axioms ErgodicTheory.singularKernelSet_compl_eq
 
 -- Issue #6 (rank filtration data): the cocycle rank and its non-increasing rank-drop.
 
-/-- info: 'Oseledets.cocycleRank' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.cocycleRank' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.cocycleRank
+#print axioms ErgodicTheory.cocycleRank
 
-/-- info: 'Oseledets.cocycleRank_le' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.cocycleRank_le' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.cocycleRank_le
+#print axioms ErgodicTheory.cocycleRank_le
 
-/-- info: 'Oseledets.cocycleRank_add_le_min' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.cocycleRank_add_le_min' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.cocycleRank_add_le_min
+#print axioms ErgodicTheory.cocycleRank_add_le_min
 
 -- Issue #6 (filtration flag): the cocycle kernel submodule grows monotonically along the orbit.
 
-/-- info: 'Oseledets.cocycleKer' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.cocycleKer' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.cocycleKer
+#print axioms ErgodicTheory.cocycleKer
 
-/-- info: 'Oseledets.cocycleKer_le_add' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.cocycleKer_le_add' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.cocycleKer_le_add
+#print axioms ErgodicTheory.cocycleKer_le_add
 
-/-- info: 'Oseledets.finrank_cocycleKer' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.finrank_cocycleKer' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.finrank_cocycleKer
+#print axioms ErgodicTheory.finrank_cocycleKer
 
-/-- info: 'Oseledets.mem_cocycleKer' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.mem_cocycleKer' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.mem_cocycleKer
+#print axioms ErgodicTheory.mem_cocycleKer
 
 -- Issue #6 (filtration flag bottom): the eventual (stabilized) cocycle kernel.
 
-/-- info: 'Oseledets.cocycleKer_mono' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.cocycleKer_mono' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.cocycleKer_mono
+#print axioms ErgodicTheory.cocycleKer_mono
 
-/-- info: 'Oseledets.eventualKer' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.eventualKer' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.eventualKer
+#print axioms ErgodicTheory.eventualKer
 
-/-- info: 'Oseledets.finrank_eventualKer_le' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.finrank_eventualKer_le' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.finrank_eventualKer_le
+#print axioms ErgodicTheory.finrank_eventualKer_le
 
 -- Issue #6 (filtration flag equivariance): A_x maps the eventual kernel forward along T.
 
-/-- info: 'Oseledets.mapsTo_cocycleKer' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.mapsTo_cocycleKer' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.mapsTo_cocycleKer
+#print axioms ErgodicTheory.mapsTo_cocycleKer
 
-/-- info: 'Oseledets.eventualKer_equivariant' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.eventualKer_equivariant' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.eventualKer_equivariant
+#print axioms ErgodicTheory.eventualKer_equivariant
 
 -- Issue #6 (measurable flag): determinantal rank measurability — the full-rank stratum.
 
@@ -636,13 +636,13 @@ sites).
 #guard_msgs in
 #print axioms Matrix.rank_eq_card_iff_det_ne_zero
 
-/-- info: 'Oseledets.measurable_minor_det' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.measurable_minor_det' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.measurable_minor_det
+#print axioms ErgodicTheory.measurable_minor_det
 
-/-- info: 'Oseledets.measurableSet_cocycleRank_eq_full' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.measurableSet_cocycleRank_eq_full' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.measurableSet_cocycleRank_eq_full
+#print axioms ErgodicTheory.measurableSet_cocycleRank_eq_full
 
 -- Issue #6 (rank measurability): minor-nonsingular ⟹ rank ≥ r (easy direction) + the measurable subset.
 
@@ -650,9 +650,9 @@ sites).
 #guard_msgs in
 #print axioms Matrix.le_rank_of_submatrix_det_ne_zero
 
-/-- info: 'Oseledets.measurableSet_minors_subset_le_cocycleRank' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.measurableSet_minors_subset_le_cocycleRank' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.measurableSet_minors_subset_le_cocycleRank
+#print axioms ErgodicTheory.measurableSet_minors_subset_le_cocycleRank
 
 -- Issue #6 (measurable flag CLOSURE): rank = max nonsingular minor ⟹ the rank function is measurable.
 
@@ -660,959 +660,959 @@ sites).
 #guard_msgs in
 #print axioms Matrix.le_rank_iff_exists_submatrix_det_ne_zero
 
-/-- info: 'Oseledets.measurableSet_le_cocycleRank' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.measurableSet_le_cocycleRank' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.measurableSet_le_cocycleRank
+#print axioms ErgodicTheory.measurableSet_le_cocycleRank
 
-/-- info: 'Oseledets.measurable_cocycleRank' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.measurable_cocycleRank' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.measurable_cocycleRank
+#print axioms ErgodicTheory.measurable_cocycleRank
 
 -- Issue #6 (measurable dimension data — CLOSED): eventual rank + eventual-kernel dimension measurable.
 
-/-- info: 'Oseledets.measurable_eventualRank' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.measurable_eventualRank' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.measurable_eventualRank
+#print axioms ErgodicTheory.measurable_eventualRank
 
-/-- info: 'Oseledets.eventualKerDim' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.eventualKerDim' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.eventualKerDim
+#print axioms ErgodicTheory.eventualKerDim
 
-/-- info: 'Oseledets.measurable_eventualKerDim' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.measurable_eventualKerDim' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.measurable_eventualKerDim
+#print axioms ErgodicTheory.measurable_eventualKerDim
 
 -- Issue #6 (singular kernel graph): measurable graph of the eventual-kernel subspace family.
 
-/-- info: 'Oseledets.mem_eventualKer' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.mem_eventualKer' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.mem_eventualKer
+#print axioms ErgodicTheory.mem_eventualKer
 
-/-- info: 'Oseledets.measurable_cocycleMulVec' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.measurable_cocycleMulVec' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.measurable_cocycleMulVec
+#print axioms ErgodicTheory.measurable_cocycleMulVec
 
-/-- info: 'Oseledets.measurableSet_graph_cocycleKer' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.measurableSet_graph_cocycleKer' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.measurableSet_graph_cocycleKer
+#print axioms ErgodicTheory.measurableSet_graph_cocycleKer
 
-/-- info: 'Oseledets.measurableSet_graph_eventualKer' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.measurableSet_graph_eventualKer' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.measurableSet_graph_eventualKer
+#print axioms ErgodicTheory.measurableSet_graph_eventualKer
 
-/-- info: 'Oseledets.measurableSet_mem_eventualKer' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.measurableSet_mem_eventualKer' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.measurableSet_mem_eventualKer
+#print axioms ErgodicTheory.measurableSet_mem_eventualKer
 
 -- Issue #6 (singular kernel projector): Euclidean Gram spectral projector onto the cocycle kernel.
 
-/-- info: 'Oseledets.orthProjMatrix_cocycleKerEuclid_eq_spectralProjector' depends on axioms: [propext,
+/-- info: 'ErgodicTheory.orthProjMatrix_cocycleKerEuclid_eq_spectralProjector' depends on axioms: [propext,
  Classical.choice,
  Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.orthProjMatrix_cocycleKerEuclid_eq_spectralProjector
+#print axioms ErgodicTheory.orthProjMatrix_cocycleKerEuclid_eq_spectralProjector
 
-/-- info: 'Oseledets.measurable_orthProjMatrix_cocycleKer' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.measurable_orthProjMatrix_cocycleKer' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.measurable_orthProjMatrix_cocycleKer
+#print axioms ErgodicTheory.measurable_orthProjMatrix_cocycleKer
 
 -- Issue #6 (singular eventual-kernel projector): limit projector onto the eventual kernel.
 
-/-- info: 'Oseledets.measurable_orthProjMatrix_eventualKer' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.measurable_orthProjMatrix_eventualKer' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.measurable_orthProjMatrix_eventualKer
+#print axioms ErgodicTheory.measurable_orthProjMatrix_eventualKer
 
-/-- info: 'Oseledets.measurableSubspace_eventualKer' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.measurableSubspace_eventualKer' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.measurableSubspace_eventualKer
+#print axioms ErgodicTheory.measurableSubspace_eventualKer
 
 -- Issue #6 (sublevel slow-space stratum): the per-step, per-threshold Gram sublevel spectral
 -- subspace (the threshold-`t` generalization of the kernel stratum), and its measurability.
 
-/-- info: 'Oseledets.cocycleSublevelEuclid' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.cocycleSublevelEuclid' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.cocycleSublevelEuclid
+#print axioms ErgodicTheory.cocycleSublevelEuclid
 
-/-- info: 'Oseledets.measurableSubspace_cocycleSublevelEuclid' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.measurableSubspace_cocycleSublevelEuclid' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.measurableSubspace_cocycleSublevelEuclid
+#print axioms ErgodicTheory.measurableSubspace_cocycleSublevelEuclid
 
-/-- info: 'Oseledets.measurableSubspace_cocycleSublevel' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.measurableSubspace_cocycleSublevel' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.measurableSubspace_cocycleSublevel
+#print axioms ErgodicTheory.measurableSubspace_cocycleSublevel
 
 -- Two-sided splitting, Phase 0 (backward generator / cocycle infrastructure).
 
-/-- info: 'Oseledets.cocycle_backwardGen' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.cocycle_backwardGen' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.cocycle_backwardGen
+#print axioms ErgodicTheory.cocycle_backwardGen
 
 -- Two-sided splitting, P1 (forward dimension formula) and P7 (intersection measurability).
 
-/-- info: 'Oseledets.ae_finrank_vslow' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.ae_finrank_vslow' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.ae_finrank_vslow
+#print axioms ErgodicTheory.ae_finrank_vslow
 
-/-- info: 'Oseledets.MeasurableSubspace.inf' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.MeasurableSubspace.inf' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.MeasurableSubspace.inf
+#print axioms ErgodicTheory.MeasurableSubspace.inf
 
-/-- info: 'Oseledets.tendsto_pow_orthProj_inf' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.tendsto_pow_orthProj_inf' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.tendsto_pow_orthProj_inf
+#print axioms ErgodicTheory.tendsto_pow_orthProj_inf
 
 -- Two-sided splitting, P2 (strong one-sided export with the dimension formula).
 
-/-- info: 'Oseledets.oseledets_filtration_dims' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.oseledets_filtration_dims' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.oseledets_filtration_dims
+#print axioms ErgodicTheory.oseledets_filtration_dims
 
 -- Two-sided splitting, P3 (Kingman means identification — load-bearing new analytic lemma).
 
-/-- info: 'Oseledets.tendsto_kingman_ergodic_means' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.tendsto_kingman_ergodic_means' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.tendsto_kingman_ergodic_means
+#print axioms ErgodicTheory.tendsto_kingman_ergodic_means
 
 -- Two-sided splitting, P6 (exponent reflection: backward spectrum = -forward reversed).
 
-/-- info: 'Oseledets.sum_mu0_eq_neg_sum_lam0' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.sum_mu0_eq_neg_sum_lam0' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.sum_mu0_eq_neg_sum_lam0
+#print axioms ErgodicTheory.sum_mu0_eq_neg_sum_lam0
 
-/-- info: 'Oseledets.reflect_of_counting_and_sum' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.reflect_of_counting_and_sum' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.reflect_of_counting_and_sum
+#print axioms ErgodicTheory.reflect_of_counting_and_sum
 
-/-- info: 'Oseledets.expEnum_eq_neg_rev_of_counting' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.expEnum_eq_neg_rev_of_counting' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.expEnum_eq_neg_rev_of_counting
+#print axioms ErgodicTheory.expEnum_eq_neg_rev_of_counting
 
 -- Two-sided splitting, P4a (backward-orbit restricted envelope; analytic heart).
 
-/-- info: 'Oseledets.isSubadditiveCocycle_restLog' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.isSubadditiveCocycle_restLog' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.isSubadditiveCocycle_restLog
+#print axioms ErgodicTheory.isSubadditiveCocycle_restLog
 
-/-- info: 'Oseledets.restLog_eq_on_good' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.restLog_eq_on_good' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.restLog_eq_on_good
+#print axioms ErgodicTheory.restLog_eq_on_good
 
-/-- info: 'Oseledets.restLog_backward_kingman' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.restLog_backward_kingman' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.restLog_backward_kingman
+#print axioms ErgodicTheory.restLog_backward_kingman
 
 -- Two-sided splitting, P4b (restricted Kingman constant = λᵢ; backward envelope).
 
-/-- info: 'Oseledets.restricted_const_eq' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.restricted_const_eq' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.restricted_const_eq
+#print axioms ErgodicTheory.restricted_const_eq
 
 -- Two-sided splitting, P5 (transversality crux + counting bound).
 
-/-- info: 'Oseledets.ae_crux' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.ae_crux' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.ae_crux
+#print axioms ErgodicTheory.ae_crux
 
-/-- info: 'Oseledets.ae_counting' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.ae_counting' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.ae_counting
+#print axioms ErgodicTheory.ae_counting
 
-/-- info: 'Oseledets.inf_eq_bot_of_neg_sum' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.inf_eq_bot_of_neg_sum' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.inf_eq_bot_of_neg_sum
+#print axioms ErgodicTheory.inf_eq_bot_of_neg_sum
 
 -- Two-sided splitting, P8 (the headline theorem: invariant direct-sum decomposition).
 
-/-- info: 'Oseledets.oseledets_splitting' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.oseledets_splitting' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.oseledets_splitting
+#print axioms ErgodicTheory.oseledets_splitting
 
 -- Continuous-flow MET, P0 (flow + cocycle reduction identity).
 
-/-- info: 'Oseledets.MeasurePreservingFlow.natCast_eq_iterate' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.MeasurePreservingFlow.natCast_eq_iterate' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.MeasurePreservingFlow.natCast_eq_iterate
+#print axioms ErgodicTheory.MeasurePreservingFlow.natCast_eq_iterate
 
-/-- info: 'Oseledets.FlowCocycle.toCocycle_eq' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.FlowCocycle.toCocycle_eq' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.FlowCocycle.toCocycle_eq
+#print axioms ErgodicTheory.FlowCocycle.toCocycle_eq
 
 -- Continuous-flow MET, P2 (reduction to the discrete theorem at the time-1 map).
 
-/-- info: 'Oseledets.exists_isOseledetsFiltration_timeOne' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.exists_isOseledetsFiltration_timeOne' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.exists_isOseledetsFiltration_timeOne
+#print axioms ErgodicTheory.exists_isOseledetsFiltration_timeOne
 
 -- Continuous-flow MET, P1 (between-times sandwich: integer-time → continuous-time growth).
 
-/-- info: 'Oseledets.ae_tendsto_flowError_zero' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.ae_tendsto_flowError_zero' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.ae_tendsto_flowError_zero
+#print axioms ErgodicTheory.ae_tendsto_flowError_zero
 
-/-- info: 'Oseledets.tendsto_log_norm_atTop_of_discrete' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.tendsto_log_norm_atTop_of_discrete' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.tendsto_log_norm_atTop_of_discrete
+#print axioms ErgodicTheory.tendsto_log_norm_atTop_of_discrete
 
 -- Continuous-flow MET, P3a (flow-equivariance machinery: fixed-time sublinearity, limsup shift).
 
-/-- info: 'Oseledets.ae_tendsto_logNorm_fixedTime_zero' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.ae_tendsto_logNorm_fixedTime_zero' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.ae_tendsto_logNorm_fixedTime_zero
+#print axioms ErgodicTheory.ae_tendsto_logNorm_fixedTime_zero
 
-/-- info: 'Oseledets.glim_shift' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.glim_shift' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.glim_shift
+#print axioms ErgodicTheory.glim_shift
 
-/-- info: 'Oseledets.ae_flow_equivariant' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.ae_flow_equivariant' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.ae_flow_equivariant
+#print axioms ErgodicTheory.ae_flow_equivariant
 
 -- Continuous-flow MET, P3b (the headline theorem: flow-equivariant filtration, continuous-time growth).
 
-/-- info: 'Oseledets.oseledets_flow' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.oseledets_flow' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.oseledets_flow
+#print axioms ErgodicTheory.oseledets_flow
 
 -- Issue #1: constant-cocycle Lyapunov exponents (specialization to a constant generator `A ≡ M`).
 
-/-- info: 'Oseledets.cocycle_const' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.cocycle_const' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.cocycle_const
+#print axioms ErgodicTheory.cocycle_const
 
-/-- info: 'Oseledets.qpow_const' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.qpow_const' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.qpow_const
+#print axioms ErgodicTheory.qpow_const
 
-/-- info: 'Oseledets.oseledetsLimit_const' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.oseledetsLimit_const' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.oseledetsLimit_const
+#print axioms ErgodicTheory.oseledetsLimit_const
 
 /--
-info: 'Oseledets.exp_exponents_const_eq_eigenvalues₀_absMatrix' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: 'ErgodicTheory.exp_exponents_const_eq_eigenvalues₀_absMatrix' depends on axioms: [propext, Classical.choice, Quot.sound]
 -/
 #guard_msgs in
-#print axioms Oseledets.exp_exponents_const_eq_eigenvalues₀_absMatrix
+#print axioms ErgodicTheory.exp_exponents_const_eq_eigenvalues₀_absMatrix
 
-/-- info: 'Oseledets.exponents_const' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.exponents_const' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.exponents_const
+#print axioms ErgodicTheory.exponents_const
 
 -- Issue #2: derivative (tangent) cocycle of a differentiable self-map.
 
-/-- info: 'Oseledets.chainRule_cocycle' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.chainRule_cocycle' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.chainRule_cocycle
+#print axioms ErgodicTheory.chainRule_cocycle
 
 /--
-info: 'Oseledets.oseledets_filtration_derivativeCocycle' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: 'ErgodicTheory.oseledets_filtration_derivativeCocycle' depends on axioms: [propext, Classical.choice, Quot.sound]
 -/
 #guard_msgs in
-#print axioms Oseledets.oseledets_filtration_derivativeCocycle
+#print axioms ErgodicTheory.oseledets_filtration_derivativeCocycle
 
 -- Issue #3: concrete worked examples (doubling map, irrational rotation, Arnold cat-map matrix).
 
-/-- info: 'Oseledets.doublingMap_topExponent_eq_log_two' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.doublingMap_topExponent_eq_log_two' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.doublingMap_topExponent_eq_log_two
+#print axioms ErgodicTheory.doublingMap_topExponent_eq_log_two
 
-/-- info: 'Oseledets.irrationalRotation_exponents_eq_zero' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.irrationalRotation_exponents_eq_zero' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.irrationalRotation_exponents_eq_zero
+#print axioms ErgodicTheory.irrationalRotation_exponents_eq_zero
 
-/-- info: 'Oseledets.catMapMatrix_exponents' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.catMapMatrix_exponents' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.catMapMatrix_exponents
+#print axioms ErgodicTheory.catMapMatrix_exponents
 
-/-- info: 'Oseledets.catMapMatrix_exponents_sum_eq_zero' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.catMapMatrix_exponents_sum_eq_zero' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.catMapMatrix_exponents_sum_eq_zero
+#print axioms ErgodicTheory.catMapMatrix_exponents_sum_eq_zero
 
 -- Issue #4 (foundation): Shannon entropy of a finite measurable partition (toward KS entropy).
 
-/-- info: 'Oseledets.Entropy.entropy_nonneg' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.Entropy.entropy_nonneg' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.Entropy.entropy_nonneg
+#print axioms ErgodicTheory.Entropy.entropy_nonneg
 
-/-- info: 'Oseledets.Entropy.entropy_le_log_card' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.Entropy.entropy_le_log_card' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.Entropy.entropy_le_log_card
+#print axioms ErgodicTheory.Entropy.entropy_le_log_card
 
 /--
-info: 'Oseledets.Entropy.MeasurePartition.sum_toReal_measure_eq_one' depends on axioms: [propext,
+info: 'ErgodicTheory.Entropy.MeasurePartition.sum_toReal_measure_eq_one' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
 -/
 #guard_msgs in
-#print axioms Oseledets.Entropy.MeasurePartition.sum_toReal_measure_eq_one
+#print axioms ErgodicTheory.Entropy.MeasurePartition.sum_toReal_measure_eq_one
 
-/-- info: 'Oseledets.Entropy.entropy_le_log_card_partition' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.Entropy.entropy_le_log_card_partition' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.Entropy.entropy_le_log_card_partition
+#print axioms ErgodicTheory.Entropy.entropy_le_log_card_partition
 
-/-- info: 'Oseledets.isAddFundamentalDomain_suspensionDomain' depends on axioms:
+/-- info: 'ErgodicTheory.isAddFundamentalDomain_suspensionDomain' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.isAddFundamentalDomain_suspensionDomain
+#print axioms ErgodicTheory.isAddFundamentalDomain_suspensionDomain
 
-/-- info: 'Oseledets.suspension_exists_unique_act_mem' depends on axioms:
+/-- info: 'ErgodicTheory.suspension_exists_unique_act_mem' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.suspension_exists_unique_act_mem
+#print axioms ErgodicTheory.suspension_exists_unique_act_mem
 
-/-- info: 'Oseledets.exists_unique_lt_of_strictMono' depends on axioms:
+/-- info: 'ErgodicTheory.exists_unique_lt_of_strictMono' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.exists_unique_lt_of_strictMono
+#print axioms ErgodicTheory.exists_unique_lt_of_strictMono
 
-/-- info: 'Oseledets.roofSum_add_one' depends on axioms:
+/-- info: 'ErgodicTheory.roofSum_add_one' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.roofSum_add_one
+#print axioms ErgodicTheory.roofSum_add_one
 
 -- Issue #5 (measure layer): the suspension invariant-measure foundation.
 
-/-- info: 'Oseledets.measurePreserving_shear' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.measurePreserving_shear' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.measurePreserving_shear
+#print axioms ErgodicTheory.measurePreserving_shear
 
-/-- info: 'Oseledets.measurePreserving_suspensionGen' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.measurePreserving_suspensionGen' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.measurePreserving_suspensionGen
+#print axioms ErgodicTheory.measurePreserving_suspensionGen
 
-/-- info: 'Oseledets.measure_suspensionDomain' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.measure_suspensionDomain' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.measure_suspensionDomain
+#print axioms ErgodicTheory.measure_suspensionDomain
 
 -- Issue #4 (entropy layer): T-invariance of partition entropy (toward the Fekete h(α,T) limit).
 
-/-- info: 'Oseledets.Entropy.entropy_comp_preimage' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.Entropy.entropy_comp_preimage' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.Entropy.entropy_comp_preimage
+#print axioms ErgodicTheory.Entropy.entropy_comp_preimage
 
 -- Issue #4 (entropy subadditivity): H(α∨β) ≤ H(α)+H(β) — the gate to the Fekete h(α,T) limit.
 
-/-- info: 'Oseledets.Entropy.MeasurePartition.measure_eq_sum_inter' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.Entropy.MeasurePartition.measure_eq_sum_inter' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.Entropy.MeasurePartition.measure_eq_sum_inter
+#print axioms ErgodicTheory.Entropy.MeasurePartition.measure_eq_sum_inter
 
-/-- info: 'Oseledets.Entropy.sum_negMulLog_le' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.Entropy.sum_negMulLog_le' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.Entropy.sum_negMulLog_le
+#print axioms ErgodicTheory.Entropy.sum_negMulLog_le
 
-/-- info: 'Oseledets.Entropy.entropy_join_le' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.Entropy.entropy_join_le' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.Entropy.entropy_join_le
+#print axioms ErgodicTheory.Entropy.entropy_join_le
 
 -- Issue #4 (pullback partition): the T⁻¹ partition and the T-invariance of its entropy.
 
-/-- info: 'Oseledets.Entropy.entropy_pullback' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.Entropy.entropy_pullback' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.Entropy.entropy_pullback
+#print axioms ErgodicTheory.Entropy.entropy_pullback
 
 -- Issue #4 (Fekete limit): the flat Fin-indexed KS join, its subadditive entropy sequence, and
 -- the Kolmogorov–Sinai entropy as the Fekete limit.
 
-/-- info: 'Oseledets.Entropy.ksJoin' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.Entropy.ksJoin' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.Entropy.ksJoin
+#print axioms ErgodicTheory.Entropy.ksJoin
 
-/-- info: 'Oseledets.Entropy.ksEntropySeq' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.Entropy.ksEntropySeq' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.Entropy.ksEntropySeq
+#print axioms ErgodicTheory.Entropy.ksEntropySeq
 
-/-- info: 'Oseledets.Entropy.ksEntropySeq_subadditive' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.Entropy.ksEntropySeq_subadditive' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.Entropy.ksEntropySeq_subadditive
+#print axioms ErgodicTheory.Entropy.ksEntropySeq_subadditive
 
-/-- info: 'Oseledets.Entropy.ksEntropyPartition' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.Entropy.ksEntropyPartition' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.Entropy.ksEntropyPartition
+#print axioms ErgodicTheory.Entropy.ksEntropyPartition
 
-/-- info: 'Oseledets.Entropy.tendsto_ksEntropySeq' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.Entropy.tendsto_ksEntropySeq' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.Entropy.tendsto_ksEntropySeq
+#print axioms ErgodicTheory.Entropy.tendsto_ksEntropySeq
 
 -- Issue #4 (KS entropy bounds): h(α,T) ≥ 0 and h(α,T) ≤ H(α).
 
-/-- info: 'Oseledets.Entropy.ksEntropySeq_one' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.Entropy.ksEntropySeq_one' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.Entropy.ksEntropySeq_one
+#print axioms ErgodicTheory.Entropy.ksEntropySeq_one
 
-/-- info: 'Oseledets.Entropy.ksEntropySeq_le_nsmul' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.Entropy.ksEntropySeq_le_nsmul' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.Entropy.ksEntropySeq_le_nsmul
+#print axioms ErgodicTheory.Entropy.ksEntropySeq_le_nsmul
 
-/-- info: 'Oseledets.Entropy.ksEntropyPartition_nonneg' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.Entropy.ksEntropyPartition_nonneg' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.Entropy.ksEntropyPartition_nonneg
+#print axioms ErgodicTheory.Entropy.ksEntropyPartition_nonneg
 
-/-- info: 'Oseledets.Entropy.ksEntropyPartition_le_entropy' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.Entropy.ksEntropyPartition_le_entropy' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.Entropy.ksEntropyPartition_le_entropy
+#print axioms ErgodicTheory.Entropy.ksEntropyPartition_le_entropy
 
 -- Issue #4 (KS entropy of the system): h(T) = ⨆_α h(α,T) as an EReal supremum.
 
-/-- info: 'Oseledets.Entropy.ksEntropy' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.Entropy.ksEntropy' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.Entropy.ksEntropy
+#print axioms ErgodicTheory.Entropy.ksEntropy
 
-/-- info: 'Oseledets.Entropy.le_ksEntropy' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.Entropy.le_ksEntropy' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.Entropy.le_ksEntropy
+#print axioms ErgodicTheory.Entropy.le_ksEntropy
 
-/-- info: 'Oseledets.Entropy.ksEntropy_nonneg' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.Entropy.ksEntropy_nonneg' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.Entropy.ksEntropy_nonneg
+#print axioms ErgodicTheory.Entropy.ksEntropy_nonneg
 
 -- Issue #4 (KS entropy property): the Fekete inf bound h(α,T) ≤ ksEntropySeq n / n.
 
-/-- info: 'Oseledets.Entropy.bddBelow_ksEntropySeq_div' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.Entropy.bddBelow_ksEntropySeq_div' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.Entropy.bddBelow_ksEntropySeq_div
+#print axioms ErgodicTheory.Entropy.bddBelow_ksEntropySeq_div
 
-/-- info: 'Oseledets.Entropy.ksEntropyPartition_le_ksEntropySeq_div' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.Entropy.ksEntropyPartition_le_ksEntropySeq_div' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.Entropy.ksEntropyPartition_le_ksEntropySeq_div
+#print axioms ErgodicTheory.Entropy.ksEntropyPartition_le_ksEntropySeq_div
 
 -- Issue #4 (dynamical subadditivity): h(α∨β,T) ≤ h(α,T) + h(β,T).
 
-/-- info: 'Oseledets.Entropy.joinPartition' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.Entropy.joinPartition' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.Entropy.joinPartition
+#print axioms ErgodicTheory.Entropy.joinPartition
 
-/-- info: 'Oseledets.Entropy.ksEntropySeq_join_le' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.Entropy.ksEntropySeq_join_le' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.Entropy.ksEntropySeq_join_le
+#print axioms ErgodicTheory.Entropy.ksEntropySeq_join_le
 
-/-- info: 'Oseledets.Entropy.ksEntropyPartition_join_le' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.Entropy.ksEntropyPartition_join_le' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.Entropy.ksEntropyPartition_join_le
+#print axioms ErgodicTheory.Entropy.ksEntropyPartition_join_le
 
 -- Issue #4 (entropy refinement-monotonicity): h(α,T) ≤ h(α∨β,T).
 
-/-- info: 'Oseledets.Entropy.entropy_le_entropy_join' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.Entropy.entropy_le_entropy_join' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.Entropy.entropy_le_entropy_join
+#print axioms ErgodicTheory.Entropy.entropy_le_entropy_join
 
-/-- info: 'Oseledets.Entropy.ksEntropyPartition_le_join' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.Entropy.ksEntropyPartition_le_join' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.Entropy.ksEntropyPartition_le_join
+#print axioms ErgodicTheory.Entropy.ksEntropyPartition_le_join
 
 -- Issue #5 (quotient layer): the suspension space and its invariant probability measure.
 
-/-- info: 'Oseledets.measurable_suspensionMk' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.measurable_suspensionMk' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.measurable_suspensionMk
+#print axioms ErgodicTheory.measurable_suspensionMk
 
-/-- info: 'Oseledets.suspensionMeasure₀_univ_eq_measure_box' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.suspensionMeasure₀_univ_eq_measure_box' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.suspensionMeasure₀_univ_eq_measure_box
+#print axioms ErgodicTheory.suspensionMeasure₀_univ_eq_measure_box
 
-/-- info: 'Oseledets.suspensionMeasure_univ' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.suspensionMeasure_univ' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.suspensionMeasure_univ
+#print axioms ErgodicTheory.suspensionMeasure_univ
 
-/-- info: 'Oseledets.isProbabilityMeasure_suspensionMeasure' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.isProbabilityMeasure_suspensionMeasure' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.isProbabilityMeasure_suspensionMeasure
+#print axioms ErgodicTheory.isProbabilityMeasure_suspensionMeasure
 
 -- Issue #5 (flow layer): the suspension flow ζ_t (descent of the vertical translation) on Xᵗ.
 
-/-- info: 'Oseledets.measurePreserving_translate' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.measurePreserving_translate' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.measurePreserving_translate
+#print axioms ErgodicTheory.measurePreserving_translate
 
-/-- info: 'Oseledets.suspensionFlowMap_zero' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.suspensionFlowMap_zero' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.suspensionFlowMap_zero
+#print axioms ErgodicTheory.suspensionFlowMap_zero
 
-/-- info: 'Oseledets.suspensionFlowMap_add' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.suspensionFlowMap_add' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.suspensionFlowMap_add
+#print axioms ErgodicTheory.suspensionFlowMap_add
 
-/-- info: 'Oseledets.measurable_suspensionFlowMap' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.measurable_suspensionFlowMap' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.measurable_suspensionFlowMap
+#print axioms ErgodicTheory.measurable_suspensionFlowMap
 
 -- Issue #5 (flow measure-preservation): the suspension flow is a measure-preserving flow.
 
-/-- info: 'Oseledets.measurePreserving_suspensionFlowMap' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.measurePreserving_suspensionFlowMap' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.measurePreserving_suspensionFlowMap
+#print axioms ErgodicTheory.measurePreserving_suspensionFlowMap
 
-/-- info: 'Oseledets.suspensionFlow' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.suspensionFlow' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.suspensionFlow
+#print axioms ErgodicTheory.suspensionFlow
 
 -- Issue #5 (transfer core): the return-time exponent log‖A⁽ⁿ⁾‖ / τ⁽ⁿ⁾ → λ / ∫τ.
 
-/-- info: 'Oseledets.tendsto_div_of_tendsto_div' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.tendsto_div_of_tendsto_div' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.tendsto_div_of_tendsto_div
+#print axioms ErgodicTheory.tendsto_div_of_tendsto_div
 
-/-- info: 'Oseledets.roofSum_natCast_eq_birkhoffSum' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.roofSum_natCast_eq_birkhoffSum' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.roofSum_natCast_eq_birkhoffSum
+#print axioms ErgodicTheory.roofSum_natCast_eq_birkhoffSum
 
-/-- info: 'Oseledets.tendsto_roofAverage_ae' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.tendsto_roofAverage_ae' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.tendsto_roofAverage_ae
+#print axioms ErgodicTheory.tendsto_roofAverage_ae
 
-/-- info: 'Oseledets.integral_roof_pos' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.integral_roof_pos' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.integral_roof_pos
+#print axioms ErgodicTheory.integral_roof_pos
 
-/-- info: 'Oseledets.returnTime_tendsto_exponent' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.returnTime_tendsto_exponent' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.returnTime_tendsto_exponent
+#print axioms ErgodicTheory.returnTime_tendsto_exponent
 
 -- Issue #5 (top-exponent transfer): the MET top exponent transfers as λ_top / ∫τ.
 
-/-- info: 'Oseledets.IsOseledetsFiltration.returnTime_tendsto_topExponent' depends on axioms: [propext,
+/-- info: 'ErgodicTheory.IsOseledetsFiltration.returnTime_tendsto_topExponent' depends on axioms: [propext,
  Classical.choice,
  Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.IsOseledetsFiltration.returnTime_tendsto_topExponent
+#print axioms ErgodicTheory.IsOseledetsFiltration.returnTime_tendsto_topExponent
 
 -- Issue #5 (flow cocycle core): the return-indexed suspension cocycle and its multiplicativity.
 
-/-- info: 'Oseledets.suspensionCocycleReturn_add' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.suspensionCocycleReturn_add' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.suspensionCocycleReturn_add
+#print axioms ErgodicTheory.suspensionCocycleReturn_add
 
-/-- info: 'Oseledets.measurable_suspensionCocycleReturn' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.measurable_suspensionCocycleReturn' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.measurable_suspensionCocycleReturn
+#print axioms ErgodicTheory.measurable_suspensionCocycleReturn
 
-/-- info: 'Oseledets.returnTime_add' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.returnTime_add' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.returnTime_add
+#print axioms ErgodicTheory.returnTime_add
 
-/-- info: 'Oseledets.suspensionCocycleReturn_returnTime' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.suspensionCocycleReturn_returnTime' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.suspensionCocycleReturn_returnTime
+#print axioms ErgodicTheory.suspensionCocycleReturn_returnTime
 
 -- Issue #5 (special-flow lap counter): return times diverge, and the first-passage lap count N(t,x).
 
-/-- info: 'Oseledets.returnTime_strictMono' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.returnTime_strictMono' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.returnTime_strictMono
+#print axioms ErgodicTheory.returnTime_strictMono
 
-/-- info: 'Oseledets.returnTime_tendsto_atTop' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.returnTime_tendsto_atTop' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.returnTime_tendsto_atTop
+#print axioms ErgodicTheory.returnTime_tendsto_atTop
 
-/-- info: 'Oseledets.lapCount_returnTime_le' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.lapCount_returnTime_le' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.lapCount_returnTime_le
+#print axioms ErgodicTheory.lapCount_returnTime_le
 
-/-- info: 'Oseledets.lapCount_lt_returnTime_succ' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.lapCount_lt_returnTime_succ' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.lapCount_lt_returnTime_succ
+#print axioms ErgodicTheory.lapCount_lt_returnTime_succ
 
 -- Issue #5 (flow cocycle on the section): Ψ_t = A^(lapCount t) and the return identity.
 
-/-- info: 'Oseledets.flowCocycleSection' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.flowCocycleSection' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.flowCocycleSection
+#print axioms ErgodicTheory.flowCocycleSection
 
-/-- info: 'Oseledets.lapCount_returnTime_eq' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.lapCount_returnTime_eq' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.lapCount_returnTime_eq
+#print axioms ErgodicTheory.lapCount_returnTime_eq
 
-/-- info: 'Oseledets.flowCocycleSection_returnTime' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.flowCocycleSection_returnTime' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.flowCocycleSection_returnTime
+#print axioms ErgodicTheory.flowCocycleSection_returnTime
 
-/-- info: 'Oseledets.flowCocycleSection_zero' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.flowCocycleSection_zero' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.flowCocycleSection_zero
+#print axioms ErgodicTheory.flowCocycleSection_zero
 
 -- Issue #5 (flow cocycle multiplicativity): the base-cocycle identity at return times.
 
-/-- info: 'Oseledets.flowCocycleSection_returnTime_add' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.flowCocycleSection_returnTime_add' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.flowCocycleSection_returnTime_add
+#print axioms ErgodicTheory.flowCocycleSection_returnTime_add
 
-/-- info: 'Oseledets.flowCocycleSection_returnTime_succ' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.flowCocycleSection_returnTime_succ' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.flowCocycleSection_returnTime_succ
+#print axioms ErgodicTheory.flowCocycleSection_returnTime_succ
 
 -- Issue #5 (cover extension): lapCount monotone + the off-section lap-count additivity.
 
-/-- info: 'Oseledets.lapCount_mono' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.lapCount_mono' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.lapCount_mono
+#print axioms ErgodicTheory.lapCount_mono
 
-/-- info: 'Oseledets.lapCount_unique' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.lapCount_unique' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.lapCount_unique
+#print axioms ErgodicTheory.lapCount_unique
 
-/-- info: 'Oseledets.lapCount_returnTime_add' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.lapCount_returnTime_add' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.lapCount_returnTime_add
+#print axioms ErgodicTheory.lapCount_returnTime_add
 
 -- Issue #5 (cover flow cocycle): the X×ℝ cover cocycle + its section return-boundary identity.
 
-/-- info: 'Oseledets.coverCocycle' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.coverCocycle' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.coverCocycle
+#print axioms ErgodicTheory.coverCocycle
 
-/-- info: 'Oseledets.coverCocycle_section_returnTime' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.coverCocycle_section_returnTime' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.coverCocycle_section_returnTime
+#print axioms ErgodicTheory.coverCocycle_section_returnTime
 
 -- Issue #5 (descent): the one-lap height reduction and its operator-norm bound.
 
-/-- info: 'Oseledets.coverCocycle_one_lap' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.coverCocycle_one_lap' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.coverCocycle_one_lap
+#print axioms ErgodicTheory.coverCocycle_one_lap
 
-/-- info: 'Oseledets.coverCocycle_one_lap_opNorm_le' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.coverCocycle_one_lap_opNorm_le' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.coverCocycle_one_lap_opNorm_le
+#print axioms ErgodicTheory.coverCocycle_one_lap_opNorm_le
 
 -- Issue #5 (flow exponent bridge): cover-cocycle norm = base norm at return times.
 
-/-- info: 'Oseledets.coverCocycle_returnTime_eq' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.coverCocycle_returnTime_eq' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.coverCocycle_returnTime_eq
+#print axioms ErgodicTheory.coverCocycle_returnTime_eq
 
-/-- info: 'Oseledets.coverCocycle_returnTime_opNorm_le' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.coverCocycle_returnTime_opNorm_le' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.coverCocycle_returnTime_opNorm_le
+#print axioms ErgodicTheory.coverCocycle_returnTime_opNorm_le
 
 -- Issue #5 (HEADLINE): the special-flow Lyapunov exponent along returns = λ_base / ∫τ.
 
-/-- info: 'Oseledets.coverCocycle_returnTime_tendsto_exponent' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.coverCocycle_returnTime_tendsto_exponent' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.coverCocycle_returnTime_tendsto_exponent
+#print axioms ErgodicTheory.coverCocycle_returnTime_tendsto_exponent
 
-/-- info: 'Oseledets.IsOseledetsFiltration.coverCocycle_returnTime_tendsto_topExponent' depends on axioms: [propext,
+/-- info: 'ErgodicTheory.IsOseledetsFiltration.coverCocycle_returnTime_tendsto_topExponent' depends on axioms: [propext,
  Classical.choice,
  Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.IsOseledetsFiltration.coverCocycle_returnTime_tendsto_topExponent
+#print axioms ErgodicTheory.IsOseledetsFiltration.coverCocycle_returnTime_tendsto_topExponent
 
 -- Issue #5 (special-flow structure): the flow cocycle is constant = A^(n) between returns.
 
-/-- info: 'Oseledets.coverCocycle_const_between_returns' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.coverCocycle_const_between_returns' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.coverCocycle_const_between_returns
+#print axioms ErgodicTheory.coverCocycle_const_between_returns
 
 -- Issue #5 (full-time reduction): flow-cocycle norm = base norm at the lap count + the sandwich.
 
-/-- info: 'Oseledets.coverCocycle_norm_eq_lapCount' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.coverCocycle_norm_eq_lapCount' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.coverCocycle_norm_eq_lapCount
+#print axioms ErgodicTheory.coverCocycle_norm_eq_lapCount
 
-/-- info: 'Oseledets.log_coverCocycle_div_eq_lapCount' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.log_coverCocycle_div_eq_lapCount' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.log_coverCocycle_div_eq_lapCount
+#print axioms ErgodicTheory.log_coverCocycle_div_eq_lapCount
 
 -- Issue #5 (HEADLINE closure): full-time special-flow exponent = λ_base/∫τ under a bounded roof.
 
-/-- info: 'Oseledets.lapCount_tendsto_atTop' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.lapCount_tendsto_atTop' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.lapCount_tendsto_atTop
+#print axioms ErgodicTheory.lapCount_tendsto_atTop
 
-/-- info: 'Oseledets.lapCount_returnTime_div_tendsto_one' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.lapCount_returnTime_div_tendsto_one' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.lapCount_returnTime_div_tendsto_one
+#print axioms ErgodicTheory.lapCount_returnTime_div_tendsto_one
 
-/-- info: 'Oseledets.coverCocycle_tendsto_exponent_of_bddRoof' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.coverCocycle_tendsto_exponent_of_bddRoof' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.coverCocycle_tendsto_exponent_of_bddRoof
+#print axioms ErgodicTheory.coverCocycle_tendsto_exponent_of_bddRoof
 
 -- Issue #5 (suspension bridge): the cross-section embedding + gluing + section-image exponent.
 
-/-- info: 'Oseledets.suspensionMk_roof_eq_section_base' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.suspensionMk_roof_eq_section_base' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.suspensionMk_roof_eq_section_base
+#print axioms ErgodicTheory.suspensionMk_roof_eq_section_base
 
-/-- info: 'Oseledets.measurable_suspensionSection' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.measurable_suspensionSection' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.measurable_suspensionSection
+#print axioms ErgodicTheory.measurable_suspensionSection
 
-/-- info: 'Oseledets.coverCocycle_tendsto_exponent_section' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.coverCocycle_tendsto_exponent_section' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.coverCocycle_tendsto_exponent_section
+#print axioms ErgodicTheory.coverCocycle_tendsto_exponent_section
 
 -- Issue #5 (suspension disintegration): base-a.e. → μ̂-a.e. transfer to the suspension measure.
 
-/-- info: 'Oseledets.suspensionMeasure_ae_iff' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.suspensionMeasure_ae_iff' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.suspensionMeasure_ae_iff
+#print axioms ErgodicTheory.suspensionMeasure_ae_iff
 
-/-- info: 'Oseledets.ae_suspensionMeasure_of_ae_restrict' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.ae_suspensionMeasure_of_ae_restrict' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.ae_suspensionMeasure_of_ae_restrict
+#print axioms ErgodicTheory.ae_suspensionMeasure_of_ae_restrict
 
-/-- info: 'Oseledets.ae_restrict_suspensionDomain_of_ae_base' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.ae_restrict_suspensionDomain_of_ae_base' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.ae_restrict_suspensionDomain_of_ae_base
+#print axioms ErgodicTheory.ae_restrict_suspensionDomain_of_ae_base
 
-/-- info: 'Oseledets.ae_suspensionMeasure_of_ae_base' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.ae_suspensionMeasure_of_ae_base' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.ae_suspensionMeasure_of_ae_base
+#print axioms ErgodicTheory.ae_suspensionMeasure_of_ae_base
 
-/-- info: 'Oseledets.ae_suspensionMeasure_section_exponent_set' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.ae_suspensionMeasure_section_exponent_set' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.ae_suspensionMeasure_section_exponent_set
+#print axioms ErgodicTheory.ae_suspensionMeasure_section_exponent_set
 
 -- Issue #5 (suspension growth-rate descent): orbit re-basing + two-sided bounded op-norm discrepancy.
 
-/-- info: 'Oseledets.coverCocycle_suspensionAct_rebasing' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.coverCocycle_suspensionAct_rebasing' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.coverCocycle_suspensionAct_rebasing
+#print axioms ErgodicTheory.coverCocycle_suspensionAct_rebasing
 
-/-- info: 'Oseledets.coverCocycle_suspensionAct_opNorm_le' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.coverCocycle_suspensionAct_opNorm_le' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.coverCocycle_suspensionAct_opNorm_le
+#print axioms ErgodicTheory.coverCocycle_suspensionAct_opNorm_le
 
-/-- info: 'Oseledets.coverCocycle_suspensionAct_rebasing_inv' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.coverCocycle_suspensionAct_rebasing_inv' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.coverCocycle_suspensionAct_rebasing_inv
+#print axioms ErgodicTheory.coverCocycle_suspensionAct_rebasing_inv
 
-/-- info: 'Oseledets.coverCocycle_suspensionAct_opNorm_ge' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.coverCocycle_suspensionAct_opNorm_ge' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.coverCocycle_suspensionAct_opNorm_ge
+#print axioms ErgodicTheory.coverCocycle_suspensionAct_opNorm_ge
 
 -- Issue #5 (exponent descent): orbit re-basing has bounded log-norm discrepancy ⟹ same exponent.
 
-/-- info: 'Oseledets.norm_pos_of_isUnit_det' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.norm_pos_of_isUnit_det' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.norm_pos_of_isUnit_det
+#print axioms ErgodicTheory.norm_pos_of_isUnit_det
 
-/-- info: 'Oseledets.coverCocycle_suspensionAct_log_discrepancy' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.coverCocycle_suspensionAct_log_discrepancy' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.coverCocycle_suspensionAct_log_discrepancy
+#print axioms ErgodicTheory.coverCocycle_suspensionAct_log_discrepancy
 
-/-- info: 'Oseledets.coverCocycle_suspensionAct_tendsto_exponent' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.coverCocycle_suspensionAct_tendsto_exponent' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.coverCocycle_suspensionAct_tendsto_exponent
+#print axioms ErgodicTheory.coverCocycle_suspensionAct_tendsto_exponent
 
 -- Issue #5 (flow exponent on the space): the well-defined suspension-space flow exponent predicate.
 
-/-- info: 'Oseledets.HasFlowExponent' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.HasFlowExponent' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.HasFlowExponent
+#print axioms ErgodicTheory.HasFlowExponent
 
-/-- info: 'Oseledets.tendsto_exponent_iff_of_suspensionAct' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.tendsto_exponent_iff_of_suspensionAct' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.tendsto_exponent_iff_of_suspensionAct
+#print axioms ErgodicTheory.tendsto_exponent_iff_of_suspensionAct
 
-/-- info: 'Oseledets.hasFlowExponent_of_suspensionAct' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.hasFlowExponent_of_suspensionAct' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.hasFlowExponent_of_suspensionAct
+#print axioms ErgodicTheory.hasFlowExponent_of_suspensionAct
 
 -- Issue #5 (flow exponent value): the section flow exponent + the μ̂-a.e. flow-exponent statement.
 
-/-- info: 'Oseledets.tendsto_coverCocycle_exponent_of_section' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.tendsto_coverCocycle_exponent_of_section' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.tendsto_coverCocycle_exponent_of_section
+#print axioms ErgodicTheory.tendsto_coverCocycle_exponent_of_section
 
-/-- info: 'Oseledets.ae_suspensionMeasure_hasFlowExponent' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.ae_suspensionMeasure_hasFlowExponent' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.ae_suspensionMeasure_hasFlowExponent
+#print axioms ErgodicTheory.ae_suspensionMeasure_hasFlowExponent
 
 -- Issue #4 (Margulis–Ruelle inequality): h(T) ≤ ∑ λᵢ⁺ reduced to the geometric atom-counting bound.
 
-/-- info: 'Oseledets.margulisRuelle_le_sumPosExp' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.margulisRuelle_le_sumPosExp' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.margulisRuelle_le_sumPosExp
+#print axioms ErgodicTheory.margulisRuelle_le_sumPosExp
 
 -- Issue #5 (quotient-image measurability): discharge the `hmeas` quotient-image hypothesis.
 
-/-- info: 'Oseledets.suspensionActEquiv' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.suspensionActEquiv' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.suspensionActEquiv
+#print axioms ErgodicTheory.suspensionActEquiv
 
-/-- info: 'Oseledets.suspensionActEquiv_apply' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.suspensionActEquiv_apply' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.suspensionActEquiv_apply
+#print axioms ErgodicTheory.suspensionActEquiv_apply
 
-/-- info: 'Oseledets.measurableSet_suspensionAct_image' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.measurableSet_suspensionAct_image' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.measurableSet_suspensionAct_image
+#print axioms ErgodicTheory.measurableSet_suspensionAct_image
 
-/-- info: 'Oseledets.preimage_image_suspensionMk' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.preimage_image_suspensionMk' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.preimage_image_suspensionMk
+#print axioms ErgodicTheory.preimage_image_suspensionMk
 
-/-- info: 'Oseledets.measurableSet_suspensionMk_image' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.measurableSet_suspensionMk_image' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.measurableSet_suspensionMk_image
+#print axioms ErgodicTheory.measurableSet_suspensionMk_image
 
-/-- info: 'Oseledets.measurableSet_suspensionMk_exponent_image' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.measurableSet_suspensionMk_exponent_image' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.measurableSet_suspensionMk_exponent_image
+#print axioms ErgodicTheory.measurableSet_suspensionMk_exponent_image
 
 -- Issue #5 (unconditional space-level exponent): `hmeas` discharged + tied to the genuine flow.
 
-/-- info: 'Oseledets.ae_suspensionMeasure_hasFlowExponent_unconditional' depends on axioms: [propext,
+/-- info: 'ErgodicTheory.ae_suspensionMeasure_hasFlowExponent_unconditional' depends on axioms: [propext,
  Classical.choice,
  Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.ae_suspensionMeasure_hasFlowExponent_unconditional
+#print axioms ErgodicTheory.ae_suspensionMeasure_hasFlowExponent_unconditional
 
-/-- info: 'Oseledets.ae_suspensionMeasure_hasFlowExponent_flowOrbit' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.ae_suspensionMeasure_hasFlowExponent_flowOrbit' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.ae_suspensionMeasure_hasFlowExponent_flowOrbit
+#print axioms ErgodicTheory.ae_suspensionMeasure_hasFlowExponent_flowOrbit
 
 -- Issue #5 (hPmeas discharged): cover-cocycle convergence-set measurability ⇒ fully unconditional
 -- space-level special-flow exponent (only `Measurable A` assumed, no convergence-set hypothesis).
 
-/-- info: 'Oseledets.measurableSet_coverCocycle_exponent' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.measurableSet_coverCocycle_exponent' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.measurableSet_coverCocycle_exponent
+#print axioms ErgodicTheory.measurableSet_coverCocycle_exponent
 
-/-- info: 'Oseledets.ae_suspensionMeasure_hasFlowExponent_of_measurable' depends on axioms: [propext,
+/-- info: 'ErgodicTheory.ae_suspensionMeasure_hasFlowExponent_of_measurable' depends on axioms: [propext,
  Classical.choice,
  Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.ae_suspensionMeasure_hasFlowExponent_of_measurable
+#print axioms ErgodicTheory.ae_suspensionMeasure_hasFlowExponent_of_measurable
 
-/-- info: 'Oseledets.ae_suspensionMeasure_hasFlowExponent_flowOrbit_of_measurable' depends on axioms: [propext,
+/-- info: 'ErgodicTheory.ae_suspensionMeasure_hasFlowExponent_flowOrbit_of_measurable' depends on axioms: [propext,
  Classical.choice,
  Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.ae_suspensionMeasure_hasFlowExponent_flowOrbit_of_measurable
+#print axioms ErgodicTheory.ae_suspensionMeasure_hasFlowExponent_flowOrbit_of_measurable
 
 -- Issue #6 (det-free singular infra): subspace-convergence tool + per-direction EReal exponent.
 
-/-- info: 'Oseledets.cauchySeq_of_summable_subspaceDist' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.cauchySeq_of_summable_subspaceDist' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.cauchySeq_of_summable_subspaceDist
+#print axioms ErgodicTheory.cauchySeq_of_summable_subspaceDist
 
-/-- info: 'Oseledets.exists_tendsto_orthProjMatrix_of_summable' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.exists_tendsto_orthProjMatrix_of_summable' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.exists_tendsto_orthProjMatrix_of_summable
+#print axioms ErgodicTheory.exists_tendsto_orthProjMatrix_of_summable
 
-/-- info: 'Oseledets.measurable_singularDirExponent' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.measurable_singularDirExponent' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.measurable_singularDirExponent
+#print axioms ErgodicTheory.measurable_singularDirExponent
 
-/-- info: 'Oseledets.ae_singularDirExponent_eq_coe' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.ae_singularDirExponent_eq_coe' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.ae_singularDirExponent_eq_coe
+#print axioms ErgodicTheory.ae_singularDirExponent_eq_coe
 
 -- Issue #4 (honest sharpening): positive-part singular-value product identity + minimal atom-count
 -- restatement of the Margulis–Ruelle reduction. The geometric `hgeo`/`hcount` input stays an explicit
 -- open hypothesis (smooth-ergodic-theory wall); nothing axiomatized.
 
-/-- info: 'Oseledets.Entropy.sum_posLog_singularValues_toEuclideanLin_eq' depends on axioms: [propext,
+/-- info: 'ErgodicTheory.Entropy.sum_posLog_singularValues_toEuclideanLin_eq' depends on axioms: [propext,
  Classical.choice,
  Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.Entropy.sum_posLog_singularValues_toEuclideanLin_eq
+#print axioms ErgodicTheory.Entropy.sum_posLog_singularValues_toEuclideanLin_eq
 
 -- Issue #6 (det-free genuine singular Lyapunov spectrum): the −∞-aware per-direction exponent is
 -- deterministically antitone + measurable + a.e. finite; cut-threshold ladder for the slow-space flag.
 
-/-- info: 'Oseledets.singularSpectralValue_antitone' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.singularSpectralValue_antitone' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.singularSpectralValue_antitone
+#print axioms ErgodicTheory.singularSpectralValue_antitone
 
-/-- info: 'Oseledets.measurable_singularSpectralValue' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.measurable_singularSpectralValue' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.measurable_singularSpectralValue
+#print axioms ErgodicTheory.measurable_singularSpectralValue
 
-/-- info: 'Oseledets.ae_singularSpectralValue_lt_top' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.ae_singularSpectralValue_lt_top' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.ae_singularSpectralValue_lt_top
+#print axioms ErgodicTheory.ae_singularSpectralValue_lt_top
 
-/-- info: 'Oseledets.exists_cutThresholds' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.exists_cutThresholds' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.exists_cutThresholds
+#print axioms ErgodicTheory.exists_cutThresholds
 
 -- Issue #6 (genuine singular spectrum is a.e. CONSTANT, det-free) + the missing Horn singular-value
 -- inequality σ_k(g∘f) ≤ σ_k(g)·‖f‖ built en route.
 
-/-- info: 'Oseledets.singularValues_comp_le_opNorm' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.singularValues_comp_le_opNorm' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.singularValues_comp_le_opNorm
+#print axioms ErgodicTheory.singularValues_comp_le_opNorm
 
-/-- info: 'Oseledets.singularSpectralValue_invariant_ae' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.singularSpectralValue_invariant_ae' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.singularSpectralValue_invariant_ae
+#print axioms ErgodicTheory.singularSpectralValue_invariant_ae
 
-/-- info: 'Oseledets.ae_singularSpectralValue_eq_const' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.ae_singularSpectralValue_eq_const' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.ae_singularSpectralValue_eq_const
+#print axioms ErgodicTheory.ae_singularSpectralValue_eq_const
 
 -- Issue #6 (singular slow-space step + structural reduction of V_j convergence to one summability input).
 
-/-- info: 'Oseledets.measurableSubspace_vSlowSingularStep' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.measurableSubspace_vSlowSingularStep' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.measurableSubspace_vSlowSingularStep
+#print axioms ErgodicTheory.measurableSubspace_vSlowSingularStep
 
-/-- info: 'Oseledets.vSlowSingularStep_antitone' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.vSlowSingularStep_antitone' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.vSlowSingularStep_antitone
+#print axioms ErgodicTheory.vSlowSingularStep_antitone
 
-/-- info: 'Oseledets.tendsto_orthProjMatrix_vSlowSingularStep_of_tendsto_bandProjector' depends on axioms: [propext,
+/-- info: 'ErgodicTheory.tendsto_orthProjMatrix_vSlowSingularStep_of_tendsto_bandProjector' depends on axioms: [propext,
  Classical.choice,
  Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.tendsto_orthProjMatrix_vSlowSingularStep_of_tendsto_bandProjector
+#print axioms ErgodicTheory.tendsto_orthProjMatrix_vSlowSingularStep_of_tendsto_bandProjector
 
 -- Issue #6 (det-free band route): the V_j band-increment bound with the inverse isolated to a single
 -- per-step coefficient hypothesis; the complement reduction band-convergence ⇒ slow-space convergence.
 
-/-- info: 'Oseledets.numerator_div_gap_le_detfree' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.numerator_div_gap_le_detfree' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.numerator_div_gap_le_detfree
+#print axioms ErgodicTheory.numerator_div_gap_le_detfree
 
-/-- info: 'Oseledets.tendsto_vSlowSingularStep_of_bandProjector_detfree' depends on axioms: [propext,
+/-- info: 'ErgodicTheory.tendsto_vSlowSingularStep_of_bandProjector_detfree' depends on axioms: [propext,
  Classical.choice,
  Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.tendsto_vSlowSingularStep_of_bandProjector_detfree
+#print axioms ErgodicTheory.tendsto_vSlowSingularStep_of_bandProjector_detfree
 
 -- Issue #6 (tempered-class V_j + the wall identity): unconditional soft-analysis core (any summable band
 -- increment ⇒ V_j converges), the tempered-non-degeneracy V_j, and the proof the increment IS an aperture.
 
-/-- info: 'Oseledets.tendsto_vSlowSingularStep_of_summable_increment' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.tendsto_vSlowSingularStep_of_summable_increment' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.tendsto_vSlowSingularStep_of_summable_increment
+#print axioms ErgodicTheory.tendsto_vSlowSingularStep_of_summable_increment
 
-/-- info: 'Oseledets.tendsto_vSlowSingularStep_of_tempered' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.tendsto_vSlowSingularStep_of_tempered' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.tendsto_vSlowSingularStep_of_tempered
+#print axioms ErgodicTheory.tendsto_vSlowSingularStep_of_tempered
 
-/-- info: 'Oseledets.bandProjector_increment_eq_aperture' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.bandProjector_increment_eq_aperture' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.bandProjector_increment_eq_aperture
+#print axioms ErgodicTheory.bandProjector_increment_eq_aperture
 
 -- Issue #6 (algebraic forward filtration): the lambdaBar sublevel as a submodule, antitone + equivariant
 -- (floored growth + the det-free HasFiniteTopGrowth finiteness hypothesis).
 
-/-- info: 'Oseledets.lambdaBarSublevel_antitone' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.lambdaBarSublevel_antitone' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.lambdaBarSublevel_antitone
+#print axioms ErgodicTheory.lambdaBarSublevel_antitone
 
-/-- info: 'Oseledets.lambdaBarSublevel_equivariant' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.lambdaBarSublevel_equivariant' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.lambdaBarSublevel_equivariant
+#print axioms ErgodicTheory.lambdaBarSublevel_equivariant
 
 -- Issue #6 (measurability reduction): {v : lambdaBar ≤ c} is a MeasurableSubspace given the projector
 -- convergence — which provably reduces to the same band/aperture convergence (the pinned inverse wall).
 
-/-- info: 'Oseledets.measurableSubspace_of_tendsto_orthProjMatrix' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.measurableSubspace_of_tendsto_orthProjMatrix' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.measurableSubspace_of_tendsto_orthProjMatrix
+#print axioms ErgodicTheory.measurableSubspace_of_tendsto_orthProjMatrix
 
-/-- info: 'Oseledets.measurableSubspace_lambdaSublevel_of_tendsto' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.measurableSubspace_lambdaSublevel_of_tendsto' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.measurableSubspace_lambdaSublevel_of_tendsto
+#print axioms ErgodicTheory.measurableSubspace_lambdaSublevel_of_tendsto
 
 -- Issue #6 (migrated headline): the a.e.-measurable forward Lyapunov projector of the singular
 -- MET, from the measurable graph via universal measurability of analytic sets (Lusin/Choquet).
 
-/-- info: 'Oseledets.aemeasurable_orthProjMatrix_lambdaSublevel' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.aemeasurable_orthProjMatrix_lambdaSublevel' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.aemeasurable_orthProjMatrix_lambdaSublevel
+#print axioms ErgodicTheory.aemeasurable_orthProjMatrix_lambdaSublevel
 
 -- Issue #6 upstream candidate: every analytic set in a standard Borel space is universally
 -- measurable (NullMeasurableSet for every s-finite measure), via Choquet capacitability.
@@ -1624,9 +1624,9 @@ info: 'Oseledets.Entropy.MeasurePartition.sum_toReal_measure_eq_one' depends on 
 -- Issue #4 (migrated headline): the sharp Margulis–Ruelle inequality h(T) ≤ ∑ λᵢ⁺ for a smooth
 -- ergodic self-map of Euclidean space (modulo the honest non-compactness atom-count input).
 
-/-- info: 'Oseledets.margulisRuelle_sharp' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.margulisRuelle_sharp' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.margulisRuelle_sharp
+#print axioms ErgodicTheory.margulisRuelle_sharp
 
 -- Issue #4 upstream candidate: Mañé's Lemma 12.5, the covering number bounded by Haar volume of
 -- the closed thickening on Euclidean space.
@@ -1638,192 +1638,192 @@ info: 'Oseledets.Entropy.MeasurePartition.sum_toReal_measure_eq_one' depends on 
 -- Issue #4: the sharp anisotropic one-step covering count of a linear image of a ball, by the
 -- positive-part singular-value product (the geometric heart of the sharp track).
 
-/-- info: 'Oseledets.coveringCount_image_ball_le_volProd' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.coveringCount_image_ball_le_volProd' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.coveringCount_image_ball_le_volProd
+#print axioms ErgodicTheory.coveringCount_image_ball_le_volProd
 
 -- Issue #4: the orbit growth rate (1/n) log (volProd …) → ∑ λᵢ⁺, a.e., driving the count.
 
-/-- info: 'Oseledets.tendsto_log_volProd' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.tendsto_log_volProd' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.tendsto_log_volProd
+#print axioms ErgodicTheory.tendsto_log_volProd
 
 -- MET enhancements campaign: #1-#6 closures
 
-/-- info: 'Oseledets.topExponent_constantCocycle_eq_log_spectralRadius' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.topExponent_constantCocycle_eq_log_spectralRadius' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.topExponent_constantCocycle_eq_log_spectralRadius
+#print axioms ErgodicTheory.topExponent_constantCocycle_eq_log_spectralRadius
 
-/-- info: 'Oseledets.doublingMap_sumPosExp_eq_log_two' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.doublingMap_sumPosExp_eq_log_two' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.doublingMap_sumPosExp_eq_log_two
+#print axioms ErgodicTheory.doublingMap_sumPosExp_eq_log_two
 
-/-- info: 'Oseledets.doublingMap_ksEntropyPartition_le_sumPosExp' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.doublingMap_ksEntropyPartition_le_sumPosExp' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.doublingMap_ksEntropyPartition_le_sumPosExp
+#print axioms ErgodicTheory.doublingMap_ksEntropyPartition_le_sumPosExp
 
 /--
-info: 'Oseledets.singular_perDirection_exponent_eq_lambda_of_mem_stratum' depends on axioms: [propext,
+info: 'ErgodicTheory.singular_perDirection_exponent_eq_lambda_of_mem_stratum' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
 -/
 #guard_msgs in
-#print axioms Oseledets.singular_perDirection_exponent_eq_lambda_of_mem_stratum
+#print axioms ErgodicTheory.singular_perDirection_exponent_eq_lambda_of_mem_stratum
 
-/-- info: 'Oseledets.lambdaBar_eq_of_mem_stratum' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.lambdaBar_eq_of_mem_stratum' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.lambdaBar_eq_of_mem_stratum
+#print axioms ErgodicTheory.lambdaBar_eq_of_mem_stratum
 
-/-- info: 'Oseledets.log_le_liminf_log_cocycle_apply_detfree' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.log_le_liminf_log_cocycle_apply_detfree' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.log_le_liminf_log_cocycle_apply_detfree
+#print axioms ErgodicTheory.log_le_liminf_log_cocycle_apply_detfree
 
-/-- info: 'Oseledets.CatMapToral.ergodic_catTorus' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.CatMapToral.ergodic_catTorus' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.CatMapToral.ergodic_catTorus
+#print axioms ErgodicTheory.CatMapToral.ergodic_catTorus
 
-/-- info: 'Oseledets.CatMapToral.measurePreserving_catTorus' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.CatMapToral.measurePreserving_catTorus' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.CatMapToral.measurePreserving_catTorus
+#print axioms ErgodicTheory.CatMapToral.measurePreserving_catTorus
 
-/-- info: 'Oseledets.CatMapToral.orbit_infinite' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.CatMapToral.orbit_infinite' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.CatMapToral.orbit_infinite
+#print axioms ErgodicTheory.CatMapToral.orbit_infinite
 
-/-- info: 'Oseledets.CatMapToral.catTorus_constCocycle_topExponent_pos' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.CatMapToral.catTorus_constCocycle_topExponent_pos' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.CatMapToral.catTorus_constCocycle_topExponent_pos
+#print axioms ErgodicTheory.CatMapToral.catTorus_constCocycle_topExponent_pos
 
-/-- info: 'Oseledets.CatMapToral.derivativeCocycle_catLift' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.CatMapToral.derivativeCocycle_catLift' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.CatMapToral.derivativeCocycle_catLift
+#print axioms ErgodicTheory.CatMapToral.derivativeCocycle_catLift
 
 /--
-info: 'Oseledets.CatMapToral.catLift_derivativeCocycle_topExponent_pos' depends on axioms: [propext,
+info: 'ErgodicTheory.CatMapToral.catLift_derivativeCocycle_topExponent_pos' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
 -/
 #guard_msgs in
-#print axioms Oseledets.CatMapToral.catLift_derivativeCocycle_topExponent_pos
+#print axioms ErgodicTheory.CatMapToral.catLift_derivativeCocycle_topExponent_pos
 
 /--
-info: 'Oseledets.CatMapToral.catTorus_ksEntropyPartition_le_logLambda' depends on axioms: [propext,
+info: 'ErgodicTheory.CatMapToral.catTorus_ksEntropyPartition_le_logLambda' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
 -/
 #guard_msgs in
-#print axioms Oseledets.CatMapToral.catTorus_ksEntropyPartition_le_logLambda
+#print axioms ErgodicTheory.CatMapToral.catTorus_ksEntropyPartition_le_logLambda
 
-/-- info: 'Oseledets.suspension_perExponent_scaling' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.suspension_perExponent_scaling' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.suspension_perExponent_scaling
+#print axioms ErgodicTheory.suspension_perExponent_scaling
 
-/-- info: 'Oseledets.suspension_gammaK_flow_scaling' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.suspension_gammaK_flow_scaling' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.suspension_gammaK_flow_scaling
+#print axioms ErgodicTheory.suspension_gammaK_flow_scaling
 
-/-- info: 'Oseledets.ae_suspensionMeasure_hasFlowExponent_extGen' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.ae_suspensionMeasure_hasFlowExponent_extGen' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.ae_suspensionMeasure_hasFlowExponent_extGen
+#print axioms ErgodicTheory.ae_suspensionMeasure_hasFlowExponent_extGen
 
-/-- info: 'Oseledets.measurable_extGen' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.measurable_extGen' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.measurable_extGen
+#print axioms ErgodicTheory.measurable_extGen
 
-/-- info: 'Oseledets.Examples.Rokhlin.rokhlin_equality_doublingMap' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.Examples.Rokhlin.rokhlin_equality_doublingMap' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.Examples.Rokhlin.rokhlin_equality_doublingMap
+#print axioms ErgodicTheory.Examples.Rokhlin.rokhlin_equality_doublingMap
 
 /--
-info: 'Oseledets.Examples.Rokhlin.ksEntropyPartition_doublingMap_eq_log_two' depends on axioms: [propext,
+info: 'ErgodicTheory.Examples.Rokhlin.ksEntropyPartition_doublingMap_eq_log_two' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
 -/
 #guard_msgs in
-#print axioms Oseledets.Examples.Rokhlin.ksEntropyPartition_doublingMap_eq_log_two
+#print axioms ErgodicTheory.Examples.Rokhlin.ksEntropyPartition_doublingMap_eq_log_two
 
-/-- info: 'Oseledets.Examples.Rokhlin.volume_binJoinCell' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.Examples.Rokhlin.volume_binJoinCell' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.Examples.Rokhlin.volume_binJoinCell
+#print axioms ErgodicTheory.Examples.Rokhlin.volume_binJoinCell
 
 -- Conditional / relative entropy + Abramov–Rokhlin (issue #13).
 
-/-- info: 'Oseledets.Entropy.condEntropy_join_eq' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.Entropy.condEntropy_join_eq' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.Entropy.condEntropy_join_eq
+#print axioms ErgodicTheory.Entropy.condEntropy_join_eq
 
-/-- info: 'Oseledets.Entropy.condEntropy_comap_pullback' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.Entropy.condEntropy_comap_pullback' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.Entropy.condEntropy_comap_pullback
+#print axioms ErgodicTheory.Entropy.condEntropy_comap_pullback
 
-/-- info: 'Oseledets.Entropy.condEntropy_mono_of_le' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.Entropy.condEntropy_mono_of_le' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.Entropy.condEntropy_mono_of_le
+#print axioms ErgodicTheory.Entropy.condEntropy_mono_of_le
 
-/-- info: 'Oseledets.Entropy.condKsEntropy_bot' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.Entropy.condKsEntropy_bot' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.Entropy.condKsEntropy_bot
+#print axioms ErgodicTheory.Entropy.condKsEntropy_bot
 
-/-- info: 'Oseledets.Entropy.factor_relative_eq' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.Entropy.factor_relative_eq' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.Entropy.factor_relative_eq
+#print axioms ErgodicTheory.Entropy.factor_relative_eq
 
-/-- info: 'Oseledets.Entropy.abramov_rokhlin' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.Entropy.abramov_rokhlin' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.Entropy.abramov_rokhlin
+#print axioms ErgodicTheory.Entropy.abramov_rokhlin
 
 -- Issue #13 §5b: the partition-level Abramov–Rokhlin skeleton (B6a reduced to the W3 limit).
 
-/-- info: 'Oseledets.Entropy.entropy_joinCells_of_refines' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.Entropy.entropy_joinCells_of_refines' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.Entropy.entropy_joinCells_of_refines
+#print axioms ErgodicTheory.Entropy.entropy_joinCells_of_refines
 
-/-- info: 'Oseledets.Entropy.abramovRokhlin_partition_of_W3' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.Entropy.abramovRokhlin_partition_of_W3' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.Entropy.abramovRokhlin_partition_of_W3
+#print axioms ErgodicTheory.Entropy.abramovRokhlin_partition_of_W3
 
-/-- info: 'Oseledets.Entropy.abramov_rokhlin_of_W3' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.Entropy.abramov_rokhlin_of_W3' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.Entropy.abramov_rokhlin_of_W3
+#print axioms ErgodicTheory.Entropy.abramov_rokhlin_of_W3
 
-/-- info: 'Oseledets.Entropy.condEntropy_tendsto_iSup' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.Entropy.condEntropy_tendsto_iSup' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.Entropy.condEntropy_tendsto_iSup
+#print axioms ErgodicTheory.Entropy.condEntropy_tendsto_iSup
 
-/-- info: 'Oseledets.Entropy.factor_iSup_comap_eq' depends on axioms: [propext, Classical.choice, Quot.sound] -/
+/-- info: 'ErgodicTheory.Entropy.factor_iSup_comap_eq' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.Entropy.factor_iSup_comap_eq
+#print axioms ErgodicTheory.Entropy.factor_iSup_comap_eq
 
 /--
-info: 'Oseledets.Entropy.condEntropyGivenPartition_eq_condEntropy_generated' depends on axioms: [propext,
+info: 'ErgodicTheory.Entropy.condEntropyGivenPartition_eq_condEntropy_generated' depends on axioms: [propext,
  Classical.choice,
  Quot.sound]
 -/
 #guard_msgs in
-#print axioms Oseledets.Entropy.condEntropyGivenPartition_eq_condEntropy_generated
+#print axioms ErgodicTheory.Entropy.condEntropyGivenPartition_eq_condEntropy_generated
 
 -- Issue #13: W3 DISCHARGED — the moving-index Cesàro/martingale limit (blocking + the fixed-partition
 -- Lévy theorem) and the resulting UNCONDITIONAL Abramov–Rokhlin addition formula under a base generator.
 
-/-- info: 'Oseledets.Entropy.tendsto_condEntropy_genJoin_div' depends on axioms:
+/-- info: 'ErgodicTheory.Entropy.tendsto_condEntropy_genJoin_div' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.Entropy.tendsto_condEntropy_genJoin_div
+#print axioms ErgodicTheory.Entropy.tendsto_condEntropy_genJoin_div
 
-/-- info: 'Oseledets.Entropy.tendsto_condCellSeq_div' depends on axioms:
+/-- info: 'ErgodicTheory.Entropy.tendsto_condCellSeq_div' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.Entropy.tendsto_condCellSeq_div
+#print axioms ErgodicTheory.Entropy.tendsto_condCellSeq_div
 
-/-- info: 'Oseledets.Entropy.abramovRokhlin_partition' depends on axioms:
+/-- info: 'ErgodicTheory.Entropy.abramovRokhlin_partition' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.Entropy.abramovRokhlin_partition
+#print axioms ErgodicTheory.Entropy.abramovRokhlin_partition
 
-/-- info: 'Oseledets.Entropy.abramov_rokhlin_of_generator' depends on axioms:
+/-- info: 'ErgodicTheory.Entropy.abramov_rokhlin_of_generator' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.Entropy.abramov_rokhlin_of_generator
+#print axioms ErgodicTheory.Entropy.abramov_rokhlin_of_generator
 
 -- Issue #15: Krieger's finite generator theorem. The full M0–M3 infrastructure is sorry-free and
 -- axiom-clean: two-sided generation (M0), the Rokhlin tower (M1), the information function + the
@@ -1833,305 +1833,305 @@ info: 'Oseledets.Entropy.condEntropyGivenPartition_eq_condEntropy_generated' dep
 -- a finite-entropy countable generator + a symbolic block-code) — is a genuine multi-layer wall,
 -- not in Mathlib; it is NOT discharged here and carries no `sorry` (it is a hypothesis).
 
-/-- info: 'Oseledets.Krieger.isGeneratingOneSided_le_twoSided' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.isGeneratingOneSided_le_twoSided' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.Krieger.isGeneratingOneSided_le_twoSided
+#print axioms ErgodicTheory.Krieger.isGeneratingOneSided_le_twoSided
 
-/-- info: 'Oseledets.Krieger.rokhlin_tower' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.rokhlin_tower' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.Krieger.rokhlin_tower
+#print axioms ErgodicTheory.Krieger.rokhlin_tower
 
-/-- info: 'Oseledets.Krieger.rokhlin_tower_aux' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.rokhlin_tower_aux' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.Krieger.rokhlin_tower_aux
+#print axioms ErgodicTheory.Krieger.rokhlin_tower_aux
 
-/-- info: 'Oseledets.Krieger.integral_infoFun_eq' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.integral_infoFun_eq' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.Krieger.integral_infoFun_eq
+#print axioms ErgodicTheory.Krieger.integral_infoFun_eq
 
-/-- info: 'Oseledets.Krieger.ae_forall_eventually_div_infoFun_le' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.ae_forall_eventually_div_infoFun_le' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.Krieger.ae_forall_eventually_div_infoFun_le
+#print axioms ErgodicTheory.Krieger.ae_forall_eventually_div_infoFun_le
 
-/-- info: 'Oseledets.Krieger.comap_twoSidedSat_le' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.comap_twoSidedSat_le' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.Krieger.comap_twoSidedSat_le
+#print axioms ErgodicTheory.Krieger.comap_twoSidedSat_le
 
-/-- info: 'Oseledets.Krieger.IsGeneratingTwoSidedMod0.of_codes' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.IsGeneratingTwoSidedMod0.of_codes' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.IsGeneratingTwoSidedMod0.of_codes
+#print axioms ErgodicTheory.Krieger.IsGeneratingTwoSidedMod0.of_codes
 
-/-- info: 'Oseledets.Krieger.isGeneratingTwoSidedMod0_of_literal' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.isGeneratingTwoSidedMod0_of_literal' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.isGeneratingTwoSidedMod0_of_literal
+#print axioms ErgodicTheory.Krieger.isGeneratingTwoSidedMod0_of_literal
 
-/-- info: 'Oseledets.Krieger.krieger_finite_generator_of_coding' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.krieger_finite_generator_of_coding' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.Krieger.krieger_finite_generator_of_coding
+#print axioms ErgodicTheory.Krieger.krieger_finite_generator_of_coding
 
-/-- info: 'Oseledets.Krieger.krieger_finite_generator' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.krieger_finite_generator' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.Krieger.krieger_finite_generator
+#print axioms ErgodicTheory.Krieger.krieger_finite_generator
 
 -- Issue #15 (unconditional drive, Wave 0): countable-partition Shannon entropy + the
 -- finite-static-entropy criterion (Downarowicz Fact 1.1.4), infrastructure for the
 -- finite-entropy countable generator (sub-problem A).
 
-/-- info: 'Oseledets.Krieger.cHμ_summable_of_summable_index_mul' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.cHμ_summable_of_summable_index_mul' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
-#print axioms Oseledets.Krieger.cHμ_summable_of_summable_index_mul
+#print axioms ErgodicTheory.Krieger.cHμ_summable_of_summable_index_mul
 
 -- Issue #15 (unconditional drive, Wave 0): SMB infrastructure — the uniform partition-function
 -- bound and the crude-rate name-count limsup (Birkhoff-free, Markov + Borel–Cantelli). The sharp
 -- rate (1/n)·infoFun → h is the residual (Chung L¹ maximal domination + the lower-half assembly).
 
-/-- info: 'Oseledets.Krieger.lintegral_exp_infoFun_sub_log_card_le_one' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.lintegral_exp_infoFun_sub_log_card_le_one' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.lintegral_exp_infoFun_sub_log_card_le_one
+#print axioms ErgodicTheory.Krieger.lintegral_exp_infoFun_sub_log_card_le_one
 
-/-- info: 'Oseledets.Krieger.ae_limsup_div_infoFun_le_log_card' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.ae_limsup_div_infoFun_le_log_card' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.ae_limsup_div_infoFun_le_log_card
+#print axioms ErgodicTheory.Krieger.ae_limsup_div_infoFun_le_log_card
 
 -- Issue #15 (unconditional drive, Wave 1): the finite-entropy countable two-sided generator
 -- (Keane–Serafin / Downarowicz Thm 4.2.3 first half) — the structural reduction is unconditional;
 -- the dynamical KeaneSerafinData (per-step SMB + Rokhlin recovery) is the isolated residual.
 
-/-- info: 'Oseledets.Krieger.exists_countable_twoSided_generator' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.exists_countable_twoSided_generator' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.exists_countable_twoSided_generator
+#print axioms ErgodicTheory.Krieger.exists_countable_twoSided_generator
 
-/-- info: 'Oseledets.Krieger.exists_countable_twoSided_generator_of_keaneSerafinData' depends on
+/-- info: 'ErgodicTheory.Krieger.exists_countable_twoSided_generator_of_keaneSerafinData' depends on
 axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.exists_countable_twoSided_generator_of_keaneSerafinData
+#print axioms ErgodicTheory.Krieger.exists_countable_twoSided_generator_of_keaneSerafinData
 
 -- Issue #15 (unconditional drive, Wave 1): the cross-layer coding bridge — a *countable* mod-0
 -- two-sided generator (Generator layer) coded by a *Fintype* `Fin k` partition (Coding layer). The
 -- recovery `IsGeneratingTwoSidedMod0c.of_codesc` is what the refactored `KriegerCodingData`/headline
 -- now consume; `codesTwoSidedMod0c_of_aeRecovery` is the sufficient condition the C3 wave discharges.
 
-/-- info: 'Oseledets.Krieger.ctwoSidedSat_mono_of_codesc' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.ctwoSidedSat_mono_of_codesc' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.ctwoSidedSat_mono_of_codesc
+#print axioms ErgodicTheory.Krieger.ctwoSidedSat_mono_of_codesc
 
-/-- info: 'Oseledets.Krieger.IsGeneratingTwoSidedMod0c.of_codesc' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.IsGeneratingTwoSidedMod0c.of_codesc' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.IsGeneratingTwoSidedMod0c.of_codesc
+#print axioms ErgodicTheory.Krieger.IsGeneratingTwoSidedMod0c.of_codesc
 
-/-- info: 'Oseledets.Krieger.CodesTwoSidedMod0c.isGeneratingTwoSidedMod0' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.CodesTwoSidedMod0c.isGeneratingTwoSidedMod0' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.CodesTwoSidedMod0c.isGeneratingTwoSidedMod0
+#print axioms ErgodicTheory.Krieger.CodesTwoSidedMod0c.isGeneratingTwoSidedMod0
 
-/-- info: 'Oseledets.Krieger.codesTwoSidedMod0c_of_aeRecovery' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.codesTwoSidedMod0c_of_aeRecovery' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.codesTwoSidedMod0c_of_aeRecovery
+#print axioms ErgodicTheory.Krieger.codesTwoSidedMod0c_of_aeRecovery
 
 -- Issue #15 (unconditional drive, Wave 1): the sentinel/comma-free prefix-code counting (C1) —
 -- the self-contained combinatorial core of the symbolic coding, fully closed (no residual).
 
-/-- info: 'Oseledets.Krieger.exists_sentinelEncoding' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.exists_sentinelEncoding' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.exists_sentinelEncoding
+#print axioms ErgodicTheory.Krieger.exists_sentinelEncoding
 
-/-- info: 'Oseledets.Krieger.sentinelEncodeList_injective' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.sentinelEncodeList_injective' depends on axioms:
 [propext, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.sentinelEncodeList_injective
+#print axioms ErgodicTheory.Krieger.sentinelEncodeList_injective
 
-/-- info: 'Oseledets.Krieger.pow_le_pow_iff_log' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.pow_le_pow_iff_log' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.pow_le_pow_iff_log
+#print axioms ErgodicTheory.Krieger.pow_le_pow_iff_log
 
 -- Issue #15 (unconditional drive): sharp SMB integral-level identity h = H(P | strict future)
 -- via Breiman telescoping + the #13 Lévy theorem (unconditional; pointwise residual = R5).
 
-/-- info: 'Oseledets.Krieger.ksEntropySeq_eq_sum_condEntropy' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.ksEntropySeq_eq_sum_condEntropy' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.ksEntropySeq_eq_sum_condEntropy
+#print axioms ErgodicTheory.Krieger.ksEntropySeq_eq_sum_condEntropy
 
-/-- info: 'Oseledets.Krieger.ksEntropyPartition_eq_condEntropy_iSup' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.ksEntropyPartition_eq_condEntropy_iSup' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.ksEntropyPartition_eq_condEntropy_iSup
+#print axioms ErgodicTheory.Krieger.ksEntropyPartition_eq_condEntropy_iSup
 
 -- Issue #15 (unconditional drive): the symbolic code-map measurable backbone — the itinerary map
 -- x ↦ (n ↦ code(eⁿx)) is twoSidedSat-measurable (automatic, no new symbolic-dynamics infra), so a
 -- measurable decoder with a.e. recovery discharges the mod-0 coding hypothesis (measurable_itin).
 
-/-- info: 'Oseledets.Krieger.measurable_itin' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.measurable_itin' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.measurable_itin
+#print axioms ErgodicTheory.Krieger.measurable_itin
 
 -- Issue #15 (unconditional drive): asymptotic-equipartition name count (C2) — the pigeonhole +
 -- covering content are unconditional; the C3-facing cover ≤ exp(N(h+ε)) names ≥ 1-ε is modulo the
 -- in-measure upper-SMB hypothesis UpperSMBInMeasure (strictly lighter than the pointwise R5).
 
-/-- info: 'Oseledets.Krieger.card_goodNames_le_exp' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.card_goodNames_le_exp' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.card_goodNames_le_exp
+#print axioms ErgodicTheory.Krieger.card_goodNames_le_exp
 
-/-- info: 'Oseledets.Krieger.measure_iUnion_goodNames_ge' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.measure_iUnion_goodNames_ge' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.measure_iUnion_goodNames_ge
+#print axioms ErgodicTheory.Krieger.measure_iUnion_goodNames_ge
 
-/-- info: 'Oseledets.Krieger.exists_cover_names_card_le' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.exists_cover_names_card_le' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.exists_cover_names_card_le
+#print axioms ErgodicTheory.Krieger.exists_cover_names_card_le
 
 -- Issue #15 (unconditional drive): Keane–Serafin generator construction (sub-problem A) — the
 -- structural reduction to a per-level KeaneSerafinLevels bundle is unconditional; the dynamical
 -- per-step lemma is blocked by the SAME in-probability SMB equipartition as the SMBSharp R5 leaf.
 
-/-- info: 'Oseledets.Krieger.exists_countable_twoSided_generator_of_step' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.exists_countable_twoSided_generator_of_step' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.exists_countable_twoSided_generator_of_step
+#print axioms ErgodicTheory.Krieger.exists_countable_twoSided_generator_of_step
 
-/-- info: 'Oseledets.Krieger.exists_countable_twoSided_generator_of_levels' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.exists_countable_twoSided_generator_of_levels' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.exists_countable_twoSided_generator_of_levels
+#print axioms ErgodicTheory.Krieger.exists_countable_twoSided_generator_of_levels
 
 -- Issue #15 (unconditional drive): the refining-tower recovery (sub-problem B). The two-sided
 -- recurrence tiling + Borel–Cantelli scaffolding are unconditional + sorry-free (the feared crux
 -- was cheap via Mathlib's Conservative API); the residual is the existence of a ColumnCodeData
 -- (the code symbol + the measurable bi-infinite sentinel parser — symbolic-dynamics infra Mathlib lacks).
 
-/-- info: 'Oseledets.Krieger.twoSided_recurrence' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.twoSided_recurrence' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.twoSided_recurrence
+#print axioms ErgodicTheory.Krieger.twoSided_recurrence
 
-/-- info: 'Oseledets.Krieger.codesTwoSidedMod0c_of_columnCode' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.codesTwoSidedMod0c_of_columnCode' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.codesTwoSidedMod0c_of_columnCode
+#print axioms ErgodicTheory.Krieger.codesTwoSidedMod0c_of_columnCode
 
-/-- info: 'Oseledets.Krieger.ColumnCodeData.codes' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.ColumnCodeData.codes' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.ColumnCodeData.codes
+#print axioms ErgodicTheory.Krieger.ColumnCodeData.codes
 
 -- Issue #15 (unconditional drive): pointwise SMB R3/R4 closed + R5 reduced. The conditional
 -- information function, the keystone ∫ g_𝒜 = H(P|𝒜), and the R4 Birkhoff main term are proved
 -- unconditionally; the full pointwise (1/n)infoFun → h is reduced to two named analytic leaves
 -- (the Chung Doob stopping-time tail + the Maker dominated-Cesàro), carried as hypotheses.
 
-/-- info: 'Oseledets.Krieger.integral_condInfoFun_eq_condEntropy' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.integral_condInfoFun_eq_condEntropy' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.integral_condInfoFun_eq_condEntropy
+#print axioms ErgodicTheory.Krieger.integral_condInfoFun_eq_condEntropy
 
-/-- info: 'Oseledets.Krieger.ae_tendsto_birkhoffAverage_condInfoFun_futureSigma' depends on
+/-- info: 'ErgodicTheory.Krieger.ae_tendsto_birkhoffAverage_condInfoFun_futureSigma' depends on
 axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.ae_tendsto_birkhoffAverage_condInfoFun_futureSigma
+#print axioms ErgodicTheory.Krieger.ae_tendsto_birkhoffAverage_condInfoFun_futureSigma
 
-/-- info: 'Oseledets.Krieger.lintegral_condInfoMaxFun_le_of_layer' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.lintegral_condInfoMaxFun_le_of_layer' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.lintegral_condInfoMaxFun_le_of_layer
+#print axioms ErgodicTheory.Krieger.lintegral_condInfoMaxFun_le_of_layer
 
-/-- info: 'Oseledets.Krieger.ae_tendsto_div_infoFun_of_tail' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.ae_tendsto_div_infoFun_of_tail' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.ae_tendsto_div_infoFun_of_tail
+#print axioms ErgodicTheory.Krieger.ae_tendsto_div_infoFun_of_tail
 
 -- Issue #15 (unconditional drive): the measurable bi-infinite sentinel parser — the gap diagnosed
 -- as "multi-week, no Mathlib analogue" is CLOSED (measurable_find of a totalized forward search +
 -- measurable_to_countable'). The decoder is constructed, not hypothesized; sub-problem B's residual
 -- reduces to the (moderate, no-Mathlib-gap) tower-column code symbol + a.e. recovery.
 
-/-- info: 'Oseledets.Krieger.measurable_fwdSentinel' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.measurable_fwdSentinel' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.measurable_fwdSentinel
+#print axioms ErgodicTheory.Krieger.measurable_fwdSentinel
 
-/-- info: 'Oseledets.Krieger.measurable_sentinelParse' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.measurable_sentinelParse' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.measurable_sentinelParse
+#print axioms ErgodicTheory.Krieger.measurable_sentinelParse
 
 -- Issue #15 (unconditional drive): the OFFSET-AWARE tower code. Adversarial catch: a bare
 -- position-blind sentinelParse gives the same label at x and e·x (parse_event_cannot_separate), so a
 -- naive sentinel-column recovery field is unsatisfiable. Fixed with blockOffset / sentinelParseAt
 -- (offset increases by 1 under the shift ⟹ can separate floors) + the floor-address map.
 
-/-- info: 'Oseledets.Krieger.parse_event_cannot_separate' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.parse_event_cannot_separate' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.parse_event_cannot_separate
+#print axioms ErgodicTheory.Krieger.parse_event_cannot_separate
 
-/-- info: 'Oseledets.Krieger.measurable_sentinelParseAt' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.measurable_sentinelParseAt' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.measurable_sentinelParseAt
+#print axioms ErgodicTheory.Krieger.measurable_sentinelParseAt
 
-/-- info: 'Oseledets.Krieger.measurable_floorAddr' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.measurable_floorAddr' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.measurable_floorAddr
+#print axioms ErgodicTheory.Krieger.measurable_floorAddr
 
-/-- info: 'Oseledets.Krieger.SentinelColumnCodeAt.codes' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.SentinelColumnCodeAt.codes' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.SentinelColumnCodeAt.codes
+#print axioms ErgodicTheory.Krieger.SentinelColumnCodeAt.codes
 
 -- Issue #15 (unconditional drive): BOTH analytic leaves of the pointwise SMB closed — the Chung
 -- Doob stopping-time tail (g* ∈ L¹) and the Maker/Breiman dominated-Cesàro. The pointwise SMB
 -- ae_tendsto_div_infoFun + the in-measure tendsto_measure_div_infoFun_gt (⟹ UpperSMBInMeasure) are
 -- unconditional given only the R2 Breiman telescoping (mechanical measure-algebra, not analytic).
 
-/-- info: 'Oseledets.Krieger.chungTail' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.chungTail' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.chungTail
+#print axioms ErgodicTheory.Krieger.chungTail
 
-/-- info: 'Oseledets.Krieger.lintegral_condInfoMaxFun_lt_top' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.lintegral_condInfoMaxFun_lt_top' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.lintegral_condInfoMaxFun_lt_top
+#print axioms ErgodicTheory.Krieger.lintegral_condInfoMaxFun_lt_top
 
-/-- info: 'Oseledets.Krieger.makerTail' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.makerTail' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.makerTail
+#print axioms ErgodicTheory.Krieger.makerTail
 
-/-- info: 'Oseledets.Krieger.ae_tendsto_div_infoFun' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.ae_tendsto_div_infoFun' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.ae_tendsto_div_infoFun
+#print axioms ErgodicTheory.Krieger.ae_tendsto_div_infoFun
 
-/-- info: 'Oseledets.Krieger.tendsto_measure_div_infoFun_gt' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.tendsto_measure_div_infoFun_gt' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.tendsto_measure_div_infoFun_gt
+#print axioms ErgodicTheory.Krieger.tendsto_measure_div_infoFun_gt
 
 -- Issue #15 (unconditional drive): the offset/floor alignment — the heart of the tower code. On a
 -- column-tiled stream the offset-aware parser reads dec(column-block)(floorAddr), so sub-problem B's
@@ -2139,55 +2139,55 @@ axioms: [propext, Classical.choice, Quot.sound] -/
 -- two-sided column tiling of one fixed interleaving code (the refining-tower / Borel–Cantelli limit;
 -- a single tower closes only mod-ε, not mod-0 — adversarially caught).
 
-/-- info: 'Oseledets.Krieger.sentinelParseAt_column' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.sentinelParseAt_column' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.sentinelParseAt_column
+#print axioms ErgodicTheory.Krieger.sentinelParseAt_column
 
-/-- info: 'Oseledets.Krieger.sentinelParseAt_itin_eq' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.sentinelParseAt_itin_eq' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.sentinelParseAt_itin_eq
+#print axioms ErgodicTheory.Krieger.sentinelParseAt_itin_eq
 
-/-- info: 'Oseledets.Krieger.ColumnLayoutData.codes' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.ColumnLayoutData.codes' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.ColumnLayoutData.codes
+#print axioms ErgodicTheory.Krieger.ColumnLayoutData.codes
 
 -- Issue #15 (unconditional drive): the analytic side CLOSED. Adversarial catch: the literal hbreiman
 -- is off-by-one for infoFun (conditions on 𝒞₀..𝒞ₙ₋₁, not 𝒞₁..𝒞ₙ); resolved via the true edge-form
 -- telescoping + orbital decay. ae_tendsto_div_infoFun_self = the UNCONDITIONAL pointwise SMB; and
 -- UpperSMBInMeasure is now a THEOREM (upperSMBInMeasure_of_ergodic), discharging C2's hypothesis.
 
-/-- info: 'Oseledets.Krieger.ae_tendsto_div_infoFun_self' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.ae_tendsto_div_infoFun_self' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.ae_tendsto_div_infoFun_self
+#print axioms ErgodicTheory.Krieger.ae_tendsto_div_infoFun_self
 
-/-- info: 'Oseledets.Krieger.upperSMBInMeasure_of_ergodic' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.upperSMBInMeasure_of_ergodic' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.upperSMBInMeasure_of_ergodic
+#print axioms ErgodicTheory.Krieger.upperSMBInMeasure_of_ergodic
 
 -- Issue #15 (unconditional drive): the refining-tower interleaving core. The Borel–Cantelli m→∞
 -- reduction + the parser/encode bridge are unconditional + sorry-free, reducing sub-problem B to ONE
 -- bundle RefiningTowerCode whose only genuine field is stage_tiled (the escape-symbol multi-stage
 -- construction repairing the hprev bottom-block defect — adversarially caught, 5th of the campaign).
 
-/-- info: 'Oseledets.Krieger.aeParse_of_aeStageTiled' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.aeParse_of_aeStageTiled' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.aeParse_of_aeStageTiled
+#print axioms ErgodicTheory.Krieger.aeParse_of_aeStageTiled
 
-/-- info: 'Oseledets.Krieger.sentinelParseAt_itin_of_encode' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.sentinelParseAt_itin_of_encode' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.sentinelParseAt_itin_of_encode
+#print axioms ErgodicTheory.Krieger.sentinelParseAt_itin_of_encode
 
-/-- info: 'Oseledets.Krieger.RefiningTowerCode.codes' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.RefiningTowerCode.codes' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.RefiningTowerCode.codes
+#print axioms ErgodicTheory.Krieger.RefiningTowerCode.codes
 
 -- Issue #15 (unconditional drive): the escape-symbol StageCode interface (the W7 hprev repair). The
 -- StageCode bracketing (s at every column predecessor) discharges hprev ⟹ per-stage alignment
@@ -2195,15 +2195,15 @@ axioms: [propext, Classical.choice, Quot.sound] -/
 -- (RefiningTowerCode.codes_ofStages). The residual is the measurable interleaving code spelling
 -- sentinelEncode + bracketing (StageCode's spells/brackets fields).
 
-/-- info: 'Oseledets.Krieger.StageCode.tiled' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.StageCode.tiled' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.StageCode.tiled
+#print axioms ErgodicTheory.Krieger.StageCode.tiled
 
-/-- info: 'Oseledets.Krieger.RefiningTowerCode.codes_ofStages' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.RefiningTowerCode.codes_ofStages' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.RefiningTowerCode.codes_ofStages
+#print axioms ErgodicTheory.Krieger.RefiningTowerCode.codes_ofStages
 
 -- Issue #15 (unconditional drive): the CONCRETE escape-symbol code. stageCode (one measurable code
 -- via getD…s, the escape symbol doubling as off-tower default AND column terminator) +
@@ -2211,25 +2211,25 @@ axioms: [propext, Classical.choice, Quot.sound] -/
 -- whole towerBase) + stageCode_of_tower (the full per-stage StageCode). Residual = cross-stage
 -- interleaving (one fixed code agreeing with each stageCode), carried in StageInput.
 
-/-- info: 'Oseledets.Krieger.measurable_stageCode' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.measurable_stageCode' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.measurable_stageCode
+#print axioms ErgodicTheory.Krieger.measurable_stageCode
 
-/-- info: 'Oseledets.Krieger.stageCode_predecessor' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.stageCode_predecessor' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.stageCode_predecessor
+#print axioms ErgodicTheory.Krieger.stageCode_predecessor
 
-/-- info: 'Oseledets.Krieger.stageCode_of_tower' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.stageCode_of_tower' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.stageCode_of_tower
+#print axioms ErgodicTheory.Krieger.stageCode_of_tower
 
-/-- info: 'Oseledets.Krieger.StageInput.codes' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.StageInput.codes' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.StageInput.codes
+#print axioms ErgodicTheory.Krieger.StageInput.codes
 
 -- Issue #15 (unconditional drive): the cross-stage WEAVE. The derived-name trick (weaveName = read
 -- the master code off the column + invert through emb) makes code_floor/code_pred DEFINITIONAL
@@ -2237,586 +2237,586 @@ axioms: [propext, Classical.choice, Quot.sound] -/
 -- Sub-problem B is reduced to ONE leaf: the existence of a BracketedTowerSystem (nested towers + one
 -- self-bracketed master code), the genuine Keane–Serafin nested-marker construction.
 
-/-- info: 'Oseledets.Krieger.stageCode_weaveName_eq' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.stageCode_weaveName_eq' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.stageCode_weaveName_eq
+#print axioms ErgodicTheory.Krieger.stageCode_weaveName_eq
 
-/-- info: 'Oseledets.Krieger.BracketedTowerSystem.codes' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.BracketedTowerSystem.codes' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.BracketedTowerSystem.codes
+#print axioms ErgodicTheory.Krieger.BracketedTowerSystem.codes
 
 -- Issue #15 (unconditional drive): the marker-set factoring. markerCode M emb dataLetter (s on M,
 -- data letters off M) is measurable (measurable_markerCode); AlignedTowerCastle reduces the three
 -- self-bracketing conditions to set-membership on ONE coherent marker set M. Sub-problem B's entire
 -- residual is now the EXISTENCE of M + nested towers — the Kakutani–Rokhlin nested aligned castle.
 
-/-- info: 'Oseledets.Krieger.measurable_markerCode' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.measurable_markerCode' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.measurable_markerCode
+#print axioms ErgodicTheory.Krieger.measurable_markerCode
 
-/-- info: 'Oseledets.Krieger.AlignedTowerCastle.codes' depends on axioms:
+/-- info: 'ErgodicTheory.Krieger.AlignedTowerCastle.codes' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Krieger.AlignedTowerCastle.codes
+#print axioms ErgodicTheory.Krieger.AlignedTowerCastle.codes
 
 -- Issue #16 — coarse-grained multifractal analysis. The finite-resolution core (generalized
 -- partition function `Z_q`, Rényi dimensions `D_q`, the singularity spectrum `f(α)`) and its
 -- measure / flow layer, all sorry-free and depending only on the standard axioms.
 
-/-- info: 'Oseledets.Multifractal.logPartitionFunction_convexOn' depends on axioms:
+/-- info: 'ErgodicTheory.Multifractal.logPartitionFunction_convexOn' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Multifractal.logPartitionFunction_convexOn
+#print axioms ErgodicTheory.Multifractal.logPartitionFunction_convexOn
 
-/-- info: 'Oseledets.Multifractal.massExponent_concaveOn' depends on axioms:
+/-- info: 'ErgodicTheory.Multifractal.massExponent_concaveOn' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Multifractal.massExponent_concaveOn
+#print axioms ErgodicTheory.Multifractal.massExponent_concaveOn
 
-/-- info: 'Oseledets.Multifractal.renyiDim_antitone' depends on axioms:
+/-- info: 'ErgodicTheory.Multifractal.renyiDim_antitone' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Multifractal.renyiDim_antitone
+#print axioms ErgodicTheory.Multifractal.renyiDim_antitone
 
-/-- info: 'Oseledets.Multifractal.partitionFunction_equalMeasure' depends on axioms:
+/-- info: 'ErgodicTheory.Multifractal.partitionFunction_equalMeasure' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Multifractal.partitionFunction_equalMeasure
+#print axioms ErgodicTheory.Multifractal.partitionFunction_equalMeasure
 
-/-- info: 'Oseledets.Multifractal.renyiDimMeasure_antitone' depends on axioms:
+/-- info: 'ErgodicTheory.Multifractal.renyiDimMeasure_antitone' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Multifractal.renyiDimMeasure_antitone
+#print axioms ErgodicTheory.Multifractal.renyiDimMeasure_antitone
 
-/-- info: 'Oseledets.Multifractal.renyiDimMeasure_one_eq' depends on axioms:
+/-- info: 'ErgodicTheory.Multifractal.renyiDimMeasure_one_eq' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Multifractal.renyiDimMeasure_one_eq
+#print axioms ErgodicTheory.Multifractal.renyiDimMeasure_one_eq
 
-/-- info: 'Oseledets.Multifractal.renyiDimFlow_antitone' depends on axioms:
+/-- info: 'ErgodicTheory.Multifractal.renyiDimFlow_antitone' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Multifractal.renyiDimFlow_antitone
+#print axioms ErgodicTheory.Multifractal.renyiDimFlow_antitone
 
-/-- info: 'Oseledets.Multifractal.renyiDim_uniform_eq_dim' depends on axioms:
+/-- info: 'ErgodicTheory.Multifractal.renyiDim_uniform_eq_dim' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Multifractal.renyiDim_uniform_eq_dim
+#print axioms ErgodicTheory.Multifractal.renyiDim_uniform_eq_dim
 
-/-- info: 'Oseledets.Multifractal.renyiDim_uniform_tendsto_dim' depends on axioms:
+/-- info: 'ErgodicTheory.Multifractal.renyiDim_uniform_tendsto_dim' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Multifractal.renyiDim_uniform_tendsto_dim
+#print axioms ErgodicTheory.Multifractal.renyiDim_uniform_tendsto_dim
 
-/-- info: 'Oseledets.Multifractal.ae_tendsto_localDimension_of_absolutelyContinuous' depends on
+/-- info: 'ErgodicTheory.Multifractal.ae_tendsto_localDimension_of_absolutelyContinuous' depends on
 axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Multifractal.ae_tendsto_localDimension_of_absolutelyContinuous
+#print axioms ErgodicTheory.Multifractal.ae_tendsto_localDimension_of_absolutelyContinuous
 
-/-- info: 'Oseledets.Multifractal.ae_localDimension_eq_finrank' depends on axioms:
+/-- info: 'ErgodicTheory.Multifractal.ae_localDimension_eq_finrank' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Multifractal.ae_localDimension_eq_finrank
+#print axioms ErgodicTheory.Multifractal.ae_localDimension_eq_finrank
 
-/-- info: 'Oseledets.Multifractal.dimH_eq_finrank_of_ae_full_of_absolutelyContinuous' depends on
+/-- info: 'ErgodicTheory.Multifractal.dimH_eq_finrank_of_ae_full_of_absolutelyContinuous' depends on
 axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Multifractal.dimH_eq_finrank_of_ae_full_of_absolutelyContinuous
+#print axioms ErgodicTheory.Multifractal.dimH_eq_finrank_of_ae_full_of_absolutelyContinuous
 
-/-- info: 'Oseledets.sumPosExp_eq_integral_log_abs_det_of_expanding' depends on axioms:
+/-- info: 'ErgodicTheory.sumPosExp_eq_integral_log_abs_det_of_expanding' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.sumPosExp_eq_integral_log_abs_det_of_expanding
+#print axioms ErgodicTheory.sumPosExp_eq_integral_log_abs_det_of_expanding
 
-/-- info: 'Oseledets.Entropy.ksEntropy_eq_ksEntropyPartition_of_generating' depends on axioms:
+/-- info: 'ErgodicTheory.Entropy.ksEntropy_eq_ksEntropyPartition_of_generating' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Entropy.ksEntropy_eq_ksEntropyPartition_of_generating
+#print axioms ErgodicTheory.Entropy.ksEntropy_eq_ksEntropyPartition_of_generating
 
-/-- info: 'Oseledets.Multifractal.dimH_le_of_fine_cover_mass_lower' depends on axioms:
+/-- info: 'ErgodicTheory.Multifractal.dimH_le_of_fine_cover_mass_lower' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Multifractal.dimH_le_of_fine_cover_mass_lower
+#print axioms ErgodicTheory.Multifractal.dimH_le_of_fine_cover_mass_lower
 
-/-- info: 'Oseledets.Multifractal.dimH_eq_of_localDimension_eq' depends on axioms:
+/-- info: 'ErgodicTheory.Multifractal.dimH_eq_of_localDimension_eq' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Multifractal.dimH_eq_of_localDimension_eq
+#print axioms ErgodicTheory.Multifractal.dimH_eq_of_localDimension_eq
 
-/-- info: 'Oseledets.Multifractal.dimH_eq_finrank_carrier_of_absolutelyContinuous' depends on
+/-- info: 'ErgodicTheory.Multifractal.dimH_eq_finrank_carrier_of_absolutelyContinuous' depends on
 axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Multifractal.dimH_eq_finrank_carrier_of_absolutelyContinuous
+#print axioms ErgodicTheory.Multifractal.dimH_eq_finrank_carrier_of_absolutelyContinuous
 
-/-- info: 'Oseledets.condEntropy_comap_eq_integral_log_abs_det' depends on axioms:
+/-- info: 'ErgodicTheory.condEntropy_comap_eq_integral_log_abs_det' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.condEntropy_comap_eq_integral_log_abs_det
+#print axioms ErgodicTheory.condEntropy_comap_eq_integral_log_abs_det
 
-/-- info: 'Oseledets.ksEntropyPartition_eq_integral_log_abs_det' depends on axioms:
+/-- info: 'ErgodicTheory.ksEntropyPartition_eq_integral_log_abs_det' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.ksEntropyPartition_eq_integral_log_abs_det
+#print axioms ErgodicTheory.ksEntropyPartition_eq_integral_log_abs_det
 
-/-- info: 'Oseledets.pesin_formula_expanding' depends on axioms:
+/-- info: 'ErgodicTheory.pesin_formula_expanding' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.pesin_formula_expanding
+#print axioms ErgodicTheory.pesin_formula_expanding
 
-/-- info: 'Oseledets.Multifractal.dimH_eq_ksEntropyPartition_div_log_two' depends on axioms:
+/-- info: 'ErgodicTheory.Multifractal.dimH_eq_ksEntropyPartition_div_log_two' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Multifractal.dimH_eq_ksEntropyPartition_div_log_two
+#print axioms ErgodicTheory.Multifractal.dimH_eq_ksEntropyPartition_div_log_two
 
-/-- info: 'Oseledets.Multifractal.dimH_eq_ksEntropy_div_log_two' depends on axioms:
+/-- info: 'ErgodicTheory.Multifractal.dimH_eq_ksEntropy_div_log_two' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Multifractal.dimH_eq_ksEntropy_div_log_two
+#print axioms ErgodicTheory.Multifractal.dimH_eq_ksEntropy_div_log_two
 
-/-- info: 'Oseledets.Multifractal.integral_empiricalCellMass_eq' depends on axioms:
+/-- info: 'ErgodicTheory.Multifractal.integral_empiricalCellMass_eq' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Multifractal.integral_empiricalCellMass_eq
+#print axioms ErgodicTheory.Multifractal.integral_empiricalCellMass_eq
 
-/-- info: 'Oseledets.Multifractal.tendsto_empiricalCellMass_ae' depends on axioms:
+/-- info: 'ErgodicTheory.Multifractal.tendsto_empiricalCellMass_ae' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Multifractal.tendsto_empiricalCellMass_ae
+#print axioms ErgodicTheory.Multifractal.tendsto_empiricalCellMass_ae
 
-/-- info: 'Oseledets.Multifractal.cellMassFamily_sum_eq_one' depends on axioms:
+/-- info: 'ErgodicTheory.Multifractal.cellMassFamily_sum_eq_one' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Multifractal.cellMassFamily_sum_eq_one
+#print axioms ErgodicTheory.Multifractal.cellMassFamily_sum_eq_one
 
-/-- info: 'Oseledets.Multifractal.not_isHeterogeneous_iff_equalMeasure' depends on axioms:
+/-- info: 'ErgodicTheory.Multifractal.not_isHeterogeneous_iff_equalMeasure' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Multifractal.not_isHeterogeneous_iff_equalMeasure
+#print axioms ErgodicTheory.Multifractal.not_isHeterogeneous_iff_equalMeasure
 
-/-- info: 'Oseledets.Multifractal.refiningLimitConvergesProp_of_uniform' depends on axioms:
+/-- info: 'ErgodicTheory.Multifractal.refiningLimitConvergesProp_of_uniform' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Multifractal.refiningLimitConvergesProp_of_uniform
+#print axioms ErgodicTheory.Multifractal.refiningLimitConvergesProp_of_uniform
 
 /-! ### Issue #19 — the chaotic Bernoulli-suspension flow object
 (positive metric entropy + a non-uniform ergodic invariant measure on which `D_q` is `q`-dependent) -/
 
-/-- info: 'Oseledets.Multifractal.suspensionFlow_bernZ_ksEntropy_pos' depends on axioms:
+/-- info: 'ErgodicTheory.Multifractal.suspensionFlow_bernZ_ksEntropy_pos' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Multifractal.suspensionFlow_bernZ_ksEntropy_pos
+#print axioms ErgodicTheory.Multifractal.suspensionFlow_bernZ_ksEntropy_pos
 
-/-- info: 'Oseledets.Multifractal.renyiDimFlow_bernSuspension_q_dependent' depends on axioms:
+/-- info: 'ErgodicTheory.Multifractal.renyiDimFlow_bernSuspension_q_dependent' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Multifractal.renyiDimFlow_bernSuspension_q_dependent
+#print axioms ErgodicTheory.Multifractal.renyiDimFlow_bernSuspension_q_dependent
 
-/-- info: 'Oseledets.Multifractal.renyiDimMeasure_zero_ne_one_bern' depends on axioms:
+/-- info: 'ErgodicTheory.Multifractal.renyiDimMeasure_zero_ne_one_bern' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Multifractal.renyiDimMeasure_zero_ne_one_bern
+#print axioms ErgodicTheory.Multifractal.renyiDimMeasure_zero_ne_one_bern
 
-/-- info: 'Oseledets.Multifractal.renyiDimFlow_bernSuspension_zero_ne_one' depends on axioms:
+/-- info: 'ErgodicTheory.Multifractal.renyiDimFlow_bernSuspension_zero_ne_one' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Multifractal.renyiDimFlow_bernSuspension_zero_ne_one
+#print axioms ErgodicTheory.Multifractal.renyiDimFlow_bernSuspension_zero_ne_one
 
-/-- info: 'Oseledets.Multifractal.dimH_bern_eq_Hnu_div_log_two' depends on axioms:
+/-- info: 'ErgodicTheory.Multifractal.dimH_bern_eq_Hnu_div_log_two' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Multifractal.dimH_bern_eq_Hnu_div_log_two
+#print axioms ErgodicTheory.Multifractal.dimH_bern_eq_Hnu_div_log_two
 
-/-- info: 'Oseledets.Multifractal.hasFlowExponent_of_tendsto_finiteTimeFlowExponent' depends on
+/-- info: 'ErgodicTheory.Multifractal.hasFlowExponent_of_tendsto_finiteTimeFlowExponent' depends on
 axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Multifractal.hasFlowExponent_of_tendsto_finiteTimeFlowExponent
+#print axioms ErgodicTheory.Multifractal.hasFlowExponent_of_tendsto_finiteTimeFlowExponent
 
-/-- info: 'Oseledets.Multifractal.isHeterogeneous_bernSuspensionWitness' depends on axioms:
+/-- info: 'ErgodicTheory.Multifractal.isHeterogeneous_bernSuspensionWitness' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Multifractal.isHeterogeneous_bernSuspensionWitness
+#print axioms ErgodicTheory.Multifractal.isHeterogeneous_bernSuspensionWitness
 
-/-- info: 'Oseledets.Multifractal.measurePreserving_suspensionBaseProj' depends on axioms:
+/-- info: 'ErgodicTheory.Multifractal.measurePreserving_suspensionBaseProj' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Multifractal.measurePreserving_suspensionBaseProj
+#print axioms ErgodicTheory.Multifractal.measurePreserving_suspensionBaseProj
 
-/-- info: 'Oseledets.Multifractal.ergodic_shiftMap_bern' depends on axioms:
+/-- info: 'ErgodicTheory.Multifractal.ergodic_shiftMap_bern' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Multifractal.ergodic_shiftMap_bern
+#print axioms ErgodicTheory.Multifractal.ergodic_shiftMap_bern
 
-/-- info: 'Oseledets.Multifractal.ksEntropy_bern_eq' depends on axioms:
+/-- info: 'ErgodicTheory.Multifractal.ksEntropy_bern_eq' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Multifractal.ksEntropy_bern_eq
+#print axioms ErgodicTheory.Multifractal.ksEntropy_bern_eq
 
 /-! ### Issue #19 — ergodicity of the constant-roof Bernoulli suspension flow
 (the full `ℝ`-flow is ergodic iff the base shift is; its time-`1` map is honestly NOT ergodic) -/
 
-/-- info: 'Oseledets.Multifractal.ergodic_bernSuspensionFlow' depends on axioms:
+/-- info: 'ErgodicTheory.Multifractal.ergodic_bernSuspensionFlow' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Multifractal.ergodic_bernSuspensionFlow
+#print axioms ErgodicTheory.Multifractal.ergodic_bernSuspensionFlow
 
-/-- info: 'Oseledets.Multifractal.not_ergodic_bernSuspensionFlow_one' depends on axioms:
+/-- info: 'ErgodicTheory.Multifractal.not_ergodic_bernSuspensionFlow_one' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Multifractal.not_ergodic_bernSuspensionFlow_one
+#print axioms ErgodicTheory.Multifractal.not_ergodic_bernSuspensionFlow_one
 
-/-- info: 'Oseledets.Multifractal.suspensionMeasure_eq_bernZ_base_of_flowInvariant' depends on axioms:
+/-- info: 'ErgodicTheory.Multifractal.suspensionMeasure_eq_bernZ_base_of_flowInvariant' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Multifractal.suspensionMeasure_eq_bernZ_base_of_flowInvariant
+#print axioms ErgodicTheory.Multifractal.suspensionMeasure_eq_bernZ_base_of_flowInvariant
 
-/-- info: 'Oseledets.Multifractal.suspensionMeasure_sectionHalf' depends on axioms:
+/-- info: 'ErgodicTheory.Multifractal.suspensionMeasure_sectionHalf' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Multifractal.suspensionMeasure_sectionHalf
+#print axioms ErgodicTheory.Multifractal.suspensionMeasure_sectionHalf
 
 /-! ### Issue #19 ext — two-sided Bernoulli ergodicity (keystone) + UNCONDITIONAL flow ergodicity -/
 
-/-- info: 'Oseledets.Multifractal.ergodic_biShiftEquiv_bernZ' depends on axioms:
+/-- info: 'ErgodicTheory.Multifractal.ergodic_biShiftEquiv_bernZ' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Multifractal.ergodic_biShiftEquiv_bernZ
+#print axioms ErgodicTheory.Multifractal.ergodic_biShiftEquiv_bernZ
 
-/-- info: 'Oseledets.Multifractal.ergodic_bernSuspensionFlow_uncond' depends on axioms:
+/-- info: 'ErgodicTheory.Multifractal.ergodic_bernSuspensionFlow_uncond' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Multifractal.ergodic_bernSuspensionFlow_uncond
+#print axioms ErgodicTheory.Multifractal.ergodic_bernSuspensionFlow_uncond
 
 /-! ### Issue #20 — two-sided / invertible Kolmogorov–Sinai generator theorem
 (keystone), the two-sided-generating Bernoulli partition, the system-entropy unlock
 `ksEntropy(bernZ) = Hnu`, and the constant-roof suspension `StandardBorelSpace`. -/
 
-/-- info: 'Oseledets.Entropy.ksEntropy_eq_ksEntropyPartition_of_isGeneratingTwoSided' depends on axioms:
+/-- info: 'ErgodicTheory.Entropy.ksEntropy_eq_ksEntropyPartition_of_isGeneratingTwoSided' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Entropy.ksEntropy_eq_ksEntropyPartition_of_isGeneratingTwoSided
+#print axioms ErgodicTheory.Entropy.ksEntropy_eq_ksEntropyPartition_of_isGeneratingTwoSided
 
-/-- info: 'Oseledets.Multifractal.coordPartitionZFin_isGeneratingTwoSided' depends on axioms:
+/-- info: 'ErgodicTheory.Multifractal.coordPartitionZFin_isGeneratingTwoSided' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Multifractal.coordPartitionZFin_isGeneratingTwoSided
+#print axioms ErgodicTheory.Multifractal.coordPartitionZFin_isGeneratingTwoSided
 
-/-- info: 'Oseledets.Multifractal.ksEntropy_biShiftEquiv_bernZ_eq' depends on axioms:
+/-- info: 'ErgodicTheory.Multifractal.ksEntropy_biShiftEquiv_bernZ_eq' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Multifractal.ksEntropy_biShiftEquiv_bernZ_eq
+#print axioms ErgodicTheory.Multifractal.ksEntropy_biShiftEquiv_bernZ_eq
 
-/-- info: 'Oseledets.standardBorelSpace_suspensionSpace_const_roof' depends on axioms:
+/-- info: 'ErgodicTheory.standardBorelSpace_suspensionSpace_const_roof' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.standardBorelSpace_suspensionSpace_const_roof
+#print axioms ErgodicTheory.standardBorelSpace_suspensionSpace_const_roof
 
-/-- info: 'Oseledets.Multifractal.instStandardBorelSpace_suspensionSpace_bern' depends on axioms:
+/-- info: 'ErgodicTheory.Multifractal.instStandardBorelSpace_suspensionSpace_bern' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Multifractal.instStandardBorelSpace_suspensionSpace_bern
+#print axioms ErgodicTheory.Multifractal.instStandardBorelSpace_suspensionSpace_bern
 
 /-! ### Issue #20 fibre — product/skew entropy `h(T×id)=h(T)` (Walters Thm 4.23) and the
 unconditional Category-C unlock: the constant-roof Bernoulli suspension time-`1` map has
 metric entropy `Hnu`. -/
 
-/-- info: 'Oseledets.Entropy.ksEntropy_prod_id_eq' depends on axioms:
+/-- info: 'ErgodicTheory.Entropy.ksEntropy_prod_id_eq' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Entropy.ksEntropy_prod_id_eq
+#print axioms ErgodicTheory.Entropy.ksEntropy_prod_id_eq
 
-/-- info: 'Oseledets.Multifractal.ksEntropy_bernSuspensionFlow_one_eq_Hnu' depends on axioms:
+/-- info: 'ErgodicTheory.Multifractal.ksEntropy_bernSuspensionFlow_one_eq_Hnu' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Multifractal.ksEntropy_bernSuspensionFlow_one_eq_Hnu
+#print axioms ErgodicTheory.Multifractal.ksEntropy_bernSuspensionFlow_one_eq_Hnu
 
-/-- info: 'Oseledets.Multifractal.bernSuspensionFlow_ksEntropy_eq_Hnu' depends on axioms:
+/-- info: 'ErgodicTheory.Multifractal.bernSuspensionFlow_ksEntropy_eq_Hnu' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Multifractal.bernSuspensionFlow_ksEntropy_eq_Hnu
+#print axioms ErgodicTheory.Multifractal.bernSuspensionFlow_ksEntropy_eq_Hnu
 
 /-! ### Issue #21 — the literal conditional-fibre entropy of the constant-roof Bernoulli
 suspension vanishes (`condKsEntropy(time-1 | base factor) = 0`), via the conditional Le Maître
 chain: the A0 chain-rule keystone, the conditional frozen-product vanishing `h(T×id | fst) = 0`
 (D), and conjugacy invariance of the conditional KS entropy (E2). -/
 
-/-- info: 'Oseledets.Multifractal.condKsEntropy_bernSuspensionFlow_one_baseProj_eq_zero' depends on axioms:
+/-- info: 'ErgodicTheory.Multifractal.condKsEntropy_bernSuspensionFlow_one_baseProj_eq_zero' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Multifractal.condKsEntropy_bernSuspensionFlow_one_baseProj_eq_zero
+#print axioms ErgodicTheory.Multifractal.condKsEntropy_bernSuspensionFlow_one_baseProj_eq_zero
 
-/-- info: 'Oseledets.Entropy.condKsEntropy_prod_id_eq_zero' depends on axioms:
+/-- info: 'ErgodicTheory.Entropy.condKsEntropy_prod_id_eq_zero' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Entropy.condKsEntropy_prod_id_eq_zero
+#print axioms ErgodicTheory.Entropy.condKsEntropy_prod_id_eq_zero
 
-/-- info: 'Oseledets.Entropy.condEntropyGivenPartitionCond_eq_condEntropy_sup' depends on axioms:
+/-- info: 'ErgodicTheory.Entropy.condEntropyGivenPartitionCond_eq_condEntropy_sup' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Entropy.condEntropyGivenPartitionCond_eq_condEntropy_sup
+#print axioms ErgodicTheory.Entropy.condEntropyGivenPartitionCond_eq_condEntropy_sup
 
-/-- info: 'Oseledets.Entropy.condKsEntropy_congr_of_conjugacy' depends on axioms:
+/-- info: 'ErgodicTheory.Entropy.condKsEntropy_congr_of_conjugacy' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.Entropy.condKsEntropy_congr_of_conjugacy
+#print axioms ErgodicTheory.Entropy.condKsEntropy_congr_of_conjugacy
 
 /-! ### Issue #23 — finite-dimensional operator entropy (foundations)
 `DensityMatrix` / `vonNeumannEntropy`, the partial trace as a positive trace-preserving map,
 the Kronecker spectrum, and the scalar Klein inequality. -/
 
-/-- info: 'Oseledets.OperatorEntropy.vonNeumannEntropy_nonneg' depends on axioms:
+/-- info: 'ErgodicTheory.OperatorEntropy.vonNeumannEntropy_nonneg' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.OperatorEntropy.vonNeumannEntropy_nonneg
+#print axioms ErgodicTheory.OperatorEntropy.vonNeumannEntropy_nonneg
 
-/-- info: 'Oseledets.OperatorEntropy.trace_partialTraceRight' depends on axioms:
+/-- info: 'ErgodicTheory.OperatorEntropy.trace_partialTraceRight' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.OperatorEntropy.trace_partialTraceRight
+#print axioms ErgodicTheory.OperatorEntropy.trace_partialTraceRight
 
-/-- info: 'Oseledets.OperatorEntropy.PosSemidef.partialTraceRight' depends on axioms:
+/-- info: 'ErgodicTheory.OperatorEntropy.PosSemidef.partialTraceRight' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.OperatorEntropy.PosSemidef.partialTraceRight
+#print axioms ErgodicTheory.OperatorEntropy.PosSemidef.partialTraceRight
 
-/-- info: 'Oseledets.OperatorEntropy.eigenvalues_kronecker_multiset' depends on axioms:
+/-- info: 'ErgodicTheory.OperatorEntropy.eigenvalues_kronecker_multiset' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.OperatorEntropy.eigenvalues_kronecker_multiset
+#print axioms ErgodicTheory.OperatorEntropy.eigenvalues_kronecker_multiset
 
-/-- info: 'Oseledets.OperatorEntropy.klein_scalar' depends on axioms:
+/-- info: 'ErgodicTheory.OperatorEntropy.klein_scalar' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.OperatorEntropy.klein_scalar
+#print axioms ErgodicTheory.OperatorEntropy.klein_scalar
 
 /-! Issue #23 assembly — von Neumann entropy additivity & subadditivity, and the
 `DensityMatrix`-level Kronecker / partial-trace maps. -/
 
-/-- info: 'Oseledets.OperatorEntropy.DensityMatrix.kron' depends on axioms:
+/-- info: 'ErgodicTheory.OperatorEntropy.DensityMatrix.kron' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.OperatorEntropy.DensityMatrix.kron
+#print axioms ErgodicTheory.OperatorEntropy.DensityMatrix.kron
 
-/-- info: 'Oseledets.OperatorEntropy.DensityMatrix.partialTraceRight' depends on axioms:
+/-- info: 'ErgodicTheory.OperatorEntropy.DensityMatrix.partialTraceRight' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.OperatorEntropy.DensityMatrix.partialTraceRight
+#print axioms ErgodicTheory.OperatorEntropy.DensityMatrix.partialTraceRight
 
-/-- info: 'Oseledets.OperatorEntropy.vonNeumannEntropy_additive_kronecker' depends on axioms:
+/-- info: 'ErgodicTheory.OperatorEntropy.vonNeumannEntropy_additive_kronecker' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.OperatorEntropy.vonNeumannEntropy_additive_kronecker
+#print axioms ErgodicTheory.OperatorEntropy.vonNeumannEntropy_additive_kronecker
 
-/-- info: 'Oseledets.OperatorEntropy.vonNeumannEntropy_subadditive' depends on axioms:
+/-- info: 'ErgodicTheory.OperatorEntropy.vonNeumannEntropy_subadditive' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.OperatorEntropy.vonNeumannEntropy_subadditive
+#print axioms ErgodicTheory.OperatorEntropy.vonNeumannEntropy_subadditive
 
 /-! Issue #23 — Left-handed partial-trace mirror guards (symmetry with the Right-handed ones). -/
 
-/-- info: 'Oseledets.OperatorEntropy.trace_partialTraceLeft' depends on axioms:
+/-- info: 'ErgodicTheory.OperatorEntropy.trace_partialTraceLeft' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.OperatorEntropy.trace_partialTraceLeft
+#print axioms ErgodicTheory.OperatorEntropy.trace_partialTraceLeft
 
-/-- info: 'Oseledets.OperatorEntropy.PosSemidef.partialTraceLeft' depends on axioms:
+/-- info: 'ErgodicTheory.OperatorEntropy.PosSemidef.partialTraceLeft' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.OperatorEntropy.PosSemidef.partialTraceLeft
+#print axioms ErgodicTheory.OperatorEntropy.PosSemidef.partialTraceLeft
 
-/-- info: 'Oseledets.OperatorEntropy.DensityMatrix.partialTraceLeft' depends on axioms:
+/-- info: 'ErgodicTheory.OperatorEntropy.DensityMatrix.partialTraceLeft' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.OperatorEntropy.DensityMatrix.partialTraceLeft
+#print axioms ErgodicTheory.OperatorEntropy.DensityMatrix.partialTraceLeft
 
 /-! ### Issue #24 — CNT/ALF quantum dynamical entropy (construction)
 Diagonal von Neumann entropy bridge, the partition-of-unity telescoping, the correlation
 density matrix, and the `cntDynamicalEntropy` itself. -/
 
-/-- info: 'Oseledets.OperatorEntropy.vonNeumannEntropy_diagonal' depends on axioms:
+/-- info: 'ErgodicTheory.OperatorEntropy.vonNeumannEntropy_diagonal' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.OperatorEntropy.vonNeumannEntropy_diagonal
+#print axioms ErgodicTheory.OperatorEntropy.vonNeumannEntropy_diagonal
 
-/-- info: 'Oseledets.OperatorEntropy.CNT.sum_refine_conjTranspose_mul_refine' depends on axioms:
+/-- info: 'ErgodicTheory.OperatorEntropy.CNT.sum_refine_conjTranspose_mul_refine' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.OperatorEntropy.CNT.sum_refine_conjTranspose_mul_refine
+#print axioms ErgodicTheory.OperatorEntropy.CNT.sum_refine_conjTranspose_mul_refine
 
-/-- info: 'Oseledets.OperatorEntropy.CNT.corrMatrix' depends on axioms:
+/-- info: 'ErgodicTheory.OperatorEntropy.CNT.corrMatrix' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.OperatorEntropy.CNT.corrMatrix
+#print axioms ErgodicTheory.OperatorEntropy.CNT.corrMatrix
 
-/-- info: 'Oseledets.OperatorEntropy.CNT.cntDynamicalEntropy' depends on axioms:
+/-- info: 'ErgodicTheory.OperatorEntropy.CNT.cntDynamicalEntropy' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.OperatorEntropy.CNT.cntDynamicalEntropy
+#print axioms ErgodicTheory.OperatorEntropy.CNT.cntDynamicalEntropy
 
 /-! ### Issue #24 — CNT/ALF abelian-corner theorem (the headline)
 The quantum dynamical entropy restricted to the abelian (diagonal) corner equals the classical
 Kolmogorov–Sinai entropy of the induced measure-preserving permutation system. -/
 
-/-- info: 'Oseledets.OperatorEntropy.CNT.cntEntropyPartition_eq_ksEntropyPartition' depends on axioms:
+/-- info: 'ErgodicTheory.OperatorEntropy.CNT.cntEntropyPartition_eq_ksEntropyPartition' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.OperatorEntropy.CNT.cntEntropyPartition_eq_ksEntropyPartition
+#print axioms ErgodicTheory.OperatorEntropy.CNT.cntEntropyPartition_eq_ksEntropyPartition
 
-/-- info: 'Oseledets.OperatorEntropy.CNT.cntDynamicalEntropyAbelian_eq_ksEntropy' depends on axioms:
+/-- info: 'ErgodicTheory.OperatorEntropy.CNT.cntDynamicalEntropyAbelian_eq_ksEntropy' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.OperatorEntropy.CNT.cntDynamicalEntropyAbelian_eq_ksEntropy
+#print axioms ErgodicTheory.OperatorEntropy.CNT.cntDynamicalEntropyAbelian_eq_ksEntropy
 
-/-- info: 'Oseledets.OperatorEntropy.CNT.ksEntropy_le_cntDynamicalEntropy' depends on axioms:
+/-- info: 'ErgodicTheory.OperatorEntropy.CNT.ksEntropy_le_cntDynamicalEntropy' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.OperatorEntropy.CNT.ksEntropy_le_cntDynamicalEntropy
+#print axioms ErgodicTheory.OperatorEntropy.CNT.ksEntropy_le_cntDynamicalEntropy
 
 -- The substantive per-resolution identity behind the abelian-corner collapse (non-vacuous:
 -- positive at finite `n`, unlike the rate equality which is `0` for a finite permutation).
-/-- info: 'Oseledets.OperatorEntropy.CNT.vonNeumannEntropy_corrMatrix_eq_ksEntropySeq' depends on axioms:
+/-- info: 'ErgodicTheory.OperatorEntropy.CNT.vonNeumannEntropy_corrMatrix_eq_ksEntropySeq' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.OperatorEntropy.CNT.vonNeumannEntropy_corrMatrix_eq_ksEntropySeq
+#print axioms ErgodicTheory.OperatorEntropy.CNT.vonNeumannEntropy_corrMatrix_eq_ksEntropySeq
 
 /-! ### Issue #22 — Umegaki relative entropy (feasible foundations layer)
 Klein-inequality nonnegativity of the relative entropy, its vanishing on the diagonal,
 unitary-conjugation invariance, and the DPI/no-recovery-section corollary (whose
 data-processing input is an explicit hypothesis, the Lieb-gated piece staying out). -/
 
-/-- info: 'Oseledets.OperatorEntropy.relEntropy_nonneg' depends on axioms:
+/-- info: 'ErgodicTheory.OperatorEntropy.relEntropy_nonneg' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.OperatorEntropy.relEntropy_nonneg
+#print axioms ErgodicTheory.OperatorEntropy.relEntropy_nonneg
 
-/-- info: 'Oseledets.OperatorEntropy.relEntropy_self_eq_zero' depends on axioms:
+/-- info: 'ErgodicTheory.OperatorEntropy.relEntropy_self_eq_zero' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.OperatorEntropy.relEntropy_self_eq_zero
+#print axioms ErgodicTheory.OperatorEntropy.relEntropy_self_eq_zero
 
-/-- info: 'Oseledets.OperatorEntropy.relEntropy_conj_invariant' depends on axioms:
+/-- info: 'ErgodicTheory.OperatorEntropy.relEntropy_conj_invariant' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.OperatorEntropy.relEntropy_conj_invariant
+#print axioms ErgodicTheory.OperatorEntropy.relEntropy_conj_invariant
 
-/-- info: 'Oseledets.OperatorEntropy.no_monotone_section_of_strict_drop' depends on axioms:
+/-- info: 'ErgodicTheory.OperatorEntropy.no_monotone_section_of_strict_drop' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.OperatorEntropy.no_monotone_section_of_strict_drop
+#print axioms ErgodicTheory.OperatorEntropy.no_monotone_section_of_strict_drop
 
-/-- info: 'Oseledets.OperatorEntropy.petz_recovery' depends on axioms:
+/-- info: 'ErgodicTheory.OperatorEntropy.petz_recovery' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.OperatorEntropy.petz_recovery
+#print axioms ErgodicTheory.OperatorEntropy.petz_recovery
 
-/-- info: 'Oseledets.OperatorEntropy.Lieb.operatorConvexOn_neg_log' depends on axioms:
+/-- info: 'ErgodicTheory.OperatorEntropy.Lieb.operatorConvexOn_neg_log' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.OperatorEntropy.Lieb.operatorConvexOn_neg_log
+#print axioms ErgodicTheory.OperatorEntropy.Lieb.operatorConvexOn_neg_log
 
-/-- info: 'Oseledets.OperatorEntropy.relEntropy_additive_kronecker' depends on axioms:
+/-- info: 'ErgodicTheory.OperatorEntropy.relEntropy_additive_kronecker' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.OperatorEntropy.relEntropy_additive_kronecker
+#print axioms ErgodicTheory.OperatorEntropy.relEntropy_additive_kronecker
 
-/-- info: 'Oseledets.OperatorEntropy.relEntropy_ancilla_invariant' depends on axioms:
+/-- info: 'ErgodicTheory.OperatorEntropy.relEntropy_ancilla_invariant' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.OperatorEntropy.relEntropy_ancilla_invariant
+#print axioms ErgodicTheory.OperatorEntropy.relEntropy_ancilla_invariant
 
-/-- info: 'Oseledets.OperatorEntropy.relEntropy_embed_invariant' depends on axioms:
+/-- info: 'ErgodicTheory.OperatorEntropy.relEntropy_embed_invariant' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.OperatorEntropy.relEntropy_embed_invariant
+#print axioms ErgodicTheory.OperatorEntropy.relEntropy_embed_invariant
 
-/-- info: 'Oseledets.OperatorEntropy.stinespring_relEntropy_monotone' depends on axioms:
+/-- info: 'ErgodicTheory.OperatorEntropy.stinespring_relEntropy_monotone' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.OperatorEntropy.stinespring_relEntropy_monotone
+#print axioms ErgodicTheory.OperatorEntropy.stinespring_relEntropy_monotone
 
-/-- info: 'Oseledets.OperatorEntropy.relEntropy_eq_traceLog' depends on axioms:
+/-- info: 'ErgodicTheory.OperatorEntropy.relEntropy_eq_traceLog' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.OperatorEntropy.relEntropy_eq_traceLog
+#print axioms ErgodicTheory.OperatorEntropy.relEntropy_eq_traceLog
 
-/-- info: 'Oseledets.OperatorEntropy.KrausChannel.adj_hsAdjoint' depends on axioms:
+/-- info: 'ErgodicTheory.OperatorEntropy.KrausChannel.adj_hsAdjoint' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.OperatorEntropy.KrausChannel.adj_hsAdjoint
+#print axioms ErgodicTheory.OperatorEntropy.KrausChannel.adj_hsAdjoint
 
-/-- info: 'Oseledets.OperatorEntropy.Lieb.exists_unitary_firstBlockCol' depends on axioms:
+/-- info: 'ErgodicTheory.OperatorEntropy.Lieb.exists_unitary_firstBlockCol' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.OperatorEntropy.Lieb.exists_unitary_firstBlockCol
+#print axioms ErgodicTheory.OperatorEntropy.Lieb.exists_unitary_firstBlockCol
 
-/-- info: 'Oseledets.OperatorEntropy.Lieb.hpj_affine' depends on axioms:
+/-- info: 'ErgodicTheory.OperatorEntropy.Lieb.hpj_affine' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.OperatorEntropy.Lieb.hpj_affine
+#print axioms ErgodicTheory.OperatorEntropy.Lieb.hpj_affine
 
-/-- info: 'Oseledets.OperatorEntropy.Lieb.hpj_isometry' depends on axioms:
+/-- info: 'ErgodicTheory.OperatorEntropy.Lieb.hpj_isometry' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.OperatorEntropy.Lieb.hpj_isometry
+#print axioms ErgodicTheory.OperatorEntropy.Lieb.hpj_isometry
 
-/-- info: 'Oseledets.OperatorEntropy.Lieb.operatorPerspective_jointly_convex' depends on axioms:
+/-- info: 'ErgodicTheory.OperatorEntropy.Lieb.operatorPerspective_jointly_convex' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.OperatorEntropy.Lieb.operatorPerspective_jointly_convex
+#print axioms ErgodicTheory.OperatorEntropy.Lieb.operatorPerspective_jointly_convex
 
-/-- info: 'Oseledets.OperatorEntropy.Lieb.relEntropyMat_jointly_convex' depends on axioms:
+/-- info: 'ErgodicTheory.OperatorEntropy.Lieb.relEntropyMat_jointly_convex' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.OperatorEntropy.Lieb.relEntropyMat_jointly_convex
+#print axioms ErgodicTheory.OperatorEntropy.Lieb.relEntropyMat_jointly_convex
 
-/-- info: 'Oseledets.OperatorEntropy.Lieb.relEntropyMonotone_partialTrace_faithful' depends on axioms:
+/-- info: 'ErgodicTheory.OperatorEntropy.Lieb.relEntropyMonotone_partialTrace_faithful' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.OperatorEntropy.Lieb.relEntropyMonotone_partialTrace_faithful
+#print axioms ErgodicTheory.OperatorEntropy.Lieb.relEntropyMonotone_partialTrace_faithful
 
-/-- info: 'Oseledets.OperatorEntropy.Lieb.twirl_sum' depends on axioms:
+/-- info: 'ErgodicTheory.OperatorEntropy.Lieb.twirl_sum' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.OperatorEntropy.Lieb.twirl_sum
+#print axioms ErgodicTheory.OperatorEntropy.Lieb.twirl_sum
 
-/-- info: 'Oseledets.OperatorEntropy.Lieb.relEntropyMonotone_partialTrace' depends on axioms:
+/-- info: 'ErgodicTheory.OperatorEntropy.Lieb.relEntropyMonotone_partialTrace' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.OperatorEntropy.Lieb.relEntropyMonotone_partialTrace
+#print axioms ErgodicTheory.OperatorEntropy.Lieb.relEntropyMonotone_partialTrace
 
-/-- info: 'Oseledets.OperatorEntropy.monotonicity_relEntropy_under_stinespring' depends on axioms:
+/-- info: 'ErgodicTheory.OperatorEntropy.monotonicity_relEntropy_under_stinespring' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.OperatorEntropy.monotonicity_relEntropy_under_stinespring
+#print axioms ErgodicTheory.OperatorEntropy.monotonicity_relEntropy_under_stinespring
 
-/-- info: 'Oseledets.OperatorEntropy.no_section_of_strict_relEntropy_drop' depends on axioms:
+/-- info: 'ErgodicTheory.OperatorEntropy.no_section_of_strict_relEntropy_drop' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.OperatorEntropy.no_section_of_strict_relEntropy_drop
+#print axioms ErgodicTheory.OperatorEntropy.no_section_of_strict_relEntropy_drop
 
-/-- info: 'Oseledets.OperatorEntropy.no_stinespring_section_of_strict_relEntropy_drop' depends on axioms:
+/-- info: 'ErgodicTheory.OperatorEntropy.no_stinespring_section_of_strict_relEntropy_drop' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.OperatorEntropy.no_stinespring_section_of_strict_relEntropy_drop
+#print axioms ErgodicTheory.OperatorEntropy.no_stinespring_section_of_strict_relEntropy_drop
 
-/-- info: 'Oseledets.OperatorEntropy.petz_recovery_implies_equality' depends on axioms:
+/-- info: 'ErgodicTheory.OperatorEntropy.petz_recovery_implies_equality' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.OperatorEntropy.petz_recovery_implies_equality
+#print axioms ErgodicTheory.OperatorEntropy.petz_recovery_implies_equality
 
-/-- info: 'Oseledets.OperatorEntropy.Lieb.petz_equality_recovery' depends on axioms:
+/-- info: 'ErgodicTheory.OperatorEntropy.Lieb.petz_equality_recovery' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.OperatorEntropy.Lieb.petz_equality_recovery
+#print axioms ErgodicTheory.OperatorEntropy.Lieb.petz_equality_recovery
 
-/-- info: 'Oseledets.OperatorEntropy.Lieb.petz_equality_recovery_general' depends on axioms:
+/-- info: 'ErgodicTheory.OperatorEntropy.Lieb.petz_equality_recovery_general' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.OperatorEntropy.Lieb.petz_equality_recovery_general
+#print axioms ErgodicTheory.OperatorEntropy.Lieb.petz_equality_recovery_general
 
-/-- info: 'Oseledets.OperatorEntropy.Lieb.partialTrace_equality_imp_intertwinesIt' depends on axioms:
+/-- info: 'ErgodicTheory.OperatorEntropy.Lieb.partialTrace_equality_imp_intertwinesIt' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms Oseledets.OperatorEntropy.Lieb.partialTrace_equality_imp_intertwinesIt
+#print axioms ErgodicTheory.OperatorEntropy.Lieb.partialTrace_equality_imp_intertwinesIt

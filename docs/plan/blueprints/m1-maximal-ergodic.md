@@ -1,6 +1,6 @@
 # Blueprint — M1 / L1.1: the maximal ergodic inequality (Hopf / Garsia)
 
-**Target file:** `Oseledets/Ergodic/MaximalErgodic.lean`
+**Target file:** `ErgodicTheory/Ergodic/MaximalErgodic.lean`
 **Ladder node:** L1.1 (the analytic gate to pointwise Birkhoff, L1.3).
 **Status of statement:** FIXED (below). This document is the PROOF PLAN only.
 
@@ -16,7 +16,7 @@ rename without re-grepping.
 ```lean
 open MeasureTheory Filter
 
-namespace Oseledets
+namespace ErgodicTheory
 
 variable {X : Type*} [MeasurableSpace X] {μ : Measure X} {T : X → X}
 

@@ -38,7 +38,7 @@ The development proves three principal theorems, each formalized sorry-free and 
 \(\{\texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}\}\).
 
 \begin{itemize}
-  \item \textbf{One-sided MET (filtration form),} \lean{Oseledets.oseledets_filtration}: there
+  \item \textbf{One-sided MET (filtration form),} \lean{ErgodicTheory.oseledets_filtration}: there
     are finitely many distinct Lyapunov exponents \(\lambda_1 > \cdots > \lambda_k\) and,
     for \(\mu\)-a.e.\ \(x\), a strictly decreasing, \(A\)-equivariant, measurable filtration
     \[
@@ -48,12 +48,12 @@ The development proves three principal theorems, each formalized sorry-free and 
     along which \(\tfrac1n \log\norm{A^{(n)}(x)\,v} \to \lambda_i\) for every
     \(v \in V^i_x \setminus V^{i+1}_x\). This is the central result; it is proved in
     Chapter~\ref{chap:met}.
-  \item \textbf{Two-sided splitting,} \lean{Oseledets.oseledets_splitting}: when both the
+  \item \textbf{Two-sided splitting,} \lean{ErgodicTheory.oseledets_splitting}: when both the
     forward and backward filtrations are available, they are transverse and the space
     splits a.e.\ into an \(A\)-equivariant direct sum of \emph{Oseledets subspaces}
     \(\R^d = \bigoplus_i E^i_x\) on which the cocycle grows at the exact two-sided rate
     \(\lambda_i\). Chapter~\ref{chap:twosided}.
-  \item \textbf{Continuous-flow MET,} \lean{Oseledets.oseledets_flow}: the analogue for a
+  \item \textbf{Continuous-flow MET,} \lean{ErgodicTheory.oseledets_flow}: the analogue for a
     continuous-time linear cocycle over a measurable flow, obtained by reduction to the
     time-one map together with a between-times sandwich estimate. Chapter~\ref{chap:continuous}.
 \end{itemize}

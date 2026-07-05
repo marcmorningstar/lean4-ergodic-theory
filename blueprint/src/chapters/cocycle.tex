@@ -11,7 +11,7 @@ probability space \((X,\mu)\) and a matrix-valued generator
 of \(x\). We use the convention that the newest factor sits on the left.
 
 \begin{definition}[The entrywise measurable structure on matrices]\label{instMeasurableSpaceMatrix}
-  \lean{Oseledets.instMeasurableSpaceMatrix}\leanok
+  \lean{ErgodicTheory.instMeasurableSpaceMatrix}\leanok
   A matrix is a function \(m \to n \to \alpha\), and we equip
   \(\Matrix\, m\, n\, \alpha\) with the Pi (product) \(\sigma\)-algebra induced from the
   entry type \(\alpha\). For finitely many entries over a Borel \(\alpha\) this agrees
@@ -21,7 +21,7 @@ of \(x\). We use the convention that the newest factor sits on the left.
 \end{definition}
 
 \begin{definition}[The iterated linear cocycle]\label{cocycle}
-  \lean{Oseledets.cocycle}\leanok
+  \lean{ErgodicTheory.cocycle}\leanok
   Given \(A : X \to \Matrix(\Fin d)(\Fin d)\,\R\) and \(T : X \to X\), define
   \(A^{(n)} = \texttt{cocycle}\,A\,T\,n\) by recursion on \(n\):
   \[
@@ -34,7 +34,7 @@ of \(x\). We use the convention that the newest factor sits on the left.
 \end{definition}
 
 \begin{theorem}[The cocycle identity]\label{cocycle_add}
-  \lean{Oseledets.cocycle_add}\leanok
+  \lean{ErgodicTheory.cocycle_add}\leanok
   For all \(m, n \in \N\) and \(x \in X\),
   \[
     A^{(m+n)}(x) = A^{(m)}(T^{n}x)\cdot A^{(n)}(x).
@@ -50,7 +50,7 @@ of \(x\). We use the convention that the newest factor sits on the left.
 \end{proof}
 
 \begin{definition}[One-sided log-integrability of the generator]\label{IntegrableLogNorm}
-  \lean{Oseledets.IntegrableLogNorm}\leanok
+  \lean{ErgodicTheory.IntegrableLogNorm}\leanok
   The hypothesis \(\texttt{IntegrableLogNorm}\,A\,\mu\) asserts that the positive part of
   the log-norm of the generator is integrable: \(\log^{+}\norm{A(\cdot)} \in L^{1}(\mu)\),
   where \(\log^{+} t = \max(\log t, 0)\). This is the standard integrability assumption of
@@ -59,7 +59,7 @@ of \(x\). We use the convention that the newest factor sits on the left.
 \end{definition}
 
 \begin{theorem}[Measurability of the cocycle iterates]\label{measurable_cocycle}
-  \lean{Oseledets.measurable_cocycle}\leanok
+  \lean{ErgodicTheory.measurable_cocycle}\leanok
   If \(A\) and \(T\) are measurable then for each \(n\) the iterate
   \(x \mapsto A^{(n)}(x)\) is measurable for the entrywise structure
   \ref{instMeasurableSpaceMatrix}.
@@ -82,7 +82,7 @@ matrix inverse are measurable on the entrywise structure. The subtlety is that M
 operator-norm topology is definitionally the Pi product topology.
 
 \begin{lemma}[The Pi structure is an opens-measurable space]\label{instOpensMeasurableSpaceMatrix}
-  \lean{Oseledets.instOpensMeasurableSpaceMatrix}\leanok
+  \lean{ErgodicTheory.instOpensMeasurableSpaceMatrix}\leanok
   The entrywise (Pi) measurable structure on \(\Matrix(\Fin d)(\Fin d)\,\R\) is an
   \texttt{OpensMeasurableSpace} for the L2 operator-norm topology, since that topology is
   installed (via \texttt{replaceTopology}) to be definitionally the Pi product topology, of
@@ -90,7 +90,7 @@ operator-norm topology is definitionally the Pi product topology.
 \end{lemma}
 
 \begin{theorem}[Measurability of the L2 operator norm]\label{measurable_l2_opNorm}
-  \lean{Oseledets.measurable_l2_opNorm}\leanok
+  \lean{ErgodicTheory.measurable_l2_opNorm}\leanok
   The map \(M \mapsto \norm{M}\) on \(\Matrix(\Fin d)(\Fin d)\,\R\) is measurable.
 \end{theorem}
 \begin{proof}\leanok
@@ -101,7 +101,7 @@ operator-norm topology is definitionally the Pi product topology.
 \end{proof}
 
 \begin{theorem}[Measurability of the determinant]\label{measurable_det}
-  \lean{Oseledets.measurable_det}\leanok
+  \lean{ErgodicTheory.measurable_det}\leanok
   The determinant \(M \mapsto \det M\) is measurable.
 \end{theorem}
 \begin{proof}\leanok
@@ -112,7 +112,7 @@ operator-norm topology is definitionally the Pi product topology.
 \end{proof}
 
 \begin{theorem}[Measurability of the matrix inverse]\label{measurable_inv_matrix}
-  \lean{Oseledets.measurable_inv_matrix}\leanok
+  \lean{ErgodicTheory.measurable_inv_matrix}\leanok
   The inverse \(M \mapsto M^{-1}\) is measurable on the entrywise structure.
 \end{theorem}
 \begin{proof}\leanok
@@ -132,7 +132,7 @@ be nonzero. These hypotheses also make the \(\log\) of a product split as a genu
 which is what yields subadditivity rather than a mere inequality with junk values.
 
 \begin{lemma}[Invertibility of the iterates]\label{det_cocycle_ne_zero}
-  \lean{Oseledets.det_cocycle_ne_zero}\leanok
+  \lean{ErgodicTheory.det_cocycle_ne_zero}\leanok
   If \(\det A(x) \neq 0\) for every \(x\), then \(\det A^{(n)}(x) \neq 0\) for all
   \(n, x\).
 \end{lemma}
@@ -144,7 +144,7 @@ which is what yields subadditivity rather than a mere inequality with junk value
 \end{proof}
 
 \begin{lemma}[The unit matrix has norm one]\label{norm_one_matrix}
-  \lean{Oseledets.norm_one_matrix}\leanok
+  \lean{ErgodicTheory.norm_one_matrix}\leanok
   When \(d \neq 0\), \(\norm{(1 : \Matrix(\Fin d)(\Fin d)\,\R)} = 1\) for the L2 operator
   norm.
 \end{lemma}
@@ -158,7 +158,7 @@ which is what yields subadditivity rather than a mere inequality with junk value
 \end{proof}
 
 \begin{lemma}[Positivity of the iterate norms]\label{norm_cocycle_pos}
-  \lean{Oseledets.norm_cocycle_pos}\leanok
+  \lean{ErgodicTheory.norm_cocycle_pos}\leanok
   Assume \(\det A(x) \neq 0\) for all \(x\) and \(d \neq 0\). Then
   \(0 < \norm{A^{(n)}(x)}\) for every \(n, x\). The analogous statement
   \(\texttt{norm\_inv\_cocycle\_pos}\) holds for the inverse iterates
@@ -172,7 +172,7 @@ which is what yields subadditivity rather than a mere inequality with junk value
 \end{proof}
 
 \begin{theorem}[Subadditivity of the log-norm cocycle]\label{isSubadditiveCocycle_logNorm}
-  \lean{Oseledets.isSubadditiveCocycle_logNorm}\leanok
+  \lean{ErgodicTheory.isSubadditiveCocycle_logNorm}\leanok
   Assume \(\det A \neq 0\) everywhere and \(d \neq 0\). Then
   \(g_n(x) = \log\norm{A^{(n)}(x)}\) is a subadditive cocycle over \(T\):
   \[
@@ -191,7 +191,7 @@ which is what yields subadditivity rather than a mere inequality with junk value
 \end{proof}
 
 \begin{theorem}[Subadditivity of the inverse log-norm cocycle]\label{isSubadditiveCocycle_logNorm_inv}
-  \lean{Oseledets.isSubadditiveCocycle_logNorm_inv}\leanok
+  \lean{ErgodicTheory.isSubadditiveCocycle_logNorm_inv}\leanok
   Under the same hypotheses, \(g_n(x) = \log\norm{(A^{(n)}(x))^{-1}}\) is a subadditive
   cocycle over \(T\).
 \end{theorem}
@@ -210,7 +210,7 @@ The two-sided integrability hypothesis controls the log-norm by Birkhoff sums of
 the integrability of each level and the bounded-below proviso of Kingman's theorem.
 
 \begin{lemma}[Upper Fekete bound]\label{logNorm_cocycle_le_birkhoffSum}
-  \lean{Oseledets.logNorm_cocycle_le_birkhoffSum}\leanok
+  \lean{ErgodicTheory.logNorm_cocycle_le_birkhoffSum}\leanok
   For \(\det A \neq 0\) everywhere and \(d \neq 0\),
   \[
     \log\norm{A^{(n)}(x)} \le \sum_{k<n}\log^{+}\norm{A(T^{k}x)}.
@@ -226,7 +226,7 @@ the integrability of each level and the bounded-below proviso of Kingman's theor
 \end{proof}
 
 \begin{lemma}[Lower bound via the inverse Birkhoff sum]\label{neg_birkhoffSum_le_logNorm_cocycle}
-  \lean{Oseledets.neg_birkhoffSum_le_logNorm_cocycle}\leanok
+  \lean{ErgodicTheory.neg_birkhoffSum_le_logNorm_cocycle}\leanok
   Under the same hypotheses,
   \[
     -\sum_{k<n}\log^{+}\norm{(A(T^{k}x))^{-1}} \le \log\norm{A^{(n)}(x)}.
@@ -243,7 +243,7 @@ the integrability of each level and the bounded-below proviso of Kingman's theor
 \end{proof}
 
 \begin{lemma}[Upper Fekete bound for the inverse cocycle]\label{logNorm_inv_cocycle_le_birkhoffSum}
-  \lean{Oseledets.logNorm_inv_cocycle_le_birkhoffSum}\leanok
+  \lean{ErgodicTheory.logNorm_inv_cocycle_le_birkhoffSum}\leanok
   Under the same hypotheses,
   \[
     \log\norm{(A^{(n)}(x))^{-1}} \le \sum_{k<n}\log^{+}\norm{(A(T^{k}x))^{-1}}.
@@ -261,7 +261,7 @@ the integrability of each level and the bounded-below proviso of Kingman's theor
 \section{Integrability of each level}
 
 \begin{lemma}[Integral of a Birkhoff sum]\label{integral_birkhoffSum}
-  \lean{Oseledets.integral_birkhoffSum}\leanok
+  \lean{ErgodicTheory.integral_birkhoffSum}\leanok
   For measure-preserving \(T\) and integrable \(f\),
   \(\int \sum_{k<n} f(T^{k}x)\,d\mu = n\int f\,d\mu\).
 \end{lemma}
@@ -272,7 +272,7 @@ the integrability of each level and the bounded-below proviso of Kingman's theor
 \end{proof}
 
 \begin{theorem}[Integrability of the log-norm levels]\label{integrable_logNorm_cocycle}
-  \lean{Oseledets.integrable_logNorm_cocycle}\leanok
+  \lean{ErgodicTheory.integrable_logNorm_cocycle}\leanok
   Let \(T\) be measure-preserving for a finite measure \(\mu\), \(A\) measurable and
   everywhere invertible, \(d \neq 0\), with both \(\log^{+}\norm{A}\) and
   \(\log^{+}\norm{A^{-1}}\) integrable. Then each \(x \mapsto \log\norm{A^{(n)}(x)}\) is
@@ -299,7 +299,7 @@ from \(\log^{+}\norm{A^{-1}}\), and vice versa. This is precisely where the seco
 integrability hypothesis keeps the limit finite in \(\R\) rather than \(-\infty\).
 
 \begin{theorem}[Furstenberg--Kesten, top exponent]\label{furstenbergKesten_norm}
-  \lean{Oseledets.furstenbergKesten_norm}\leanok
+  \lean{ErgodicTheory.furstenbergKesten_norm}\leanok
   Let \(T\) be ergodic for a probability measure \(\mu\), let \(A\) be measurable and
   everywhere invertible with \(\log^{+}\norm{A}, \log^{+}\norm{A^{-1}} \in L^{1}(\mu)\).
   Then there is a constant \(\lambda_1 \in \R\) (the top Lyapunov exponent) with
@@ -322,7 +322,7 @@ integrability hypothesis keeps the limit finite in \(\R\) rather than \(-\infty\
 \end{proof}
 
 \begin{theorem}[Furstenberg--Kesten, bottom exponent]\label{furstenbergKesten_norm_inv}
-  \lean{Oseledets.furstenbergKesten_norm_inv}\leanok
+  \lean{ErgodicTheory.furstenbergKesten_norm_inv}\leanok
   Under the same hypotheses there is a constant \(\lambda \in \R\) with
   \[
     \frac{1}{n}\log\norm{(A^{(n)}(x))^{-1}} \xrightarrow{n\to\infty} \lambda

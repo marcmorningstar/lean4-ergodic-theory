@@ -20,7 +20,7 @@ priori, in \texttt{EReal}) to avoid junk values.
 \section{Maximal ergodic inequality}
 
 \begin{definition}[Garsia's maximal function]\label{maxBirkhoff}
-  \lean{Oseledets.maxBirkhoff}\leanok
+  \lean{ErgodicTheory.maxBirkhoff}\leanok
   For a measurable \(T\), a function \(g : X \to \R\), \(N : \N\) and \(x\),
   the \emph{maximal function} is
   \[
@@ -34,7 +34,7 @@ priori, in \texttt{EReal}) to avoid junk values.
 \end{definition}
 
 \begin{lemma}[Nonnegativity of the maximal function]\label{maxBirkhoff_nonneg}
-  \lean{Oseledets.maxBirkhoff_nonneg}\leanok
+  \lean{ErgodicTheory.maxBirkhoff_nonneg}\leanok
   For all \(g, N, x\) one has \(0 \le \texttt{maxBirkhoff}\,T\,g\,N\,x\).
 \end{lemma}
 \begin{proof}\leanok
@@ -46,7 +46,7 @@ priori, in \texttt{EReal}) to avoid junk values.
 \end{proof}
 
 \begin{lemma}[Recursion for the maximal function]\label{maxBirkhoff_succ}
-  \lean{Oseledets.maxBirkhoff_succ}\leanok
+  \lean{ErgodicTheory.maxBirkhoff_succ}\leanok
   For all \(g, N, x\),
   \[
     \texttt{maxBirkhoff}\,T\,g\,(N+1)\,x
@@ -65,7 +65,7 @@ priori, in \texttt{EReal}) to avoid junk values.
 \end{proof}
 
 \begin{lemma}[Garsia's pointwise inequality]\label{maxBirkhoff_le_add}
-  \lean{Oseledets.maxBirkhoff_le_add}\leanok
+  \lean{ErgodicTheory.maxBirkhoff_le_add}\leanok
   On the set where the maximal function is positive, for every \(x\) with
   \(0 < \texttt{maxBirkhoff}\,T\,g\,N\,x\),
   \[
@@ -87,7 +87,7 @@ priori, in \texttt{EReal}) to avoid junk values.
 \end{proof}
 
 \begin{lemma}[Measurability and integrability of the maximal function]\label{integrable_maxBirkhoff}
-  \lean{Oseledets.integrable_maxBirkhoff}\leanok
+  \lean{ErgodicTheory.integrable_maxBirkhoff}\leanok
   If \(T\) is measure-preserving and \(g\) is integrable, then each Birkhoff
   partial sum and the maximal function \(\texttt{maxBirkhoff}\,T\,g\,N\) are
   integrable; if moreover \(g\) and \(T\) are measurable, then
@@ -104,7 +104,7 @@ priori, in \texttt{EReal}) to avoid junk values.
 \end{proof}
 
 \begin{proposition}[Garsia's inequality at a fixed level]\label{setIntegral_maxBirkhoff_pos_nonneg}
-  \lean{Oseledets.setIntegral_maxBirkhoff_pos_nonneg}\leanok
+  \lean{ErgodicTheory.setIntegral_maxBirkhoff_pos_nonneg}\leanok
   For a measure-preserving \(T\) and a measurable integrable \(g\), and every
   \(N : \N\),
   \[
@@ -124,7 +124,7 @@ priori, in \texttt{EReal}) to avoid junk values.
 \end{proof}
 
 \begin{lemma}[Level sets exhaust the target set]\label{iUnion_setOf_maxBirkhoff_pos}
-  \lean{Oseledets.iUnion_setOf_maxBirkhoff_pos}\leanok
+  \lean{ErgodicTheory.iUnion_setOf_maxBirkhoff_pos}\leanok
   The level sets \(\{x : 0 < \texttt{maxBirkhoff}\,T\,g\,N\,x\}\) are monotone
   in \(N\), and their union over all \(N\) is exactly
   \(\{x : \exists n,\ 0 < \texttt{birkhoffSum}\,T\,g\,(n+1)\,x\}\).
@@ -140,7 +140,7 @@ priori, in \texttt{EReal}) to avoid junk values.
 \end{proof}
 
 \begin{theorem}[Maximal ergodic inequality (Hopf--Garsia)]\label{setIntegral_birkhoffSum_pos_nonneg}
-  \lean{Oseledets.setIntegral_birkhoffSum_pos_nonneg}\leanok
+  \lean{ErgodicTheory.setIntegral_birkhoffSum_pos_nonneg}\leanok
   For a measure-preserving \(T\) and an integrable \(f : X \to \R\),
   \[
     0 \le \int_{\{x \,:\, \exists n,\ 0 < \texttt{birkhoffSum}\,T\,f\,(n+1)\,x\}}
@@ -163,7 +163,7 @@ priori, in \texttt{EReal}) to avoid junk values.
 \section{Birkhoff}
 
 \begin{theorem}[Conditional expectation commutes with the dynamics]\label{condExp_invariants_comp_self}
-  \lean{Oseledets.condExp_invariants_comp_self}\leanok
+  \lean{ErgodicTheory.condExp_invariants_comp_self}\leanok
   For a finite measure, a measure-preserving measurable \(T\) and integrable
   \(g\), the conditional expectation onto the \(\sigma\)-algebra
   \(\texttt{invariants}\,T\) of \(T\)-invariant sets is a.e.\ \(T\)-invariant:
@@ -184,7 +184,7 @@ priori, in \texttt{EReal}) to avoid junk values.
 \end{proof}
 
 \begin{lemma}[Subexponential orbital tail]\label{ae_tendsto_orbit_div_atTop_zero}
-  \lean{Oseledets.ae_tendsto_orbit_div_atTop_zero}\leanok
+  \lean{ErgodicTheory.ae_tendsto_orbit_div_atTop_zero}\leanok
   For a measure-preserving \(T\) and integrable \(g\), the orbital tail
   \(n^{-1}\, g(T^{[n]}x)\) tends to \(0\) for \(\mu\)-a.e.\ \(x\).
 \end{lemma}
@@ -199,7 +199,7 @@ priori, in \texttt{EReal}) to avoid junk values.
 \end{proof}
 
 \begin{lemma}[A.e.\ boundedness of Birkhoff averages]\label{ae_bddAbove_birkhoffAverage}
-  \lean{Oseledets.ae_bddAbove_birkhoffAverage}\leanok
+  \lean{ErgodicTheory.ae_bddAbove_birkhoffAverage}\leanok
   For a finite measure, a measure-preserving \(T\) and integrable \(g\), the
   Birkhoff averages \(n \mapsto \texttt{birkhoffAverage}\,\R\,T\,g\,(n+1)\,x\)
   are a.e.\ bounded above (and, applied to \(-g\), a.e.\ bounded below).
@@ -230,7 +230,7 @@ priori, in \texttt{EReal}) to avoid junk values.
 \end{proof}
 
 \begin{proposition}[The core maximal-inequality step]\label{measure_setOf_lt_limsup_eq_zero}
-  \lean{Oseledets.measure_setOf_lt_limsup_eq_zero}\leanok
+  \lean{ErgodicTheory.measure_setOf_lt_limsup_eq_zero}\leanok
   For a finite measure, measure-preserving \(T\), integrable \(g\) and
   \(\varepsilon > 0\), the superlevel set where the limsup of the Birkhoff
   averages exceeds \(\mu[g\mid\mathcal I] + \varepsilon\) is null.
@@ -250,7 +250,7 @@ priori, in \texttt{EReal}) to avoid junk values.
 \end{proof}
 
 \begin{theorem}[Pointwise (Birkhoff) ergodic theorem]\label{tendsto_birkhoffAverage_ae}
-  \lean{Oseledets.tendsto_birkhoffAverage_ae}\leanok
+  \lean{ErgodicTheory.tendsto_birkhoffAverage_ae}\leanok
   For a finite measure, a measure-preserving \(T\) and an integrable \(g\), the
   Birkhoff averages converge \(\mu\)-a.e.\ to the conditional expectation of
   \(g\) onto the invariant \(\sigma\)-algebra:
@@ -272,7 +272,7 @@ priori, in \texttt{EReal}) to avoid junk values.
 \end{proof}
 
 \begin{corollary}[Ergodic case of Birkhoff]\label{tendsto_birkhoffAverage_ae_integral}
-  \lean{Oseledets.tendsto_birkhoffAverage_ae_integral}\leanok
+  \lean{ErgodicTheory.tendsto_birkhoffAverage_ae_integral}\leanok
   For an ergodic \(T\) on a probability space and integrable \(g\), the Birkhoff
   averages converge \(\mu\)-a.e.\ to the space average \(\int g\, d\mu\).
 \end{corollary}
@@ -288,7 +288,7 @@ priori, in \texttt{EReal}) to avoid junk values.
 \section{Kingman}
 
 \begin{definition}[Subadditive cocycle]\label{IsSubadditiveCocycle}
-  \lean{Oseledets.IsSubadditiveCocycle}\leanok
+  \lean{ErgodicTheory.IsSubadditiveCocycle}\leanok
   A sequence \(g : \N \to X \to \R\) is a \emph{subadditive cocycle} over \(T\)
   when
   \[
@@ -300,7 +300,7 @@ priori, in \texttt{EReal}) to avoid junk values.
 \end{definition}
 
 \begin{lemma}[Singleton and block subadditivity]\label{le_birkhoffSum_one}
-  \lean{Oseledets.IsSubadditiveCocycle.le_birkhoffSum_one}\leanok
+  \lean{ErgodicTheory.IsSubadditiveCocycle.le_birkhoffSum_one}\leanok
   For a subadditive cocycle and \(n : \N\), one has
   \(g\,(n+1)\,x \le \texttt{birkhoffSum}\,T\,(g\,1)\,(n+1)\,x\); more generally,
   for any decomposition of \([0,N)\) into \(k+1\) consecutive blocks of lengths
@@ -316,7 +316,7 @@ priori, in \texttt{EReal}) to avoid junk values.
 \end{proof}
 
 \begin{definition}[Normalized cocycle]\label{cdiv}
-  \lean{Oseledets.Kingman.cdiv}\leanok
+  \lean{ErgodicTheory.Kingman.cdiv}\leanok
   The \emph{normalized cocycle} is
   \(\texttt{cdiv}\,g\,n\,x = g\,(n+1)\,x / (n+1)\), the sequence whose a.e.\
   limit is the content of Kingman's theorem; its \texttt{EReal} coercion is
@@ -325,7 +325,7 @@ priori, in \texttt{EReal}) to avoid junk values.
 \end{definition}
 
 \begin{lemma}[Fekete limit of the normalized integrals]\label{exists_fekete}
-  \lean{Oseledets.Kingman.exists_fekete}\leanok
+  \lean{ErgodicTheory.Kingman.exists_fekete}\leanok
   For a measure-preserving \(T\), an integrable subadditive cocycle \(g\) whose
   normalized integrals are bounded below, the sequence
   \((\int g\,(n+1)\,d\mu)/(n+1)\) converges to the Fekete constant \(\gamma\).
@@ -341,7 +341,7 @@ priori, in \texttt{EReal}) to avoid junk values.
 \end{proof}
 
 \begin{lemma}[Invariance from a one-sided orbital bound]\label{ae_eq_comp_of_le_comp}
-  \lean{Oseledets.Kingman.ae_eq_comp_of_le_comp}\leanok
+  \lean{ErgodicTheory.Kingman.ae_eq_comp_of_le_comp}\leanok
   For a finite measure, measure-preserving \(T\) and an a.e.\ measurable \(F\)
   with \(F\,x \le F\,(Tx)\) for a.e.\ \(x\), one has \(F \circ T =^{\text{a.e.}}
   F\).
@@ -355,7 +355,7 @@ priori, in \texttt{EReal}) to avoid junk values.
 \end{proof}
 
 \begin{lemma}[Envelopes are a.e.\ measurable and \(T\)-invariant]\label{limsup_div_comp_ae}
-  \lean{Oseledets.Kingman.limsup_div_comp_ae}\leanok
+  \lean{ErgodicTheory.Kingman.limsup_div_comp_ae}\leanok
   For a finite measure, measure-preserving \(T\), an integrable subadditive
   cocycle with normalized integrals bounded below, the limsup envelope
   \(f_+(x) = \limsup_n \texttt{cdiv}\,g\,n\,x\) (and likewise the liminf
@@ -372,7 +372,7 @@ priori, in \texttt{EReal}) to avoid junk values.
 \end{proof}
 
 \begin{lemma}[Integrability of the limsup envelope]\label{int_limsup_div_integrable}
-  \lean{Oseledets.Kingman.int_limsup_div_integrable}\leanok
+  \lean{ErgodicTheory.Kingman.int_limsup_div_integrable}\leanok
   Under the same hypotheses, the limsup envelope \(f_+\) is integrable.
 \end{lemma}
 \begin{proof}\leanok
@@ -389,7 +389,7 @@ priori, in \texttt{EReal}) to avoid junk values.
 \end{proof}
 
 \begin{proposition}[Hard direction: \(\limsup \le \liminf\) a.e.]\label{ae_ereal_limsup_le_liminf}
-  \lean{Oseledets.Kingman.ae_ereal_liminf_eq_limsup}\leanok
+  \lean{ErgodicTheory.Kingman.ae_ereal_liminf_eq_limsup}\leanok
   Under the same hypotheses, for a.e.\ \(x\) the \texttt{EReal} limsup of the
   normalized cocycle is dominated by its liminf.
 \end{proposition}
@@ -411,7 +411,7 @@ priori, in \texttt{EReal}) to avoid junk values.
 \end{proof}
 
 \begin{theorem}[Kingman core: a.e.\ existence of an integrable limit]\label{ae_tendsto_cdiv}
-  \lean{Oseledets.Kingman.ae_tendsto_cdiv}\leanok
+  \lean{ErgodicTheory.Kingman.ae_tendsto_cdiv}\leanok
   For a finite measure, measure-preserving measurable \(T\), an integrable
   subadditive cocycle with normalized integrals bounded below, there is an
   integrable \(G\) with \(\texttt{cdiv}\,g\,n\,x \to G\,x\) for \(\mu\)-a.e.\
@@ -428,7 +428,7 @@ priori, in \texttt{EReal}) to avoid junk values.
 \end{proof}
 
 \begin{theorem}[Kingman's subadditive ergodic theorem]\label{tendsto_kingman}
-  \lean{Oseledets.tendsto_kingman}\leanok
+  \lean{ErgodicTheory.tendsto_kingman}\leanok
   For a finite measure, a measure-preserving \(T\), an integrable subadditive
   cocycle \(g\) whose normalized integrals are bounded below, there is a
   \(T\)-invariant integrable \(G\) with
@@ -449,7 +449,7 @@ priori, in \texttt{EReal}) to avoid junk values.
 \end{proof}
 
 \begin{corollary}[Kingman, ergodic case]\label{tendsto_kingman_ergodic}
-  \lean{Oseledets.tendsto_kingman_ergodic}\leanok
+  \lean{ErgodicTheory.tendsto_kingman_ergodic}\leanok
   For an ergodic \(T\) on a probability space, an integrable subadditive cocycle
   with normalized integrals bounded below, there is a constant \(c\) with
   \(n^{-1}\,g\,n\,x \to c\) for \(\mu\)-a.e.\ \(x\).

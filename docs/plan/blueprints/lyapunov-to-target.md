@@ -1,8 +1,8 @@
 # Blueprint — Lyapunov layers L4–L5 + M7: Furstenberg–Kesten → TARGET `oseledets_filtration`
 
 **Scope.** The path from the (assumed‑proved) Furstenberg–Kesten extremal exponents to
-the project TARGET theorem `Oseledets.oseledets_filtration` in
-`Oseledets/MultiplicativeErgodic.lean`. This is the upper half of the dependency ladder:
+the project TARGET theorem `ErgodicTheory.oseledets_filtration` in
+`ErgodicTheory/MultiplicativeErgodic.lean`. This is the upper half of the dependency ladder:
 `understanding.md` layers **L4** (limsup spectrum + limsup flag), **L5** (limsup → genuine
 lim), and **M7** (measurability), assembled at **L6.1 / M10**.
 
@@ -12,8 +12,8 @@ the dependency order between them, the main proof idea for each, which Mathlib p
 vs must be built, and the hard sub‑steps + the measurable‑selection risk. It is precise
 enough to start implementing module by module; it does not spell out every micro‑lemma.
 
-**New modules to create** (all under `Oseledets/Lyapunov/`, imported transitively from
-`Oseledets.lean`; `MeasurableSubspace.lean` already exists):
+**New modules to create** (all under `ErgodicTheory/Lyapunov/`, imported transitively from
+`ErgodicTheory.lean`; `MeasurableSubspace.lean` already exists):
 
 | Module | Layer | Content |
 |---|---|---|
@@ -31,28 +31,28 @@ operator norm (`open scoped Matrix.Norms.L2Operator`); the action is
 (a `≃⋆ₐ[ℝ]`, hence multiplicative and unit‑preserving); `GL` encoded as `(A x).det ≠ 0`;
 exponents **descending** `λ₁ > ⋯ > λ_k`; flag `⊤ = V 0 ⊋ ⋯ ⊋ V k = ⊥` via
 `V i.succ x < V i.castSucc x`; measurable subspaces via `MeasurableSubspace` (the
-`orthProjMatrix` encoding in `Oseledets/Lyapunov/MeasurableSubspace.lean`).
+`orthProjMatrix` encoding in `ErgodicTheory/Lyapunov/MeasurableSubspace.lean`).
 
 **Reusable, already proved (treat as black boxes):**
 - Cocycle API: `cocycle`, `cocycle_add`, `cocycle_succ`, `measurable_cocycle`,
-  `IntegrableLogNorm` (`Oseledets/Cocycle/Basic.lean`).
+  `IntegrableLogNorm` (`ErgodicTheory/Cocycle/Basic.lean`).
 - Maximal ergodic inequality `setIntegral_birkhoffSum_pos_nonneg`
-  (`Oseledets/Ergodic/MaximalErgodic.lean`).
+  (`ErgodicTheory/Ergodic/MaximalErgodic.lean`).
 - Pointwise Birkhoff `tendsto_birkhoffAverage_ae` (+ `[IsFiniteMeasure μ]`), ergodic
   corollary `tendsto_birkhoffAverage_ae_integral`, and the commutation lemma
-  `condExp_invariants_comp` (`Oseledets/Ergodic/Birkhoff.lean`).
+  `condExp_invariants_comp` (`ErgodicTheory/Ergodic/Birkhoff.lean`).
 - Kingman `tendsto_kingman` (**assume available** with the signature in
-  `Oseledets/Ergodic/Kingman.lean`; see §0 below) and its ergodic corollary
+  `ErgodicTheory/Ergodic/Kingman.lean`; see §0 below) and its ergodic corollary
   `tendsto_kingman_ergodic` (constant limit under `Ergodic` + probability measure).
 - Furstenberg–Kesten `furstenbergKesten_top`, `furstenbergKesten_bot`
-  (`Oseledets/Cocycle/FurstenbergKesten.lean`; currently `sorry`, assume as black boxes —
+  (`ErgodicTheory/Cocycle/FurstenbergKesten.lean`; currently `sorry`, assume as black boxes —
   L4 only needs their *conclusions*).
 
 ---
 
 ## 0. The two engines as consumed by this layer (exact signatures)
 
-**Kingman** (`Oseledets/Ergodic/Kingman.lean`, assumed):
+**Kingman** (`ErgodicTheory/Ergodic/Kingman.lean`, assumed):
 
 ```lean
 structure IsSubadditiveCocycle (T : X → X) (g : ℕ → X → ℝ) : Prop where
@@ -528,7 +528,7 @@ theorem tendsto_log_norm_cocycle_on_stratum
 ```
 
 The TARGET `oseledets_filtration` (already stated, `sorry` in
-`Oseledets/MultiplicativeErgodic.lean`) is then **assembled** from:
+`ErgodicTheory/MultiplicativeErgodic.lean`) is then **assembled** from:
 - L4.4 `Vflag_*` (flag shape, strict decrease, equivariance) + M7 `specCard_ae_const`,
   `specList_ae_const` (to produce the constant `k`, `lam : Fin k → ℝ`, `StrictAnti lam`);
 - M7 `measurableSubspace_Vflag` (the `∀ i, MeasurableSubspace (V i)` clause);
@@ -605,7 +605,7 @@ reduced cocycle `B` on `Wᗮ`) is the structural risk here.
 Secondary risks:
 - **`limsup` algebra under vanishing perturbations** is used all over L4. The project already
   proved `limsup_eq_of_sub_tendsto_zero` (private in `Birkhoff.lean`); **promote it** to a
-  shared `Oseledets` helper (e.g. a small `Oseledets/Util/Limsup.lean`) and add the matching
+  shared `ErgodicTheory` helper (e.g. a small `ErgodicTheory/Util/Limsup.lean`) and add the matching
   `limsup_le_limsup` + `limsup (max f g) ≤ max (limsup f) (limsup g)` lemmas (verify
   `Filter.limsup_max`/`limsup_sup` names in `Mathlib/Order/LiminfLimsup.lean`).
 - **Index bookkeeping** (`Fin k` / `Fin (k+1)`, `castSucc`/`succ`/`last`, transporting indices
@@ -624,6 +624,6 @@ Secondary risks:
 `Filtration` (GrowthFunction + Ultrametric) → `Measurable` (Filtration + GramSchmidt +
 MeasurableSubspace) → `Subbundle` (Filtration + Measurable + Birkhoff + FK) →
 `Limit` (Subbundle + Filtration) → assemble `MultiplicativeErgodic.oseledets_filtration`.
-Each new module must be imported (transitively) from `Oseledets.lean`. Keep the build green:
+Each new module must be imported (transitively) from `ErgodicTheory.lean`. Keep the build green:
 every committed module `lake build`s, with each unfinished obligation an explicitly flagged
 `sorry -- TODO:` or `sorry -- BLOCKED:` (notably the M7 measurable‑frame obligations).

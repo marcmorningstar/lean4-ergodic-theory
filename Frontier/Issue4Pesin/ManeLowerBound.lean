@@ -74,9 +74,9 @@ section LowerBound
 
 variable {μ : Measure (EuclideanSpace ℝ (Fin d))} [IsProbabilityMeasure μ]
     {T : EuclideanSpace ℝ (Fin d) → EuclideanSpace ℝ (Fin d)} (hT : Ergodic T μ)
-    (hdet : ∀ x, (Oseledets.derivativeCocycle T x).det ≠ 0)
-    (hint : Oseledets.IntegrableLogNorm (Oseledets.derivativeCocycle T) μ)
-    (hint' : Oseledets.IntegrableLogNorm (fun x => (Oseledets.derivativeCocycle T x)⁻¹) μ)
+    (hdet : ∀ x, (ErgodicTheory.derivativeCocycle T x).det ≠ 0)
+    (hint : ErgodicTheory.IntegrableLogNorm (ErgodicTheory.derivativeCocycle T) μ)
+    (hint' : ErgodicTheory.IntegrableLogNorm (fun x => (ErgodicTheory.derivativeCocycle T x)⁻¹) μ)
 
 /-- **Mañé's abstract entropy lower bound (Contractor Proposition 7.7), composed with the
 unstable-Jacobian local-entropy estimate (Contractor (7.17)/(7.18)): the reverse inequality.**
@@ -105,9 +105,9 @@ theorem sumPosExp_le_ksEntropy_of_SRB
     {χ : EuclideanSpace ℝ (Fin d) → ℝ}
     (hSRB : SRBProperty T μ)
     (hχ : UnstableJacobianRate hT hdet hint hint' χ) :
-    ((Oseledets.sumPosExp hT hdet (Oseledets.measurable_derivativeCocycle T) hint hint' : ℝ)
+    ((ErgodicTheory.sumPosExp hT hdet (ErgodicTheory.measurable_derivativeCocycle T) hint hint' : ℝ)
         : EReal)
-      ≤ Oseledets.Entropy.ksEntropy hT.toMeasurePreserving := by
+      ≤ ErgodicTheory.Entropy.ksEntropy hT.toMeasurePreserving := by
   -- The route: `sumPosExp = ∫ χ dμ` (a.e.-constant integrand, probability measure) `≤ h_μ(T)`.
   -- The second `≤` is Mañé's lower bound (Proposition 7.7 + the unstable-Jacobian estimate
   -- (7.17)/(7.18)), the genuinely BLOCKED geometric content named in the docstring.

@@ -29,24 +29,24 @@ not preferences. They must survive context summarization:
 
 ## Status
 
-**COMPLETE.** The target theorem `Oseledets.oseledets_filtration`
-(`Oseledets/MultiplicativeErgodic.lean`) is fully proved sorry-free, together with companion
-corollaries (`Oseledets/Lyapunov/Extensions/Corollaries.lean`: spectrum uniqueness,
+**COMPLETE.** The target theorem `ErgodicTheory.oseledets_filtration`
+(`ErgodicTheory/MultiplicativeErgodic.lean`) is fully proved sorry-free, together with companion
+corollaries (`ErgodicTheory/Lyapunov/Extensions/Corollaries.lean`: spectrum uniqueness,
 top-exponent = norm growth, a.e.-constant multiplicities, …), the additive extensions
-(`Oseledets/Lyapunov/Extensions/`:
+(`ErgodicTheory/Lyapunov/Extensions/`:
 Lyapunov spectrum, exponent sums, exterior/wedge growth, trace–det identity, inverse/time-
 reversal, restriction, non-ergodic, regularity, singular), the **two-sided splitting**
-(`Oseledets/TwoSided/`: `oseledets_splitting`), and the **continuous-flow MET**
-(`Oseledets/Continuous/`: `oseledets_flow`). A guarded audit module
+(`ErgodicTheory/TwoSided/`: `oseledets_splitting`), and the **continuous-flow MET**
+(`ErgodicTheory/Continuous/`: `oseledets_flow`). A guarded audit module
 (`test/AxiomAudit.lean`, a separate `AxiomAudit` lib kept out of the upstreamable library so the
 library source has no `#print axioms`) checks on every build — via `#guard_msgs in #print axioms`
 — that the target theorem and each of these results depend on exactly
 `[propext, Classical.choice, Quot.sound]` (the build fails if this ever changes; it is
-not printed). The `Oseledets` library is built with `linter.mathlibStandardSet` enabled and
+not printed). The `ErgodicTheory` library is built with `linter.mathlibStandardSet` enabled and
 warnings promoted to errors (`lakefile.toml`), so `lake build` — and hence CI — fails on any
 style-lint regression. See `docs/progress/STATE.md` for the final composition.
 
-A **finite-dimensional quantum-information layer** (`Oseledets/OperatorEntropy/`, issues
+A **finite-dimensional quantum-information layer** (`ErgodicTheory/OperatorEntropy/`, issues
 #22–#28) has since been added on the same matrix/CFC infrastructure: the von Neumann and
 Umegaki relative entropies, Klein's inequality and **Lieb's joint-convexity theorem**, the
 **CPTP data-processing inequality**, the **CNT dynamical entropy** (whose abelian corner
@@ -58,11 +58,11 @@ guarded in `test/AxiomAudit.lean` to the same axiom set.
 
 | Path | Purpose |
 |---|---|
-| `Oseledets.lean` | Library root; imports every module of the formalization. |
-| `Oseledets/` | Library modules: `Cocycle/`, `Ergodic/`, `Lyapunov/` (incl. `Lyapunov/Extensions/` for the post-theorem corollaries), `MultiplicativeErgodic.lean` (the proved target theorem), `TwoSided/`, `Continuous/`. |
-| `Oseledets/OperatorEntropy/` | Finite-dim quantum-information layer (issues #22–#28): von Neumann & Umegaki relative entropy, Klein/Lieb joint convexity, the CPTP data-processing inequality, CNT dynamical entropy (abelian corner = classical KS entropy), and the Petz recovery + equality theorem (both directions). |
-| `test/AxiomAudit.lean` | The guarded axiom-check (separate `AxiomAudit` lib; not part of the `Oseledets` library). |
-| `lakefile.toml` | Package config: the `Oseledets` lib + the `AxiomAudit` test lib (both default targets), depends on Mathlib. |
+| `ErgodicTheory.lean` | Library root; imports every module of the formalization. |
+| `ErgodicTheory/` | Library modules: `Cocycle/`, `Ergodic/`, `Lyapunov/` (incl. `Lyapunov/Extensions/` for the post-theorem corollaries), `MultiplicativeErgodic.lean` (the proved target theorem), `TwoSided/`, `Continuous/`. |
+| `ErgodicTheory/OperatorEntropy/` | Finite-dim quantum-information layer (issues #22–#28): von Neumann & Umegaki relative entropy, Klein/Lieb joint convexity, the CPTP data-processing inequality, CNT dynamical entropy (abelian corner = classical KS entropy), and the Petz recovery + equality theorem (both directions). |
+| `test/AxiomAudit.lean` | The guarded axiom-check (separate `AxiomAudit` lib; not part of the `ErgodicTheory` library). |
+| `lakefile.toml` | Package config: the `ErgodicTheory` lib + the `AxiomAudit` test lib (both default targets), depends on Mathlib. |
 | `lean-toolchain` | Pinned Lean version (`leanprover/lean4:v4.30.0-rc2`). |
 | `lake-manifest.json` | Pinned dependency revisions. |
 | `.github/workflows/` | CI: `lake build` on push and PR. |
@@ -108,8 +108,8 @@ shows which trees are provisioned/warm. Merge the good branches back from the ma
 
 - `autoImplicit` is **off** (set in `lakefile.toml`) — declare implicit
   variables explicitly.
-- New modules go under `Oseledets/` and must be imported (directly or
-  transitively) from `Oseledets.lean` so they are part of the build.
+- New modules go under `ErgodicTheory/` and must be imported (directly or
+  transitively) from `ErgodicTheory.lean` so they are part of the build.
 - Keep the build green: every commit should `lake build` cleanly, with no
   `sorry` left unflagged.
 

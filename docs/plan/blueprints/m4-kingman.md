@@ -1,11 +1,11 @@
 # Blueprint — M4: Kingman's subadditive ergodic theorem (`tendsto_kingman`)
 
-**Target file:** `Oseledets/Ergodic/Kingman.lean`
+**Target file:** `ErgodicTheory/Ergodic/Kingman.lean`
 **Layer / milestone:** L2.6 / M4 (the analytic engine of the MET).
 **Depends on (in-repo):** M3 pointwise Birkhoff (`tendsto_birkhoffAverage_ae`,
 `tendsto_birkhoffAverage_ae_integral`) and, transitively, M1
 (`setIntegral_birkhoffSum_pos_nonneg`) and M2 (`condExp_invariants_comp`), all in
-`Oseledets/Ergodic/{MaximalErgodic,Birkhoff}.lean`. **All three currently carry
+`ErgodicTheory/Ergodic/{MaximalErgodic,Birkhoff}.lean`. **All three currently carry
 `sorry`** — this blueprint assumes them as black boxes with the signatures already
 stated in the repo.
 
@@ -17,12 +17,12 @@ tree (`/workspaces/lean4-oseledets/.lake/packages/mathlib`, toolchain
 
 ## 1. The exact Lean statement (fixed; do NOT edit)
 
-From `Oseledets/Ergodic/Kingman.lean` as it stands:
+From `ErgodicTheory/Ergodic/Kingman.lean` as it stands:
 
 ```lean
 open MeasureTheory Filter Topology
 
-namespace Oseledets
+namespace ErgodicTheory
 
 variable {X : Type*} [MeasurableSpace X] {μ : Measure X} {T : X → X}
 
@@ -430,10 +430,10 @@ they live as `private lemma`s above `tendsto_kingman`.
 
 ### 5.2 EXIST in-repo (M1/M2/M3 — currently `sorry`, treat as given)
 
-- `Oseledets.setIntegral_birkhoffSum_pos_nonneg` (M1) — `Oseledets/Ergodic/MaximalErgodic.lean:28`.
-- `Oseledets.condExp_invariants_comp` (M2) — `Oseledets/Ergodic/Birkhoff.lean:30`.
-- `Oseledets.tendsto_birkhoffAverage_ae` (M3) — `Oseledets/Ergodic/Birkhoff.lean:39`.
-- `Oseledets.tendsto_birkhoffAverage_ae_integral` (M3, ergodic) — `…/Birkhoff.lean:47`.
+- `ErgodicTheory.setIntegral_birkhoffSum_pos_nonneg` (M1) — `ErgodicTheory/Ergodic/MaximalErgodic.lean:28`.
+- `ErgodicTheory.condExp_invariants_comp` (M2) — `ErgodicTheory/Ergodic/Birkhoff.lean:30`.
+- `ErgodicTheory.tendsto_birkhoffAverage_ae` (M3) — `ErgodicTheory/Ergodic/Birkhoff.lean:39`.
+- `ErgodicTheory.tendsto_birkhoffAverage_ae_integral` (M3, ergodic) — `…/Birkhoff.lean:47`.
 
 ### 5.3 Must BUILD
 

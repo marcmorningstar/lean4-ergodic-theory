@@ -179,7 +179,7 @@ Everything below is **NOT FOUND** in Mathlib and is on the critical path.
    iterated cocycle `A^(n)(x) := A(T^[n-1] x) ∘ ⋯ ∘ A(x)` and the **cocycle
    identity** `A^(m+n)(x) = A^(n)(T^[m] x) ∘ A^(m)(x)`. (The *additive* prototype
    `birkhoffSum_add` exists and should be imitated.) Likely a new
-   `Oseledets/Cocycle.lean`. Decide bundling (structure vs. plain hypotheses) and
+   `ErgodicTheory/Cocycle.lean`. Decide bundling (structure vs. plain hypotheses) and
    integrability condition `log⁺‖A‖ ∈ L¹`.
 
 2. **Lyapunov exponents.** No definition. Must build

@@ -31,7 +31,7 @@ splitting) that add the most work without changing the essential content.
 
 > **Superseded by the implemented statement.** The sketch below uses `Fin d → ℝ`,
 > `Matrix.toLin'`, and `*ᵥ` (which carry the L∞/sup norm). The actual formalized target
-> `Oseledets.oseledets_filtration` (in `Oseledets/MultiplicativeErgodic.lean`) instead
+> `ErgodicTheory.oseledets_filtration` (in `ErgodicTheory/MultiplicativeErgodic.lean`) instead
 > uses `EuclideanSpace ℝ (Fin d)` with the matrix action `Matrix.toEuclideanCLM` and the
 > **L2** operator norm — so that the operator norm is submultiplicative and the
 > spectral/singular-value API applies (see `docs/plan/api-notes.md`). The Lyapunov
@@ -78,7 +78,7 @@ theorem oseledets_filtration
 ```
 
 (The exact packaging — `Submodule` vs `Flag`, `Fin k`-indexing, how measurability
-of subspace-valued maps is phrased — is to be pinned in `Oseledets/` and is itself
+of subspace-valued maps is phrased — is to be pinned in `ErgodicTheory/` and is itself
 part of milestone work; the sketch shows the real types and the load-bearing
 conclusions. Note `‖A x‖` uses the scoped L2 operator norm; `*ᵥ` is matrix–vector
 product; `Matrix.toLin'` gives the linear map for equivariance.)

@@ -13,8 +13,8 @@
 | # | Topic | Verdict |
 |---|-------|---------|
 | **5** | suspension / special flow | ✅ **SOLVED** — `hPmeas` measurability datum discharged to `Measurable A`; full **per-exponent** flow scaling `λ_i^flow = λ_i^base/∫τ`. (The headline still assumes the base-a.e. Birkhoff limits `hgrow`/`hroof` and a bounded roof — supplied by the discrete MET in any concrete application; "unconditional" refers only to the cover-cocycle measurability datum.) |
-| **4** | Ruelle entropy inequality | ✅ **FORMALIZED (Phase 2)** — `Oseledets.margulisRuelle_sharp : ksEntropy ≤ Σλᵢ⁺` in the linted, axiom-audited lib, via the full Mañé covering-count pipeline; carries the Riquelme-necessary distortion hyps. (Phase 1 had characterized the geometric core as a wall; Phase 2 built the missing Mathlib-scale infra to close it.) |
-| **6** | full singular forward filtration | ✅ **FORMALIZED (Phase 2)** — `Oseledets.aemeasurable_orthProjMatrix_lambdaSublevel` (a.e. measurable singular filtration) in the linted lib, via the polarization route + new infra `MeasureTheory.AnalyticSet.nullMeasurableSet` (a Mathlib gap). (Phase 1 had proved the *everywhere* flag's per-step wall tight; Phase 2 closed the correct *a.e.* formulation.) |
+| **4** | Ruelle entropy inequality | ✅ **FORMALIZED (Phase 2)** — `ErgodicTheory.margulisRuelle_sharp : ksEntropy ≤ Σλᵢ⁺` in the linted, axiom-audited lib, via the full Mañé covering-count pipeline; carries the Riquelme-necessary distortion hyps. (Phase 1 had characterized the geometric core as a wall; Phase 2 built the missing Mathlib-scale infra to close it.) |
+| **6** | full singular forward filtration | ✅ **FORMALIZED (Phase 2)** — `ErgodicTheory.aemeasurable_orthProjMatrix_lambdaSublevel` (a.e. measurable singular filtration) in the linted lib, via the polarization route + new infra `MeasureTheory.AnalyticSet.nullMeasurableSet` (a Mathlib gap). (Phase 1 had proved the *everywhere* flag's per-step wall tight; Phase 2 closed the correct *a.e.* formulation.) |
 
 ---
 
@@ -39,7 +39,7 @@ Modules: `SuspensionReturnTimeMeasurable`, `SuspensionExponentSetEquiv`, `Suspen
 ## #4 — Phase 1: abstract reduction + the geometric wall characterized
 
 > **→ CLOSED in Phase 2** (see "PHASE 2 — Frontier campaign" below): the geometric core was *formalized*
-> — `Oseledets.margulisRuelle_sharp : ksEntropy ≤ Σλᵢ⁺` via the full Mañé covering-count pipeline (Mañé 12.5
+> — `ErgodicTheory.margulisRuelle_sharp : ksEntropy ≤ Σλᵢ⁺` via the full Mañé covering-count pipeline (Mañé 12.5
 > + SVD anisotropic covering + orbit iteration), in the linted, axiom-audited lib. The section below records
 > the Phase-1 honest assessment (why the bare inequality is a wall) that motivated the eventual route.
 
@@ -70,7 +70,7 @@ Multi-month, Mathlib-scale. Correctly left as the explicit open input.
 ## #6 — Phase 1: all reachable det-free content landed; the everywhere-flag wall characterized
 
 > **→ CLOSED in Phase 2** (see "PHASE 2 — Frontier campaign" below): the *a.e.* measurable singular forward
-> filtration was *formalized* — `Oseledets.aemeasurable_orthProjMatrix_lambdaSublevel`, via the polarization
+> filtration was *formalized* — `ErgodicTheory.aemeasurable_orthProjMatrix_lambdaSublevel`, via the polarization
 > route + the new `MeasureTheory.AnalyticSet.nullMeasurableSet` (a Mathlib gap). The wall below is for the
 > strictly-stronger *everywhere*-measurable flag; the a.e. formulation (the correct MET notion) is closed.
 
@@ -117,10 +117,10 @@ Mathlib, genuinely multi-session. This is the classical non-invertible measurabl
 
 ## New modules (14)
 
-`Oseledets/Continuous/`: SuspensionReturnTimeMeasurable, SuspensionExponentSetEquiv,
+`ErgodicTheory/Continuous/`: SuspensionReturnTimeMeasurable, SuspensionExponentSetEquiv,
 SuspensionExponentSetMeasurable, SuspensionFlowExponentFinal.
-`Oseledets/Entropy/`: MargulisRuelleSharpened.
-`Oseledets/Lyapunov/Extensions/`: SingularSubspaceDist, SingularPerDirectionExponent, SingularSpectralValues,
+`ErgodicTheory/Entropy/`: MargulisRuelleSharpened.
+`ErgodicTheory/Lyapunov/Extensions/`: SingularSubspaceDist, SingularPerDirectionExponent, SingularSpectralValues,
 SingularSpectrumConstant, SingularSlowSpace, SingularBandConverge, SingularSlowSpaceUnconditional,
 SingularLambdaBarFiltration, SingularLambdaBarMeasurable.
 
@@ -140,8 +140,8 @@ New directive: build the genuinely-missing Mathlib infrastructure to make #4 and
 (state the top theorem with `sorry` at the gaps, fill down until none remain), to **Mathlib-merge quality**.
 
 **Method/infra:** a sorry-tolerant `Frontier` lake lib (not linted, not `warningAsError`, not a default
-target) so top-down skeletons with `sorry` compile + track via warm leancheck while `Oseledets`/`AxiomAudit`
-stay green; subtrees migrate into `Oseledets/` only once sorry-free. Canonical proof sources scraped via
+target) so top-down skeletons with `sorry` compile + track via warm leancheck while `ErgodicTheory`/`AxiomAudit`
+stay green; subtrees migrate into `ErgodicTheory/` only once sorry-free. Canonical proof sources scraped via
 firecrawl to `docs/research/frontier/` (Ruelle/Mañé/Pesin/Riquelme for #4; Arnold/Froyland–Lloyd–Quas/KRN/Viana
 for #6). Top-down decompositions found *bounded, reachable* routes — neither issue needs the full heavy
 machinery first feared.
@@ -166,7 +166,7 @@ from weak measurability alone (17 lemmas sorry-free), collapsing #6 to one node.
 non-compactness hyps).
 
 **Frontier Wave 3** (`4bdfae4`): **#6 headline delivered** —
-`Oseledets.aemeasurable_orthProjMatrix_lambdaSublevel` (the singular forward filtration projector is
+`ErgodicTheory.aemeasurable_orthProjMatrix_lambdaSublevel` (the singular forward filtration projector is
 AEMeasurable, the correct a.e. MET formulation), proved **modulo one classical theorem**
 `AnalyticSet.nullMeasurableSet` (analytic sets are universally measurable). #4 `RuelleCount` sorry-free — the
 orbit-iteration `(1/n)log∏max(1,σᵢ)→Σλᵢ⁺` a.e. + capstone `margulisRuelle_sharp_of_atomVolProd`
@@ -189,7 +189,7 @@ a delegated integration agent produced the combined green build and a two-pass Q
 soundness + 6-lens quality + honesty critic) drove a fix pass before push. Full `lake build` green; every new
 headline axiom-audited `[propext, Classical.choice, Quot.sound]`.
 
-**Closed sorry-free in `Oseledets/` (with honest scope, exactly as QA verified):**
+**Closed sorry-free in `ErgodicTheory/` (with honest scope, exactly as QA verified):**
 
 | Result | What it genuinely proves | Honest scope note |
 |---|---|---|

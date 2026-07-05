@@ -19,17 +19,17 @@ Three headline theorems are fully proved, sorry-free:
 
 | Theorem | File |
 |---|---|
-| `Oseledets.oseledets_filtration` — one-sided MET (filtration form) | `Oseledets/MultiplicativeErgodic.lean` |
-| `Oseledets.oseledets_splitting` — two-sided splitting | `Oseledets/TwoSided/SplittingAssembly.lean` |
-| `Oseledets.oseledets_flow` — continuous-flow MET | `Oseledets/Continuous/MultiplicativeErgodicFlow.lean` |
+| `ErgodicTheory.oseledets_filtration` — one-sided MET (filtration form) | `ErgodicTheory/MultiplicativeErgodic.lean` |
+| `ErgodicTheory.oseledets_splitting` — two-sided splitting | `ErgodicTheory/TwoSided/SplittingAssembly.lean` |
+| `ErgodicTheory.oseledets_flow` — continuous-flow MET | `ErgodicTheory/Continuous/MultiplicativeErgodicFlow.lean` |
 
-together with a layer of companion results (`Oseledets/Lyapunov/Extensions/`: the Lyapunov
+together with a layer of companion results (`ErgodicTheory/Lyapunov/Extensions/`: the Lyapunov
 spectrum, exponent sums, the trace–determinant identity, exterior/wedge growth, the inverse
 spectrum, restriction to invariant subbundles, the non-ergodic spectrum, regularity of the
 exponents, and singular one-sided bounds).
 
 The library also includes a finite-dimensional **quantum-information layer**
-(`Oseledets/OperatorEntropy/`, issues #22–#28), built on the same matrix/CFC infrastructure:
+(`ErgodicTheory/OperatorEntropy/`, issues #22–#28), built on the same matrix/CFC infrastructure:
 the von Neumann and Umegaki relative entropies, Klein's inequality and **Lieb's joint-convexity
 theorem**, the **CPTP data-processing inequality** (`monotonicity_relEntropy_under_CPTP`), the
 **CNT dynamical entropy** (whose abelian corner recovers the classical Kolmogorov–Sinai entropy,
@@ -46,8 +46,8 @@ The library builds sorry-free, is enforced linter-clean under Mathlib's
 ## Layout
 
 ```
-Oseledets.lean        -- library root; imports every module
-Oseledets/
+ErgodicTheory.lean        -- library root; imports every module
+ErgodicTheory/
   Cocycle/            -- iterated linear cocycle, norms, Furstenberg–Kesten
   Ergodic/            -- maximal ergodic inequality, Birkhoff, Kingman
   Lyapunov/           -- Lyapunov exponents, the limsup filtration, the final assembly chain
@@ -83,7 +83,7 @@ lake exe cache get
 
 (The devcontainer's `post-create.sh` does this automatically.)
 
-The `Oseledets` library is built with `linter.mathlibStandardSet` enabled and warnings promoted
+The `ErgodicTheory` library is built with `linter.mathlibStandardSet` enabled and warnings promoted
 to errors, so `lake build` (and CI) fails on any style-lint regression.
 
 ## Blueprint and documentation

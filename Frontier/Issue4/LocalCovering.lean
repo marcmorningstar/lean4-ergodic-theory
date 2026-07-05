@@ -36,7 +36,7 @@ with **no smallness hypothesis on `ε`** beyond positivity and **no `C¹` linear
 `L` is genuinely linear.  This is the `k = d` (top) truncation of the positive-part product
 `∏ᵢ max(1, σᵢ) = ⨆_{k≤d} ∏_{i<k} σᵢ` (`Frontier.Issue4.VolumeDistortion`): writing `σ₀ = ‖L‖`,
 `∏ᵢ max(1, σᵢ) ≤ (1 + σ₀) ^ d`, so the isotropic bound is a *valid but non-sharp* upper bound for
-the positive-part product (`Oseledets.prod_max_one_singularValues_le_one_add_opNorm_pow`).
+the positive-part product (`ErgodicTheory.prod_max_one_singularValues_le_one_add_opNorm_pow`).
 
 ## What is sharp and what is not (a recorded obstruction)
 
@@ -65,7 +65,7 @@ locates it as the `k = d` extreme of the positive-part product.
 * `MeasureTheory.addHaar_cthickening_image_closedBall_le` — its Haar volume bound.
 * `Metric.coveringCount_image_ball_linear_le` — the **isotropic one-step covering count**:
   `coveringNumber ε (L '' closedBall x ε) ≤ ENNReal.ofReal ((2 * ‖L‖ + 1) ^ d)`.
-* `Oseledets.prod_max_one_singularValues_le_one_add_opNorm_pow` — the comparison
+* `ErgodicTheory.prod_max_one_singularValues_le_one_add_opNorm_pow` — the comparison
   `∏ᵢ max(1, σᵢ(L)) ≤ (1 + ‖L‖) ^ d`, placing the sharp positive-part product below the
   isotropic count.
 -/
@@ -143,7 +143,7 @@ This is the linear instance of Liao–Qiu's one-step covering count (§3, Lemma 
 `(ε/2 + ‖L‖ ε) / (ε/2) = 2 ‖L‖ + 1`.
 
 It is the `k = d` (isotropic, top) truncation of the sharp positive-part product
-`∏ᵢ max(1, σᵢ(L))`; see `Oseledets.prod_max_one_singularValues_le_one_add_opNorm_pow` for the
+`∏ᵢ max(1, σᵢ(L))`; see `ErgodicTheory.prod_max_one_singularValues_le_one_add_opNorm_pow` for the
 comparison `∏ᵢ max(1, σᵢ) ≤ (1 + ‖L‖) ^ d ≤ (2 ‖L‖ + 1) ^ d`. -/
 theorem coveringCount_image_ball_linear_le
     (μ : Measure (EuclideanSpace ℝ (Fin d))) [μ.IsAddHaarMeasure]
@@ -177,7 +177,7 @@ theorem coveringCount_image_ball_linear_le
 
 end Metric
 
-namespace Oseledets
+namespace ErgodicTheory
 
 open Finset
 
@@ -203,4 +203,4 @@ theorem prod_max_one_le_one_add_top_pow {σ : ℕ → ℝ} (hanti : Antitone σ)
           (fun i _ => hbound i)
     _ = (1 + σ 0) ^ d := by rw [Finset.prod_const, card_range]
 
-end Oseledets
+end ErgodicTheory

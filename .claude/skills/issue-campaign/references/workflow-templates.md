@@ -105,7 +105,7 @@ export const meta = {
   phases: [{ title: 'Lenses' }, { title: 'Verify' }],
 }
 const REPO = '/workspaces/lean4-oseledets'          // or the integration worktree path
-const FILES = ['Oseledets/.../A.lean (what it proves)', 'Oseledets/.../B.lean (…)']  // the new modules
+const FILES = ['ErgodicTheory/.../A.lean (what it proves)', 'ErgodicTheory/.../B.lean (…)']  // the new modules
 const PREAMBLE = [
   'READ-ONLY QA reviewer for the Oseledets project (code under review in ' + REPO + '). Read its CLAUDE.md.',
   'Modules under review (with one-line purpose):', FILES.map(function (f) { return '  - ' + f }).join('\n'),

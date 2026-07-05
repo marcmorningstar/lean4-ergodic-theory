@@ -8,7 +8,7 @@
 
 ## A. The precise Lean statement of L7
 
-The cleanest expressible form (compiled to typecheck against the committed `Oseledets.gram` in
+The cleanest expressible form (compiled to typecheck against the committed `ErgodicTheory.gram` in
 `scratch_l7_statement.lean`):
 
 ```lean

@@ -12,9 +12,9 @@ the Oseledets multiplicative ergodic theorem (MET)**.
 
 Three headline theorems are formalized, sorry-free:
 
-* `Oseledets.oseledets_filtration` — the one-sided MET (filtration form);
-* `Oseledets.oseledets_splitting` — the two-sided splitting;
-* `Oseledets.oseledets_flow` — the continuous-flow MET.
+* `ErgodicTheory.oseledets_filtration` — the one-sided MET (filtration form);
+* `ErgodicTheory.oseledets_splitting` — the two-sided splitting;
+* `ErgodicTheory.oseledets_flow` — the continuous-flow MET.
 
 together with a layer of companion results (the Lyapunov spectrum, exponent sums,
 the trace–determinant identity, exterior/wedge growth, the inverse spectrum,

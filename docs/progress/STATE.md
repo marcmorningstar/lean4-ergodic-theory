@@ -13,20 +13,20 @@
 
 ## Core theorem
 
-* `Oseledets.oseledets_filtration` (`Oseledets/MultiplicativeErgodic.lean`) — the one-sided MET
+* `ErgodicTheory.oseledets_filtration` (`ErgodicTheory/MultiplicativeErgodic.lean`) — the one-sided MET
   in filtration form: for an ergodic measure-preserving `T` and an integrable invertible matrix
   cocycle generator, `k` distinct Lyapunov exponents `λ₁ > ⋯ > λ_k` and a measurable
   `A`-equivariant flag along which `(1/n) log‖A⁽ⁿ⁾(x) v‖ → λᵢ` on each stratum.
-* `Oseledets.IsOseledetsFiltration` + `oseledets_filtration'`
-  (`Oseledets/Lyapunov/Extensions/Corollaries.lean`)
+* `ErgodicTheory.IsOseledetsFiltration` + `oseledets_filtration'`
+  (`ErgodicTheory/Lyapunov/Extensions/Corollaries.lean`)
   — the conclusion bundled as a consumable predicate.
 
-## Companion corollaries (`Oseledets/Lyapunov/Extensions/Corollaries.lean`)
+## Companion corollaries (`ErgodicTheory/Lyapunov/Extensions/Corollaries.lean`)
 
 Canonical growth-sublevel characterization `IsOseledetsFiltration.ae_mem_iff_limsup_le` and
 uniqueness; top exponent = operator-norm growth rate; a.e.-constant multiplicities / dimensions.
 
-## Additive extensions (`Oseledets/Lyapunov/Extensions/`)
+## Additive extensions (`ErgodicTheory/Lyapunov/Extensions/`)
 
 * `Spectrum.lean` — the full Lyapunov spectrum as a consumable object (`exponents`, antitone,
   `exponents_tendsto_log_singularValue`).
@@ -46,16 +46,16 @@ uniqueness; top exponent = operator-norm growth rate; a.e.-constant multipliciti
   EReal limits**, and the **bare-log `limsup` = top exponent** sharpening when that exponent is
   positive (a genuine bare-log limit is false for singular cocycles).
 
-## Two-sided splitting (`Oseledets/TwoSided/`)
+## Two-sided splitting (`ErgodicTheory/TwoSided/`)
 
-`Oseledets.oseledets_splitting` (`SplittingAssembly.lean`) — for an invertible base, an invariant
+`ErgodicTheory.oseledets_splitting` (`SplittingAssembly.lean`) — for an invertible base, an invariant
 `DirectSum.IsInternal` decomposition `Eᵢ = Vᵢ ⊓ W_{rev i}` with two-sided growth `±λᵢ`, assembled
 from the backward cocycle, the reflection of the spectrum, transversality, and the restricted
 backward envelope (phases P0–P8).
 
-## Continuous-flow MET (`Oseledets/Continuous/`)
+## Continuous-flow MET (`ErgodicTheory/Continuous/`)
 
-`Oseledets.oseledets_flow` (`MultiplicativeErgodicFlow.lean`) — the continuous-time / measure-
+`ErgodicTheory.oseledets_flow` (`MultiplicativeErgodicFlow.lean`) — the continuous-time / measure-
 preserving-ℝ-flow version: exponents, a measurable **flow-equivariant** filtration
 (`map (A t x) (Vⁱ x) = Vⁱ (φ t x)` for all real `t`), and exact **continuous-parameter** growth
 `(1/t) log‖A(t,x) v‖ → λᵢ` as `t → ∞`. Built by reducing to the discrete theorem at the time-1
@@ -63,7 +63,7 @@ map (`Flow.lean` reduction identity, `Reduction.lean`), upgrading integer-time g
 continuous parameter via a between-times sandwich (`BetweenTimes.lean`), and proving real-time
 equivariance via a discrete-limsup shift-invariance (`Equivariance.lean`).
 
-## Quantum-information layer (`Oseledets/OperatorEntropy/`)
+## Quantum-information layer (`ErgodicTheory/OperatorEntropy/`)
 
 A self-contained finite-dimensional quantum-information cluster added on top of the MET core
 (issues #22–#28), reusing the repo's matrix / continuous-functional-calculus infrastructure.
@@ -90,7 +90,7 @@ All results are sorry-free, linter-clean, and guarded in `test/AxiomAudit.lean`.
 Cocycle newest-factor-left; scoped L2 operator norm `Matrix.Norms.L2Operator`; vectors
 `EuclideanSpace ℝ (Fin d)` acted on via `Matrix.toEuclideanCLM`; GL encoded as `det ≠ 0`;
 `log⁺ = Real.posLog`; subspace measurability via `orthProjMatrix` / `MeasurableSubspace`;
-`autoImplicit` off (declare all variables); new modules imported from `Oseledets.lean`.
+`autoImplicit` off (declare all variables); new modules imported from `ErgodicTheory.lean`.
 
 ## Build
 

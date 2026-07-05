@@ -84,14 +84,14 @@ downstream statements legible. -/
 noncomputable def coveringReal (T : EuclideanSpace ℝ (Fin d) → EuclideanSpace ℝ (Fin d)) (n : ℕ)
     (ε : ℝ≥0) (x : EuclideanSpace ℝ (Fin d)) : ℝ :=
   ((coveringNumber ε ((Matrix.toEuclideanCLM (𝕜 := ℝ)
-    (Oseledets.cocycle (Oseledets.derivativeCocycle T) T n x)) ''
+    (ErgodicTheory.cocycle (ErgodicTheory.derivativeCocycle T) T n x)) ''
     closedBall 0 (ε : ℝ)) : ℝ≥0∞)).toReal
 
 /-- **The one-step sharp local covering count (interface `Prop`).**  For the `n`-fold iterate
 `T^[n]`, the image `D_x(T^[n]) '' closedBall 0 ε` of an `ε`-ball under the differential is coverable
 by at most `C · volProd T n x` balls of radius `ε`, where
 `volProd T n x = ∏ᵢ max(1, σᵢ(D_x(T^[n])))` is the per-orbit positive-part singular-value product
-and `D_x(T^[n]) = toEuclideanCLM (cocycle (derivativeCocycle T) T n x)` (`Oseledets.chainRule_cocycle`).
+and `D_x(T^[n]) = toEuclideanCLM (cocycle (derivativeCocycle T) T n x)` (`ErgodicTheory.chainRule_cocycle`).
 
 This is the **sharp anisotropic** Liao–Qiu count (a thin pancake needs *few* balls along its thin
 directions), the genuinely geometric per-step input distilled to a single hypothesis.  It is built in
@@ -104,7 +104,7 @@ def SharpLocalCovering (T : EuclideanSpace ℝ (Fin d) → EuclideanSpace ℝ (F
   ∀ n : ℕ,
     (coveringNumber ε
         ((Matrix.toEuclideanCLM (𝕜 := ℝ)
-          (Oseledets.cocycle (Oseledets.derivativeCocycle T) T n x)) ''
+          (ErgodicTheory.cocycle (ErgodicTheory.derivativeCocycle T) T n x)) ''
         closedBall 0 (ε : ℝ)) : ℝ≥0∞)
       ≤ ENNReal.ofReal (C * volProd T n x)
 
@@ -126,12 +126,12 @@ theorem sharpLocalCovering_of_coveringCount
   -- The sharp anisotropic count at the differential `L`, centred at `0`.
   have hcov := coveringCount_image_ball_le_volProd
     (Matrix.toEuclideanCLM (𝕜 := ℝ)
-      (Oseledets.cocycle (Oseledets.derivativeCocycle T) T n x)) 0 hε
+      (ErgodicTheory.cocycle (ErgodicTheory.derivativeCocycle T) T n x)) 0 hε
   -- The singular-value product equals `volProd` (CLM ↦ LinearMap coercion is `toEuclideanLin`).
   rwa [show (6 : ℝ) ^ d *
         ∏ i ∈ Finset.range d, max 1 (LinearMap.singularValues
           ((Matrix.toEuclideanCLM (𝕜 := ℝ)
-              (Oseledets.cocycle (Oseledets.derivativeCocycle T) T n x) :
+              (ErgodicTheory.cocycle (ErgodicTheory.derivativeCocycle T) T n x) :
               EuclideanSpace ℝ (Fin d) →ₗ[ℝ] EuclideanSpace ℝ (Fin d))) i)
       = (6 : ℝ) ^ d * volProd T n x from rfl] at hcov
 
@@ -143,9 +143,9 @@ section AtomCount
 
 variable {μ : Measure (EuclideanSpace ℝ (Fin d))} [IsProbabilityMeasure μ]
     {T : EuclideanSpace ℝ (Fin d) → EuclideanSpace ℝ (Fin d)} (hT : Ergodic T μ)
-    (hdet : ∀ x, (Oseledets.derivativeCocycle T x).det ≠ 0)
-    (hint : Oseledets.IntegrableLogNorm (Oseledets.derivativeCocycle T) μ)
-    (hint' : Oseledets.IntegrableLogNorm (fun x => (Oseledets.derivativeCocycle T x)⁻¹) μ)
+    (hdet : ∀ x, (ErgodicTheory.derivativeCocycle T x).det ≠ 0)
+    (hint : ErgodicTheory.IntegrableLogNorm (ErgodicTheory.derivativeCocycle T) μ)
+    (hint' : ErgodicTheory.IntegrableLogNorm (fun x => (ErgodicTheory.derivativeCocycle T x)⁻¹) μ)
 
 omit [NeZero d] [IsProbabilityMeasure μ] in
 /-- **From the sharp local covering count to the `volProd` atom bound.**  Suppose the geometric
@@ -160,14 +160,14 @@ The geometric count `hgeoCount` is the honest non-compactness input (the same re
 `Frontier.Issue4.CrudeRuelle`); `hcover` is the sharp covering interface stub.  The composition is the
 elementary chaining of the two real-valued bounds, monotone in the (finite) covering number. -/
 theorem atomCount_le_volProd_of_sharpCovering {ι : Type*} [Fintype ι] [Nonempty ι]
-    (P : Oseledets.Entropy.MeasurePartition μ ι) {Ccov Ccov' : ℝ} (hCcov : 0 ≤ Ccov)
+    (P : ErgodicTheory.Entropy.MeasurePartition μ ι) {Ccov Ccov' : ℝ} (hCcov : 0 ≤ Ccov)
     (hCcov' : 0 ≤ Ccov') {ε : ℝ≥0} {x : EuclideanSpace ℝ (Fin d)}
     (hcover : SharpLocalCovering T Ccov' ε x)
     (hgeoCount : ∀ᶠ n : ℕ in atTop,
-      (Oseledets.Entropy.atomCount hT.toMeasurePreserving P n : ℝ)
+      (ErgodicTheory.Entropy.atomCount hT.toMeasurePreserving P n : ℝ)
         ≤ Ccov * coveringReal T n ε x) :
     ∀ᶠ n : ℕ in atTop,
-      (Oseledets.Entropy.atomCount hT.toMeasurePreserving P n : ℝ)
+      (ErgodicTheory.Entropy.atomCount hT.toMeasurePreserving P n : ℝ)
         ≤ (Ccov * Ccov') * volProd T n x := by
   filter_upwards [hgeoCount] with n hn
   -- The one-step covering count, read as a real-number bound on the finite covering number.
@@ -178,7 +178,7 @@ theorem atomCount_le_volProd_of_sharpCovering {ι : Type*} [Fintype ι] [Nonempt
     have hle := ENNReal.toReal_mono hfin hstep
     rwa [ENNReal.toReal_ofReal
       (mul_nonneg hCcov' ((one_le_volProd T n x).trans' zero_le_one))] at hle
-  calc (Oseledets.Entropy.atomCount hT.toMeasurePreserving P n : ℝ)
+  calc (ErgodicTheory.Entropy.atomCount hT.toMeasurePreserving P n : ℝ)
       ≤ Ccov * coveringReal T n ε x := hn
     _ ≤ Ccov * (Ccov' * volProd T n x) := by gcongr
     _ = (Ccov * Ccov') * volProd T n x := by ring
@@ -191,9 +191,9 @@ section Discharge
 
 variable {μ : Measure (EuclideanSpace ℝ (Fin d))} [IsProbabilityMeasure μ]
     {T : EuclideanSpace ℝ (Fin d) → EuclideanSpace ℝ (Fin d)} (hT : Ergodic T μ)
-    (hdet : ∀ x, (Oseledets.derivativeCocycle T x).det ≠ 0)
-    (hint : Oseledets.IntegrableLogNorm (Oseledets.derivativeCocycle T) μ)
-    (hint' : Oseledets.IntegrableLogNorm (fun x => (Oseledets.derivativeCocycle T x)⁻¹) μ)
+    (hdet : ∀ x, (ErgodicTheory.derivativeCocycle T x).det ≠ 0)
+    (hint : ErgodicTheory.IntegrableLogNorm (ErgodicTheory.derivativeCocycle T) μ)
+    (hint' : ErgodicTheory.IntegrableLogNorm (fun x => (ErgodicTheory.derivativeCocycle T x)⁻¹) μ)
 
 /-- **Discharging the per-partition `hatom`.**  For a fixed `Fin n`-indexed partition `P` and a
 covering radius `ε`, suppose the honest geometric inputs hold *jointly at the a.e. orbit-rate set*:
@@ -207,18 +207,18 @@ holds for `P`: there is `C ≥ 1` and a base point `x` carrying both the orbit r
 The base point is selected from the intersection of the (full-measure) orbit-rate set and the
 (full-measure) geometric-count set; `C := max 1 (Ccov · Ccov')` makes the constant `≥ 1` while
 preserving the bound. -/
-theorem hatom_of_sharpCovering {n : ℕ} (P : Oseledets.Entropy.MeasurePartition μ (Fin n))
+theorem hatom_of_sharpCovering {n : ℕ} (P : ErgodicTheory.Entropy.MeasurePartition μ (Fin n))
     [Nonempty (Fin n)] {ε : ℝ≥0} {Ccov Ccov' : ℝ} (hCcov : 0 ≤ Ccov) (hCcov' : 0 ≤ Ccov')
     (hcover : ∀ x, SharpLocalCovering T Ccov' ε x)
     (hgeo : ∀ᵐ x ∂μ, ∀ᶠ m : ℕ in atTop,
-      (Oseledets.Entropy.atomCount hT.toMeasurePreserving P m : ℝ)
+      (ErgodicTheory.Entropy.atomCount hT.toMeasurePreserving P m : ℝ)
         ≤ Ccov * coveringReal T m ε x) :
     ∃ (C : ℝ) (x : EuclideanSpace ℝ (Fin d)), 1 ≤ C ∧
       Tendsto (fun m : ℕ => (m : ℝ)⁻¹ * Real.log (volProd T m x)) atTop
-        (𝓝 (Oseledets.sumPosExp hT hdet
-          (Oseledets.measurable_derivativeCocycle T) hint hint')) ∧
+        (𝓝 (ErgodicTheory.sumPosExp hT hdet
+          (ErgodicTheory.measurable_derivativeCocycle T) hint hint')) ∧
       (∀ᶠ m : ℕ in atTop,
-        (Oseledets.Entropy.atomCount hT.toMeasurePreserving P m : ℝ)
+        (ErgodicTheory.Entropy.atomCount hT.toMeasurePreserving P m : ℝ)
           ≤ C * volProd T m x) := by
   -- Select a base point in the intersection of the orbit-rate set and the geometric-count set.
   have hrate := tendsto_log_volProd hT hdet hint hint'
@@ -228,7 +228,7 @@ theorem hatom_of_sharpCovering {n : ℕ} (P : Oseledets.Entropy.MeasurePartition
   -- `C := max 1 (Ccov · Ccov') ≥ 1`, and the bound is preserved since `volProd ≥ 0`.
   refine ⟨max 1 (Ccov * Ccov'), x, le_max_left _ _, hxrate, ?_⟩
   filter_upwards [hatom] with m hm
-  calc (Oseledets.Entropy.atomCount hT.toMeasurePreserving P m : ℝ)
+  calc (ErgodicTheory.Entropy.atomCount hT.toMeasurePreserving P m : ℝ)
       ≤ (Ccov * Ccov') * volProd T m x := hm
     _ ≤ max 1 (Ccov * Ccov') * volProd T m x := by
         gcongr
@@ -258,16 +258,16 @@ The sharp one-step covering count is **no longer a hypothesis**: it is discharge
 Everything between this input and the conclusion — the orbit rate `tendsto_log_volProd`, the
 sharp covering count `coveringCount_image_ball_le_volProd`, the per-partition assembly
 `ksEntropyPartition_le_sumPosExp_of_atomVolProd`, and the supremum lift
-`Oseledets.margulisRuelle_le_sumPosExp` — is unconditional and sorry-free. -/
+`ErgodicTheory.margulisRuelle_le_sumPosExp` — is unconditional and sorry-free. -/
 theorem margulisRuelle_sharp (hdiff : Differentiable ℝ T)
-    (hgeo : ∀ (n : ℕ) (P : Oseledets.Entropy.MeasurePartition μ (Fin n)),
+    (hgeo : ∀ (n : ℕ) (P : ErgodicTheory.Entropy.MeasurePartition μ (Fin n)),
       ∃ (ε : ℝ≥0) (Ccov : ℝ), 0 < ε ∧ 0 ≤ Ccov ∧
         (∀ᵐ x ∂μ, ∀ᶠ m : ℕ in atTop,
-          (Oseledets.Entropy.atomCount hT.toMeasurePreserving P m : ℝ)
+          (ErgodicTheory.Entropy.atomCount hT.toMeasurePreserving P m : ℝ)
             ≤ Ccov * coveringReal T m ε x)) :
-    Oseledets.Entropy.ksEntropy hT.toMeasurePreserving
-      ≤ ((Oseledets.sumPosExp hT hdet
-          (Oseledets.measurable_derivativeCocycle T) hint hint' : ℝ) : EReal) := by
+    ErgodicTheory.Entropy.ksEntropy hT.toMeasurePreserving
+      ≤ ((ErgodicTheory.sumPosExp hT hdet
+          (ErgodicTheory.measurable_derivativeCocycle T) hint hint' : ℝ) : EReal) := by
   -- Discharge the capstone's existential `hatom` from the honest atom-count input.
   refine margulisRuelle_sharp_of_atomVolProd hT hdet hint hint' hdiff (fun n P => ?_)
   rcases Nat.eq_zero_or_pos n with hn | hn

@@ -3,7 +3,7 @@ Copyright (c) 2026 Marcel Morgenstern. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Marcel Morgenstern
 -/
-import Oseledets.Lyapunov.ExteriorNorm.Basic
+import ErgodicTheory.Lyapunov.ExteriorNorm.Basic
 import Mathlib.Analysis.InnerProductSpace.SingularValues
 
 /-!
@@ -29,11 +29,11 @@ needs, by selecting the *optimal truncation* `k` of the singular-value product.
 
 ## Main results
 
-* `Oseledets.prod_max_one_eq_sup_prod_range` — the **abstract algebraic identity** for any
+* `ErgodicTheory.prod_max_one_eq_sup_prod_range` — the **abstract algebraic identity** for any
   antitone, nonnegative sequence: `∏_{i<d} max(1, σᵢ) = ⨆_{k≤d} ∏_{i<k} σᵢ` (`Finset.sup'`).
-* `Oseledets.prod_max_one_singularValues_eq_sup_prod_range` — its specialization to the singular
+* `ErgodicTheory.prod_max_one_singularValues_eq_sup_prod_range` — its specialization to the singular
   values of a linear map between finite-dimensional inner product spaces.
-* `Oseledets.prod_max_one_singularValues_eq_sup_opNorm_compound` — the **compound bridge**: for a
+* `ErgodicTheory.prod_max_one_singularValues_eq_sup_opNorm_compound` — the **compound bridge**: for a
   square matrix `M`, `∏_{i<d} max(1, σᵢ(M)) = ⨆_{k≤d} ‖C_k(M)‖`, the maximal compound operator
   norm that the covering count consumes.
 
@@ -44,13 +44,13 @@ The abstract identity is proved by an *antichain/prefix* argument. Antitonicity 
 product `∏_{i<k*} σ i` then equals `∏_{i<d} max(1, σ i)` (the truncated factors `σ i < 1` contribute
 `max(1, σ i) = 1`), and it dominates every other partial product `∏_{i<k} σ i` by monotonicity of
 products over `[0,1]`-padded factors. The compound bridge is then immediate from the repository
-identity `Oseledets.ExteriorNorm.prod_singularValues_eq_l2_opNorm_compound`.
+identity `ErgodicTheory.ExteriorNorm.prod_singularValues_eq_l2_opNorm_compound`.
 -/
 
 open Finset
 open scoped Matrix.Norms.L2Operator
 
-namespace Oseledets
+namespace ErgodicTheory
 
 /-! ## The abstract algebraic identity for an antitone nonnegative sequence -/
 
@@ -181,11 +181,11 @@ needs. -/
 theorem prod_max_one_singularValues_eq_sup_opNorm_compound (M : Matrix (Fin d) (Fin d) ℝ) (n : ℕ) :
     ∏ i ∈ range n, max 1 ((Matrix.toEuclideanLin M).singularValues i)
       = (range (n + 1)).sup' (nonempty_range_iff.2 (Nat.succ_ne_zero n))
-          (fun k => ‖Oseledets.ExteriorNorm.compoundMatrix k M‖) := by
+          (fun k => ‖ErgodicTheory.ExteriorNorm.compoundMatrix k M‖) := by
   rw [prod_max_one_singularValues_eq_sup_prod_range (Matrix.toEuclideanLin M) n]
   refine Finset.sup'_congr _ rfl (fun k _ => ?_)
-  exact Oseledets.ExteriorNorm.prod_singularValues_eq_l2_opNorm_compound k M
+  exact ErgodicTheory.ExteriorNorm.prod_singularValues_eq_l2_opNorm_compound k M
 
 end Compound
 
-end Oseledets
+end ErgodicTheory

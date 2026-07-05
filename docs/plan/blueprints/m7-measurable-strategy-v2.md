@@ -110,7 +110,7 @@ selection, no analytic sets, no Grassmannian, full Borel.**
 | `cfc_congr {f g} (hfg : (spectrum R a).EqOn f g) : cfc f a = cfc g a` | `…/CFC/Unital.lean:417` | used in spike ✓ |
 | `cfc_polynomial (q) (a) (ha : p a) : cfc q.eval a = aeval a q` | `…/CFC/Unital.lean:593` | used in spike ✓ |
 | `Polynomial.aeval_C`, `aeval_X`, `aeval_monomial`, `induction_on` | `Algebra/Polynomial/AlgebraMap.lean:297` etc. | used in spike ✓ |
-| `instMeasurableMul₂Matrix` | repo `Oseledets/Cocycle/Basic.lean:78` | reused ✓ |
+| `instMeasurableMul₂Matrix` | repo `ErgodicTheory/Cocycle/Basic.lean:78` | reused ✓ |
 | `Submodule.range_starProjection : range U.starProjection = U` | `…/Projection/Basic.lean:277` | for §1 bridge |
 | `Submodule.isIdempotentElem_starProjection`, `eq_starProjection_of_mem_of_inner_eq_zero` | `…/Projection/Basic.lean:273,211` | for §1 bridge |
 | `measurable_of_tendsto_metrizable (hf) (lim) : Measurable g` | `…/BorelSpace/Metrizable.lean:51` | for `Λ` measurability |
@@ -119,7 +119,7 @@ selection, no analytic sets, no Grassmannian, full Borel.**
 | `continuousOn_cfc` | `…/CFC/Continuity.lean:235` | needs the missing isometric instance. NOT used. |
 | Borel projection of Borel set (Route P) | absent (`Polish/Basic.lean` only analytic) | NOT used. |
 
-## 4. Lemma ladder for `Oseledets/Lyapunov/Measurable.lean` (revised)
+## 4. Lemma ladder for `ErgodicTheory/Lyapunov/Measurable.lean` (revised)
 
 Reuse from v1 (unchanged, HIGH): `measurable_lambdaBar_apply`, `orthProjMatrix_apply`,
 `measurable_orthProjMatrix_iff`, the ergodic-constancy chain (`specCard_ae_const`, `specList_ae_const`).
@@ -127,7 +127,7 @@ Reuse from v1 (unchanged, HIGH): `measurable_lambdaBar_apply`, `orthProjMatrix_a
 New / revised:
 
 1. `measurable_aeval_matrix`, `measurable_matrix_pow`, `instMeasurableAdd₂Matrix` — **DONE** (spike).
-   Move into `Oseledets/Cocycle/Basic.lean` next to `instMeasurableMul₂Matrix`. LOW.
+   Move into `ErgodicTheory/Cocycle/Basic.lean` next to `instMeasurableMul₂Matrix`. LOW.
 2. `measurable_cfc_eqOn_polynomial` — **DONE** (spike). The crux. LOW (given 1).
 3. `measurable_OseledetsLimit : Measurable Λ` — from the Limit module's pointwise a.e. convergence via
    `measurable_of_tendsto_metrizable` + `measurable_cocycle`. Depends on Limit module. MEDIUM, but the

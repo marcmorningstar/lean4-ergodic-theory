@@ -30,7 +30,7 @@ matrix trace.
 \section{Density matrices and von Neumann entropy}
 
 \begin{definition}[Density matrix]\label{DensityMatrix}
-  \lean{Oseledets.OperatorEntropy.DensityMatrix}\leanok
+  \lean{ErgodicTheory.OperatorEntropy.DensityMatrix}\leanok
   For a finite index type \(n\), a \emph{density matrix} is a structure bundling a matrix
   \(\rho\in\Matrix_n(\C)\) together with proofs that \(\rho\) is positive semidefinite and has
   unit trace, \(\Tr\rho = 1\). It is the finite-dimensional state of a quantum system on
@@ -38,7 +38,7 @@ matrix trace.
 \end{definition}
 
 \begin{lemma}[Eigenvalues form a probability vector]\label{DensityMatrix.sum_eigenvalues_eq_one}
-  \lean{Oseledets.OperatorEntropy.DensityMatrix.sum_eigenvalues_eq_one}\leanok
+  \lean{ErgodicTheory.OperatorEntropy.DensityMatrix.sum_eigenvalues_eq_one}\leanok
   \uses{DensityMatrix}
   The real eigenvalues \(\lambda_i\) of a density matrix \(\rho\) are nonnegative, each at most
   \(1\), and sum to \(1\): \(\sum_i \lambda_i = \Tr\rho = 1\).
@@ -52,7 +52,7 @@ matrix trace.
 \end{proof}
 
 \begin{definition}[Von Neumann entropy]\label{vonNeumannEntropy}
-  \lean{Oseledets.OperatorEntropy.vonNeumannEntropy}\leanok
+  \lean{ErgodicTheory.OperatorEntropy.vonNeumannEntropy}\leanok
   \uses{DensityMatrix}
   The \emph{von Neumann entropy} of a density matrix \(\rho\) with eigenvalues \(\lambda_i\) is
   \[
@@ -63,7 +63,7 @@ matrix trace.
 \end{definition}
 
 \begin{theorem}[Nonnegativity of entropy]\label{vonNeumannEntropy_nonneg}
-  \lean{Oseledets.OperatorEntropy.vonNeumannEntropy_nonneg}\leanok
+  \lean{ErgodicTheory.OperatorEntropy.vonNeumannEntropy_nonneg}\leanok
   \(S(\rho)\ge 0\) for every density matrix \(\rho\).
 \end{theorem}
 \begin{proof}\leanok
@@ -77,7 +77,7 @@ We record the partial trace here, as it is the elementary operation underlying b
 states of a bipartite system and the data-processing inequality.
 
 \begin{definition}[Right partial trace]\label{partialTraceRight}
-  \lean{Oseledets.OperatorEntropy.partialTraceRight}\leanok
+  \lean{ErgodicTheory.OperatorEntropy.partialTraceRight}\leanok
   For an operator \(M\) on a bipartite system \(\C^{n_A}\otimes\C^{n_B}\), the \emph{partial
   trace over the \(B\) factor} is
   \[
@@ -87,7 +87,7 @@ states of a bipartite system and the data-processing inequality.
 \end{definition}
 
 \begin{lemma}[Partial trace preserves the trace]\label{trace_partialTraceRight}
-  \lean{Oseledets.OperatorEntropy.trace_partialTraceRight}\leanok
+  \lean{ErgodicTheory.OperatorEntropy.trace_partialTraceRight}\leanok
   \uses{partialTraceRight}
   \(\Tr(\Tr_B M) = \Tr M\).
 \end{lemma}
@@ -98,7 +98,7 @@ states of a bipartite system and the data-processing inequality.
 \end{proof}
 
 \begin{lemma}[Partial trace is completely positive]\label{PosSemidef.partialTraceRight}
-  \lean{Oseledets.OperatorEntropy.PosSemidef.partialTraceRight}\leanok
+  \lean{ErgodicTheory.OperatorEntropy.PosSemidef.partialTraceRight}\leanok
   \uses{partialTraceRight}
   If \(M\) is positive semidefinite then so is \(\Tr_B M\).
 \end{lemma}
@@ -113,7 +113,7 @@ states of a bipartite system and the data-processing inequality.
 \section{Umegaki relative entropy and Klein's inequality}
 
 \begin{definition}[Umegaki relative entropy]\label{relEntropy}
-  \lean{Oseledets.OperatorEntropy.relEntropy}\leanok
+  \lean{ErgodicTheory.OperatorEntropy.relEntropy}\leanok
   \uses{DensityMatrix}
   The \emph{Umegaki relative entropy} of \(\rho\) with respect to \(\sigma\) is
   \(S(\rho\|\sigma) = \Tr\rho(\log\rho - \log\sigma)\). It is defined in the concrete
@@ -128,7 +128,7 @@ states of a bipartite system and the data-processing inequality.
 \end{definition}
 
 \begin{theorem}[Trace form of relative entropy]\label{relEntropy_eq_traceLog}
-  \lean{Oseledets.OperatorEntropy.relEntropy_eq_traceLog}\leanok
+  \lean{ErgodicTheory.OperatorEntropy.relEntropy_eq_traceLog}\leanok
   For faithful (positive definite) \(\sigma\), the spectral definition agrees with the textbook
   trace form
   \[
@@ -148,7 +148,7 @@ states of a bipartite system and the data-processing inequality.
 \end{proof}
 
 \begin{theorem}[Klein / Gibbs nonnegativity]\label{relEntropy_nonneg}
-  \lean{Oseledets.OperatorEntropy.relEntropy_nonneg}\leanok
+  \lean{ErgodicTheory.OperatorEntropy.relEntropy_nonneg}\leanok
   For faithful (positive definite) \(\sigma\), \(\;0\le S(\rho\|\sigma)\).
 \end{theorem}
 \begin{proof}\leanok
@@ -162,7 +162,7 @@ states of a bipartite system and the data-processing inequality.
 \end{proof}
 
 \begin{theorem}[Vanishing on the diagonal]\label{relEntropy_self_eq_zero}
-  \lean{Oseledets.OperatorEntropy.relEntropy_self_eq_zero}\leanok
+  \lean{ErgodicTheory.OperatorEntropy.relEntropy_self_eq_zero}\leanok
   \(S(\rho\|\rho) = 0\) for every density matrix \(\rho\).
 \end{theorem}
 \begin{proof}\leanok
@@ -173,10 +173,10 @@ states of a bipartite system and the data-processing inequality.
 \end{proof}
 
 \begin{theorem}[Unitary invariance]\label{relEntropy_conj_invariant}
-  \lean{Oseledets.OperatorEntropy.relEntropy_conj_invariant}\leanok
+  \lean{ErgodicTheory.OperatorEntropy.relEntropy_conj_invariant}\leanok
   For any unitary \(W\), \(\;S(W\rho W^{*}\,\|\,W\sigma W^{*}) = S(\rho\|\sigma)\), where
   \(W\rho W^{*}\) denotes the density matrix
-  \lean{Oseledets.OperatorEntropy.DensityMatrix.conj}
+  \lean{ErgodicTheory.OperatorEntropy.DensityMatrix.conj}
   obtained by conjugating \(\rho\).
 \end{theorem}
 \begin{proof}\leanok
@@ -189,7 +189,7 @@ states of a bipartite system and the data-processing inequality.
 \end{proof}
 
 \begin{theorem}[Ancilla invariance]\label{relEntropy_ancilla_invariant}
-  \lean{Oseledets.OperatorEntropy.relEntropy_ancilla_invariant}\leanok
+  \lean{ErgodicTheory.OperatorEntropy.relEntropy_ancilla_invariant}\leanok
   Tensoring both arguments with a common faithful ancilla \(\alpha\) leaves the relative entropy
   unchanged: for faithful \(\sigma\) and faithful \(\alpha\),
   \(S(\rho\otimes\alpha\,\|\,\sigma\otimes\alpha) = S(\rho\|\sigma)\).
@@ -206,7 +206,7 @@ we isolate next, is the combinatorial engine behind both nonnegativity and the s
 the von Neumann entropy.
 
 \begin{theorem}[Scalar Klein / Peierls inequality]\label{klein_scalar}
-  \lean{Oseledets.OperatorEntropy.klein_scalar}\leanok
+  \lean{ErgodicTheory.OperatorEntropy.klein_scalar}\leanok
   Let \(D = (D_{km})\) be a doubly stochastic \(K\times M\) matrix (\(D_{km}\ge 0\), all row sums
   and all column sums equal to \(1\)), let \(p\ge 0\) on \(K\) and \(s\ge 0\) on \(M\) have equal
   total mass \(\sum_k p_k = \sum_m s_m\), and assume the support condition
@@ -227,7 +227,7 @@ the von Neumann entropy.
 \end{proof}
 
 \begin{theorem}[Subadditivity of the von Neumann entropy]\label{vonNeumannEntropy_subadditive}
-  \lean{Oseledets.OperatorEntropy.vonNeumannEntropy_subadditive}\leanok
+  \lean{ErgodicTheory.OperatorEntropy.vonNeumannEntropy_subadditive}\leanok
   For a bipartite density matrix \(\rho\) on \(n_A\otimes n_B\) with reduced density matrices
   \(\rho_A = \Tr_B\rho\) and \(\rho_B = \Tr_A\rho\), the von Neumann entropy is subadditive:
   \[
@@ -257,7 +257,7 @@ and the Hansen--Pedersen--Jensen operator-Jensen inequality, following Carlen's 
 Inequalities and Quantum Entropy}.
 
 \begin{theorem}[Operator convexity of \(-\log\)]\label{operatorConvexOn_neg_log}
-  \lean{Oseledets.OperatorEntropy.Lieb.operatorConvexOn_neg_log}\leanok
+  \lean{ErgodicTheory.OperatorEntropy.Lieb.operatorConvexOn_neg_log}\leanok
   The function \(x\mapsto -\log x\) is operator convex on \((0,\infty)\): for every matrix
   dimension its continuous functional calculus is convex in the Loewner order on the self-adjoint
   matrices with spectrum in \((0,\infty)\).
@@ -271,7 +271,7 @@ Inequalities and Quantum Entropy}.
 \end{proof}
 
 \begin{theorem}[Hansen--Pedersen--Jensen operator-Jensen inequality]\label{hpj_affine}
-  \lean{Oseledets.OperatorEntropy.Lieb.hpj_affine}\leanok
+  \lean{ErgodicTheory.OperatorEntropy.Lieb.hpj_affine}\leanok
   Let \(f\) be operator convex on an interval \(I\), let \(A,B\) be a contraction pair
   (\(A^{*}A + B^{*}B = 1\)), and let \(X,Y\) be self-adjoint with spectra in \(I\). Then
   \[
@@ -291,7 +291,7 @@ Inequalities and Quantum Entropy}.
 \end{proof}
 
 \begin{definition}[Operator perspective]\label{operatorPerspective}
-  \lean{Oseledets.OperatorEntropy.Lieb.operatorPerspective}\leanok
+  \lean{ErgodicTheory.OperatorEntropy.Lieb.operatorPerspective}\leanok
   For \(f:\R\to\R\) and matrices \(L,R\) with \(R\) positive definite, the \emph{operator
   perspective} is
   \[
@@ -301,7 +301,7 @@ Inequalities and Quantum Entropy}.
 \end{definition}
 
 \begin{theorem}[Effros' theorem: joint convexity of the perspective]\label{operatorPerspective_jointly_convex}
-  \lean{Oseledets.OperatorEntropy.Lieb.operatorPerspective_jointly_convex}\leanok
+  \lean{ErgodicTheory.OperatorEntropy.Lieb.operatorPerspective_jointly_convex}\leanok
   Let \(f\) be operator convex on \(I\), let \(R_1,R_2\) be positive definite with the sandwiched
   arguments \(R_i^{-1/2}L_iR_i^{-1/2}\) self-adjoint and with spectra in \(I\), and let
   \(c\in[0,1]\). Then
@@ -322,13 +322,13 @@ Inequalities and Quantum Entropy}.
 \end{proof}
 
 \begin{definition}[Operator perspective at a general index]\label{opPersp}
-  \lean{Oseledets.OperatorEntropy.Lieb.opPersp}\leanok
+  \lean{ErgodicTheory.OperatorEntropy.Lieb.opPersp}\leanok
   The same formula \(P_f(L,R) = R^{1/2}f(R^{-1/2}LR^{-1/2})R^{1/2}\) for matrices indexed by an
   arbitrary finite type \(m\) (rather than \(\Fin N\)).
 \end{definition}
 
 \begin{theorem}[Effros' theorem at a general finite index]\label{opPersp_jointly_convex}
-  \lean{Oseledets.OperatorEntropy.Lieb.opPersp_jointly_convex}\leanok
+  \lean{ErgodicTheory.OperatorEntropy.Lieb.opPersp_jointly_convex}\leanok
   Under the same hypotheses as \Cref{operatorPerspective_jointly_convex}, joint convexity of
   \(\mathrm{opPersp}\,f\) holds over an arbitrary finite index type \(m\).
 \end{theorem}
@@ -343,7 +343,7 @@ Inequalities and Quantum Entropy}.
 \end{proof}
 
 \begin{lemma}[Logarithm of a Kronecker product]\label{cfc_log_kron}
-  \lean{Oseledets.OperatorEntropy.Lieb.cfc_log_kron}\leanok
+  \lean{ErgodicTheory.OperatorEntropy.Lieb.cfc_log_kron}\leanok
   For positive-definite \(A,B\), \(\ \log(A\otimes B) = \log A\otimes 1 + 1\otimes\log B\).
 \end{lemma}
 \begin{proof}\leanok
@@ -354,7 +354,7 @@ Inequalities and Quantum Entropy}.
 \end{proof}
 
 \begin{lemma}[Effros realization of the relative entropy]\label{opPersp_neg_log_kron}
-  \lean{Oseledets.OperatorEntropy.Lieb.opPersp_neg_log_kron}\leanok
+  \lean{ErgodicTheory.OperatorEntropy.Lieb.opPersp_neg_log_kron}\leanok
   For positive-definite \(\rho,\sigma\), the perspective of \(-\log\) at the commuting pair
   \(L = 1\otimes\sigma^{\top}\), \(R = \rho\otimes 1\) has the closed form
   \[
@@ -373,7 +373,7 @@ Inequalities and Quantum Entropy}.
 \end{proof}
 
 \begin{lemma}[Scalar Effros functional]\label{relForm_opPersp_neg_log}
-  \lean{Oseledets.OperatorEntropy.Lieb.relForm_opPersp_neg_log}\leanok
+  \lean{ErgodicTheory.OperatorEntropy.Lieb.relForm_opPersp_neg_log}\leanok
   The positive linear functional \(M\mapsto\langle\mathrm{vec}\,1,\,M\,\mathrm{vec}\,1\rangle\)
   recovers the trace-form relative entropy from the perspective:
   \[
@@ -390,14 +390,14 @@ Inequalities and Quantum Entropy}.
 \end{proof}
 
 \begin{definition}[Trace-form relative entropy]\label{relEntropyMat}
-  \lean{Oseledets.OperatorEntropy.Lieb.relEntropyMat}\leanok
+  \lean{ErgodicTheory.OperatorEntropy.Lieb.relEntropyMat}\leanok
   For matrices \(\rho,\sigma\), the trace-form relative entropy is
   \(\mathrm{relEntropyMat}(\rho,\sigma) = \Re\,\Tr\bigl(\rho\,(\log\rho - \log\sigma)\bigr)\), the
   logarithms taken through the continuous functional calculus.
 \end{definition}
 
 \begin{theorem}[Lieb's theorem: joint convexity of relative entropy]\label{relEntropyMat_jointly_convex}
-  \lean{Oseledets.OperatorEntropy.Lieb.relEntropyMat_jointly_convex}\leanok
+  \lean{ErgodicTheory.OperatorEntropy.Lieb.relEntropyMat_jointly_convex}\leanok
   For positive-definite \(\rho_1,\rho_2,\sigma_1,\sigma_2\) and \(c\in[0,1]\),
   \[
     \mathrm{relEntropyMat}\bigl(c\rho_1 + (1-c)\rho_2,\;c\sigma_1 + (1-c)\sigma_2\bigr)
@@ -418,7 +418,7 @@ Inequalities and Quantum Entropy}.
 \end{proof}
 
 \begin{lemma}[Finite Jensen form of Lieb's theorem]\label{relEntropyMat_convex_sum}
-  \lean{Oseledets.OperatorEntropy.Lieb.relEntropyMat_convex_sum}\leanok
+  \lean{ErgodicTheory.OperatorEntropy.Lieb.relEntropyMat_convex_sum}\leanok
   For a finite convex combination of faithful states --- weights \(w_i\ge 0\) with
   \(\sum_i w_i = 1\) and positive-definite \(\rho_i,\sigma_i\) ---,
   \[
@@ -435,7 +435,7 @@ Inequalities and Quantum Entropy}.
 \end{proof}
 
 \begin{theorem}[Bridge to the spectral relative entropy]\label{relEntropyMat_eq_relEntropy}
-  \lean{Oseledets.OperatorEntropy.Lieb.relEntropyMat_eq_relEntropy}\leanok
+  \lean{ErgodicTheory.OperatorEntropy.Lieb.relEntropyMat_eq_relEntropy}\leanok
   For density matrices \(\rho,\sigma\) with \(\sigma\) faithful (positive definite),
   \(\mathrm{relEntropyMat}(\rho,\sigma) = S(\rho\|\sigma)\), the Umegaki relative entropy.
 \end{theorem}
@@ -460,7 +460,7 @@ partial-trace case to every mixed-ancilla channel. We close with the no-recovery
 the easy (\(\Leftarrow\)) half of Petz's equality theorem (Petz 1986, 2003).
 
 \begin{definition}[The partial-trace DPI, as a monomorphic \texttt{Prop}]\label{RelEntropyMonotoneUnderPartialTrace}
-  \lean{Oseledets.OperatorEntropy.RelEntropyMonotoneUnderPartialTrace}\leanok
+  \lean{ErgodicTheory.OperatorEntropy.RelEntropyMonotoneUnderPartialTrace}\leanok
   \uses{relEntropy, partialTraceRight}
   \texttt{RelEntropyMonotoneUnderPartialTrace} is the proposition that for all finite index types
   \(n_A, n_E\) and all states \(\rho,\sigma\) on \(n_A\times n_E\) with \(\sigma\) faithful
@@ -474,7 +474,7 @@ the easy (\(\Leftarrow\)) half of Petz's equality theorem (Petz 1986, 2003).
 \end{definition}
 
 \begin{theorem}[Partial-trace DPI, faithful case]\label{relEntropyMonotone_partialTrace_faithful}
-  \lean{Oseledets.OperatorEntropy.Lieb.relEntropyMonotone_partialTrace_faithful}\leanok
+  \lean{ErgodicTheory.OperatorEntropy.Lieb.relEntropyMonotone_partialTrace_faithful}\leanok
   For positive-definite states \(\rho,\sigma\) on \(n_A\times n_E\),
   \[
     S\bigl(\Tr_E\rho\,\big\|\,\Tr_E\sigma\bigr) \;\le\; S(\rho\|\sigma).
@@ -497,7 +497,7 @@ the easy (\(\Leftarrow\)) half of Petz's equality theorem (Petz 1986, 2003).
 \end{proof}
 
 \begin{theorem}[Partial-trace DPI, unconditional]\label{relEntropyMonotone_partialTrace}
-  \lean{Oseledets.OperatorEntropy.Lieb.relEntropyMonotone_partialTrace}\leanok
+  \lean{ErgodicTheory.OperatorEntropy.Lieb.relEntropyMonotone_partialTrace}\leanok
   The proposition \texttt{RelEntropyMonotoneUnderPartialTrace} holds: the faithfulness hypothesis
   on \(\rho\) is unnecessary, so \(S(\Tr_E\rho\|\Tr_E\sigma)\le S(\rho\|\sigma)\) for every
   \(\rho\) and every faithful \(\sigma\).
@@ -516,7 +516,7 @@ the easy (\(\Leftarrow\)) half of Petz's equality theorem (Petz 1986, 2003).
 \end{proof}
 
 \begin{lemma}[Tracing out an adjoined ancilla is the identity]\label{partialTraceRight_kron}
-  \lean{Oseledets.OperatorEntropy.partialTraceRight_kron}\leanok
+  \lean{ErgodicTheory.OperatorEntropy.partialTraceRight_kron}\leanok
   \uses{partialTraceRight}
   For any state \(\rho\) and any ancilla state \(\alpha\), \(\Tr_E(\rho\otimes\alpha) = \rho\).
 \end{lemma}
@@ -527,7 +527,7 @@ the easy (\(\Leftarrow\)) half of Petz's equality theorem (Petz 1986, 2003).
 \end{proof}
 
 \begin{theorem}[Isometric-embedding invariance]\label{relEntropy_embed_invariant}
-  \lean{Oseledets.OperatorEntropy.relEntropy_embed_invariant}\leanok
+  \lean{ErgodicTheory.OperatorEntropy.relEntropy_embed_invariant}\leanok
   For states \(\rho,\sigma\) on \(n\), a faithful ancilla \(\alpha\) on \(e\), a unitary \(U\) on
   \(n\times e\), and faithful \(\sigma\),
   \[
@@ -542,7 +542,7 @@ the easy (\(\Leftarrow\)) half of Petz's equality theorem (Petz 1986, 2003).
 \end{proof}
 
 \begin{theorem}[Stinespring reduction of the DPI]\label{stinespring_relEntropy_monotone}
-  \lean{Oseledets.OperatorEntropy.stinespring_relEntropy_monotone}\leanok
+  \lean{ErgodicTheory.OperatorEntropy.stinespring_relEntropy_monotone}\leanok
   \emph{Given} the partial-trace DPI (\Cref{RelEntropyMonotoneUnderPartialTrace}), every
   Stinespring-dilated channel \(\Lambda\rho = \Tr_E\bigl(U(\rho\otimes\alpha)U^{*}\bigr)\) ---
   adjoin a faithful ancilla \(\alpha\), conjugate by a unitary dilation \(U\), then trace out the
@@ -560,7 +560,7 @@ the easy (\(\Leftarrow\)) half of Petz's equality theorem (Petz 1986, 2003).
 \end{proof}
 
 \begin{theorem}[Data-processing inequality for the faithful-ancilla mixed-Stinespring family]\label{monotonicity_relEntropy_under_stinespring}
-  \lean{Oseledets.OperatorEntropy.monotonicity_relEntropy_under_stinespring}\leanok
+  \lean{ErgodicTheory.OperatorEntropy.monotonicity_relEntropy_under_stinespring}\leanok
   Unconditionally, for a faithful ancilla \(\alpha\), a unitary dilation \(U\), and faithful
   \(\sigma\),
   \[
@@ -579,7 +579,7 @@ the easy (\(\Leftarrow\)) half of Petz's equality theorem (Petz 1986, 2003).
 \end{proof}
 
 \begin{theorem}[No faithful-monotone recovery section under a strict drop]\label{no_section_of_strict_relEntropy_drop}
-  \lean{Oseledets.OperatorEntropy.no_section_of_strict_relEntropy_drop}\leanok
+  \lean{ErgodicTheory.OperatorEntropy.no_section_of_strict_relEntropy_drop}\leanok
   If a map \(R\) satisfies the faithful data-processing inequality and inverts a coarse-graining
   \(\Lambda\) on the pair \(\rho,\sigma\) (\(R(\Lambda\rho) = \rho\), \(R(\Lambda\sigma) = \sigma\)
   with \(\Lambda\sigma\) faithful), then a \emph{strict} drop
@@ -593,7 +593,7 @@ the easy (\(\Leftarrow\)) half of Petz's equality theorem (Petz 1986, 2003).
 \end{proof}
 
 \begin{corollary}[No Stinespring recovery under a strict drop]\label{no_stinespring_section_of_strict_relEntropy_drop}
-  \lean{Oseledets.OperatorEntropy.no_stinespring_section_of_strict_relEntropy_drop}\leanok
+  \lean{ErgodicTheory.OperatorEntropy.no_stinespring_section_of_strict_relEntropy_drop}\leanok
   Unconditionally: a strict relative-entropy drop under a coarse-graining \(\Lambda\) (an
   endomorphism of the input space) rules out \emph{any} Stinespring recovery channel
   \(R\,x = \Tr_E(U(x\otimes\alpha)U^{*})\) inverting \(\Lambda\) on \(\rho,\sigma\).

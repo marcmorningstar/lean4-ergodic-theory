@@ -173,8 +173,8 @@ final `V`.
 
 Replace the two planned modules `Lyapunov/Subbundle.lean` and `Lyapunov/Limit.lean` with:
 
-`Oseledets/Lyapunov/ExteriorNorm.lean` (NEW Mathlib-style infra, Sub-project A) — imported before:
-`Oseledets/Lyapunov/OseledetsLimit.lean` (the analytic core + assembly).
+`ErgodicTheory/Lyapunov/ExteriorNorm.lean` (NEW Mathlib-style infra, Sub-project A) — imported before:
+`ErgodicTheory/Lyapunov/OseledetsLimit.lean` (the analytic core + assembly).
 
 Plus, if Sub-project A is split out for upstreaming, `ExteriorNorm` may be a candidate Mathlib PR.
 
