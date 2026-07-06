@@ -31,7 +31,7 @@ The chain is:
   coordinate partition takes *different* values at `q = 0` and `q = 1`: `D₀ = log 2 / (-log ε)`
   (both atoms have positive mass, so `Z₀` counts the two occupied cells) while
   `D₁ = -Hnu ν / log ε = Hnu ν / (-log ε)`; these differ exactly because `Hnu ν < log 2` (item 1).
-  Hence `∃ q₁ q₂, renyiDimMeasure (bern ν) (coordPartition (bern ν)) ε q₁ ≠ … q₂`, a *non-vacuous*
+  Hence `renyiDimMeasure (bern ν) (coordPartition (bern ν)) ε 0 ≠ … ε 1`, a *non-vacuous*
   witness of genuine multifractality.
 
 ## Main results
@@ -41,13 +41,11 @@ The chain is:
   law.
 * `ErgodicTheory.Multifractal.measure_coordPartition_cell_bern`: the marginal identity
   `(bern ν) ((coordPartition (bern ν)).cells i) = ν {i}`.
-* `ErgodicTheory.Multifractal.isHeterogeneous_coordPartition_bern`: base heterogeneity of `bern ν`.
 * `ErgodicTheory.Multifractal.renyiDimMeasure_coordPartition_bern_zero` /
   `renyiDimMeasure_coordPartition_bern_one`: the explicit dimension values `log 2 / (-log ε)` and
   `Hnu ν / (-log ε)` at `q = 0, 1`.
 * `ErgodicTheory.Multifractal.renyiDimMeasure_zero_ne_one_bern`: the explicit non-vacuity witness
   `D₀ ≠ D₁` at the exhibited exponents `q = 0, 1`.
-* `ErgodicTheory.Multifractal.renyiDimMeasure_q_dependent_bern`: its `∃`-corollary.
 -/
 
 open MeasureTheory Real Function Set
@@ -138,21 +136,6 @@ theorem measure_coordPartition_cell_bern (ν : Measure α₀) [IsProbabilityMeas
   exact (measurePreserving_eval_infinitePi (fun _ : ℕ => ν) 0).measure_preimage
     (measurableSet_singleton i).nullMeasurableSet
 
-omit [DecidableEq α₀] in
-/-- **Base heterogeneity of a biased Bernoulli measure.** If the single-symbol law `ν` charges two
-distinct symbols `i ≠ j` with *different* masses (`ν {i} ≠ ν {j}`), the coordinate-partition cell
-masses of `bern ν` differ, so `IsHeterogeneous (bern ν) (coordPartition (bern ν))`. Immediate from
-the marginal identity `measure_coordPartition_cell_bern`: the cell mass at `i` is `(ν {i}).toReal`,
-so distinct atom masses give distinct cell masses. -/
-theorem isHeterogeneous_coordPartition_bern (ν : Measure α₀) [IsProbabilityMeasure ν] {i j : α₀}
-    (hbias : ν {i} ≠ ν {j}) :
-    IsHeterogeneous (bern ν) (coordPartition (bern ν)) := by
-  refine ⟨i, j, ?_⟩
-  rw [measure_coordPartition_cell_bern ν i, measure_coordPartition_cell_bern ν j]
-  intro hcontra
-  exact hbias ((ENNReal.toReal_eq_toReal_iff' (measure_ne_top ν {i})
-    (measure_ne_top ν {j})).1 hcontra)
-
 /-! ### Item 3 — explicit `q`-dependence of the Rényi spectrum -/
 
 /-- The partition function of `bern ν` at `q = 0` (2-symbol case) counts the two occupied cells:
@@ -227,22 +210,5 @@ theorem renyiDimMeasure_zero_ne_one_bern {ν : Measure α₀} [IsProbabilityMeas
   have hnegε_ne : -Real.log ε ≠ 0 := neg_ne_zero.2 (ne_of_lt hlogε_neg)
   have hne : Real.log 2 = Hnu ν := (div_left_inj' hnegε_ne).1 hcontra
   exact absurd hne.symm (ne_of_lt (Hnu_lt_log_two hij huniv hbias hi hj))
-
-/-- **The non-vacuity core (existential form).** The `∃`-corollary of the explicit
-`renyiDimMeasure_zero_ne_one_bern`: for a scale `0 < ε < 1` and a biased 2-symbol law `ν`, the Rényi
-(generalized) dimension of `bern ν` for the coordinate partition takes different values at the
-*explicit* exponents `q₁ = 0` and `q₂ = 1` — the box-counting `D₀ = log 2 / (-log ε)` versus the
-information dimension `D₁ = Hnu ν / (-log ε)`, which differ precisely because `Hnu ν < log 2`. This
-is a **non-vacuous** witness: the exhibited exponents `0, 1` and the driving bias bound are recorded
-in `renyiDimMeasure_zero_ne_one_bern`, not left implicit. -/
-theorem renyiDimMeasure_q_dependent_bern {ν : Measure α₀} [IsProbabilityMeasure ν] {i j : α₀}
-    (hij : i ≠ j) (huniv : (Finset.univ : Finset α₀) = {i, j})
-    (hbias : (ν {i}).toReal ≠ (ν {j}).toReal)
-    (hi : 0 < (ν {i}).toReal) (hj : 0 < (ν {j}).toReal)
-    {ε : ℝ} (hε0 : 0 < ε) (hε1 : ε < 1) :
-    ∃ q₁ q₂ : ℝ,
-      renyiDimMeasure (bern ν) (coordPartition (bern ν)) ε q₁
-        ≠ renyiDimMeasure (bern ν) (coordPartition (bern ν)) ε q₂ :=
-  ⟨0, 1, renyiDimMeasure_zero_ne_one_bern hij huniv hbias hi hj hε0 hε1⟩
 
 end ErgodicTheory.Multifractal

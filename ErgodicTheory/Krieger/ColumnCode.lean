@@ -64,9 +64,12 @@ position-aware `SentinelColumnCodeAt` in `ErgodicTheory.Krieger.TowerCode`).
 * `measurable_fwdSentinel`, `measurable_bwdSentinel` — the sentinel-distance functions are
   measurable; hence the block-boundary level sets `measurableSet_blockStart_eq`,
   `measurableSet_blockLen_eq`.
-* `measurableSet_blockContent_decode_eq` — each preimage `{w | dec (blockContent s w) = j}` is
-  measurable (the countable-block-shape decomposition).
-* `measurable_sentinelParse` — **the headline: the bi-infinite sentinel parser is measurable.**
+
+These block-shape measurability building blocks feed the **position-aware** parser
+`ErgodicTheory.Krieger.measurable_sentinelParseAt` (`TowerCode`), which is the version the a.e.
+recovery field actually consumes. The position-blind assembled parser is deliberately not retained
+here: a position-blind decoder cannot separate distinct tower floors, so it is unsatisfiable as a
+recovery decoder (see the trap note at the end of this file).
 
 ## References
 
@@ -336,45 +339,6 @@ coordinate `0` (`blockContent s w`) and decodes it. This is the decoder `D` of
 `ErgodicTheory.Krieger.ColumnCodeData`, now an *honest* total function rather than a hypothesis. -/
 noncomputable def sentinelParse (s : Fin k) (dec : List (Fin k) → κ) (w : ℤ → Fin k) : κ :=
   dec (blockContent s w)
-
-/-- **Each parser preimage is measurable (the countable block-shape decomposition).** For a fixed
-target label `j : κ`, the set `{w | dec (blockContent s w) = j}` is the countable union, over all
-block starts `b : ℤ`, lengths `L : ℕ`, and contents `l : List (Fin k)` with `dec l = j`, of the
-cylinder `{blockStart = b} ∩ {blockLen = L} ∩ {window b L = l}`. Each factor is measurable
-(`measurable_blockStart`, `measurable_blockLen`, `measurableSet_window_eq`), `List (Fin k)` is
-countable, and `ℤ`, `ℕ` are countable, so the union is measurable. This is the entire content of the
-"measurable bi-infinite parse". -/
-theorem measurableSet_blockContent_decode_eq [MeasurableSpace κ] [MeasurableSingletonClass κ]
-    (s : Fin k) (dec : List (Fin k) → κ) (j : κ) :
-    MeasurableSet {w : ℤ → Fin k | dec (blockContent s w) = j} := by
-  have hdecomp : {w : ℤ → Fin k | dec (blockContent s w) = j} =
-      ⋃ b : ℤ, ⋃ L : ℕ, ⋃ l ∈ {l : List (Fin k) | dec l = j},
-        ({w | blockStart s w = b} ∩ {w | blockLen s w = L} ∩ {w | window w b L = l}) := by
-    ext w
-    simp only [blockContent, mem_setOf_eq, mem_iUnion, mem_inter_iff, exists_prop]
-    constructor
-    · intro h
-      exact ⟨blockStart s w, blockLen s w, window w (blockStart s w) (blockLen s w),
-        h, ⟨rfl, rfl⟩, rfl⟩
-    · rintro ⟨b, L, l, hgl, ⟨hb, hL⟩, hwin⟩
-      rw [hb, hL, hwin]; exact hgl
-  rw [hdecomp]
-  refine MeasurableSet.iUnion (fun b => MeasurableSet.iUnion (fun L => ?_))
-  refine MeasurableSet.biUnion (Set.to_countable _) (fun l _ => ?_)
-  refine MeasurableSet.inter (MeasurableSet.inter ?_ ?_) (measurableSet_window_eq b L l)
-  · exact measurableSet_blockStart_eq s b
-  · exact measurableSet_blockLen_eq s L
-
-/-- **The bi-infinite sentinel parser is measurable.** This is the headline of the file and the
-discharge of point (3) of the `Recovery` module note (the residual with "no Mathlib analogue"). The
-codomain `κ` is `Countable` with `MeasurableSingletonClass`, so `measurable_to_countable'` reduces
-measurability to the measurability of each preimage `{w | sentinelParse s dec w = j}` — supplied by
-`measurableSet_blockContent_decode_eq`. **No new symbolic-dynamics infrastructure is needed.** -/
-theorem measurable_sentinelParse [Countable κ] [MeasurableSpace κ] [MeasurableSingletonClass κ]
-    (s : Fin k) (dec : List (Fin k) → κ) :
-    Measurable (sentinelParse s dec) := by
-  refine measurable_to_countable' (fun j => ?_)
-  exact measurableSet_blockContent_decode_eq s dec j
 
 /-! ### Why a naive sentinel-column coding scheme is unsatisfiable (a documented trap)
 

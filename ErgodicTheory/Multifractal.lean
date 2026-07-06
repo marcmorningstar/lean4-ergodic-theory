@@ -7,7 +7,6 @@ import ErgodicTheory.Multifractal.Defs
 import ErgodicTheory.Multifractal.Degeneracy
 import ErgodicTheory.Multifractal.LogConvex
 import ErgodicTheory.Multifractal.Monotone
-import ErgodicTheory.Multifractal.Spectrum
 import ErgodicTheory.Multifractal.Measure
 import ErgodicTheory.Multifractal.RefiningLimit
 import ErgodicTheory.Multifractal.LocalDimension
@@ -52,8 +51,6 @@ singularity spectrum `f(α)` (the Legendre transform of `τ`), together with the
   (the Hölder / cumulant-convexity argument) and concavity of `τ`.
 * `ErgodicTheory.Multifractal.Monotone` — the monotonicity `D_q` is non-increasing in `q`
   (issue #16, item 4b), over all of `ℝ`.
-* `ErgodicTheory.Multifractal.Spectrum` — the singularity-spectrum (Legendre transform) bounds for
-  `f(α)` (issue #16, item 3).
 * `ErgodicTheory.Multifractal.Measure` — the measure/flow layer: the same quantities for an actual
   invariant probability measure `μ` and a finite `MeasurePartition`, the `q = 1` information
   dimension as Shannon entropy `/ (-log ε)`, and the connector to a `MeasurePreservingFlow`'s

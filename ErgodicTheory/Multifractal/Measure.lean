@@ -5,7 +5,6 @@ Authors: Marcel Morgenstern
 -/
 import ErgodicTheory.Multifractal.Monotone
 import ErgodicTheory.Multifractal.Degeneracy
-import ErgodicTheory.Multifractal.Spectrum
 import ErgodicTheory.Entropy.Join
 import ErgodicTheory.Continuous.Flow
 
@@ -17,8 +16,7 @@ This file specializes the abstract, measure-free multifractal core
 measure** `μ` together with a **finite measurable partition** `P : MeasurePartition μ ι`. Taking
 the weight family `p i := (μ (P.cells i)).toReal` turns the abstract quantities into the
 multifractal observables of the measure `μ` at the partition scale: the partition function
-`Z_q`, the mass exponent `τ(q)`, the Rényi (generalized) dimension `D_q`, and the singularity
-spectrum `f(α)` of `μ`.
+`Z_q`, the mass exponent `τ(q)`, and the Rényi (generalized) dimension `D_q` of `μ`.
 
 The point of this layer is that the abstract hypotheses (`0 ≤ p i`, `∑ i, p i = 1`,
 `0 < ε < 1`) are now *discharged from the measure*: nonnegativity is `ENNReal.toReal_nonneg`, the
@@ -38,7 +36,6 @@ explicitly.
 * `ErgodicTheory.Multifractal.partitionFunctionMeasure`: the partition function `Z_q` of `μ`.
 * `ErgodicTheory.Multifractal.massExponentMeasure`: the mass exponent `τ(q)` of `μ`.
 * `ErgodicTheory.Multifractal.renyiDimMeasure`: the Rényi (generalized) dimension `D_q` of `μ`.
-* `ErgodicTheory.Multifractal.singularitySpectrumMeasure`: the singularity spectrum `f(α)` of `μ`.
 * `ErgodicTheory.Multifractal.renyiDimFlow`: the Rényi dimension of the invariant measure of a flow.
 
 ## Main results
@@ -78,13 +75,6 @@ abstract `renyiDim` on the cell-measure weight family. At `q = 1` it is the info
 `(∑ i, μ(cellᵢ) log μ(cellᵢ)) / log ε`. -/
 noncomputable def renyiDimMeasure (μ : Measure α) (P : MeasurePartition μ ι) (ε q : ℝ) : ℝ :=
   renyiDim (fun i => (μ (P.cells i)).toReal) ε q
-
-/-- The **singularity spectrum** `f(α) = ⨅ q, q α - τ(q)` of a measure `μ` at partition scale
-`ε`, i.e. the abstract `singularitySpectrum` (Legendre transform of `τ`) on the cell-measure
-weight family. -/
-noncomputable def singularitySpectrumMeasure (μ : Measure α) (P : MeasurePartition μ ι)
-    (ε α' : ℝ) : ℝ :=
-  singularitySpectrum (fun i => (μ (P.cells i)).toReal) ε α'
 
 /-- For a probability measure, **at least one cell of a partition has positive measure**. This is
 the abstract `∃ i, 0 < p i` guard discharged from the measure: the cell measures are nonnegative
