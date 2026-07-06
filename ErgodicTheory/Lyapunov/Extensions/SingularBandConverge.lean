@@ -86,11 +86,12 @@ construction of `Vⱼ` consumes.
 * `ErgodicTheory.norm_bandProjector_succ_sub_le_detfree` — det-free per-step band-projector
   increment
   bound parametrised by the abstract lower-bound coefficient `s` (sorry-free).
-* `ErgodicTheory.tendsto_vSlowSingularStep_of_bandProjector_increments_detfree`
+* `ErgodicTheory.tendsto_vSlowSingularStep_of_bandProjector_detfree`
   — the **unconditional**
-  `Vⱼ` convergence: from summable det-free per-step bounds (with the abstract `s`) to a converging
-  slow projector. Chains `norm_bandProjector_succ_sub_le_detfree` ⇒ the abstract Cauchy packaging
-  `exists_tendsto_bandProjector` ⇒ the landed structural reduction
+  `Vⱼ` convergence: from convergence of the *fast* band projector to `Pfast` (the genuine output of
+  `norm_bandProjector_succ_sub_le_detfree` + Cauchy packaging, wherever the residual `s`-supply
+  holds along the orbit) to the slow projector's **explicit complement** limit `1 − Pfast`, through
+  the landed structural reduction
   `tendsto_orthProjMatrix_vSlowSingularStep_of_tendsto_bandProjector`. **No `det ≠ 0` hypothesis.**
 
 The sole input that the inverse engine still supplies — to *any* route — is one number `s > 0` per
@@ -219,22 +220,6 @@ through the landed structural reduction
 `tendsto_orthProjMatrix_vSlowSingularStep_of_tendsto_bandProjector`. We package both, **det-free**:
 the only hypothesis is the summable (resp. convergent) fast-band increments, which the det-free
 per-step bound makes summable wherever the residual `s`-supply `(R)` holds along the orbit. -/
-
-/-- **Unconditional limit slow projector from summable det-free increments.** If the fast-band
-increments are summable (the genuine output of `norm_bandProjector_succ_sub_le_detfree` along the
-orbit, wherever the per-step `s`-supply `(R)` holds), the slow projectors
-`orthProjMatrix (vSlowSingularStep A T c n x)` converge to an orthogonal projector — the candidate
-`Vⱼ(ω)` projector. **No `det ≠ 0`.** Re-export of the landed
-`exists_tendsto_orthProjMatrix_vSlowSingularStep_of_summable`, recorded here to mark the det-free
-chain's terminus. -/
-theorem exists_tendsto_vSlowSingularStep_of_summable_detfree
-    (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (c : ℝ) (x : X)
-    (hsum : Summable (fun n =>
-        ‖bandProjector A T (Set.indicator (Set.Ioi c) 1) (n + 1) x
-          - bandProjector A T (Set.indicator (Set.Ioi c) 1) n x‖)) :
-    ∃ P, Tendsto (fun n => orthProjMatrix (vSlowSingularStep A T c n x)) atTop (𝓝 P)
-      ∧ IsSelfAdjoint P ∧ P * P = P :=
-  exists_tendsto_orthProjMatrix_vSlowSingularStep_of_summable A T c x hsum
 
 /-- **Unconditional `Vⱼ` convergence to the explicit complement limit.** If the fast band projectors
 converge to `Pfast` (the genuine output of the det-free per-step bound + Cauchy packaging, wherever

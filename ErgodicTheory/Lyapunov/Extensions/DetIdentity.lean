@@ -11,7 +11,8 @@ import ErgodicTheory.Ergodic.Birkhoff
 
 This module is purely *additive* on top of the spectrum object
 `ErgodicTheory.exponents : Fin d → ℝ` and the telescoping growth rate `ErgodicTheory.gammaK`
-(both in `ErgodicTheory/Lyapunov/ExponentSums.lean` / `Spectrum.lean`). It proves the classical
+(both in `ErgodicTheory/Lyapunov/Extensions/ExponentSums.lean` / `Spectrum.lean`). It proves the
+classical
 **determinant identity** of multiplicative ergodic theory: under the standing hypotheses
 (`hT : Ergodic T μ`, `hA : ∀ x, (A x).det ≠ 0`, `hAmeas : Measurable A`,
 `hint : IntegrableLogNorm A μ`, `hint' : IntegrableLogNorm (fun x => (A x)⁻¹) μ`, together

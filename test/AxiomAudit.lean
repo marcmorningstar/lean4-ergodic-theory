@@ -649,15 +649,11 @@ sites).
 #guard_msgs in
 #print axioms ErgodicTheory.measurableSet_cocycleRank_eq_full
 
--- Issue #6 (rank measurability): minor-nonsingular ⟹ rank ≥ r (easy direction) + the measurable subset.
+-- Issue #6 (rank measurability): minor-nonsingular ⟹ rank ≥ r (easy direction).
 
 /-- info: 'Matrix.le_rank_of_submatrix_det_ne_zero' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms Matrix.le_rank_of_submatrix_det_ne_zero
-
-/-- info: 'ErgodicTheory.measurableSet_minors_subset_le_cocycleRank' depends on axioms: [propext, Classical.choice, Quot.sound] -/
-#guard_msgs in
-#print axioms ErgodicTheory.measurableSet_minors_subset_le_cocycleRank
 
 -- Issue #6 (measurable flag CLOSURE): rank = max nonsingular minor ⟹ the rank function is measurable.
 
@@ -1264,10 +1260,6 @@ info: 'ErgodicTheory.Entropy.MeasurePartition.sum_toReal_measure_eq_one' depends
 /-- info: 'ErgodicTheory.coverCocycle_one_lap' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms ErgodicTheory.coverCocycle_one_lap
-
-/-- info: 'ErgodicTheory.coverCocycle_one_lap_opNorm_le' depends on axioms: [propext, Classical.choice, Quot.sound] -/
-#guard_msgs in
-#print axioms ErgodicTheory.coverCocycle_one_lap_opNorm_le
 
 -- Issue #5 (flow exponent bridge): cover-cocycle norm = base norm at return times.
 

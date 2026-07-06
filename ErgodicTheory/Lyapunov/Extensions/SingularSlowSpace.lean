@@ -16,11 +16,10 @@ Applications*, 2013, **Theorem 2**; Ruelle, Publ. IHES 50, 1979, **Lemma 1.4**),
 convergence — **det-free, unconditionally** — to the convergence of the *fast* band projector
 `ErgodicTheory.bandProjector`.
 
-It promotes the reusable structural lemmas of the Wave-2 de-risk scratch
-(`ErgodicTheory.Lyapunov.Extensions.SingularSlowSpaceCauchyScratch`) from the **fixed raw-Gram
-threshold** (which is *not* Cauchy — threshold-scale mismatch) to the **`qpow` / Lyapunov-scale
-cut** (the cut at which the existing fast engine actually converges), defining the slow space as the
-orthogonal **complement** of the fast band at a Lyapunov gap value `c`.
+It works at the **`qpow` / Lyapunov-scale cut** — the cut at which the existing fast engine actually
+converges — rather than a **fixed raw-Gram threshold** (which is *not* Cauchy — threshold-scale
+mismatch), defining the slow space as the orthogonal **complement** of the fast band at a Lyapunov
+gap value `c`.
 
 ## The construction
 

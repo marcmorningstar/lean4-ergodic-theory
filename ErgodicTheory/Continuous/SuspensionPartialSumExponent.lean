@@ -45,9 +45,12 @@ suspension flow at `μ̂ = suspensionMeasure`-a.e. orbit class `q`
 `HasFlowExponent (extGen i A) … q (Γ_i^base / ∫τ)` — and that their difference equals
 `exponents i / ∫τ`. The increment identity is the base telescoping
 `Γ_{i+1}^base − Γ_i^base = exponents i` (`gammaK_succ_sub_gammaK`) divided through by the *actual*
-mean roof `∫τ` (a positive constant under the bounded-roof hypothesis), never a free scalar. This
-is the full-spectrum statement requested for Issue #5: the *entire* suspension/flow Lyapunov
-spectrum is the base spectrum divided by `∫τ`, exponent by exponent, not merely the top exponent.
+mean roof `∫τ` (a positive constant under the bounded-roof hypothesis), never a free scalar. The
+realisation is through `HasFlowExponent`, which is *existential over representatives*: for `μ̂`-a.e.
+class *some* representative realises each partial-sum value, and cross-representative uniqueness
+would additionally require base-cocycle invertibility. This is the full-spectrum statement requested
+for Issue #5: the *entire* suspension/flow Lyapunov spectrum is the base spectrum divided by `∫τ`,
+exponent by exponent, not merely the top exponent.
 
 ## Main results
 
