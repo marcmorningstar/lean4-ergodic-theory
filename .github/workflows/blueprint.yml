@@ -83,7 +83,12 @@ jobs:
           # silently ignored (doc-gen4 ran and timed out). The pin above (2026-06-07) includes it.
           api-docs: false
           homepage: home_page
-          # Only publish to GitHub Pages from `main` (on push or a manual re-deploy via
-          # workflow_dispatch). On PRs and other branches the blueprint/docs are still built as a
-          # dry run, but nothing is deployed.
+          # Publish to GitHub Pages only from `main`. NB: docgen-action gates its OWN internal
+          # upload-pages-artifact + deploy-pages steps on `github.event_name == 'push'` (see its
+          # action.yml), so a manual `workflow_dispatch` run rebuilds the blueprint as a dry run
+          # but does NOT redeploy — regardless of this input. To force a redeploy after a transient
+          # Pages backend failure ("Deployment failed, try again later."), push to `main` (e.g. an
+          # empty commit); an in-place job re-run instead collides on two same-named artifacts.
+          # PRs and other branches likewise build as a dry run without deploying. `workflow_dispatch`
+          # is kept in the expression so a future docgen-action that honours it deploys with no edit.
           deploy: ${{ github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch') }}
