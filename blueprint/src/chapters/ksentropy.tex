@@ -1,0 +1,457 @@
+\chapter{Kolmogorov--Sinai entropy}
+\label{chap:ksentropy}
+
+Alongside the multiplicative theory of the preceding chapters, the library develops the
+\emph{classical entropy theory} of a measure-preserving system: the Shannon entropy of a finite
+measurable partition, its conditional refinement, the Kolmogorov--Sinai entropy
+\(h(T)\) as a Fekete limit over iterated joins, and the structural theorems that make it
+computable --- the one- and two-sided generator theorems and the Abramov--Rokhlin addition
+formula. The chapter closes where the additive and multiplicative theories meet: the
+Margulis--Ruelle inequality \(h(T)\le\sum_{\lambda_i>0}\lambda_i\) bounding the entropy by the
+positive Lyapunov exponents of the derivative cocycle, and Rokhlin's volume-distortion identity
+\(h(T,\xi)=\int\log\abs{\det DT}\,d\mu\).
+
+Throughout, \((\alpha,\mu)\) is a measure space with \(\mu\) a probability measure, \(T\) a
+measure-preserving transformation, and partitions are finite, indexed by a \texttt{Fintype}.
+Where regular conditional probabilities are needed (conditional entropy, the generator theorems,
+Abramov--Rokhlin), the space is additionally assumed standard Borel. We write
+\(\eta(t)=-t\log t\) (Mathlib's \(\operatorname{negMulLog}\), with \(\eta(0)=0\) built in).
+
+\section{Partitions and Shannon entropy}
+
+\begin{definition}[Shannon entropy of a cell family]\label{entropy}
+  \lean{ErgodicTheory.Entropy.entropy}\leanok
+  The \emph{Shannon entropy} of a finite family of cells \(s:\iota\to\mathcal P(\alpha)\) with
+  respect to a measure \(\mu\) is
+  \[
+    H_\mu(s) \;=\; \sum_i \eta\bigl(\mu(s_i)\bigr) \;=\; -\sum_i \mu(s_i)\log\mu(s_i),
+  \]
+  the average information gained by learning which cell a \(\mu\)-random point lies in. The
+  definition is on \emph{loose data} --- an arbitrary \texttt{Fintype}-indexed family of sets ---
+  so it applies both to genuine partitions and to intermediate non-partition families.
+\end{definition}
+
+\begin{definition}[Finite measurable partition]\label{MeasurePartition}
+  \lean{ErgodicTheory.Entropy.MeasurePartition}\leanok
+  A \emph{finite measurable partition} of \((\alpha,\mu)\) is a structure bundling a
+  \texttt{Fintype}-indexed family of cells \(A_i\subseteq\alpha\) together with proofs that each
+  cell is measurable, that the cells are pairwise almost-everywhere disjoint, and that they cover
+  the whole space, \(\bigcup_i A_i=\alpha\).
+\end{definition}
+
+\begin{lemma}[Entropy is at most \(\log k\)]\label{entropy_le_log_card_partition}
+  \lean{ErgodicTheory.Entropy.entropy_le_log_card_partition}\leanok
+  \uses{entropy, MeasurePartition}
+  A finite measurable partition of a probability space into \(k\) cells (with \(k\ge 1\)) has
+  Shannon entropy at most \(\log k\).
+\end{lemma}
+\begin{proof}\leanok
+  \uses{entropy, MeasurePartition}
+  The cell measures \(p_i=\mu(A_i)\) sum to \(1\) by finite additivity over the a.e.-disjoint
+  cover. Jensen's inequality for the concave \(\eta\) with equal weights \(1/k\) gives
+  \(k^{-1}H \le \eta\bigl(\sum_i k^{-1}p_i\bigr) = \eta(1/k) = k^{-1}\log k\), and the positive
+  factor \(k^{-1}\) cancels.
+\end{proof}
+
+\begin{theorem}[Subadditivity under joins]\label{entropy_join_le}
+  \lean{ErgodicTheory.Entropy.entropy_join_le}\leanok
+  \uses{entropy, MeasurePartition}
+  For two finite measurable partitions \(\alpha=(A_i)\) and \(\beta=(B_j)\) of a probability
+  space, the entropy of the \emph{join} (common refinement) \(\alpha\vee\beta\), whose cell
+  family
+  \lean{ErgodicTheory.Entropy.joinCells}
+  at \((i,j)\) is the intersection \(A_i\cap B_j\), satisfies
+  \[
+    H(\alpha\vee\beta) \;\le\; H(\alpha) + H(\beta).
+  \]
+\end{theorem}
+\begin{proof}\leanok
+  \uses{entropy, MeasurePartition}
+  The discrete Gibbs inequality \(\sum_x p_x\log p_x \ge \sum_x p_x\log q_x\) (proved termwise
+  from \(\log(q/p)\le q/p-1\)) is applied to the joint distribution \(p_{(i,j)}=\mu(A_i\cap B_j)\)
+  and the product distribution \(q_{(i,j)}=\mu(A_i)\mu(B_j)\). The marginal identities
+  \(\sum_j p_{(i,j)}=\mu(A_i)\) and \(\sum_i p_{(i,j)}=\mu(B_j)\) make both vectors probability
+  vectors and expand \(-\sum p_{(i,j)}\log q_{(i,j)}\) into exactly \(H(\alpha)+H(\beta)\).
+\end{proof}
+
+\begin{lemma}[Invariance under a measure-preserving pullback]\label{entropy_pullback}
+  \lean{ErgodicTheory.Entropy.entropy_pullback}\leanok
+  \uses{entropy, MeasurePartition}
+  For a measure-preserving \(T\) and a finite measurable partition \(\beta\), the \emph{pullback
+  partition} \(T^{-1}\beta\)
+  \lean{ErgodicTheory.Entropy.MeasurePartition.pullback}
+  with cells \(T^{-1}B_j\) has the same Shannon entropy as \(\beta\):
+  \(H(T^{-1}\beta)=H(\beta)\).
+\end{lemma}
+\begin{proof}\leanok
+  \uses{entropy, MeasurePartition}
+  Each cell measure is preserved, \(\mu(T^{-1}B_j)=\mu(B_j)\), so the corresponding \(\eta\)-terms
+  agree summand by summand.
+\end{proof}
+
+\section{Conditional entropy}
+
+\begin{definition}[Conditional Shannon entropy]\label{condEntropyPartition}
+  \lean{ErgodicTheory.Entropy.condEntropy}\leanok
+  \uses{entropy}
+  On a standard Borel probability space, the \emph{conditional Shannon entropy} of a finite
+  family of cells \(s\) given a sub-\(\sigma\)-algebra \(\mathcal A\) is
+  \[
+    H(s \mid \mathcal A) \;=\; \int_\alpha \sum_i \eta\bigl(\kappa_\omega(s_i)\bigr)\,d\mu(\omega),
+  \]
+  the \(\mu\)-average of the pointwise entropy computed against the regular conditional
+  probability kernel \(\kappa=\operatorname{condExpKernel}\mu\,\mathcal A\). It measures the
+  information about the partition remaining after conditioning on \(\mathcal A\); conditioning on
+  the trivial \(\sigma\)-algebra recovers the ordinary entropy.
+\end{definition}
+
+\begin{theorem}[Conditioning does not increase entropy]\label{condEntropy_le}
+  \lean{ErgodicTheory.Entropy.condEntropy_le}\leanok
+  \uses{condEntropyPartition, MeasurePartition}
+  For any finite measurable partition \(P\) of a standard Borel probability space and any
+  sub-\(\sigma\)-algebra \(\mathcal A\le m_\alpha\),
+  \[
+    H(P \mid \mathcal A) \;\le\; H(P).
+  \]
+\end{theorem}
+\begin{proof}\leanok
+  \uses{condEntropyPartition, entropy}
+  Jensen's inequality for the concave \(\eta\), applied cell by cell: the \(\mu\)-average of
+  \(\eta(\kappa_\omega(P_i))\) is at most \(\eta\) of the average
+  \(\int\kappa_\omega(P_i)\,d\mu(\omega)\), which the disintegration identity
+  \(\int\kappa_\omega(P_i)\,d\mu = \mu(P_i)\) turns into \(\eta(\mu(P_i))\). Summing over \(i\)
+  gives the bound.
+\end{proof}
+
+\section{Kolmogorov--Sinai entropy as a Fekete limit}
+
+\begin{definition}[Flat iterated join]\label{ksJoin}
+  \lean{ErgodicTheory.Entropy.ksJoin}\leanok
+  \uses{MeasurePartition, entropy_pullback}
+  For a measure-preserving \(T\) and a finite measurable partition \(\alpha\), the \emph{iterated
+  join} \(\bigvee_{k=0}^{n-1}T^{-k}\alpha\) is realized as the partition indexed by the
+  \emph{flat} function type \(\Fin n\to\iota\), whose cell at \(f\) is the intersection
+  \(\bigcap_{k<n} T^{-k}\bigl(\alpha_{f(k)}\bigr)\). Cells are measurable as finite intersections
+  of preimages under the iterates \(T^k\), pairwise a.e.\ disjoint (two distinct indices disagree
+  at some coordinate \(k\), where measure-preservation of \(T^k\) transports the disjointness of
+  \(\alpha\)), and cover the space. For \(n=0\) this is the trivial one-cell partition.
+\end{definition}
+
+\begin{definition}[Iterated-join entropy sequence]\label{ksEntropySeq}
+  \lean{ErgodicTheory.Entropy.ksEntropySeq}\leanok
+  \uses{ksJoin, entropy}
+  The \emph{iterated-join entropy sequence} of \((T,\alpha)\) is
+  \[
+    n \;\longmapsto\; H\Bigl(\bigvee_{k=0}^{n-1}T^{-k}\alpha\Bigr),
+  \]
+  the Shannon entropy of the flat \(n\)-fold join. Its term at \(0\) is \(0\), and every term is
+  nonnegative.
+\end{definition}
+
+\begin{theorem}[Subadditivity of the entropy sequence]\label{ksEntropySeq_subadditive}
+  \lean{ErgodicTheory.Entropy.ksEntropySeq_subadditive}\leanok
+  \uses{ksEntropySeq, entropy_join_le, entropy_pullback}
+  For a measure-preserving \(T\) on a probability space and all \(n,m\),
+  \[
+    H\Bigl(\bigvee_{k=0}^{n+m-1}T^{-k}\alpha\Bigr) \;\le\;
+      H\Bigl(\bigvee_{k=0}^{n-1}T^{-k}\alpha\Bigr) + H\Bigl(\bigvee_{k=0}^{m-1}T^{-k}\alpha\Bigr).
+  \]
+\end{theorem}
+\begin{proof}\leanok
+  \uses{ksEntropySeq, ksJoin, entropy_join_le, entropy_pullback}
+  Splitting the index type along \(\Fin n\oplus\Fin m\simeq\Fin(n+m)\) exhibits, cell by cell, the
+  \((n+m)\)-fold join as the ordinary join of the \(n\)-fold join with the \(T^n\)-pullback of the
+  \(m\)-fold join. Join subadditivity (\Cref{entropy_join_le}) bounds the entropy by the sum of
+  the two join entropies, and pullback invariance (\Cref{entropy_pullback}) --- \(T^n\) is
+  measure-preserving --- identifies the second summand with the \(m\)-fold join entropy.
+\end{proof}
+
+\begin{definition}[Per-partition Kolmogorov--Sinai entropy]\label{ksEntropyPartition}
+  \lean{ErgodicTheory.Entropy.ksEntropyPartition}\leanok
+  \uses{ksEntropySeq, ksEntropySeq_subadditive}
+  The \emph{Kolmogorov--Sinai entropy of \(T\) relative to a finite partition} \(\alpha\) is the
+  Fekete limit of the subadditive iterated-join entropy sequence,
+  \[
+    h(T,\alpha) \;=\; \lim_{n\to\infty}\frac1n\,H\Bigl(\bigvee_{k=0}^{n-1}T^{-k}\alpha\Bigr),
+  \]
+  packaged through Mathlib's \(\texttt{Subadditive.lim}\) (an infimum of the averaged terms, so
+  the definition is total).
+\end{definition}
+
+\begin{theorem}[Fekete convergence]\label{tendsto_ksEntropySeq}
+  \lean{ErgodicTheory.Entropy.tendsto_ksEntropySeq}\leanok
+  \uses{ksEntropyPartition, ksEntropySeq_subadditive}
+  The averaged iterated-join entropies converge:
+  \(\frac1n H\bigl(\bigvee_{k<n}T^{-k}\alpha\bigr)\to h(T,\alpha)\) as \(n\to\infty\).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{ksEntropyPartition, ksEntropySeq_subadditive, ksEntropySeq}
+  Fekete's subadditivity lemma (\(\texttt{Subadditive.tendsto\_lim}\)) applied to the sequence of
+  \Cref{ksEntropySeq_subadditive}; its boundedness-below hypothesis is discharged from the
+  nonnegativity of the entropies, each averaged term being at least \(0\).
+\end{proof}
+
+\begin{definition}[Kolmogorov--Sinai entropy of the system]\label{ksEntropy}
+  \lean{ErgodicTheory.Entropy.ksEntropy}\leanok
+  \uses{ksEntropyPartition, MeasurePartition}
+  The \emph{Kolmogorov--Sinai entropy of the system} is the supremum of the partition-relative
+  entropies over all finite measurable partitions,
+  \[
+    h(T) \;=\; \sup_{\alpha}\, h(T,\alpha),
+  \]
+  taken in the complete lattice \(\overline\R=[-\infty,+\infty]\) (\texttt{EReal}) so that the
+  definition is total even when the entropy is infinite. The supremum ranges over
+  \(\Fin n\)-indexed partitions for every \(n\in\N\), which by reindexing invariance realizes the
+  full partition supremum; each \(h(T,\alpha)\) is below \(h(T)\)
+  (\lean{ErgodicTheory.Entropy.le_ksEntropy}), and \(h(T)\ge 0\), witnessed by the trivial
+  one-cell partition.
+\end{definition}
+
+\section{The generator theorems}
+
+Computing \(h(T)\) from the definition requires exhausting all finite partitions. The
+Kolmogorov--Sinai generator theorem collapses the supremum to a single partition, provided that
+partition generates the full \(\sigma\)-algebra under the dynamics.
+
+\begin{definition}[One-sided generating partition]\label{IsGenerating}
+  \lean{ErgodicTheory.Entropy.IsGenerating}\leanok
+  \uses{MeasurePartition}
+  A finite measurable partition \(P\) is \emph{(one-sided) generating} for \((\alpha,T,\mu)\) if
+  the forward-saturated \(\sigma\)-algebra it generates is the ambient one:
+  \[
+    \bigvee_{n\in\N} T^{-n}\sigma(P) \;=\; m_\alpha,
+  \]
+  where \(\sigma(P)\) is the \(\sigma\)-algebra generated by the cells of \(P\). This is the
+  standard generator condition for a (possibly non-invertible) endomorphism: the whole measurable
+  structure is recovered from the observable \(P\) and its forward time-translates.
+\end{definition}
+
+\begin{theorem}[Kolmogorov--Sinai generator theorem]\label{ksEntropy_eq_ksEntropyPartition_of_generating}
+  \lean{ErgodicTheory.Entropy.ksEntropy_eq_ksEntropyPartition_of_generating}\leanok
+  \uses{ksEntropy, ksEntropyPartition, IsGenerating}
+  Let \(T\) be a measure-preserving transformation of a standard Borel probability space and
+  \(P\) a one-sided generating finite partition. Then the entropy of the system is attained on
+  \(P\):
+  \[
+    h(T) \;=\; h(T,P).
+  \]
+  No ergodicity is required; standard Borelness and the probability hypothesis feed the kernel
+  disintegration, and the saturation supplied by the generating hypothesis is load-bearing.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{ksEntropy, ksEntropyPartition, IsGenerating, condEntropyPartition, abramovRokhlin_partition, entropy_join_le}
+  By \(\le\)-antisymmetry; \(h(T,P)\le h(T)\) is free from the defining supremum. For the
+  converse it suffices to bound \(h(T,Q)\le h(T,P)\) for every finite partition \(Q\). Apply the
+  unconditional Abramov--Rokhlin partition identity (\Cref{abramovRokhlin_partition}) to the
+  refinement \(R=Q\vee P\) over the factor \(P\), conditioning on the \emph{full}
+  \(\sigma\)-algebra: the conditional entropy against \(m_\alpha\) vanishes (each kernel cell mass
+  is a.e.\ \(0\) or \(1\), and \(\eta\) kills both), the generating hypothesis supplies the
+  saturation \(\bigvee_n\sigma(P\text{-join})=m_\alpha\) that the moving-index limit needs, and
+  each \((Q\vee P)\)-join cell lies inside a single \(P\)-join cell. Hence
+  \(h(T,Q)\le h(T,Q\vee P)=h(T,P)+0\).
+\end{proof}
+
+\begin{definition}[Two-sided generating partition]\label{IsGeneratingTwoSided}
+  \lean{ErgodicTheory.Krieger.IsGeneratingTwoSided}\leanok
+  \uses{MeasurePartition, IsGenerating}
+  For a measure-preserving \emph{automorphism} \(e:\alpha\simeq\alpha\), a finite partition \(P\)
+  is \emph{two-sided generating} if the \(\sigma\)-algebra saturated under both time directions is
+  the ambient one:
+  \[
+    \bigvee_{n\in\Z} e^{-n}\sigma(P) \;=\; m_\alpha.
+  \]
+  This is the correct condition for invertible systems: forward one-sided generation is strictly
+  stronger and provably fails for genuine automorphisms such as the two-sided Bernoulli shift.
+\end{definition}
+
+\begin{theorem}[Two-sided generator theorem]\label{ksEntropy_eq_ksEntropyPartition_of_isGeneratingTwoSided}
+  \lean{ErgodicTheory.Entropy.ksEntropy_eq_ksEntropyPartition_of_isGeneratingTwoSided}\leanok
+  \uses{ksEntropy, ksEntropyPartition, IsGeneratingTwoSided}
+  Let \(e\) be a measure-preserving automorphism of a standard Borel probability space and \(P\)
+  a two-sided generating finite partition. Then
+  \[
+    h(e) \;=\; h(e,P).
+  \]
+\end{theorem}
+\begin{proof}\leanok
+  \uses{ksEntropy, ksEntropyPartition, IsGeneratingTwoSided, ksEntropy_eq_ksEntropyPartition_of_generating, condEntropyPartition, entropy_pullback}
+  Again by reduction to \(h(e,Q)\le h(e,P)\) for arbitrary \(Q\), but along the \emph{symmetric
+  windows} \(\bigvee_{j=-N}^{N}e^{j}P\), realized as the \(e^{N}\)-pullback of the forward
+  \((2N{+}1)\)-fold join. Invertibility enters exactly once, in the window-entropy invariance
+  \(h(e,\bigvee_{-N}^{N}e^{j}P)=h(e,P)\), assembled from the iterate invariance
+  \(h(e,e^{-c}R)=h(e,R)\) (\(c\in\Z\), using the inverse \(e^{-1}\)) and the block identity
+  \(h(e,\bigvee_{0}^{k-1}e^{-i}P)=h(e,P)\) via a sequence-level telescoping and a Ces\`aro shift.
+  Conditioning \(Q\) on the increasing window \(\sigma\)-algebras and letting \(N\to\infty\), the
+  relative term vanishes by L\'evy-upward continuity since the windows saturate \(m_\alpha\) by
+  the two-sided generating hypothesis, leaving \(h(e,Q)\le h(e,P)\).
+\end{proof}
+
+\section{The Abramov--Rokhlin addition formula}
+
+\begin{definition}[Relative Kolmogorov--Sinai entropy of a partition]\label{condKsEntropyPartition}
+  \lean{ErgodicTheory.Entropy.condKsEntropyPartition}\leanok
+  \uses{condEntropyPartition, ksEntropyPartition}
+  For a sub-\(\sigma\)-algebra \(\mathcal A\le m_\alpha\) with \(T^{-1}\mathcal A\le\mathcal A\)
+  (forward invariance), the \emph{relative entropy of \(T\) on a partition \(\alpha\) given
+  \(\mathcal A\)} is the Fekete limit of the conditional iterated-join entropies,
+  \[
+    h(T,\alpha \mid \mathcal A) \;=\; \lim_{n\to\infty}\frac1n\,
+      H\Bigl(\bigvee_{k=0}^{n-1}T^{-k}\alpha \,\Bigm|\, \mathcal A\Bigr),
+  \]
+  the conditional sequence being subadditive by the conditional analogues of
+  \Cref{entropy_join_le} and \Cref{entropy_pullback}.
+\end{definition}
+
+\begin{definition}[Relative Kolmogorov--Sinai entropy of the system]\label{condKsEntropy}
+  \lean{ErgodicTheory.Entropy.condKsEntropy}\leanok
+  \uses{condKsEntropyPartition, ksEntropy}
+  The \emph{relative entropy of the system given \(\mathcal A\)} is the \(\overline\R\)-valued
+  supremum
+  \(h(T\mid\mathcal A) = \sup_\alpha h(T,\alpha\mid\mathcal A)\)
+  over all finite measurable partitions, mirroring \Cref{ksEntropy}.
+\end{definition}
+
+\begin{theorem}[Abramov--Rokhlin partition identity]\label{abramovRokhlin_partition}
+  \lean{ErgodicTheory.Entropy.abramovRokhlin_partition}\leanok
+  \uses{ksEntropyPartition, condKsEntropyPartition, ksJoin}
+  Let \(T\) preserve \(\mu\) on a standard Borel probability space, let
+  \(\mathcal A\le m_\alpha\) be forward invariant, and let \(P, Q\) be finite partitions such
+  that (i) each cell of the \(n\)-fold \(P\)-join lies \(\mu\)-a.e.\ inside a single cell of the
+  \(n\)-fold \(Q\)-join (a refinement witness \(g\)), and (ii) the join filtration of \(Q\)
+  saturates \(\mathcal A\): \(\bigvee_n \sigma\bigl(\bigvee_{k<n}T^{-k}Q\bigr)=\mathcal A\). Then
+  \[
+    h(T,P) \;=\; h(T,Q) + h(T,P \mid \mathcal A).
+  \]
+  The saturation hypothesis is essential: the identity is false without it.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{ksEntropyPartition, condKsEntropyPartition, condEntropy_le, tendsto_ksEntropySeq}
+  Per \(n\), the refinement collapses the join \(H(A_n\vee B_n)\) to \(H(B_n)\) plus the
+  conditional term, and the finite conditional chain rule expresses
+  \(H(A_n) = H(B_n) + H(A_n\mid\sigma(B_n))\) for the join partitions
+  \(A_n=\bigvee_{k<n}T^{-k}P\), \(B_n=\bigvee_{k<n}T^{-k}Q\). Dividing by \(n\), the first two
+  averaged terms converge to \(h(T,P)\) and \(h(T,Q)\) by Fekete. For the conditional term the
+  conditioning \(\sigma\)-algebra \emph{moves} with \(n\); a martingale (L\'evy-upward)
+  \(\sigma\)-convergence argument, valid under the saturation (ii), shows the Ces\`aro defect
+  between conditioning on \(\sigma(B_n)\) and on the fixed limit \(\mathcal A\) vanishes, so the
+  moving conditional average converges to \(h(T,P\mid\mathcal A)\).
+\end{proof}
+
+\begin{theorem}[Abramov--Rokhlin addition formula]\label{abramov_rokhlin}
+  \lean{ErgodicTheory.Entropy.abramov_rokhlin}\leanok
+  \uses{ksEntropy, condKsEntropy, abramovRokhlin_partition, ksEntropy_eq_ksEntropyPartition_of_generating}
+  Let \(\pi:(\alpha,T,\mu)\to(\beta,S,\nu)\) be a factor map of measure-preserving systems on
+  probability spaces (\(\alpha\) standard Borel), and let \(P, R\) be finite partitions of the
+  total and factor systems, supplied with the generator reductions \(h(T)=h(T,P)\),
+  \(h(S)=h(S,R)\), the relative-generator reduction
+  \(h(T\mid\pi^{-1}\mathcal B_\beta)=h(T,P\mid\pi^{-1}\mathcal B_\beta)\), and the
+  partition-level identity of \Cref{abramovRokhlin_partition} for \(P\) over \(\pi^{-1}R\). Then
+  the entropy of the total system splits as
+  \[
+    h(T) \;=\; h(S) + h\bigl(T \mid \pi^{-1}\mathcal B_\beta\bigr),
+  \]
+  the factor entropy plus the fibrewise entropy relative to the pulled-back factor
+  \(\sigma\)-algebra \(\pi^{-1}\mathcal B_\beta=\operatorname{comap}\pi\,m_\beta\).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{ksEntropy, condKsEntropy, abramovRokhlin_partition, ksEntropyPartition, entropy_pullback}
+  Pure \(\overline\R\)-algebra threading three proved ingredients: rewrite \(h(T)=h(T,P)\) by the
+  generator reduction, expand by the partition-level identity into
+  \(h(T,\pi^{-1}R)+h(T,P\mid\pi^{-1}\mathcal B_\beta)\), identify
+  \(h(T,\pi^{-1}R)=h(S,R)\) by the factor-relative invariance (entropies of pulled-back joins
+  agree cell-measure by cell-measure since \(\pi\) intertwines the dynamics and pushes \(\mu\) to
+  \(\nu\)), and fold back with the two remaining reductions. In the sharpened form
+  \(\texttt{abramov\_rokhlin\_of\_W3}\) the partition identity is discharged down to the single
+  martingale \(\sigma\)-convergence input, and when \(R\) generates the base
+  (\(\texttt{IsGenerating}\ \nu\ S\ R\)) that too is proved, making the formula unconditional.
+\end{proof}
+
+\section{The Margulis--Ruelle inequality and Rokhlin's formula}
+
+The bridge back to the multiplicative theory of
+Chapters~\ref{chap:cocycle}--\ref{chap:corollaries}: for a smooth ergodic self-map \(T\) of
+\(\R^d\) (as \texttt{EuclideanSpace}), the derivative cocycle
+\(x\mapsto D_xT\) satisfies the standing hypotheses of the multiplicative ergodic theorem, and
+its Lyapunov exponents \(\lambda_1\ge\dots\ge\lambda_d\) (\Cref{exponents}) control the
+Kolmogorov--Sinai entropy from above.
+
+\begin{theorem}[Margulis--Ruelle inequality, abstract reduction]\label{margulisRuelle_le_sumPosExp}
+  \lean{ErgodicTheory.margulisRuelle_le_sumPosExp}\leanok
+  \uses{ksEntropy, ksEntropyPartition, exponents, sumPosExp_eq_gammaK_card_pos, IntegrableLogNorm}
+  Let \(T\) be an ergodic self-map of \(\R^d\) with everywhere-nonsingular derivative cocycle and
+  one-sided log-integrable derivative data (\Cref{IntegrableLogNorm} for \(DT\) and \(DT^{-1}\)),
+  and suppose the \emph{geometric atom-counting bound} holds: every finite partition \(\alpha\)
+  satisfies \(h(T,\alpha)\le\sum_{\lambda_i>0}\lambda_i\), the sum of the strictly positive
+  Lyapunov exponents of the derivative cocycle (a deterministic constant, the spectrum being
+  a.e.\ constant by ergodicity). Then the system entropy obeys
+  \[
+    h(T) \;\le\; \sum_{\lambda_i>0}\lambda_i.
+  \]
+\end{theorem}
+\begin{proof}\leanok
+  \uses{ksEntropy, sumPosExp_eq_gammaK_card_pos}
+  The pure lattice step: unfold the defining double supremum of \(h(T)\) over arities \(n\) and
+  \(\Fin n\)-indexed partitions, and apply \(\texttt{iSup\_le}\) twice in \(\overline\R\) to the
+  uniform per-partition hypothesis. The content of this node is the exact interface: everything
+  around the genuinely geometric per-partition estimate is proved.
+\end{proof}
+
+\begin{theorem}[Sharp Margulis--Ruelle inequality]\label{margulisRuelle_sharp}
+  \lean{ErgodicTheory.margulisRuelle_sharp}\leanok
+  \uses{margulisRuelle_le_sumPosExp, ksEntropy, exponents, tendsto_ksEntropySeq, oseledets_filtration}
+  Same setting (ergodic \(T\) on \(\R^d\), nonsingular log-integrable derivative cocycle). Assume
+  only the honest non-compactness input --- the Ma\~n\'e/Katok geometric atom count: for every
+  finite partition \(P\) there are \(\varepsilon>0\) and \(C\ge 0\) such that, \(\mu\)-a.e.,
+  the number of atoms of the \(n\)-fold refinement meeting an orbit eventually satisfies
+  \[
+    \#\{\text{atoms}\} \;\le\; C\cdot
+      \mathcal N_\varepsilon\bigl(D_x(T^{n})\,\overline B(0,\varepsilon)\bigr),
+  \]
+  the \(\varepsilon\)-covering number of the image ellipsoid. Then
+  \[
+    h(T) \;\le\; \sum_{\lambda_i>0}\lambda_i.
+  \]
+  Some such distortion hypothesis is unavoidable on the noncompact phase space: the bare
+  inequality is false in general (Riquelme 2017).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{margulisRuelle_le_sumPosExp, tendsto_ksEntropySeq, oseledets_filtration, exponents}
+  The one-step \emph{sharp anisotropic covering count}
+  \(\mathcal N_\varepsilon\bigl(L\,\overline B(0,\varepsilon)\bigr)\le 6^d\prod_i\max(1,\sigma_i(L))\)
+  is proved in-tree by a constructive SVD ellipsoid domination, and is composed with the assumed
+  atom count to bound the atom growth by the positive singular-value product
+  \(\prod_i\max(1,\sigma_i(D_xT^{n}))\). Along a.e.\ orbit, \(\frac1n\log\) of that product tends
+  to \(\sum\lambda_i^{+}\) by the multiplicative ergodic theorem
+  (\Cref{oseledets_filtration}); the \(\log\)-cardinality bound passes through the Fekete limit
+  to give \(h(T,P)\le\sum_{\lambda_i>0}\lambda_i\) per partition, and
+  \Cref{margulisRuelle_le_sumPosExp} folds the supremum.
+\end{proof}
+
+\begin{theorem}[Rokhlin's volume-distortion formula]\label{ksEntropyPartition_eq_integral_log_abs_det}
+  \lean{ErgodicTheory.ksEntropyPartition_eq_integral_log_abs_det}\leanok
+  \uses{ksEntropyPartition, IsGenerating, condEntropyPartition, sumAllExp_eq_integral_log_abs_det}
+  Let \(T\) be a measure-preserving, differentiable self-map of \(\R^d\) with
+  \(\mu\ll\mathrm{vol}\), everywhere-nonsingular derivative, a one-sided generating finite
+  partition \(\xi\) on whose cells \(T\) is injective, and \(\mu\)-integrable \(\log\rho\)
+  (\(\rho\) the density \(d\mu/d\mathrm{vol}\)) and \(\log\abs{\det DT}\). Then the per-partition
+  entropy is the integrated volume distortion:
+  \[
+    h(T,\xi) \;=\; \int \log\,\abs{\det D_xT}\;d\mu(x).
+  \]
+  Together with the determinant identity of \Cref{sumAllExp_eq_integral_log_abs_det}, the
+  right-hand side is the sum \(\sum_i\lambda_i\) of \emph{all} Lyapunov exponents of the
+  derivative cocycle --- so for expanding maps (all exponents positive) this saturates the
+  Margulis--Ruelle bound, giving Pesin's entropy formula in that regime.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{ksEntropyPartition, IsGenerating, condEntropyPartition, condEntropy_le, sumAllExp_eq_integral_log_abs_det}
+  Three identities composed. First, the sharp-rate form of the Fekete limit expresses
+  \(h(T,\xi)\) as the conditional entropy \(H\bigl(\xi\mid\bigvee_k\sigma(T^{-1}\xi\text{-joins})\bigr)\)
+  of the partition against its own strict future. Second, the generating hypothesis glues that
+  future \(\sigma\)-algebra to \(\operatorname{comap}T\,m_\alpha\). Third, Coud\`ene's
+  conditional-expectation computation evaluates \(H(\xi\mid T^{-1}m_\alpha)\) by the
+  change-of-variables formula on each injectivity cell, producing
+  \(\int\log\abs{\det(D_xT)}\,d\mu\); a final bridge identifies the Fr\'echet-derivative
+  determinant with the determinant of the matrix derivative cocycle. An instantiated equality
+  (the doubling map on the circle) is exhibited elsewhere in the library.
+\end{proof}

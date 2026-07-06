@@ -1,0 +1,556 @@
+\chapter{Smooth maps and worked examples}
+\label{chap:examples}
+
+The multiplicative ergodic theorem of Chapter~\ref{chap:met} is a statement about abstract
+measurable matrix cocycles. This chapter connects it to the setting it was invented for ---
+\emph{smooth dynamics} --- and then instantiates the whole chain on classical worked examples.
+
+The bridge is the \emph{derivative (tangent) cocycle}: for a differentiable self-map \(T\) of
+\(E = \R^d\) (formalized as \(\operatorname{EuclideanSpace}\,\R\,(\Fin d)\)), the chain rule makes
+the family of Jacobian matrices \(x\mapsto D_xT\) a linear cocycle over \(T\), so the Oseledets
+theorem applies verbatim and produces the Lyapunov exponents of the smooth system. On top of the
+bridge we prove the expanding-map results: every Lyapunov exponent of a uniformly expanding map is
+at least \(\log K > 0\), and consequently the sum of the \emph{positive} exponents
+\(\sum\lambda^{+}\) (the Pesin / Margulis--Ruelle right-hand side) collapses onto the full exponent
+sum and hence, by the trace--determinant identity, onto \(\int\log\abs{\det D_xT}\,d\mu\) (the
+Rokhlin right-hand side). This is the honest, \emph{foliation-free} expanding-case identity of the
+two right-hand sides --- no stable foliation, no SRB-density machinery, and \emph{not} a claim of
+the full Pesin entropy formula. The entropy-side companion, Rokhlin's formula
+\(h_\mu(T,\xi) = \int\log\abs{\det D_xT}\,d\mu\), is proved via a conditional-expectation /
+change-of-variables argument (Coud\`ene), and the two are chained into an expanding-map Pesin
+formula --- a correct implication whose hypothesis bundle is disclosed to be vacuous on the
+non-compact space \(\R^d\), the genuinely instantiated equality living on the compact circle.
+
+The worked examples then exercise every layer. The \emph{doubling map} \(y\mapsto 2y\) on the unit
+circle has top exponent \(\log 2\), positive-exponent sum \(\log 2\), a per-partition
+Margulis--Ruelle bound at exactly that rate, and --- the highlight --- the genuinely instantiated
+Rokhlin \emph{equality} \(h(\alpha,T) = \int\log\abs{\det DT}\,d\mu = \log 2\) for the binary
+partition. The \emph{Arnold cat map}, the hyperbolic automorphism of \(\mathbb{T}^2\) induced by
+the matrix
+\[
+  M \;=\; \begin{pmatrix} 2 & 1 \\ 1 & 1 \end{pmatrix},
+\]
+is formalized as genuine toral dynamics: it
+is measure-preserving and ergodic for Haar measure (a Fourier-analytic proof on the multivariate
+character basis), its Lyapunov spectrum is \(\log\bigl((3\pm\sqrt5)/2\bigr)\), and the derivative
+cocycle of its linear lift to the universal cover has strictly positive top exponent --- the
+formalized hyperbolicity of the cat map. Everything in this chapter is sorry-free.
+
+\section{The derivative cocycle of a smooth self-map}
+
+\begin{definition}[Derivative cocycle generator]\label{derivativeCocycle}
+  \lean{ErgodicTheory.derivativeCocycle}\leanok
+  \uses{cocycle}
+  For a self-map \(T\) of \(E = \operatorname{EuclideanSpace}\,\R\,(\Fin d)\), the
+  \emph{derivative cocycle generator} is the matrix-valued map
+  \[
+    x \;\longmapsto\; \bigl(\texttt{toEuclideanCLM}\bigr)^{-1}\bigl(D_xT\bigr)
+      \;\in\; \Matrix_{d}(\R),
+  \]
+  the matrix representing the Fr\'echet derivative \(D_xT = \operatorname{fderiv}\,\R\,T\,x\),
+  transported along the star-algebra equivalence between \(d\times d\) real matrices and
+  continuous linear endomorphisms of \(E\). Since that equivalence is an \(L^2\)-operator-norm
+  isometry, the generator has the same norm as \(D_xT\). Feeding it to the iterated cocycle
+  construction of \Cref{cocycle} yields the \emph{tangent cocycle} of the smooth system.
+\end{definition}
+
+\begin{theorem}[Chain-rule cocycle identity]\label{chainRule_cocycle}
+  \lean{ErgodicTheory.chainRule_cocycle}\leanok
+  \uses{derivativeCocycle, cocycle}
+  For a differentiable \(T\), the \(n\)-th cocycle iterate of the derivative generator represents
+  the derivative of the \(n\)-th iterate of the map:
+  \[
+    \texttt{toEuclideanCLM}\bigl(\operatorname{cocycle}(\operatorname{derivativeCocycle} T)\,T\,n\,x\bigr)
+      \;=\; D_x\bigl(T^{[n]}\bigr) .
+  \]
+\end{theorem}
+\begin{proof}\leanok
+  \uses{derivativeCocycle, cocycle}
+  Induction on \(n\). The base case is \(D(\operatorname{id}) = \operatorname{id}\). For the step,
+  peel the innermost factor \(T\) simultaneously from the cocycle recursion
+  \(A^{(n+1)}(x) = A^{(n)}(Tx)\cdot A(x)\) and from the iterate
+  \(T^{[n+1]} = T^{[n]}\circ T\); the chain rule
+  \(D_x(T^{[n]}\circ T) = D_{Tx}(T^{[n]})\circ D_xT\) (differentiability of \(T\) gives
+  differentiability of all iterates) matches the two factorizations, and the star-algebra
+  equivalence turns the matrix product into the composition.
+\end{proof}
+
+\begin{theorem}[Oseledets theorem for the derivative cocycle]\label{oseledets_filtration_derivativeCocycle}
+  \lean{ErgodicTheory.oseledets_filtration_derivativeCocycle}\leanok
+  \uses{oseledets_filtration, derivativeCocycle, chainRule_cocycle, IntegrableLogNorm, MeasurableSubspace}
+  Let \(\mu\) be a probability measure on \(E = \operatorname{EuclideanSpace}\,\R\,(\Fin d)\) and
+  let \(T\) be ergodic for \(\mu\), differentiable, with everywhere nonvanishing Jacobian
+  determinant \(\det(\operatorname{derivativeCocycle}\,T\,x)\ne 0\) and with the log-integrability
+  \(\log^{+}\norm{D_xT},\ \log^{+}\bignorm{(D_xT)^{-1}}\in L^1(\mu)\) (stated for the matrix
+  generator and its matrix inverse; by the isometry these are exactly the \(\operatorname{fderiv}\)
+  conditions). Then:
+  \begin{enumerate}
+    \item for every \(n\) and \(x\), the cocycle iterate represents \(D_x(T^{[n]})\) --- the
+      cocycle is the genuine tangent cocycle; and
+    \item there exist \(k\le d\), strictly decreasing exponents
+      \(\lambda_1 > \dots > \lambda_k\), and a measurable family of subspaces
+      \(E = V_0(x) \supsetneq V_1(x) \supsetneq \dots \supsetneq V_k(x) = 0\), a.e.\
+      equivariant under \(D_xT\), such that for every \(v\in V_{i-1}(x)\setminus V_i(x)\),
+      \[
+        \frac1n\,\log\bignorm{D_x\bigl(T^{[n]}\bigr)v} \;\longrightarrow\; \lambda_i .
+      \]
+  \end{enumerate}
+\end{theorem}
+\begin{proof}\leanok
+  \uses{oseledets_filtration, chainRule_cocycle}
+  The first conjunct is \Cref{chainRule_cocycle}. The second is the one-sided Oseledets theorem
+  (\Cref{oseledets_filtration}) applied to the generator
+  \(A = \operatorname{derivativeCocycle}\,T\), whose measurability is proved entrywise: each
+  entry is a (continuous) coordinate projection of \(x\mapsto (D_xT)e_j\), measurable by
+  Mathlib's measurability of the Fr\'echet derivative in the base point.
+\end{proof}
+
+\section{Uniformly expanding maps: the foliation-free right-hand-side identity}
+
+A differentiable map \(T\) is \emph{uniformly expanding} with constant \(K > 1\) when
+\(K\norm{v}\le\norm{D_xT\,v}\) for every base point \(x\) and tangent vector \(v\). The results of
+this section are stated exactly as the module discloses them: they establish the
+\emph{all-positive-spectrum collapse} of \(\sum\lambda^{+}\) onto \(\int\log\abs{\det D_xT}\,d\mu\)
+--- the honest, foliation-free expanding-case identity of the Pesin and Rokhlin right-hand sides
+--- and no more.
+
+\begin{lemma}[Compounded expansion bound]\label{cocycle_expanding_bound}
+  \lean{ErgodicTheory.cocycle_expanding_bound}\leanok
+  If \(T\) is differentiable and uniformly expanding with constant \(K > 1\), then the derivative
+  of the \(n\)-th iterate stretches every vector by at least \(K^n\):
+  \[
+    K^n\,\norm{v} \;\le\; \bignorm{D_x\bigl(T^{[n]}\bigr)v}
+    \qquad\text{for all } x, v, n .
+  \]
+\end{lemma}
+\begin{proof}\leanok
+  Induction on \(n\), using the chain rule \(D_x(T^{[n+1]}) = D_{Tx}(T^{[n]})\circ D_xT\) to peel
+  off one expanding factor at each step:
+  \(K^{n+1}\norm{v} = K^n(K\norm{v}) \le K^n\norm{D_xT\,v} \le
+  \norm{D_{Tx}(T^{[n]})(D_xT\,v)}\).
+\end{proof}
+
+\begin{lemma}[Every singular value is at least \(K^n\)]\label{expanding_pow_le_singularValues}
+  \lean{ErgodicTheory.expanding_pow_le_singularValues}\leanok
+  \uses{cocycle_expanding_bound, chainRule_cocycle}
+  Under the same hypotheses, every singular value of the cocycle iterate
+  \(A^{(n)}(x) = \operatorname{cocycle}(\operatorname{derivativeCocycle} T)\,T\,n\,x\) is at least
+  \(K^n\): \(\ K^n\le\sigma_i\bigl(A^{(n)}(x)\bigr)\) for every \(i < d\).
+\end{lemma}
+\begin{proof}\leanok
+  \uses{cocycle_expanding_bound, chainRule_cocycle}
+  By \Cref{chainRule_cocycle} the iterate acts as \(D_x(T^{[n]})\), so
+  \Cref{cocycle_expanding_bound} gives the uniform stretching \(K^n\norm{v}\le\norm{f v}\) for
+  \(f = A^{(n)}(x)\). A uniform lower stretching bound passes to every singular value: evaluate
+  \(f\) on the unit-norm right singular vector \(u_i\) (an eigenvector of \(f^{*}f\)), where
+  \(\sigma_i(f) = \norm{f u_i}\ge K^n\norm{u_i} = K^n\).
+\end{proof}
+
+\begin{theorem}[Every exponent is at least \(\log K\)]\label{log_le_exponents_of_expanding}
+  \lean{ErgodicTheory.log_le_exponents_of_expanding}\leanok
+  \uses{exponents, exponents_tendsto_log_singularValue, expanding_pow_le_singularValues}
+  For an ergodic, log-integrable, differentiable uniformly expanding map with constant \(K > 1\)
+  (and \(d\ge 1\)), each Lyapunov exponent of the tangent cocycle satisfies
+  \(\log K \le \lambda_i\).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{exponents_tendsto_log_singularValue, expanding_pow_le_singularValues}
+  Pick a base point where the per-index singular-value limit
+  \(\frac1n\log\sigma_i(A^{(n)}(x))\to\lambda_i\) of \Cref{exponents_tendsto_log_singularValue}
+  holds. By \Cref{expanding_pow_le_singularValues} each pre-limit term is at least
+  \(\frac1n\log K^n = \log K\), and the limit inherits the lower bound.
+\end{proof}
+
+\begin{corollary}[Positivity of the whole spectrum]\label{exponents_pos_of_expanding}
+  \lean{ErgodicTheory.exponents_pos_of_expanding}\leanok
+  \uses{log_le_exponents_of_expanding}
+  Every Lyapunov exponent of a uniformly expanding map is strictly positive:
+  \(0 < \log K \le \lambda_i\).
+\end{corollary}
+\begin{proof}\leanok
+  \uses{log_le_exponents_of_expanding}
+  \(K > 1\) gives \(\log K > 0\); chain with \Cref{log_le_exponents_of_expanding}.
+\end{proof}
+
+\begin{proposition}[All-positive-spectrum collapse]\label{sumPosExp_eq_sumAllExp_of_expanding}
+  \lean{ErgodicTheory.sumPosExp_eq_sumAllExp_of_expanding}\leanok
+  \uses{exponents_pos_of_expanding, exponents}
+  For a uniformly expanding map the positive-part exponent sum is the full exponent sum:
+  \(\sum\lambda^{+} = \sum_i\lambda_i\) (with multiplicity).
+\end{proposition}
+\begin{proof}\leanok
+  \uses{exponents_pos_of_expanding}
+  By \Cref{exponents_pos_of_expanding} the filter \(\{i \mid 0 < \lambda_i\}\) is all of the index
+  set, so the two finite sums have identical terms.
+\end{proof}
+
+\begin{theorem}[The expanding-case right-hand-side identity]\label{sumPosExp_eq_integral_log_abs_det_of_expanding}
+  \lean{ErgodicTheory.sumPosExp_eq_integral_log_abs_det_of_expanding}\leanok
+  \uses{sumPosExp_eq_sumAllExp_of_expanding, sumAllExp_eq_integral_log_abs_det}
+  For an ergodic, log-integrable, differentiable uniformly expanding self-map \(T\), the sum of
+  the strictly positive Lyapunov exponents --- the Pesin / Margulis--Ruelle right-hand side ---
+  equals the integrated volume distortion --- the Rokhlin right-hand side:
+  \[
+    \sum\lambda^{+} \;=\; \int \log\,\abs{\det\bigl(\operatorname{derivativeCocycle}\,T\,x\bigr)}\;d\mu(x).
+  \]
+  This is the honest foliation-free instance of the identity between the two right-hand sides; it
+  is \emph{not} a claim of the full Pesin entropy formula (no entropy appears in the statement).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{sumPosExp_eq_sumAllExp_of_expanding, sumAllExp_eq_integral_log_abs_det}
+  Since all exponents are positive, \(\sum\lambda^{+} = \sum\lambda\)
+  (\Cref{sumPosExp_eq_sumAllExp_of_expanding}), and the trace--determinant identity
+  (\Cref{sumAllExp_eq_integral_log_abs_det}) rewrites the full sum as
+  \(\int\log\abs{\det A}\,d\mu\).
+\end{proof}
+
+\section{Rokhlin's entropy formula for an expanding map}
+
+The entropy-side companion identifies the Kolmogorov--Sinai entropy itself with the determinant
+integral, for an absolutely continuous invariant measure. The proof is Coud\`ene's
+conditional-expectation argument: the conditional entropy of a partition given the
+\(\sigma\)-algebra \(T^{-1}\mathcal{A}\) is computed by a per-branch change of variables.
+
+\begin{definition}[Injectivity partition]\label{IsInjectivityPartition}
+  \lean{ErgodicTheory.IsInjectivityPartition}\leanok
+  For a self-map \(T\) of \(\operatorname{EuclideanSpace}\,\R\,(\Fin d)\) and a finite measurable
+  partition \(\xi\), the predicate \(\texttt{IsInjectivityPartition}\,\mu\,T\,\xi\) packages the
+  two hypotheses the conditional-expectation proof needs: \(T\) is injective on each cell of
+  \(\xi\), and each cell is measurable. (These are literally the hypotheses of Mathlib's
+  change-of-variables lemma; no Markov condition and no generating condition are baked in.)
+\end{definition}
+
+\begin{theorem}[Conditional entropy equals the Jacobian integral]\label{condEntropy_comap_eq_integral_log_abs_det}
+  \lean{ErgodicTheory.condEntropy_comap_eq_integral_log_abs_det}\leanok
+  \uses{IsInjectivityPartition, condEntropyPartition}
+  Let \(\mu\) be an invariant probability measure with \(\mu\ll\operatorname{volume}\), let \(T\)
+  be differentiable with everywhere nonvanishing Jacobian, let \(\xi\) be an injectivity
+  partition, and assume \(\log\rho\in L^1(\mu)\) for the density \(\rho = d\mu/d\operatorname{vol}\)
+  and \(\log\abs{\det D T}\in L^1(\mu)\). Then the conditional Shannon entropy of \(\xi\) given
+  the pulled-back \(\sigma\)-algebra \(T^{-1}\mathcal{A}\) is
+  \[
+    H\bigl(\xi \,\big|\, T^{-1}\mathcal{A}\bigr) \;=\; \int \log\,\abs{\det D_xT}\;d\mu(x),
+  \]
+  \emph{independently of the partition} (no generating hypothesis).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{IsInjectivityPartition}
+  Per cell \(\xi_i\), the change-of-variables crux
+  (\texttt{measure\_cell\_inter\_preimage\_eq\_setLIntegral\_transfer})
+  recovers \(\mu(\xi_i\cap T^{-1}B)\) as the integral over \(T(\xi_i)\cap B\) of the per-branch
+  transfer density \(\rho(g_i^{-1}y)/\abs{\det DT}_{g_i^{-1}y}\), where \(g_i^{-1}\) is the branch
+  inverse of \(T\) on \(\xi_i\). This identifies the regular-conditional kernel mass of each cell
+  with the branch-weight candidate; the entropy integrand
+  \(\sum_i\operatorname{negMulLog}\) of these masses pulls out, per cell, to
+  \(\int_{\xi_i}\bigl(\log\abs{\det DT} + \log\rho\circ T - \log\rho\bigr)d\mu\), the cells
+  partition the space, and the density bracket \(\log\rho\circ T - \log\rho\) telescopes to \(0\)
+  by \(T\)-invariance of \(\mu\), leaving the Jacobian integral.
+\end{proof}
+
+The assembly of \Cref{condEntropy_comap_eq_integral_log_abs_det} into the per-partition Rokhlin
+formula \(h_\mu(T,\xi) = \int\log\abs{\det D_xT}\,d\mu\) for a one-sided \emph{generating}
+injectivity partition --- via the sharp-rate identity expressing \(h_\mu(T,\xi)\) as the
+conditional entropy of \(\xi\) against its own strict future, and the \(\sigma\)-algebra glue
+identifying that future with \(T^{-1}\mathcal{A}\) --- is the node
+\Cref{ksEntropyPartition_eq_integral_log_abs_det} of the classical-entropy chapter. Here we chain
+it with the expanding-case right-hand-side identity into the Pesin formula.
+
+\begin{theorem}[Expanding-map Pesin formula (vacuous on \(\R^d\), disclosed)]\label{pesin_formula_expanding}
+  \lean{ErgodicTheory.pesin_formula_expanding}\leanok
+  \uses{ksEntropy, ksEntropyPartition_eq_integral_log_abs_det, sumPosExp_eq_integral_log_abs_det_of_expanding}
+  For an ergodic, absolutely continuous (\(\mu\ll\operatorname{volume}\)), differentiable,
+  uniformly expanding self-map of \(\operatorname{EuclideanSpace}\,\R\,(\Fin d)\) with
+  everywhere-nonsingular derivative, log-integrable derivative data, a one-sided generating
+  injectivity partition, and integrable \(\log\rho\) and \(\log\abs{\det DT}\):
+  \[
+    h_\mu(T) \;=\; \sum\lambda^{+}.
+  \]
+  \emph{Honest disclosure:} this is a correct implication whose hypothesis bundle has \emph{no
+  model} on the non-compact space \(\R^d\) --- a globally uniformly expanding map of \(\R^d\)
+  admits no ergodic absolutely continuous invariant probability measure (uniform expansion forces
+  mass to escape to infinity; for \(T = c\cdot\operatorname{id}\) the nested preimages of a ball
+  force an atom at the fixed point). The theorem is therefore vacuously true as stated on
+  \(\R^d\), and is disclosed as such; the instantiated Pesin/Rokhlin equality lives on the compact
+  circle (\Cref{rokhlin_equality_doublingMap}).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{ksEntropy, ksEntropyPartition_eq_integral_log_abs_det, condEntropy_comap_eq_integral_log_abs_det, sumPosExp_eq_integral_log_abs_det_of_expanding}
+  Compose three theorems: the Kolmogorov--Sinai generator theorem \(h_\mu(T) = h_\mu(T,\xi)\) for
+  the generating \(\xi\), Rokhlin's per-partition formula
+  (\Cref{ksEntropyPartition_eq_integral_log_abs_det}), and the expanding-case right-hand-side
+  identity (\Cref{sumPosExp_eq_integral_log_abs_det_of_expanding}), aligning the two determinant
+  hypotheses along the \(\operatorname{fderiv}\)-to-matrix bridge.
+\end{proof}
+
+\section{The doubling map}
+
+The phase space is the unit circle \(\mathbb{T} = \operatorname{UnitAddCircle}\) with its Haar
+probability measure (Mathlib's default \(\operatorname{volume}\)), and the map is
+\(\operatorname{doublingMap}: y\mapsto 2\cdot y\)
+(\lean{ErgodicTheory.doublingMap}), ergodic by Mathlib's
+\texttt{AddCircle.ergodic\_nsmul} (\lean{ErgodicTheory.ergodic_doublingMap}). Its derivative
+is the constant \(1\times 1\) matrix \((2)\), realized as a constant cocycle.
+
+\begin{theorem}[Doubling map: top exponent \(\log 2\)]\label{doublingMap_topExponent_eq_log_two}
+  \lean{ErgodicTheory.doublingMap_topExponent_eq_log_two}\leanok
+  \uses{exponents}
+  The constant cocycle with generator \(M = (2)\) over the ergodic doubling map has top Lyapunov
+  exponent \(\log 2\).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{exponents}
+  For a constant cocycle with symmetric invertible generator \(M\), the sorted Lyapunov spectrum
+  is \(\log\) of the sorted eigenvalues of \(\abs{M}\)
+  (\texttt{exponents\_const}); for positive semidefinite \(M\) the functional calculus
+  collapses \(\abs{M} = M\). The single eigenvalue of \((2)\) is its trace \(2\), so the unique
+  exponent is \(\log 2\).
+\end{proof}
+
+\begin{corollary}[Doubling map: positive-exponent sum \(\log 2\)]\label{doublingMap_sumPosExp_eq_log_two}
+  \lean{ErgodicTheory.doublingMap_sumPosExp_eq_log_two}\leanok
+  \uses{doublingMap_topExponent_eq_log_two}
+  The sum of the strictly positive Lyapunov exponents of the doubling-map cocycle is \(\log 2\),
+  with every spectrum hypothesis (invertibility, measurability, both log-integrability conditions)
+  discharged unconditionally from the constant-cocycle API.
+\end{corollary}
+\begin{proof}\leanok
+  \uses{doublingMap_topExponent_eq_log_two}
+  The spectrum consists of the single exponent \(\log 2 > 0\), so the positive-part filter is the
+  full (one-element) index set and the sum is that one term.
+\end{proof}
+
+\begin{theorem}[Per-partition Ruelle bound for the doubling map]\label{doublingMap_ksEntropyPartition_le_sumPosExp}
+  \lean{ErgodicTheory.doublingMap_ksEntropyPartition_le_sumPosExp}\leanok
+  \uses{ksEntropyPartition, doublingMap_sumPosExp_eq_log_two}
+  For any finite measurable partition \(P\) of the circle whose \(n\)-fold refinement
+  \(\bigvee_{k=0}^{n-1}T^{-k}P\) under the doubling map eventually has at most
+  \(C\cdot e^{n\log 2}\) non-empty atoms (\(C\ge 1\)),
+  \[
+    h(P, T) \;\le\; \sum\lambda^{+} \;=\; \log 2 .
+  \]
+  This is the \emph{per-partition} bound \(h(\alpha,T)\le\sum\lambda^{+}\), not the system
+  Margulis--Ruelle inequality; the right-hand side is the computed Lyapunov datum
+  (\Cref{doublingMap_sumPosExp_eq_log_two}), not an abstract constant. The atom-count hypothesis
+  is automatic for the binary partition, where the bound is attained
+  (\Cref{ksEntropyPartition_doublingMap_eq_log_two}).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{margulisRuelle_sharp, doublingMap_sumPosExp_eq_log_two}
+  Specialize the abstract atom-count-growth entropy bound (the arithmetic backbone of the
+  per-partition Ruelle inequality, cf.\ \Cref{margulisRuelle_sharp}) to the doubling map at the
+  exponential rate \(R = \log 2\), then identify the rate with the positive-exponent sum via
+  \Cref{doublingMap_sumPosExp_eq_log_two}.
+\end{proof}
+
+\begin{proposition}[Entropy of a uniform-join system]\label{ksEntropyPartition_of_uniform}
+  \lean{ErgodicTheory.Examples.Rokhlin.ksEntropyPartition_of_uniform}\leanok
+  \uses{ksEntropyPartition}
+  Let \(T\) preserve a probability measure and let \(P\) be a finite partition indexed by a type
+  of cardinality \(b\) such that for \emph{every} \(n\), every cell of the \(n\)-fold join
+  \(\bigvee_{k=0}^{n-1}T^{-k}P\) has measure exactly \(b^{-n}\). Then
+  \(h(P,T) = \log b\).
+\end{proposition}
+\begin{proof}\leanok
+  \uses{ksEntropyPartition}
+  The \(n\)-fold join is indexed by the \(b^n\) formal cell-tuples, each of measure \(b^{-n}\), so
+  its Shannon entropy is a sum of \(b^n\) equal terms
+  \(\operatorname{negMulLog}(b^{-n}) = b^{-n}\,n\log b\), totalling \(n\log b\). The averaged
+  sequence \(H_n/n\) is thus eventually the constant \(\log b\), and it converges to
+  \(h(P,T)\); the two limits agree.
+\end{proof}
+
+\begin{theorem}[Rokhlin equality, entropy side: \(h(\alpha,T) = \log 2\)]\label{ksEntropyPartition_doublingMap_eq_log_two}
+  \lean{ErgodicTheory.Examples.Rokhlin.ksEntropyPartition_doublingMap_eq_log_two}\leanok
+  \uses{ksEntropyPartition_of_uniform}
+  For the binary partition \(\alpha = \{[0,\tfrac12), [\tfrac12,1)\}\) of the circle
+  (\lean{ErgodicTheory.Examples.Rokhlin.binPartition}), the partition-relative Kolmogorov--Sinai
+  entropy under the doubling map is exactly \(\log 2\).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{ksEntropyPartition_of_uniform}
+  The dynamical crux (\texttt{volume\_binJoinCell}) shows every cell
+  of the \(n\)-fold join is a dyadic arc of measure exactly \(2^{-n}\): the doubling map restricted
+  to a half-arc is the affine two-fold magnification onto the whole circle, so
+  \(\operatorname{vol}(\alpha_i\cap T^{-1}B) = \operatorname{vol}(B)/2\), and induction on \(n\)
+  halves the measure at each refinement step. Feeding this uniform-join datum into
+  \Cref{ksEntropyPartition_of_uniform} with \(b = 2\) gives \(h(\alpha,T) = \log 2\).
+\end{proof}
+
+\begin{theorem}[Rokhlin equality on the doubling map]\label{rokhlin_equality_doublingMap}
+  \lean{ErgodicTheory.Examples.Rokhlin.rokhlin_equality_doublingMap}\leanok
+  \uses{ksEntropyPartition_doublingMap_eq_log_two, derivativeCocycle}
+  For the doubling map and the binary partition,
+  \[
+    h(\alpha, T) \;=\; \int_{\mathbb{T}} \log\,\abs{\det DT}\;d\mu \;=\; \log 2 ,
+  \]
+  the genuinely \emph{instantiated} Pesin/Rokhlin equality on a real expanding system (in contrast
+  to the vacuous-on-\(\R^d\) assembly \Cref{pesin_formula_expanding}). The integrand is the honest
+  log-Jacobian: the generator \((2)\) is proved to be the Fr\'echet derivative of the doubling
+  map's linear lift \(x\mapsto 2x\) to the universal cover
+  (\lean{ErgodicTheory.Examples.Rokhlin.derivativeCocycle_doublingLift}), and the covering
+  projection \(\R\to\mathbb{T}\) intertwines that lift with the doubling map
+  (\lean{ErgodicTheory.Examples.Rokhlin.circleProj_comp_doublingLift}) --- so \((2)\) genuinely is
+  \(DT\), not an arbitrary constant of the right determinant.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{ksEntropyPartition_doublingMap_eq_log_two, derivativeCocycle}
+  The entropy side is \Cref{ksEntropyPartition_doublingMap_eq_log_two}. For the integral side,
+  \(\det(2) = 2\), so the integrand is the constant \(\log 2\), which integrates against the
+  probability measure to \(\log 2\). Both sides equal \(\log 2\).
+\end{proof}
+
+\section{The Arnold cat map}
+
+The Arnold cat map is the automorphism of the \(2\)-torus
+\(\mathbb{T}^2 = \operatorname{UnitAddTorus}(\Fin 2)\) induced by the unimodular hyperbolic matrix
+\(M\in\mathrm{SL}_2(\Z)\) displayed in the chapter introduction. Its eigenvalues are
+\(\lambda_{\pm} = (3\pm\sqrt5)/2\), with \(\lambda_+ > 1 > \lambda_- > 0\) and
+\(\lambda_+\lambda_- = 1\). We first read off the Lyapunov spectrum of the \emph{matrix} (as a
+constant cocycle), then formalize the genuine toral dynamics, and finally combine them.
+
+\begin{theorem}[Cat-map matrix: closed-form Lyapunov spectrum]\label{catMapMatrix_exponents}
+  \lean{ErgodicTheory.catMapMatrix_exponents}\leanok
+  \uses{exponents}
+  Realized as a constant cocycle with generator the cat-map matrix \(M\)
+  over an ergodic base (here the doubling map --- the spectrum depends only on \(M\)), the two
+  Lyapunov exponents are
+  \[
+    \lambda_1 = \log\frac{3+\sqrt5}{2}, \qquad \lambda_2 = \log\frac{3-\sqrt5}{2}.
+  \]
+  \emph{Honesty caveat (as in the Lean docstring):} the cocycle here is the constant matrix, not
+  the derivative cocycle of the genuine toral automorphism; the genuine dynamics is treated below.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{exponents}
+  \(M\) is symmetric positive definite with trace \(3\) and determinant \(1\), so its sorted
+  eigenvalues \(a\ge b\) satisfy \(a + b = 3\), \(ab = 1\), whence
+  \((a-b)^2 = 9 - 4 = 5\) and \(a,b = (3\pm\sqrt5)/2\). The constant-cocycle spectrum theorem
+  (\texttt{exponents\_const}) evaluates the sorted exponents to \(\log\) of the sorted
+  eigenvalues of \(\abs{M} = M\).
+\end{proof}
+
+\begin{corollary}[The cat-map exponents sum to zero]\label{catMapMatrix_exponents_sum_eq_zero}
+  \lean{ErgodicTheory.catMapMatrix_exponents_sum_eq_zero}\leanok
+  \uses{catMapMatrix_exponents}
+  \(\lambda_1 + \lambda_2 = 0\): the cocycle is conservative (\(\det M = 1\)).
+\end{corollary}
+\begin{proof}\leanok
+  \uses{catMapMatrix_exponents}
+  \(\log\lambda_+ + \log\lambda_- = \log(\lambda_+\lambda_-) = \log 1 = 0\), computing
+  \(\lambda_+\lambda_- = \bigl(9 - (\sqrt5)^2\bigr)/4 = 1\).
+\end{proof}
+
+\begin{definition}[The cat-map toral automorphism]\label{catTorus}
+  \lean{ErgodicTheory.CatMapToral.catTorus}\leanok
+  The map \(\operatorname{catTorus}:\mathbb{T}^2\to\mathbb{T}^2\),
+  \((\operatorname{catTorus} y)_i = \sum_j M_{ij}\cdot y_j\), with the integer cat-map matrix
+  \(M\) acting by integer scalar multiplication on each circle coordinate. Since \(\det M = 1\), the
+  integer matrix \(M^{-1}\) (with rows \((1,-1)\) and \((-1,2)\)) induces a two-sided
+  inverse, so \(\operatorname{catTorus}\) is a continuous additive automorphism of the compact
+  group \(\mathbb{T}^2\). Throughout this section \(\mathbb{T}^2\) carries the product Haar
+  \emph{probability} measure (the normalization for which Mathlib's multivariate Fourier basis is
+  stated).
+\end{definition}
+
+\begin{proposition}[Measure preservation]\label{measurePreserving_catTorus}
+  \lean{ErgodicTheory.CatMapToral.measurePreserving_catTorus}\leanok
+  \uses{catTorus}
+  \(\operatorname{catTorus}\) preserves the Haar probability measure on \(\mathbb{T}^2\).
+\end{proposition}
+\begin{proof}\leanok
+  \uses{catTorus}
+  \(\operatorname{catTorus}\) is a continuous surjective additive homomorphism of a compact
+  group; the pushforward of Haar measure under such a map is again a translation-invariant
+  probability measure, hence equals Haar (Mathlib's
+  \(\texttt{AddMonoidHom.measurePreserving}\), with equal total mass \(1\)).
+\end{proof}
+
+\begin{theorem}[Ergodicity of the Arnold cat map]\label{ergodic_catTorus}
+  \lean{ErgodicTheory.CatMapToral.ergodic_catTorus}\leanok
+  \uses{measurePreserving_catTorus, catTorus}
+  \(\operatorname{catTorus}\) is ergodic for the Haar probability measure on \(\mathbb{T}^2\).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{measurePreserving_catTorus}
+  The classical Fourier / character argument. The Koopman operator permutes the multivariate
+  characters: \(\texttt{mFourier}\,n\circ\operatorname{catTorus} = \texttt{mFourier}(M^{\top}n)\),
+  and since \(M\) is symmetric the index action is \(n\mapsto M n\). For a measurable invariant
+  set \(s\), the indicator \(\mathbf 1_s\in L^2\) has Fourier coefficients constant along each
+  index orbit \(p\mapsto M^{p}n\). The hyperbolicity input is that this orbit is \emph{infinite}
+  for every \(n\ne 0\) (\texttt{orbit\_infinite}: pairing with the two
+  eigen-covectors of \(M\), a period would force \(\varphi(n)\lambda_+^{k} = \varphi(n)\) and
+  \(\psi(n)\lambda_+^{-k} = \psi(n)\) with \(\lambda_+^k\ne 1\), so \(n = 0\)). A square-summable
+  sequence constant on an infinite set vanishes there, so all nonzero-index coefficients of
+  \(\mathbf 1_s\) are \(0\); the Fourier series collapses to the constant term, \(\mathbf 1_s\)
+  is a.e.\ constant, and \(s\) is a.e.\ empty or full.
+\end{proof}
+
+\begin{theorem}[Cat-map spectrum over the genuine ergodic base]\label{catTorus_constCocycle_exponents}
+  \lean{ErgodicTheory.CatMapToral.catTorus_constCocycle_exponents}\leanok
+  \uses{ergodic_catTorus, catMapMatrix_exponents, exponents}
+  Realized as a constant cocycle with generator \(M\) over the \emph{genuine} ergodic Arnold cat
+  map \(\operatorname{catTorus}\), the two Lyapunov exponents are
+  \(\log\bigl((3+\sqrt5)/2\bigr)\) and \(\log\bigl((3-\sqrt5)/2\bigr)\) --- the same spectrum as
+  \Cref{catMapMatrix_exponents}, now over the hyperbolic toral automorphism itself rather than a
+  surrogate base.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{ergodic_catTorus, catMapMatrix_exponents}
+  The constant-cocycle spectrum theorem applies over any ergodic base; instantiate it over
+  \(\operatorname{catTorus}\) (\Cref{ergodic_catTorus}) and evaluate the sorted eigenvalues of
+  \(\abs{M} = M\) by the closed form computed for \Cref{catMapMatrix_exponents}.
+\end{proof}
+
+\begin{theorem}[The cat map's derivative cocycle has positive top exponent]\label{catLift_derivativeCocycle_topExponent_pos}
+  \lean{ErgodicTheory.CatMapToral.catLift_derivativeCocycle_topExponent_pos}\leanok
+  \uses{catTorus_constCocycle_exponents, derivativeCocycle}
+  Let \(\operatorname{catLift}:\R^2\to\R^2\) (\lean{ErgodicTheory.CatMapToral.catLift}) be the
+  linear lift of the cat map to the universal cover --- the continuous linear map with matrix
+  \(M\), which genuinely lifts \(\operatorname{catTorus}\): the covering projection
+  \(\R^2\to\mathbb{T}^2\) satisfies
+  \(\pi\circ\operatorname{catLift} = \operatorname{catTorus}\circ\pi\)
+  (\lean{ErgodicTheory.CatMapToral.coverProj_comp_catLift}). Its derivative cocycle in the sense
+  of \Cref{derivativeCocycle} is the constant matrix \(M\) at every point
+  (\lean{ErgodicTheory.CatMapToral.derivativeCocycle_catLift}), and the top Lyapunov exponent of
+  this \emph{genuine derivative cocycle}, over the genuine ergodic base
+  \(\operatorname{catTorus}\), is
+  \[
+    0 \;<\; \log\frac{3+\sqrt5}{2},
+  \]
+  the formalized hyperbolicity of the Arnold cat map. (Reading the derivative on the torus
+  manifold itself via \(\texttt{mfderiv}\) is a documented gap: Mathlib has no manifold-derivative
+  API for \(\texttt{AddCircle}\) endomorphisms; the lift and the map share the same derivative
+  everywhere because the covering projection is a local diffeomorphism with identity derivative.)
+\end{theorem}
+\begin{proof}\leanok
+  \uses{catTorus_constCocycle_exponents, derivativeCocycle}
+  The Fr\'echet derivative of a continuous linear map is the map itself, so
+  \(\operatorname{derivativeCocycle}\,\operatorname{catLift}\) is the constant \(M\); transporting
+  along this equality, the top exponent is the constant-cocycle top exponent
+  \(\log\bigl((3+\sqrt5)/2\bigr)\) of \Cref{catTorus_constCocycle_exponents}, positive because
+  \((3+\sqrt5)/2 > 1\).
+\end{proof}
+
+\begin{theorem}[Per-partition Ruelle bound for the cat map]\label{catTorus_ksEntropyPartition_le_logLambda}
+  \lean{ErgodicTheory.CatMapToral.catTorus_ksEntropyPartition_le_logLambda}\leanok
+  \uses{ksEntropyPartition, measurePreserving_catTorus, catLift_derivativeCocycle_topExponent_pos}
+  For any finite measurable partition \(P\) of \(\mathbb{T}^2\) whose \(n\)-fold refinement under
+  \(\operatorname{catTorus}\) eventually has at most \(C\cdot e^{\,n\log\lambda_+}\) non-empty
+  atoms (\(C\ge 1\), \(\lambda_+ = (3+\sqrt5)/2\)),
+  \[
+    h(P, \operatorname{catTorus}) \;\le\; \log\lambda_+ .
+  \]
+  As in the doubling-map case this is the \emph{per-partition} bound, not the system inequality;
+  the rate \(\log\lambda_+\) is the genuine top Lyapunov exponent of the cat map
+  (\Cref{catLift_derivativeCocycle_topExponent_pos}), and the atom-count growth is the honest
+  named geometric input. The sharp system-level equality \(h_\mu = \log\lambda_+\) is a documented
+  wall (it needs an Adler--Weiss Markov generating partition for the upper bound and
+  Pesin/Ledrappier--Young machinery for the lower bound).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{margulisRuelle_sharp, measurePreserving_catTorus}
+  A thin specialization of the abstract atom-count-growth entropy bound (the arithmetic backbone
+  of the per-partition Ruelle inequality, cf.\ \Cref{margulisRuelle_sharp}) over the
+  measure-preserving base \(\operatorname{catTorus}\) (\Cref{measurePreserving_catTorus}) at the
+  rate \(R = \log\bigl((3+\sqrt5)/2\bigr)\).
+\end{proof}

@@ -1,0 +1,488 @@
+\chapter{Multifractal analysis}
+\label{chap:multifractal}
+
+This chapter documents the \emph{coarse-grained (finite-resolution) multifractal analysis} of an
+invariant probability measure, formalized in \texttt{ErgodicTheory/Multifractal/} (26 modules under
+the \texttt{ErgodicTheory.Multifractal} aggregator). The theory quantifies how unevenly a measure
+\(\mu\) distributes mass over the cells of a finite partition at scale \(\varepsilon\): the
+partition function \(Z_q\), the mass exponent \(\tau(q)\), the R\'enyi (generalized) dimensions
+\(D_q\), and the singularity spectrum \(f(\alpha)\), the Legendre transform of \(\tau\).
+
+The development has four layers. First, an \emph{abstract, measure-free core}: all quantities are
+defined on a bare finite weight family \(p : \iota \to \R\) (think \(p_i = \mu(\text{cell}_i)\)),
+with the probability hypotheses carried on the lemmas, never baked into the definitions. The
+structural heart is the H\"older / cumulant-convexity argument: \(q \mapsto \log Z_q\) is
+\emph{convex}, hence the mass exponent \(\tau\) is \emph{concave} (for a scale
+\(0 < \varepsilon < 1\), since \(\log\varepsilon < 0\) flips the sign), and \(D_q\) is
+\emph{non-increasing} in \(q\). Second, the \emph{measure/flow layer} discharges the abstract
+hypotheses from an actual invariant probability measure and identifies the \(q = 1\) branch with
+the Shannon entropy of the partition. Third, the \emph{fine-scale (pointwise) theory}: the local
+dimension \(d_\mu(x) = \lim_{r\to 0^+} \log\mu(B(x,r))/\log r\), proved to exist and equal the
+ambient dimension in the absolutely-continuous case, together with the Frostman/Billingsley bridge
+from pointwise dimension to \emph{Hausdorff} dimension, and the symbolic
+entropy\,=\,dimension identity \(\dim_H = h_\mu(\sigma)/\log 2\) on the full shift, made
+unconditional for Bernoulli measures. Fourth, a genuinely \emph{multifractal witness}: the
+constant-roof suspension flow of a biased two-sided Bernoulli shift, an ergodic flow of positive
+entropy whose R\'enyi spectrum is provably \(q\)-dependent.
+
+Everything below is formalized sorry-free and verified by the guarded axiom audit to rest only on
+\(\{\texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}\}\). Throughout, \(\iota\) is
+a finite index type and the exponent \(x^q\) is the real-base real-exponent power
+(\texttt{Real.rpow}).
+
+\section{The coarse-grained formalism}
+
+\begin{definition}[Generalized partition function]\label{partitionFunction}
+  \lean{ErgodicTheory.Multifractal.partitionFunction}\leanok
+  For a finite weight family \(p : \iota \to \R\) and \(q \in \R\), the \emph{generalized
+  partition function} is
+  \[
+    Z_q \;=\; \sum_{i \,:\, p_i > 0} p_i^{\,q},
+  \]
+  the sum over the \emph{occupied} cells only. The positivity guard is load-bearing at
+  \(q = 0\): it forces empty cells (\(p_i = 0\)) to contribute \(0\) rather than
+  \(0^0 = 1\), so that \(Z_0\) counts the occupied cells. For \(q \ne 0\) the guard is removable
+  (\(0^q = 0\)), and for a probability family (\(p_i \ge 0\), \(\sum_i p_i = 1\)) one has
+  \(Z_1 = 1\).
+\end{definition}
+
+\begin{definition}[Mass exponent]\label{massExponent}
+  \lean{ErgodicTheory.Multifractal.massExponent}\leanok
+  \uses{partitionFunction}
+  The \emph{mass exponent} of the family \(p\) at scale \(\varepsilon\) is
+  \[
+    \tau(q) \;=\; \frac{\log Z_q}{\log \varepsilon},
+  \]
+  defined for every \(q\) with no case split. For a probability family \(\tau(1) = 0\), since
+  \(Z_1 = 1\).
+\end{definition}
+
+\begin{definition}[R\'enyi / generalized dimension]\label{renyiDim}
+  \lean{ErgodicTheory.Multifractal.renyiDim}\leanok
+  \uses{massExponent}
+  The \emph{R\'enyi (generalized) dimension} of \(p\) at scale \(\varepsilon\) is
+  \[
+    D_q \;=\; \frac{\tau(q)}{q - 1} \quad (q \ne 1), \qquad
+    D_1 \;=\; \frac{\sum_i p_i \log p_i}{\log \varepsilon}.
+  \]
+  At \(q = 1\) the general formula is the indeterminate \(0/0\), so the L'H\^opital value --- the
+  \emph{information dimension} --- is supplied directly as a separate branch. (By the Mathlib
+  convention \(\log 0 = 0\), the \(q = 1\) numerator needs no positivity guard.)
+\end{definition}
+
+\begin{definition}[Singularity spectrum]\label{singularitySpectrum}
+  \lean{ErgodicTheory.Multifractal.singularitySpectrum}\leanok
+  \uses{massExponent}
+  The \emph{singularity spectrum} of \(p\) at scale \(\varepsilon\) is the Legendre transform of
+  the mass exponent,
+  \[
+    f(\alpha) \;=\; \inf_{q \in \R}\, \bigl(q\alpha - \tau(q)\bigr).
+  \]
+  It is an \emph{infimum}: since \(\tau\) is concave (Theorem~\ref{massExponent_concaveOn}), the
+  supremum of \(q\alpha - \tau(q)\) would be \(+\infty\).
+\end{definition}
+
+\section{Structure of the spectrum: convexity and monotonicity}
+
+\begin{theorem}[Log-convexity of the partition function]\label{logPartitionFunction_convexOn}
+  \lean{ErgodicTheory.Multifractal.logPartitionFunction_convexOn}\leanok
+  \uses{partitionFunction}
+  Let \(p : \iota \to \R\) satisfy \(p_i \ge 0\) for all \(i\) and \(p_i > 0\) for some \(i\).
+  Then \(q \mapsto \log Z_q\) is \emph{convex} on all of \(\R\). This is the cumulant-convexity /
+  H\"older property, the mathematical core of the multifractal theory.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{partitionFunction}
+  Derivative-free. The midpoint inequality
+  \(Z_{aq_1 + bq_2} \le Z_{q_1}^{\,a}\, Z_{q_2}^{\,b}\) (for \(a, b > 0\), \(a + b = 1\)) is
+  exactly the two-term H\"older inequality with conjugate exponents \(1/a, 1/b\) applied on the
+  support \(\{i : p_i > 0\}\) (the lemma
+  \texttt{partitionFunction\_holder}). The positivity hypothesis gives \(Z_q > 0\) at every \(q\),
+  so taking logarithms and using monotonicity of \(\log\) turns the multiplicative bound into the
+  convexity inequality for \(\log \circ Z\).
+\end{proof}
+
+\begin{theorem}[Concavity of the mass exponent]\label{massExponent_concaveOn}
+  \lean{ErgodicTheory.Multifractal.massExponent_concaveOn}\leanok
+  \uses{massExponent, logPartitionFunction_convexOn}
+  Under the same hypotheses on \(p\), for a scale \(0 < \varepsilon < 1\) the mass exponent
+  \(q \mapsto \tau(q) = \log Z_q / \log \varepsilon\) is \emph{concave} on \(\R\).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{logPartitionFunction_convexOn}
+  Since \(0 < \varepsilon < 1\), the denominator \(\log\varepsilon\) is negative; multiplying the
+  convex \(\log Z_q\) by the nonpositive constant \(1/\log\varepsilon\) flips convexity to
+  concavity. Formally, \(c \cdot \log Z\) with \(c = -(\log\varepsilon)^{-1} \ge 0\) is convex,
+  and \(\tau\) is its negation.
+\end{proof}
+
+\begin{theorem}[Antitonicity of the R\'enyi dimension]\label{renyiDim_antitone}
+  \lean{ErgodicTheory.Multifractal.renyiDim_antitone}\leanok
+  \uses{renyiDim, logPartitionFunction_convexOn}
+  Let \(p\) be a probability weight family (\(p_i \ge 0\), \(\sum_i p_i = 1\), at least one
+  \(p_i > 0\)) and \(0 < \varepsilon < 1\). Then \(q \mapsto D_q\) is \emph{non-increasing}
+  (\texttt{Antitone}) on all of \(\R\) --- including across the information-dimension branch point
+  \(q = 1\).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{logPartitionFunction_convexOn, renyiDim}
+  The classical secant-slope argument. Write \(h(q) = \log Z_q\); it is convex and \(h(1) = 0\)
+  for a probability family, so the secant slope \(g(q) = h(q)/(q-1)\) anchored at \(1\) is
+  non-decreasing on \(\{q \ne 1\}\) (\texttt{ConvexOn.secant\_mono}). For \(q \ne 1\),
+  \(D_q = g(q)/\log\varepsilon\), and \(\log\varepsilon < 0\) flips monotone to antitone. The
+  subtle point is gluing in \(q = 1\): the information-dimension numerator
+  \(\sum_i p_i \log p_i\) is exactly the derivative \(h'(1)\) (each occupied summand
+  \(q \mapsto p_i^{\,q}\) is a real exponential), and the convex supporting-line inequalities give
+  \(g(q) \le h'(1) \le g(q')\) for \(q < 1 < q'\); dividing by \(\log\varepsilon < 0\) inserts
+  \(D_1\) into the antitone family.
+\end{proof}
+
+\section{The measure and flow layer}
+
+The abstract core specializes to a genuine invariant probability measure \(\mu\) together with a
+finite measurable partition \(P\) (a \texttt{MeasurePartition}), by taking the weight family
+\(p_i = \mu(\text{cell}_i)\). The probability hypotheses are now discharged \emph{from the
+measure}: nonnegativity, the normalization \(\sum_i p_i = 1\), and the existence of a cell of
+positive mass all follow from \(\mu\) being a probability measure.
+
+\begin{definition}[R\'enyi dimension of a measure]\label{renyiDimMeasure}
+  \lean{ErgodicTheory.Multifractal.renyiDimMeasure}\leanok
+  \uses{renyiDim}
+  For a measure \(\mu\) on \(\alpha\), a finite measurable partition \(P\) of \(\mu\) indexed by
+  \(\iota\), and \(\varepsilon, q \in \R\), the \emph{R\'enyi dimension of \(\mu\)} at partition
+  scale \(\varepsilon\) is the abstract \(D_q\) of the cell-mass family
+  \(i \mapsto \mu(P_i)\) (real-valued via \texttt{toReal}). The companion definitions
+  \texttt{partitionFunctionMeasure} and \texttt{massExponentMeasure} specialize \(Z_q\) and
+  \(\tau\) in the same way.
+\end{definition}
+
+\begin{theorem}[Antitonicity for a probability measure]\label{renyiDimMeasure_antitone}
+  \lean{ErgodicTheory.Multifractal.renyiDimMeasure_antitone}\leanok
+  \uses{renyiDimMeasure, renyiDim_antitone}
+  For a probability measure \(\mu\), a finite measurable partition \(P\), and a scale
+  \(0 < \varepsilon < 1\), the R\'enyi dimension \(q \mapsto D_q(\mu, P, \varepsilon)\) is
+  non-increasing in \(q\).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{renyiDim_antitone}
+  Apply Theorem~\ref{renyiDim_antitone} to the cell-mass family: nonnegativity is
+  \(\texttt{ENNReal.toReal} \ge 0\), the normalization is the partition identity
+  \(\sum_i \mu(P_i) = 1\), and at least one cell has positive mass because the total mass is
+  \(1\).
+\end{proof}
+
+\begin{theorem}[Information dimension is entropy over \(-\log\varepsilon\)]\label{renyiDimMeasure_one_eq}
+  \lean{ErgodicTheory.Multifractal.renyiDimMeasure_one_eq}\leanok
+  \uses{renyiDimMeasure}
+  For a probability measure \(\mu\), a partition \(P\), and any \(\varepsilon\),
+  \[
+    D_1(\mu, P, \varepsilon) \;=\; \frac{-H(P)}{\log \varepsilon},
+  \]
+  where \(H(P) = \sum_i \operatorname{negMulLog}\bigl(\mu(P_i)\bigr)
+  = -\sum_i \mu(P_i)\log\mu(P_i)\) is the Shannon entropy of the partition. For
+  \(0 < \varepsilon < 1\) this is the familiar \(D_1 = H(P)/\log(1/\varepsilon)\).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{renyiDimMeasure}
+  Unfold the \(q = 1\) branch of \(D_q\): its numerator \(\sum_i \mu(P_i)\log\mu(P_i)\) is
+  term-by-term the negation of the \(\operatorname{negMulLog}\) sum defining \(H(P)\).
+\end{proof}
+
+\begin{definition}[R\'enyi dimension of a flow's invariant measure]\label{renyiDimFlow}
+  \lean{ErgodicTheory.Multifractal.renyiDimFlow}\leanok
+  \uses{renyiDimMeasure, MeasurePreservingFlow}
+  For a measure-preserving flow \(\varphi\) with invariant probability measure \(\mu\)
+  (Definition~\ref{MeasurePreservingFlow}), a partition \(P\), and \(\varepsilon, q\), the
+  \emph{R\'enyi dimension of the flow's invariant measure} is
+  \(D_q(\varphi, P, \varepsilon) = D_q(\mu, P, \varepsilon)\). The flow is an explicit (unused)
+  argument whose \emph{type} documents that \(\mu\) is flow-invariant; the multifractal API
+  consumes any invariant probability measure.
+\end{definition}
+
+\begin{corollary}[Flow-level antitonicity]\label{renyiDimFlow_antitone}
+  \lean{ErgodicTheory.Multifractal.renyiDimFlow_antitone}\leanok
+  \uses{renyiDimFlow, renyiDimMeasure_antitone}
+  For a measure-preserving flow \(\varphi\) of a probability measure \(\mu\), a partition \(P\),
+  and \(0 < \varepsilon < 1\), the flow R\'enyi dimension \(q \mapsto D_q(\varphi, P,
+  \varepsilon)\) is non-increasing in \(q\).
+\end{corollary}
+\begin{proof}\leanok
+  \uses{renyiDimMeasure_antitone}
+  \texttt{renyiDimFlow} unfolds to \texttt{renyiDimMeasure}, so this is
+  Theorem~\ref{renyiDimMeasure_antitone} verbatim.
+\end{proof}
+
+\section{Local dimension and Hausdorff dimension}
+
+\begin{definition}[Upper local dimension]\label{localDimension}
+  \lean{ErgodicTheory.Multifractal.localDimension}\leanok
+  For a measure \(\mu\) on a (pseudo-)metric measurable space \(E\) and a point \(x\), the
+  \emph{upper local (pointwise) dimension} is
+  \[
+    \bar d_\mu(x) \;=\; \limsup_{r \to 0^+}\,
+      \frac{\log \mu\bigl(\bar B(x,r)\bigr)}{\log r},
+  \]
+  the \(\limsup\) along the filter \(r \to 0^+\) of the closed-ball mass quotient. Where the
+  genuine limit exists (as in the absolutely-continuous case below), this \(\limsup\) is the
+  honest local dimension.
+\end{definition}
+
+\begin{theorem}[Local dimension in the absolutely-continuous case]\label{ae_tendsto_localDimension_of_absolutelyContinuous}
+  \lean{ErgodicTheory.Multifractal.ae_tendsto_localDimension_of_absolutelyContinuous}\leanok
+  \uses{localDimension}
+  Let \(E\) be a finite-dimensional real inner-product space (Borel-measurable) and let \(\mu\)
+  be a probability measure on \(E\) absolutely continuous with respect to an additive Haar measure
+  \(\nu\) (e.g.\ Lebesgue). Then for \(\mu\)-almost every \(x\) the local-dimension quotient
+  \(\log \mu(\bar B(x,r)) / \log r\) \emph{converges}, as \(r \to 0^+\), to the ambient dimension
+  \(\dim_\R E = \operatorname{finrank}_\R E\).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{localDimension}
+  Pure measure differentiation, no dynamics. Besicovitch differentiation gives
+  \(\mu(\bar B(x,r))/\nu(\bar B(x,r)) \to (d\mu/d\nu)(x)\) as \(r \to 0^+\), \(\mu\)-a.e., with
+  the Radon--Nikodym density finite and positive \(\mu\)-a.e.\ (from \(\mu \ll \nu\)). The Haar
+  ball-volume scaling \(\nu(\bar B(x,r)) = r^{d}\,\nu(\bar B(0,1))\) with
+  \(d = \operatorname{finrank}_\R E\) factorizes the ball mass as
+  \(\text{ratio}(r) \cdot r^d \cdot C\) with \(\text{ratio}(r) \to L > 0\) and \(C > 0\); a
+  logarithm-limit lemma then shows the quotient is \((\log \text{ratio}(r) + \log C)/\log r + d
+  \to d\), since \(\log r \to -\infty\) kills the bounded numerator.
+\end{proof}
+
+\begin{corollary}[A.e.\ value of the local dimension]\label{ae_localDimension_eq_finrank}
+  \lean{ErgodicTheory.Multifractal.ae_localDimension_eq_finrank}\leanok
+  \uses{localDimension, ae_tendsto_localDimension_of_absolutelyContinuous}
+  Under the same hypotheses, \(\bar d_\mu(x) = \operatorname{finrank}_\R E\) for \(\mu\)-almost
+  every \(x\): the measure is exact-dimensional with dimension equal to the ambient dimension.
+\end{corollary}
+\begin{proof}\leanok
+  \uses{ae_tendsto_localDimension_of_absolutelyContinuous}
+  Where the genuine limit of Theorem~\ref{ae_tendsto_localDimension_of_absolutelyContinuous}
+  exists, the \(\limsup\) defining \(\bar d_\mu\) returns that limit.
+\end{proof}
+
+\begin{theorem}[Local-to-Hausdorff dimension bridge]\label{dimH_eq_of_localDimension_eq}
+  \lean{ErgodicTheory.Multifractal.dimH_eq_of_localDimension_eq}\leanok
+  \uses{localDimension}
+  Let \(\mu\) be a probability measure on a Borel second-countable metric space \(E\), let
+  \(\alpha > 0\), and let \(s\) be a set of full \(\mu\)-measure (\(\mu(s^{\mathsf c}) = 0\)) such
+  that \emph{for every} \(x \in s\) the local-dimension quotient
+  \(\log \mu(\bar B(x,r))/\log r\) tends to \(\alpha\) as \(r \to 0^+\). Then
+  \(\dim_H s = \alpha\).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{localDimension}
+  Two mass-distribution arguments over a bare metric space. \emph{Lower bound (Frostman):} for
+  each \(a < \alpha\), the pointwise limit yields on a positive-measure measurable piece of \(s\)
+  a uniform upper ball bound \(\mu(\bar B(x,r)) \le r^a\) at small radii; then
+  \(\mu\!\restriction_A \le \mu_H^a\) (any small-diameter set meeting \(A\) sits in a controlled
+  ball), so \(\mu_H^a(s) > 0\) and \(a \le \dim_H s\); let \(a \uparrow \alpha\). \emph{Upper
+  bound (Billingsley):} for \(a > \alpha\), the limit produces at arbitrarily small radii the
+  \emph{lower} bound \(\mu(\bar B(x,r)) \ge r^a\) (the positive limit forces positive ball
+  masses); a Vitali enlargement of a disjoint subfamily of such balls covers \(s\) with
+  \(\sum (\operatorname{diam})^a \le (2\tau)^a \mu(E) < \infty\), so \(\mu_H^a(s) < \infty\) and
+  \(\dim_H s \le a\); let \(a \downarrow \alpha\). The pointwise (not merely a.e.) hypothesis is
+  essential for the upper bound, since a \(\mu\)-null subset can carry extra Hausdorff dimension.
+\end{proof}
+
+\begin{theorem}[Hausdorff dimension of full-measure sets, a.c.\ case]\label{dimH_eq_finrank_of_ae_full_of_absolutelyContinuous}
+  \lean{ErgodicTheory.Multifractal.dimH_eq_finrank_of_ae_full_of_absolutelyContinuous}\leanok
+  \uses{ae_tendsto_localDimension_of_absolutelyContinuous}
+  Let \(\mu\) be a probability measure on a finite-dimensional real inner-product space \(E\),
+  absolutely continuous with respect to a Haar measure. Then \emph{every} set \(s\) of full
+  \(\mu\)-measure has Hausdorff dimension equal to the ambient dimension:
+  \(\dim_H s = \operatorname{finrank}_\R E\).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{ae_tendsto_localDimension_of_absolutelyContinuous, dimH_eq_of_localDimension_eq}
+  The upper bound is monotonicity: \(\dim_H s \le \dim_H E = \operatorname{finrank}_\R E\). The
+  lower bound is the Frostman direction of the bridge, fed by the a.e.\ local-dimension limit of
+  Theorem~\ref{ae_tendsto_localDimension_of_absolutelyContinuous}.
+\end{proof}
+
+\section{The symbolic entropy--dimension identity}
+
+On the one-sided full shift \(\Sigma = \alpha_0^{\N}\) over a finite alphabet, equipped with
+Mathlib's \texttt{PiNat} ultrametric \(d(x,y) = (1/2)^{\operatorname{firstDiff}(x,y)}\), closed
+balls of radius \((1/2)^n\) \emph{are} the \(n\)-step join atoms of the time-\(0\) coordinate
+partition. The Shannon--McMillan--Breiman theorem therefore turns the ball-mass quotient into an
+entropy, and the bridge of Theorem~\ref{dimH_eq_of_localDimension_eq} converts it into a Hausdorff
+dimension. The base \(\log 2\) is fixed by the ultrametric, never a free parameter.
+
+\begin{theorem}[Entropy = Hausdorff dimension on the full shift]\label{dimH_eq_ksEntropy_div_log_two}
+  \lean{ErgodicTheory.Multifractal.dimH_eq_ksEntropy_div_log_two}\leanok
+  \uses{ksEntropy, ksEntropyPartition, dimH_eq_of_localDimension_eq}
+  Let \(\mu\) be a shift-invariant probability measure on the full shift \(\Sigma\) such that the
+  left shift \(\sigma\) is ergodic for \(\mu\), and suppose the Kolmogorov--Sinai entropy of the
+  coordinate partition is positive. Then there is a full-measure carrier set
+  \(s \subseteq \Sigma\) (\(\mu(s^{\mathsf c}) = 0\)) with
+  \[
+    \dim_H s \;=\; \frac{h_\mu(\sigma)}{\log 2},
+  \]
+  where \(h_\mu(\sigma)\) is the \emph{partition-independent} system entropy
+  (\texttt{ksEntropy}, Definition~\ref{ksEntropy}).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{ksEntropy, ksEntropyPartition, dimH_eq_of_localDimension_eq}
+  Atoms are cylinders are dyadic closed balls, so the unconditional pointwise
+  Shannon--McMillan--Breiman theorem gives the dyadic mass quotient
+  \(\log\mu(\bar B(x,(1/2)^n)) / \log((1/2)^n) \to h/\log 2\) \(\mu\)-a.e., with \(h\) the
+  coordinate-partition entropy (\texttt{ksEntropyPartition},
+  Definition~\ref{ksEntropyPartition}). An ultrametric sandwich (balls are constant on each dyadic
+  gap, and \(\log r \to -\infty\)) upgrades the dyadic limit to the continuum limit
+  \(r \to 0^+\). Feeding the conull carrier of that pointwise limit into
+  Theorem~\ref{dimH_eq_of_localDimension_eq} with \(\alpha = h/\log 2 > 0\) gives
+  \(\dim_H s = h / \log 2\); finally the coordinate partition is a generator, so the
+  Kolmogorov--Sinai generator theorem identifies \(h\) with the system entropy
+  \(h_\mu(\sigma)\).
+\end{proof}
+
+\begin{theorem}[Unconditional Bernoulli witness]\label{dimH_bern_eq_Hnu_div_log_two}
+  \lean{ErgodicTheory.Multifractal.dimH_bern_eq_Hnu_div_log_two}\leanok
+  \uses{dimH_eq_ksEntropy_div_log_two, ksEntropy}
+  Let \(\operatorname{bern}\nu\) be the Bernoulli (i.i.d.\ product) measure on the full shift
+  with single-symbol law \(\nu\), and suppose \(\nu\) charges two \emph{distinct} symbols
+  \(i \ne j\) with positive mass. Then there is a \(\operatorname{bern}\nu\)-conull set \(s\)
+  with
+  \[
+    \dim_H s \;=\; \frac{H(\nu)}{\log 2},
+    \qquad
+    H(\nu) = \sum_{a} \operatorname{negMulLog}\bigl(\nu\{a\}\bigr)
+  \]
+  the single-symbol Shannon entropy (\texttt{Hnu} in the sources). No ergodicity or
+  positive-entropy hypothesis remains: both standing conditionals of
+  Theorem~\ref{dimH_eq_ksEntropy_div_log_two} are discharged for the Bernoulli case.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{dimH_eq_ksEntropy_div_log_two, ksEntropy, ksEntropyPartition}
+  Ergodicity of the shift for \(\operatorname{bern}\nu\) is Kolmogorov's 0--1 law applied to the
+  tail-measurable invariant sets (\texttt{ergodic\_shiftMap\_bern}). The coordinate-partition
+  entropy equals \(H(\nu)\), which is strictly positive because the two charged symbols force
+  \(\nu\{i\} \in (0,1)\) (\texttt{Hnu\_pos}). Theorem~\ref{dimH_eq_ksEntropy_div_log_two} then
+  applies, and the system entropy identity
+  \(h_{\operatorname{bern}\nu}(\sigma) = H(\nu)\) (\texttt{ksEntropy\_bern\_eq}, via the
+  generator theorem) rewrites the dimension.
+\end{proof}
+
+\section{The Bernoulli-suspension flow: a genuinely multifractal witness}
+
+The remaining question is non-vacuity of the flow-level formalism: is there an ergodic
+measure-preserving \emph{flow} of positive entropy whose R\'enyi spectrum genuinely depends on
+\(q\)? The witness is the constant-roof (\(\tau \equiv 1\)) suspension of the \emph{two-sided}
+Bernoulli shift \(T = \texttt{biShiftEquiv}\) over the i.i.d.\ product measure
+\(\operatorname{bernZ}\nu\) on \(\alpha_0^{\Z}\), with a \emph{biased} two-symbol law \(\nu\).
+
+\begin{definition}[The constant-roof Bernoulli suspension flow]\label{bernSuspensionFlow}
+  \lean{ErgodicTheory.Multifractal.bernSuspensionFlow}\leanok
+  \uses{MeasurePreservingFlow}
+  The \emph{Bernoulli suspension flow} is the time-translation flow on the suspension
+  (mapping-torus) of the two-sided Bernoulli shift \(T\) over \(\operatorname{bernZ}\nu\) with
+  constant roof \(\tau \equiv 1\): points are orbits \([x, s]\) of the identification
+  \((x, s) \sim (Tx, s - 1)\), the flow is \(\zeta_t[x,s] = [x, s+t]\), and it preserves the
+  normalized suspension measure \(\hat\mu\) (the product of \(\operatorname{bernZ}\nu\) with
+  Lebesgue on the fibres; the constant roof makes the normalizing constant \(1\)). It is a
+  \texttt{MeasurePreservingFlow} of \(\hat\mu\) (Definition~\ref{MeasurePreservingFlow}).
+\end{definition}
+
+\begin{theorem}[Ergodicity of the suspension flow]\label{ergodic_bernSuspensionFlow}
+  \lean{ErgodicTheory.Multifractal.ergodic_bernSuspensionFlow}\leanok
+  \uses{bernSuspensionFlow}
+  Assume the base shift \(T\) is ergodic for \(\operatorname{bernZ}\nu\). Then every measurable
+  set \(A\) invariant under \emph{all} time-\(t\) maps of the suspension flow
+  (\(\zeta_t^{-1}(A) = A\) for every \(t \in \R\)) is null or conull:
+  \(\hat\mu(A) = 0\) or \(\hat\mu(A) = 1\). The base hypothesis is discharged unconditionally by
+  the two-sided Bernoulli ergodicity theorem (\texttt{ergodic\_biShiftEquiv\_bernZ}); the
+  companion \texttt{ergodic\_bernSuspensionFlow\_uncond} records the unconditional statement. By
+  contrast, the \emph{time-\(1\) map alone is never ergodic}
+  (\texttt{not\_ergodic\_bernSuspensionFlow\_one}): the saturated section set
+  \(\{[x,s] : \operatorname{fract} s < 1/2\}\) is invariant of mass \(1/2\) --- the constant-roof
+  special-flow dichotomy of Cornfeld--Fomin--Sinai.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{bernSuspensionFlow}
+  Lift \(A\) through the quotient map \(\pi(x,s) = [x,s]\). Invariance under all vertical
+  translations shows membership of \([x,s]\) depends only on the base point, so the lift is a
+  cylinder \(B \times \R\) with \(B = \{x : [x,0] \in A\}\). The identification generator
+  \((x,s) \mapsto (Tx, s-1)\) fixes \(\pi\), so \(B\) is shift-invariant; it is measurable, and
+  the constant-roof box computation gives \(\hat\mu(A) = \operatorname{bernZ}\nu(B)\). Base
+  ergodicity's zero--one law finishes.
+\end{proof}
+
+\begin{theorem}[Entropy of the suspension flow]\label{ksEntropy_bernSuspensionFlow_one_eq_Hnu}
+  \lean{ErgodicTheory.Multifractal.ksEntropy_bernSuspensionFlow_one_eq_Hnu}\leanok
+  \uses{bernSuspensionFlow, ksEntropy}
+  The Kolmogorov--Sinai entropy (Definition~\ref{ksEntropy}) of the \emph{time-\(1\) map} of the
+  Bernoulli suspension flow equals the single-symbol Shannon entropy:
+  \[
+    h_{\hat\mu}(\zeta_1) \;=\; H(\nu) \qquad (\text{as an extended real}).
+  \]
+  In particular the flow's metric entropy (defined as the entropy of its time-\(1\) map) is
+  \(H(\nu)\), strictly positive for a genuinely biased \(\nu\).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{bernSuspensionFlow, ksEntropy}
+  The fundamental-domain equivalence onto \(\alpha_0^{\Z} \times [0,1)\) conjugates \(\zeta_1\)
+  to the \emph{frozen} product \(T \times \operatorname{id}\) and carries \(\hat\mu\) to
+  \(\operatorname{bernZ}\nu \otimes \text{Leb}\!\restriction_{[0,1)}\). Conjugacy invariance of
+  \(h\), the frozen-factor product identity \(h(T \times \operatorname{id}) = h(T)\), and the
+  two-sided Bernoulli system-entropy identity \(h(T) = H(\nu)\) (generator theorem on the
+  two-sided coordinate partition) chain together.
+\end{proof}
+
+\begin{definition}[The witness partition]\label{bernSuspensionWitness}
+  \lean{ErgodicTheory.Multifractal.bernSuspensionWitness}\leanok
+  \uses{bernSuspensionFlow}
+  The \emph{witness partition} of the suspension measure \(\hat\mu\) is the base time-\(0\)
+  coordinate partition of \(\operatorname{bernZ}\nu\) pulled back along the base projection
+  (factor map) \(\pi : [x,s] \mapsto T^{\lfloor s \rfloor} x\), which is measure-preserving onto
+  \(\operatorname{bernZ}\nu\). Its cells are indexed by
+  \(\Fin(\operatorname{card} \alpha_0)\); the crux mass identity is that pulling back does not change cell
+  masses, so the \(j\)-th cell carries the single-symbol mass \(\nu\{a_j\}\) of the corresponding
+  symbol.
+\end{definition}
+
+\begin{theorem}[Heterogeneity of the witness]\label{isHeterogeneous_bernSuspensionWitness}
+  \lean{ErgodicTheory.Multifractal.isHeterogeneous_bernSuspensionWitness}\leanok
+  \uses{bernSuspensionWitness}
+  If \(\nu\) charges two distinct symbols \(i \ne j\) with \emph{different} masses
+  (\(\nu\{i\} \ne \nu\{j\}\)), then the witness partition is \emph{heterogeneous}: two of its
+  cells carry distinct \(\hat\mu\)-mass (\texttt{IsHeterogeneous}, the honest non-uniformity
+  predicate whose negation is exactly the equal-measure hypothesis of the monofractal degeneracy
+  \(D_q \equiv \log N / (-\log\varepsilon)\)).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{bernSuspensionWitness}
+  By the mass identity, the cells indexed by \(i\) and \(j\) carry masses \(\nu\{i\}\) and
+  \(\nu\{j\}\), which differ by hypothesis (the \texttt{toReal} coercion is injective on finite
+  masses).
+\end{proof}
+
+\begin{theorem}[\(q\)-dependence of the flow's R\'enyi spectrum]\label{renyiDimFlow_bernSuspension_q_dependent}
+  \lean{ErgodicTheory.Multifractal.renyiDimFlow_bernSuspension_q_dependent}\leanok
+  \uses{renyiDimFlow, bernSuspensionFlow, bernSuspensionWitness}
+  Let \(\alpha_0\) consist of exactly two symbols \(i \ne j\), let \(\nu\) charge both with
+  positive but \emph{different} masses (\(\nu\{i\} \ne \nu\{j\}\) after \texttt{toReal}), and let
+  \(0 < \varepsilon < 1\). Then the R\'enyi dimension of the suspension flow's invariant measure
+  on the witness partition takes different values at two exponents:
+  \[
+    \exists\, q_1, q_2, \quad
+    D_{q_1}(\varphi, P, \varepsilon) \;\ne\; D_{q_2}(\varphi, P, \varepsilon).
+  \]
+  The exhibited exponents are the \emph{explicit} \(q_1 = 0\), \(q_2 = 1\)
+  (\texttt{renyiDimFlow\_bernSuspension\_zero\_ne\_one}): concretely
+  \(D_0 = \log 2 / (-\log\varepsilon)\) (both cells occupied) while
+  \(D_1 = H(\nu)/(-\log\varepsilon)\) (the information dimension), and these differ precisely
+  because the bias forces the strict inequality \(H(\nu) < \log 2\). The witness is therefore
+  non-vacuous: the \(q\)-dependence is driven by the genuine bias of \(\nu\), not satisfied
+  trivially.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{renyiDimFlow, bernSuspensionWitness, renyiDimMeasure_one_eq}
+  A transfer argument. The flow witness's cell masses agree, up to the
+  \(\alpha_0 \simeq \Fin(\operatorname{card}\alpha_0)\) reindex, with those of the \emph{one-sided} base
+  coordinate partition under \(\operatorname{bern}\nu\); since the R\'enyi dimension depends only
+  on the cell-mass family, the flow spectrum equals the base spectrum at every \(q\)
+  (\texttt{renyiDimFlow\_bernSuspension\_eq\_base}). On the base, \(D_0\) is the box-counting
+  value \(\log 2 / (-\log\varepsilon)\) (two occupied cells) and \(D_1\) is the information
+  dimension \(H(\nu)/(-\log\varepsilon)\) (Theorem~\ref{renyiDimMeasure_one_eq}); the strict
+  two-point entropy bound \(H(\nu) < \log 2\) for a biased law separates them.
+\end{proof}
