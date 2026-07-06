@@ -11,16 +11,19 @@ import Mathlib.Analysis.Matrix.Order
 import Mathlib.LinearAlgebra.Matrix.PosDef
 
 /-!
-# Issue #22 — the Stinespring reduction: isolating the DPI wall to ONE clean `Prop`
+# Issue #22 — the Stinespring reduction: isolating the DPI to ONE clean `Prop`
 
 The data-processing inequality (DPI, monotonicity of Umegaki relative entropy under a quantum
-channel) is the Lieb-concavity / joint-convexity **wall** of issue #22 (Mathlib-absent).  This
-module does NOT attempt it; instead it *isolates* it to a single, honestly-stated `Prop`
+channel) reduces, via Stinespring dilation, to a single partial-trace step, which this module
+isolates as one honestly-stated `Prop`
 
-`RelEntropyMonotoneUnderPartialTrace` : partial-trace monotonicity of relative entropy,
+`RelEntropyMonotoneUnderPartialTrace` : partial-trace monotonicity of relative entropy.
 
-and then proves — **unconditionally** — the two elementary links that reduce a general
-Stinespring-dilated channel to that one partial-trace step:
+This `Prop` was the Lieb-concavity / joint-convexity wall of issue #22 (Mathlib-absent at the
+time); it is now **discharged unconditionally** by `relEntropyMonotone_partialTrace`
+(`Lieb/DataProcessingGeneral.lean`).  This module keeps it as the clean interface and proves —
+**unconditionally** — the two elementary links that reduce a general Stinespring-dilated channel
+to that one partial-trace step:
 
 * `relEntropy_embed_invariant` — an **isometric embedding** `ρ ↦ (ρ ⊗ α)ᵁ` (adjoin a faithful
   ancilla, then conjugate by a unitary dilation `U`) leaves relative entropy invariant.  This is a
@@ -47,10 +50,12 @@ namespace ErgodicTheory.OperatorEntropy
 
 /-! ## The DPI wall, as a single explicit `Prop` -/
 
-/-- **The DPI wall.**  *Partial-trace monotonicity of Umegaki relative entropy*: tracing out a
-subsystem never increases the relative entropy of two states (faithful second argument).  This is
-equivalent to strong subadditivity / Lieb's joint convexity, which is Mathlib-absent; here it is
-stated, NOT proved, and every downstream monotonicity result takes it as an explicit hypothesis.
+/-- **The DPI wall (as a `Prop` interface).**  *Partial-trace monotonicity of Umegaki relative
+entropy*: tracing out a subsystem never increases the relative entropy of two states (faithful
+second argument).  This is equivalent to strong subadditivity / Lieb's joint convexity; it was
+Mathlib-absent, so here it is stated as an explicit `Prop` that downstream monotonicity results
+take as a hypothesis.  It is discharged **unconditionally** by `relEntropyMonotone_partialTrace`
+(`Lieb/DataProcessingGeneral.lean`).
 
 The index types are quantified over `Type` (universe `0`) rather than `Type*`: finite-dimensional
 quantum information lives in universe `0` (all index types are `Fin d` and products thereof), and a

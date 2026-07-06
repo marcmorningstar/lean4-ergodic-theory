@@ -4,26 +4,22 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Marcel Morgenstern
 -/
 import ErgodicTheory.OperatorEntropy.Lieb.RectOperatorJensen
-import ErgodicTheory.OperatorEntropy.Lieb.ChoiJensen
 import ErgodicTheory.OperatorEntropy.Lieb.OperatorConvex
 
 /-!
-# Choi's operator-Jensen inequality for `-log` (Petz sufficiency crux, issue #28)
+# The rectangular `-log` operator-Jensen inequality (Petz sufficiency crux, issue #28)
 
-This module assembles two complementary pieces of machinery — the **corner-pinching Loewner
-inequality** `ErgodicTheory.OperatorEntropy.Lieb.sum_corner_loewner` (racer A,
-`RectOperatorJensen.lean`) and the **Kraus-column / block-diagonal functional calculus**
-(racer B, `ChoiJensen.lean`) — into the two headline Loewner inequalities that unblock the
-sufficiency direction of the Petz recovery equality.
+This module assembles the **corner-pinching Loewner inequality**
+`ErgodicTheory.OperatorEntropy.Lieb.sum_corner_loewner` (`RectOperatorJensen.lean`) into the
+headline rectangular Loewner inequality `rect_isometry_neg_log_loewner` that unblocks the
+sufficiency direction of the Petz recovery equality (it is the piece consumed by
+`PetzEqualitySufficiency.lean`).
 
 ## Main results
 
 * `ErgodicTheory.OperatorEntropy.Lieb.rect_isometry_neg_log_loewner`: for a **rectangular** isometry
   `W : Matrix p q ℂ` (`Wᴴ W = 1`) and a positive-definite self-adjoint `X : Matrix p p ℂ`,
   `cfc (-log) (Wᴴ X W) ≤ Wᴴ (cfc (-log) X) W`.
-* `ErgodicTheory.OperatorEntropy.Lieb.choi_neg_log_loewner`: for Kraus operators
-  `K : ι → Matrix q q ℂ` with `∑ᵢ Kᵢᴴ Kᵢ = 1` (a unital CP / Kraus channel),
-  `cfc (-log) (∑ᵢ Kᵢᴴ X Kᵢ) ≤ ∑ᵢ Kᵢᴴ (cfc (-log) X) Kᵢ`.
 
 ## Route
 
@@ -31,8 +27,7 @@ The rectangular theorem extends the orthonormal columns of `W` to an orthonormal
 `EuclideanSpace ℂ p` (`Orthonormal.exists_orthonormalBasis_extension_of_card_eq`), reading off a
 unitary `U : Matrix p p ℂ` whose `q`-columns reproduce `W`.  Then `Wᴴ X W` is the `q`-corner of
 the unitary conjugate `Uᴴ X U` (reindexing `p ≃ q ⊕ r`), and the corner-pinching inequality
-`sum_corner_loewner` applies.  The Choi theorem specializes it to the Kraus column
-`V = krausCol K`, an isometry with `Vᴴ (blockDiagonal (fun _ => X)) V = ∑ᵢ Kᵢᴴ X Kᵢ`.
+`sum_corner_loewner` applies.
 -/
 
 open Matrix
@@ -189,71 +184,6 @@ theorem rect_isometry_neg_log_loewner {p q : Type*} [Fintype p] [DecidableEq p] 
       = Wᴴ * cfc (fun x => -Real.log x) X * W := by
     rw [hcfceq, hcfcA, Matrix.submatrix_submatrix]
     exact corner_conj_eq U (cfc (fun x => -Real.log x) X) W (⇑e ∘ Sum.inl) hUW
-  rw [hLHS, hRHS] at key
-  exact key
-
-/-! ## Spectrum of a constant block-diagonal -/
-
-/-- The spectrum of a constant block-diagonal `blockDiagonal (fun _ => X)` is contained in the
-spectrum of the block `X`. -/
-lemma spectrum_blockDiagonal_const_subset {ι q : Type*} [Fintype ι] [DecidableEq ι] [Fintype q]
-    [DecidableEq q] (X : Matrix q q ℂ) :
-    spectrum ℝ (blockDiagonal (fun _ : ι => X)) ⊆ spectrum ℝ X := by
-  intro μ hμ
-  rw [spectrum.mem_iff] at hμ ⊢
-  intro hu
-  apply hμ
-  -- `blockDiagonal (fun _ => algebraMap μ)` is the big `algebraMap μ`
-  have halg : blockDiagonal (fun _ : ι => algebraMap ℝ (Matrix q q ℂ) μ)
-      = algebraMap ℝ (Matrix (q × ι) (q × ι) ℂ) μ := by
-    simp only [Algebra.algebraMap_eq_smul_one]
-    rw [show (fun _ : ι => μ • (1 : Matrix q q ℂ)) = μ • (1 : ι → Matrix q q ℂ) from rfl,
-      blockDiagonal_smul, blockDiagonal_one]
-  -- `IsUnit` of the constant family lifts through `blockDiagonalRingHom`
-  obtain ⟨u, hu'⟩ := hu
-  have hpi : IsUnit (fun _ : ι => algebraMap ℝ (Matrix q q ℂ) μ - X) := by
-    refine ⟨⟨fun _ => algebraMap ℝ (Matrix q q ℂ) μ - X, fun _ => (↑u⁻¹ : Matrix q q ℂ), ?_, ?_⟩,
-      rfl⟩
-    · funext i; simp only [Pi.mul_apply, Pi.one_apply]; rw [← hu']; exact u.mul_inv
-    · funext i; simp only [Pi.mul_apply, Pi.one_apply]; rw [← hu']; exact u.inv_mul
-  have hbd := hpi.map (blockDiagonalRingHom (m := q) (o := ι) (α := ℂ))
-  simp only [blockDiagonalRingHom_apply] at hbd
-  rw [show (fun _ : ι => algebraMap ℝ (Matrix q q ℂ) μ - X)
-      = (fun _ : ι => algebraMap ℝ (Matrix q q ℂ) μ) - (fun _ : ι => X) from rfl,
-    blockDiagonal_sub, halg] at hbd
-  exact hbd
-
-/-! ## Choi's operator-Jensen (Loewner) inequality for `-log` -/
-
-/-- **Choi's inequality for `-log` (the Kraus / DPI Loewner form).** For Kraus operators
-`K : ι → Matrix q q ℂ` with `∑ᵢ Kᵢᴴ Kᵢ = 1` and a self-adjoint `X` with spectrum in `(0, ∞)`,
-`cfc (-log) (∑ᵢ Kᵢᴴ X Kᵢ) ≤ ∑ᵢ Kᵢᴴ (cfc (-log) X) Kᵢ`.  This is the operator-Jensen inequality of
-the data-processing map `Λ†(Y) = ∑ᵢ Kᵢᴴ Y Kᵢ`, and unblocks the sufficiency direction of the
-Petz recovery equality (issue #28). -/
-theorem choi_neg_log_loewner {ι : Type*} [Fintype ι] {q : Type*} [Fintype q] [DecidableEq q]
-    (K : ι → Matrix q q ℂ) (X : Matrix q q ℂ) (hK : ∑ i, (K i)ᴴ * (K i) = 1)
-    (hXsa : IsSelfAdjoint X) (hspec : spectrum ℝ X ⊆ Set.Ioi 0) :
-    cfc (fun x => -Real.log x) (∑ i, (K i)ᴴ * X * (K i))
-      ≤ ∑ i, (K i)ᴴ * cfc (fun x => -Real.log x) X * (K i) := by
-  classical
-  set V : Matrix (q × ι) q ℂ := krausCol K with hVdef
-  set Xbd : Matrix (q × ι) (q × ι) ℂ := blockDiagonal (fun _ : ι => X) with hXbddef
-  have hViso : Vᴴ * V = 1 := by rw [hVdef, krausCol_isometry]; exact hK
-  have hXbdsa : IsSelfAdjoint Xbd := by
-    rw [hXbddef, isSelfAdjoint_iff, Matrix.star_eq_conjTranspose, blockDiagonal_conjTranspose]
-    congr 1; funext i
-    rw [← Matrix.star_eq_conjTranspose]; exact isSelfAdjoint_iff.mp hXsa
-  have hXbdsp : spectrum ℝ Xbd ⊆ Set.Ioi 0 := by
-    rw [hXbddef]; exact (spectrum_blockDiagonal_const_subset X).trans hspec
-  have key := rect_isometry_neg_log_loewner V Xbd hViso hXbdsa hXbdsp
-  have hLHS : Vᴴ * Xbd * V = ∑ i, (K i)ᴴ * X * (K i) := by
-    rw [hVdef, hXbddef]; exact krausCol_conj_blockDiagonal K (fun _ => X)
-  have hcfcXbd : cfc (fun x => -Real.log x) Xbd
-      = blockDiagonal (fun _ : ι => cfc (fun x => -Real.log x) X) := by
-    rw [hXbddef]; exact cfc_blockDiagonal (fun x => -Real.log x) (fun _ => X) (fun _ => hXsa)
-  have hRHS : Vᴴ * cfc (fun x => -Real.log x) Xbd * V
-      = ∑ i, (K i)ᴴ * cfc (fun x => -Real.log x) X * (K i) := by
-    rw [hVdef, hcfcXbd]; exact krausCol_conj_blockDiagonal K (fun _ => cfc (fun x => -Real.log x) X)
   rw [hLHS, hRHS] at key
   exact key
 
