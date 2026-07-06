@@ -13,8 +13,9 @@ import Mathlib.MeasureTheory.Function.UniformIntegrable
 
 The **regularity** of the Lyapunov exponents as functions of the generator `A`, built on
 the spectrum object `ErgodicTheory.exponents : Fin d → ℝ`, the telescoping growth rate
-`ErgodicTheory.gammaK` (`ErgodicTheory/Lyapunov/ExponentSums.lean`), and the determinant identity
-`ErgodicTheory.sumAllExp_eq_integral_log_abs_det` (`ErgodicTheory/Lyapunov/DetIdentity.lean`).
+`ErgodicTheory.gammaK` (`ErgodicTheory/Lyapunov/Extensions/ExponentSums.lean`), and the determinant
+identity `ErgodicTheory.sumAllExp_eq_integral_log_abs_det`
+(`ErgodicTheory/Lyapunov/Extensions/DetIdentity.lean`).
 
 * **The Fekete infimum representation** `Γ_k = ⨅ n, (∫ log sprod_k(n+1))/(n+1)`
   (`gammaK_eq_iInf`). The normalized integral sequence is the average of a *subadditive*

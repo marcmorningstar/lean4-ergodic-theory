@@ -6,7 +6,6 @@ Authors: Marcel Morgenstern
 import ErgodicTheory.Entropy.Ruelle.AtomCount
 import ErgodicTheory.MeasureTheory.CoveringFromVolume
 import ErgodicTheory.Smooth.DerivativeCocycle
-import Mathlib.Analysis.SpecialFunctions.Log.PosLog
 
 /-!
 # The crude Ruelle bound: partition entropy by the log-derivative integral

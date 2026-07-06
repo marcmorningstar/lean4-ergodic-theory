@@ -9,10 +9,10 @@ import ErgodicTheory.OperatorEntropy.Additivity
 import ErgodicTheory.OperatorEntropy.KroneckerSpectrum
 
 /-!
-# Issue #22 — Umegaki relative entropy: FEASIBLE foundations layer (verified skeleton)
+# Issue #22 — Umegaki relative entropy: the foundations layer
 
-This skeleton pins the EXACT statements of the feasible foundations layer of issue #22,
-reusing #23's `ErgodicTheory/OperatorEntropy/Klein.lean` (`klein_scalar`, `log_sub_bound`).
+This module fixes the foundations layer of issue #22, reusing #23's
+`ErgodicTheory/OperatorEntropy/Klein.lean` (`klein_scalar`, `log_sub_bound`).
 
 The headline keystone `relEntropy_nonneg` is a DIRECT application of `klein_scalar` — even
 simpler than `vonNeumannEntropy_subadditive`, because it involves ONE change of basis between

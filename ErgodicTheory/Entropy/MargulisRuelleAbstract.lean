@@ -71,11 +71,14 @@ proves is therefore the **abstract reduction**: the twofold `iSup_le` folding th
 bounds into the system-entropy supremum. The genuinely geometric content is the informal
 single-partition estimate above, whose formalization is the gap discussed next.
 
-Formalizing `hgeo` itself requires smooth-manifold ergodic theory absent from Mathlib — Lyapunov
-charts and the Mañé/Katok covering–counting argument (how a partition refines under `T^[n]`,
-bounded by the volume growth = product of positive exponents). That bridge is historically
-assessed as multi-month, not one-shot, and is the *only* piece left open: this module proves
-the entire abstract reduction around it.
+The **single-step linear covering count** that `hgeo` rests on — that `L '' B(x, ε)` is covered by
+`6^d · ∏ᵢ max(1, σᵢ(L))` balls of radius `ε` — is already proved in-tree
+(`ErgodicTheory.coveringCount_image_ball_le_volProd`, in
+`ErgodicTheory.Entropy.Ruelle.SharpCovering`). Formalizing `hgeo` itself needs, on top of it, the
+smooth-manifold assembly absent from Mathlib — Lyapunov charts and the Mañé/Katok orbit-counting
+argument (how a partition refines under `T^[n]`, bounded by the volume growth = product of positive
+exponents). That orbit-iteration bridge is the *only* piece left open: this module proves the
+entire abstract reduction around it.
 
 ## References
 

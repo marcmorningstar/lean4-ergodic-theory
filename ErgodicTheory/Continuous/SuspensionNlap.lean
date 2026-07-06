@@ -79,8 +79,8 @@ section return-boundary identity `coverCocycle_section_returnTime` and applying 
 residual `r ≥ 0` by the norm at the re-based residual representative `Tⁿ x` times the discrete base
 cocycle norm:
 `‖coverCocycle (x,0) (returnTime n x + r)‖ ≤ ‖coverCocycle (Tⁿ x, 0) r‖ * ‖cocycle A T n x‖`.
-This is the quantitative input to the exponent descent (the `n`-lap analogue of the single-lap
-`coverCocycle_one_lap_opNorm_le`). -/
+This is the quantitative input to the exponent descent (the `n`-lap operator-norm form of the
+single-lap descent identity `coverCocycle_one_lap`). -/
 theorem coverCocycle_returnTime_opNorm_le (hc : ∀ x, c ≤ τ x) (hcpos : 0 < c) (n : ℕ) {r : ℝ}
     (hr : 0 ≤ r) (x : X) :
     ‖coverCocycle A T hτ hc hcpos (x, 0) (returnTime T hτ n x + r)‖

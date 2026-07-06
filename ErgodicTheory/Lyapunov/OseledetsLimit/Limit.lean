@@ -26,9 +26,8 @@ This produces the orbit log-growth limits along the eigenspace filtration.
   candidates.
 * `ErgodicTheory.oseledetsLimit_isSelfAdjoint`, `ErgodicTheory.oseledetsLimit_posSemidef`,
   `ErgodicTheory.oseledetsLimit_eigenvalues₀_eq` — structure of the limit and its eigenvalues.
-* `ErgodicTheory.ae_tendsto_log_cocycle_apply_of_eq_exponents` — the orbit log-growth limit along
-  the
-  eigenspace filtration.
+* `ErgodicTheory.ae_tendsto_log_cocycle_apply_of_eq_exponents` — the two-sided orbit log-growth
+  limit in the equal-exponents (conformal) regime.
 -/
 
 open Module InnerProductSpace MeasureTheory Filter Topology
@@ -638,28 +637,6 @@ theorem oseledetsLimit_posSemidef [IsProbabilityMeasure μ] (hT : Ergodic T μ)
       (𝓝 (star v ⬝ᵥ (oseledetsLimit A T x *ᵥ v))) := (hquad_cont.tendsto _).comp hx
   refine ge_of_tendsto' htq fun n => ?_
   exact (qpow_posSemidef A T n x).dotProduct_mulVec_nonneg v
-
-set_option linter.unusedSectionVars false in
-/-- **Antitonicity of the per-point Lyapunov exponents.** For `μ`-a.e. `x`, the per-point
-exponents `lamSing A T x ·` are antitone on `[0, d)`. (A.e. each index has a genuine
-singular-value limit `lamSing = λᵢ` by `tendsto_log_singularValue`, and the deterministic exponents
-`λᵢ` are antitone by `exists_lam_tendsto_singularValue`.) This is the order datum pinning the
-intended descending spectrum `e^{lamSing 0} ≥ e^{lamSing 1} ≥ ⋯` of `Λ`. -/
-theorem lamSing_antitone [IsProbabilityMeasure μ] (hT : Ergodic T μ)
-    {A : X → Matrix (Fin d) (Fin d) ℝ} (hA : ∀ x, (A x).det ≠ 0) (hAmeas : Measurable A)
-    (hint : IntegrableLogNorm A μ) (hint' : IntegrableLogNorm (fun x => (A x)⁻¹) μ) :
-    ∀ᵐ x ∂μ, ∀ a b : ℕ, a ≤ b → b < d → lamSing A T x b ≤ lamSing A T x a := by
-  obtain ⟨lam, hanti, hσ⟩ :=
-    exists_lam_tendsto_singularValue hT hA hAmeas hint hint'
-  have hall : ∀ᵐ x ∂μ, ∀ i : ℕ, i < d → lamSing A T x i = lam i := by
-    rw [ae_all_iff]; intro i
-    by_cases hi : i < d
-    · filter_upwards [hσ i hi] with x hx using fun _ => lamSing_eq_of_tendsto hx
-    · filter_upwards with x; intro h; exact absurd h hi
-  filter_upwards [hall] with x hx
-  intro a b hab hbd
-  rw [hx a (lt_of_le_of_lt hab hbd), hx b hbd]
-  exact hanti a b hab hbd
 
 set_option linter.unusedSectionVars false in
 /-- **The eigenvalues of `qpow` converge to `e^{lamSing}`.** For `μ`-a.e. `x` and every sorted

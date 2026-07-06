@@ -69,7 +69,6 @@ import ErgodicTheory.Continuous.ReturnTimeTopExponent
 import ErgodicTheory.Continuous.SuspensionCocycle
 import ErgodicTheory.Continuous.SuspensionLapCount
 import ErgodicTheory.Continuous.SuspensionFlowCocycle
-import ErgodicTheory.Continuous.SuspensionFlowCocycleMul
 import ErgodicTheory.Continuous.SuspensionCoverCocycle
 import ErgodicTheory.Continuous.SuspensionCoverFlow
 import ErgodicTheory.Continuous.SuspensionDescent
@@ -134,6 +133,7 @@ import ErgodicTheory.Entropy.FactorEntropy
 import ErgodicTheory.Entropy.FactorGeneratorSaturate
 import ErgodicTheory.Entropy.CondGivenPartitionBridge
 import ErgodicTheory.Entropy.AbramovRokhlin
+import ErgodicTheory.Entropy.AbramovRokhlinPartition
 import ErgodicTheory.Entropy.CondKSMovingLimit
 import ErgodicTheory.Entropy.AbramovRokhlinGenerator
 import ErgodicTheory.Entropy.GeneratorTheorem
@@ -164,6 +164,29 @@ import ErgodicTheory.Krieger.StageBuild
 import ErgodicTheory.Krieger.Weave
 import ErgodicTheory.Krieger.Bracket
 import ErgodicTheory.Multifractal
+-- Direct imports of the `Multifractal` guarded modules (the `ErgodicTheory.Multifractal` umbrella
+-- above still re-exports them; these keep each guarded declaration's defining module imported
+-- directly, so the axiom guards below cannot silently narrow if the umbrella is ever pruned).
+import ErgodicTheory.Multifractal.BernoulliDimension
+import ErgodicTheory.Multifractal.BernoulliEntropy
+import ErgodicTheory.Multifractal.BernoulliErgodic
+import ErgodicTheory.Multifractal.BernoulliHeterogeneous
+import ErgodicTheory.Multifractal.BernoulliSuspensionFlow
+import ErgodicTheory.Multifractal.BernoulliSuspensionFlowErgodic
+import ErgodicTheory.Multifractal.BernoulliSuspensionWitness
+import ErgodicTheory.Multifractal.BernoulliTwoSidedErgodic
+import ErgodicTheory.Multifractal.BernoulliTwoSidedGenerating
+import ErgodicTheory.Multifractal.BernoulliTwoSidedSystemEntropy
+import ErgodicTheory.Multifractal.Degeneracy
+import ErgodicTheory.Multifractal.HausdorffDimension
+import ErgodicTheory.Multifractal.LocalDimension
+import ErgodicTheory.Multifractal.LogConvex
+import ErgodicTheory.Multifractal.Measure
+import ErgodicTheory.Multifractal.Monotone
+import ErgodicTheory.Multifractal.RefiningLimit
+import ErgodicTheory.Multifractal.Source.FlowEmpirical
+import ErgodicTheory.Multifractal.Source.FlowPartition
+import ErgodicTheory.Multifractal.SymbolicDimension
 import ErgodicTheory.Entropy.GeneratorTheoremTwoSided
 import ErgodicTheory.Continuous.SuspensionStandardBorel
 import ErgodicTheory.Entropy.ProductIdEntropy
@@ -173,6 +196,19 @@ import ErgodicTheory.Entropy.CondProductIdEntropy
 import ErgodicTheory.Entropy.CondChainRuleSup
 import ErgodicTheory.Entropy.CondKSEntropyConjugacy
 import ErgodicTheory.OperatorEntropy
+-- Direct imports of the `OperatorEntropy` guarded corner modules (the `ErgodicTheory.OperatorEntropy`
+-- umbrella above still re-exports them; these keep each guarded declaration's defining module
+-- imported directly, so the axiom guards below cannot silently narrow if the umbrella is pruned).
+import ErgodicTheory.OperatorEntropy.Basic
+import ErgodicTheory.OperatorEntropy.PartialTrace
+import ErgodicTheory.OperatorEntropy.KroneckerSpectrum
+import ErgodicTheory.OperatorEntropy.Klein
+import ErgodicTheory.OperatorEntropy.Additivity
+import ErgodicTheory.OperatorEntropy.Subadditivity
+import ErgodicTheory.OperatorEntropy.DiagonalSpectrum
+import ErgodicTheory.OperatorEntropy.CNT.Refinement
+import ErgodicTheory.OperatorEntropy.CNT.Construction
+import ErgodicTheory.OperatorEntropy.CNT.AbelianCorner
 import ErgodicTheory.OperatorEntropy.RelativeEntropy
 import ErgodicTheory.OperatorEntropy.PetzRecovery
 import ErgodicTheory.OperatorEntropy.Lieb.OperatorConvex
@@ -650,15 +686,11 @@ sites).
 #guard_msgs in
 #print axioms ErgodicTheory.measurableSet_cocycleRank_eq_full
 
--- Issue #6 (rank measurability): minor-nonsingular ⟹ rank ≥ r (easy direction) + the measurable subset.
+-- Issue #6 (rank measurability): minor-nonsingular ⟹ rank ≥ r (easy direction).
 
 /-- info: 'Matrix.le_rank_of_submatrix_det_ne_zero' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms Matrix.le_rank_of_submatrix_det_ne_zero
-
-/-- info: 'ErgodicTheory.measurableSet_minors_subset_le_cocycleRank' depends on axioms: [propext, Classical.choice, Quot.sound] -/
-#guard_msgs in
-#print axioms ErgodicTheory.measurableSet_minors_subset_le_cocycleRank
 
 -- Issue #6 (measurable flag CLOSURE): rank = max nonsingular minor ⟹ the rank function is measurable.
 
@@ -1236,16 +1268,6 @@ info: 'ErgodicTheory.Entropy.MeasurePartition.sum_toReal_measure_eq_one' depends
 #guard_msgs in
 #print axioms ErgodicTheory.flowCocycleSection_zero
 
--- Issue #5 (flow cocycle multiplicativity): the base-cocycle identity at return times.
-
-/-- info: 'ErgodicTheory.flowCocycleSection_returnTime_add' depends on axioms: [propext, Classical.choice, Quot.sound] -/
-#guard_msgs in
-#print axioms ErgodicTheory.flowCocycleSection_returnTime_add
-
-/-- info: 'ErgodicTheory.flowCocycleSection_returnTime_succ' depends on axioms: [propext, Classical.choice, Quot.sound] -/
-#guard_msgs in
-#print axioms ErgodicTheory.flowCocycleSection_returnTime_succ
-
 -- Issue #5 (cover extension): lapCount monotone + the off-section lap-count additivity.
 
 /-- info: 'ErgodicTheory.lapCount_mono' depends on axioms: [propext, Classical.choice, Quot.sound] -/
@@ -1275,10 +1297,6 @@ info: 'ErgodicTheory.Entropy.MeasurePartition.sum_toReal_measure_eq_one' depends
 /-- info: 'ErgodicTheory.coverCocycle_one_lap' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms ErgodicTheory.coverCocycle_one_lap
-
-/-- info: 'ErgodicTheory.coverCocycle_one_lap_opNorm_le' depends on axioms: [propext, Classical.choice, Quot.sound] -/
-#guard_msgs in
-#print axioms ErgodicTheory.coverCocycle_one_lap_opNorm_le
 
 -- Issue #5 (flow exponent bridge): cover-cocycle norm = base norm at return times.
 
@@ -2089,11 +2107,6 @@ axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms ErgodicTheory.Krieger.measurable_fwdSentinel
 
-/-- info: 'ErgodicTheory.Krieger.measurable_sentinelParse' depends on axioms:
-[propext, Classical.choice, Quot.sound] -/
-#guard_msgs (whitespace := lax) in
-#print axioms ErgodicTheory.Krieger.measurable_sentinelParse
-
 -- Issue #15 (unconditional drive): the OFFSET-AWARE tower code. Adversarial catch: a bare
 -- position-blind sentinelParse gives the same label at x and e·x (parse_event_cannot_separate), so a
 -- naive sentinel-column recovery field is unsatisfiable. Fixed with blockOffset / sentinelParseAt
@@ -2322,10 +2335,10 @@ axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms ErgodicTheory.Multifractal.renyiDim_uniform_eq_dim
 
-/-- info: 'ErgodicTheory.Multifractal.renyiDim_uniform_tendsto_dim' depends on axioms:
+/-- info: 'ErgodicTheory.Multifractal.renyiDim_uniform_seq_tendsto_dim' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms ErgodicTheory.Multifractal.renyiDim_uniform_tendsto_dim
+#print axioms ErgodicTheory.Multifractal.renyiDim_uniform_seq_tendsto_dim
 
 /-- info: 'ErgodicTheory.Multifractal.ae_tendsto_localDimension_of_absolutelyContinuous' depends on
 axioms: [propext, Classical.choice, Quot.sound] -/
@@ -2412,10 +2425,10 @@ axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms ErgodicTheory.Multifractal.not_isHeterogeneous_iff_equalMeasure
 
-/-- info: 'ErgodicTheory.Multifractal.refiningLimitConvergesProp_of_uniform' depends on axioms:
+/-- info: 'ErgodicTheory.Multifractal.refiningLimitConvergesSeqProp_of_uniform' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms ErgodicTheory.Multifractal.refiningLimitConvergesProp_of_uniform
+#print axioms ErgodicTheory.Multifractal.refiningLimitConvergesSeqProp_of_uniform
 
 /-! ### Issue #19 — the chaotic Bernoulli-suspension flow object
 (positive metric entropy + a non-uniform ergodic invariant measure on which `D_q` is `q`-dependent) -/

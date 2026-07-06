@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - met-formalization
   workflow_dispatch:
 
 # Don't cancel CI on main so every commit stays green. PR runs are

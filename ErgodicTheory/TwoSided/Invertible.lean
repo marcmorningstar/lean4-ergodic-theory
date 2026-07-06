@@ -19,8 +19,8 @@ the relevant backward object is the cocycle of the **backward generator**
 This file collects the backward infrastructure: the backward generator and its
 hypothesis transfer (nonzero determinant, measurability, both `L¹`-log-norm
 integrabilities), the companion cocycle recursion `cocycle_succ'` (newest factor on the
-right), the two backward cocycle identities
-`B⁽ⁿ⁾(x) = (A⁽ⁿ⁾(T⁻ⁿ x))⁻¹` and `B⁽ⁿ⁾(Tⁿ y) = (A⁽ⁿ⁾ y)⁻¹`, and the extraction of a
+right), the backward cocycle identity
+`B⁽ⁿ⁾(x) = (A⁽ⁿ⁾(T⁻ⁿ x))⁻¹`, and the extraction of a
 conull set that is invariant under both `T` and `T.symm`. A convenience bundle
 `backwardData` packages the four standing hypotheses on the pair `(⇑T.symm, backwardGen A T)`
 so that the one-sided theorems can be instantiated for the backward system in one line.

@@ -1,4 +1,4 @@
-# Mathlib conventions — an evidence-backed guide for a merge-quality refactor of `lean4-oseledets`
+# Mathlib conventions — an evidence-backed guide for a merge-quality refactor of `lean4-ergodic-theory` (formerly `lean4-oseledets`)
 
 ## Purpose
 

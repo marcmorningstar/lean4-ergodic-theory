@@ -40,8 +40,8 @@ per-step granularity**: the band increment `‖P_slow(n+1) − P_slow(n)‖` is 
 `sin∠(S_n, S_{n+1}) ≤ ‖(B*B − I)|_{S_n}‖ / gap`, whose numerator is the **condition number of `B`**
 (the inverse), not the forward ratio. So the inverse is genuinely **load-bearing per step** — it is
 intrinsic to *which directions are top-`k` after applying `B`* — and the forward ratio does not
-bound the aperture. This is the same wall the Wave-4 wedge route (`SingularSlowSpaceConverge.lean`,
-`wedge_mu0_lb_is_inverse_bound`) and the per-step `s`-engine (`SingularBandConverge.lean`) hit.
+bound the aperture. This is the same wall the per-step `s`-engine
+(`SingularBandConverge.lean`, `numerator_div_gap_le_detfree`) hits.
 
 ## The guaranteed landing: unconditional on the tempered class
 
@@ -83,9 +83,8 @@ What **is** unconditional and sorry-free here:
   + tempering (root test).
 * `ErgodicTheory.tendsto_vSlowSingularStep_of_tempered` — the tempered-class `Vⱼ`: convergence to
   `1 − Pfast` carrying the strict-gap + tempering hypotheses.
-* `ErgodicTheory.ForwardRatioPerStepBound` / `ErgodicTheory.bandProjector_increment_eq_aperture`
-  — the
-  precise residual record: the forward-ratio per-step bound `(R5A)` is the aperture, governed by the
+* `ErgodicTheory.bandProjector_increment_eq_aperture` — the precise residual record: the
+  band increment sought by the forward-ratio per-step bound `(R5A)` is the aperture, governed by the
   inverse (condition number of `B`), not the forward ratio.
 
 ## References
@@ -384,27 +383,11 @@ theorem tendsto_vSlowSingularStep_of_tempered {k : ℕ} (hk1 : 1 ≤ k)
 
 The Wave-5 forward-ratio crack `(R5A)` (bound the slow increment by `σ_{k+1}/σ_k` of the single
 cocycle `M_{n+1}`, *no inverse*) is **false** at the per-step granularity. We record the precise
-mathematical content as a *statement-level* `Prop` definition — not a proof of a false claim — that
+mathematical content as a *statement-level* identity — not a proof of a false claim — that
 identifies the failing quantity: the band increment IS the aperture `‖U Uᵀ − V Vᵀ‖` between the
 top-`k` right-singular frames of `M_n` (= `U`) and `M_{n+1}` (= `V`), which by Davis–Kahan is
 governed by the perturbation `B = A(Tⁿx)` (its condition number — the inverse), not by the internal
 forward ratio of `M_{n+1}`. -/
-
-/-- **The forward-ratio per-step bound `(R5A)` (the falsified target).** The proposition that, for a
-universal constant `C`, every step's band increment is bounded by `C` times the forward singular
-ratio `σ_{k+1}(M_{n+1})/σ_k(M_{n+1})` of the single cocycle `M_{n+1} = cocycle (n+1) x`. This is the
-**inverse-free** bound Angle 5A sought. It is **false** at the per-step granularity (a single
-ill-conditioned `B` rotates the top-`k` space by `O(1)` while the forward ratio stays `O(1)`); the
-band increment is the aperture, governed by the condition number of `B` (the inverse), not the
-forward ratio. We state it as a `Prop` to name the residual precisely; no proof is given because the
-claim is false. -/
-def ForwardRatioPerStepBound (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (c : ℝ)
-    (k : ℕ) (x : X) (C : ℝ) : Prop :=
-  ∀ n : ℕ,
-    ‖bandProjector A T (Set.indicator (Set.Ioi c) 1) (n + 1) x
-        - bandProjector A T (Set.indicator (Set.Ioi c) 1) n x‖
-      ≤ C * ((Matrix.toEuclideanLin (cocycle A T (n + 1) x)).singularValues k
-          / (Matrix.toEuclideanLin (cocycle A T (n + 1) x)).singularValues (k - 1))
 
 omit [MeasurableSpace X] [NeZero d] in
 /-- **The band increment is the aperture (`(R5A)`'s failing identity).** The band-projector
@@ -416,7 +399,7 @@ condition number — the inverse — appears in the denominator's gap), **not** 
 ratio of `M_{n+1}`. Recording this identity pins exactly why `(R5A)` cannot hold inverse-free: the
 quantity to bound is a between-steps rotation, and the forward ratio measures only the
 within-`M_{n+1}` gap. (This re-derives, in the band-increment language, the wall of
-`ErgodicTheory.wedge_mu0_lb_is_inverse_bound` and `ErgodicTheory.numerator_div_gap_le_detfree`.) -/
+`ErgodicTheory.numerator_div_gap_le_detfree`.) -/
 theorem bandProjector_increment_eq_aperture {c : ℝ} (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X)
     {k : ℕ} (n : ℕ) (x : X) (U V : Matrix (Fin d) (Fin k) ℝ)
     (hPn : bandProjector A T (Set.indicator (Set.Ioi c) 1) n x = U * Uᵀ)

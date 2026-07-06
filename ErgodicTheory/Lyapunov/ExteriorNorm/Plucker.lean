@@ -60,11 +60,12 @@ end Crux
 /-! ## The rank-1 exterior Rayleigh-deficit bound
 
 The band-projector increment reduces to a rank-1 dominant-eigenvector `sin Θ` estimate
-(`sin_sq_le_rayleigh_deficit_div_gap` in `ErgodicTheory.Lyapunov.OseledetsLimit`). This section
-provides the deficit-side pieces feeding that core: the per-vector compound operator-norm step
-(Lemma 1), the Rayleigh quotient identity and top-eigenvalue ceiling `μ₀ = ‖compound‖²`
-(Lemma 2), and the assembled deficit bound `μ₀ − ⟨C_n v', v'⟩ ≤ (1 − 1/κ²)·μ₀` (Lemma 3),
-with `κ = ‖compound B‖·‖(compound B)⁻¹‖` the compound condition number. -/
+(`offdiag_sin_le_residual_div_gap` in `ErgodicTheory.Lyapunov.OseledetsLimit`, now in
+off-diagonal/residual form). This section provides the Rayleigh-deficit pieces of the earlier
+deficit form of that core: the per-vector compound operator-norm step (Lemma 1), the Rayleigh
+quotient identity and top-eigenvalue ceiling `μ₀ = ‖compound‖²` (Lemma 2), and the assembled
+deficit bound `μ₀ − ⟨C_n v', v'⟩ ≤ (1 − 1/κ²)·μ₀` (Lemma 3), with
+`κ = ‖compound B‖·‖(compound B)⁻¹‖` the compound condition number. -/
 
 section Rayleigh
 
@@ -100,17 +101,6 @@ theorem compoundMatrix_one (k : ℕ) :
     ext v i; simp
   rw [h2]
   ext x; simp
-
-/-- For invertible `B`, `compound k B⁻¹` is a right inverse of `compound k B`
-(`compoundMatrix_mul` + `compoundMatrix_one`). -/
-theorem compoundMatrix_mul_inv (k : ℕ) {B : Matrix (Fin d) (Fin d) ℝ} (hB : B.det ≠ 0) :
-    compoundMatrix k B * compoundMatrix k B⁻¹ = 1 := by
-  rw [← compoundMatrix_mul, Matrix.mul_nonsing_inv _ (Ne.isUnit hB), compoundMatrix_one]
-
-/-- For invertible `B`, `compound k B⁻¹` is a left inverse of `compound k B`. -/
-theorem compoundMatrix_inv_mul (k : ℕ) {B : Matrix (Fin d) (Fin d) ℝ} (hB : B.det ≠ 0) :
-    compoundMatrix k B⁻¹ * compoundMatrix k B = 1 := by
-  rw [← compoundMatrix_mul, Matrix.nonsing_inv_mul _ (Ne.isUnit hB), compoundMatrix_one]
 
 /-- The compound factorisation `compound M = (compound B)⁻¹ · compound(B · M)`, for invertible
 `B`. Used in Lemma 3 to lower-bound `‖compound M‖` by `‖compound(B·M)‖`. -/
@@ -173,20 +163,6 @@ theorem rayleigh_compound_eq_norm_sq (k : ℕ) (M : Matrix (Fin d) (Fin d) ℝ)
       = ‖Matrix.toEuclideanLin (compoundMatrix k M) w‖ ^ 2 := by
   rw [LinearMap.comp_apply, LinearMap.adjoint_inner_left, real_inner_self_eq_norm_sq]
 
-/-- **Lemma 2 (top-eigenvalue ceiling).** The Rayleigh quotient of the compound Gram operator is
-bounded by `‖compound M‖²·‖w‖²`; equivalently the top eigenvalue `μ₀` of
-`C_n = adjoint(compound M) ∘ₗ compound M` is `‖compound M‖²` (the squared operator norm of the
-compound = top eigenvalue of `AᵀA`). -/
-theorem rayleigh_compound_le (k : ℕ) (M : Matrix (Fin d) (Fin d) ℝ)
-    (w : EuclideanSpace ℝ (Fin (Module.finrank ℝ (⋀[ℝ]^k (EuclideanSpace ℝ (Fin d)))))) :
-    (inner ℝ ((LinearMap.adjoint (Matrix.toEuclideanLin (compoundMatrix k M)) ∘ₗ
-        Matrix.toEuclideanLin (compoundMatrix k M)) w) w : ℝ)
-      ≤ ‖compoundMatrix k M‖ ^ 2 * ‖w‖ ^ 2 := by
-  rw [rayleigh_compound_eq_norm_sq]
-  have h := norm_toEuclideanLin_apply_le (compoundMatrix k M) w
-  have hn := norm_nonneg (Matrix.toEuclideanLin (compoundMatrix k M) w)
-  nlinarith [h, norm_nonneg (compoundMatrix k M), norm_nonneg w]
-
 /-- Pure-real algebraic kernel of the deficit bound: from `BM ≤ CB·r` and `mu ≤ CBi·BM` (with all
 nonnegative) one gets `mu² − r² ≤ (1 − 1/(CB·CBi)²)·mu²`. -/
 theorem rayleigh_deficit_kernel {BM CB r CBi mu : ℝ}
@@ -217,8 +193,9 @@ vector / dominant eigenvector of `C_{n+1}`), the Rayleigh deficit of the operato
 `C_n = adjoint(compound M) ∘ₗ compound M` at `v'` against its top value `μ₀ = ‖compound M‖²`
 obeys `μ₀ − ⟨C_n v', v'⟩ ≤ (1 − 1/κ²)·μ₀` with `κ = ‖compound B‖·‖(compound B)⁻¹‖`.
 
-This is the deficit-side input to `sin_sq_le_rayleigh_deficit_div_gap` (with
-`ε := μ₀ − ⟨C_n v', v'⟩`, `μ₀ := ‖compound M‖²`). The `v'`-achieves-the-op-norm hypothesis encodes
+This is the deficit-side input to the sin-Θ core's earlier deficit form (superseded by the
+residual form `offdiag_sin_le_residual_div_gap`), with `ε := μ₀ − ⟨C_n v', v'⟩`,
+`μ₀ := ‖compound M‖²`. The `v'`-achieves-the-op-norm hypothesis encodes
 that `v'` is the top eigenvector of `C_{n+1}`; its existence is the caller's responsibility. -/
 theorem rayleigh_deficit_le (k : ℕ) {B : Matrix (Fin d) (Fin d) ℝ} (hB : B.det ≠ 0)
     (M : Matrix (Fin d) (Fin d) ℝ)
@@ -519,7 +496,7 @@ theorem inner_hodgeTrivialization_ιMulti (k : ℕ) (v w : Fin k → E) :
   rw [hStd, inner_onbTriv, hodgeForm_ιMulti]
 
 /-- The `j`-th column of a `d×k` matrix, viewed as a vector in `EuclideanSpace ℝ (Fin d)`. The
-columns of the band-projector frames `U_top` (`bandProjector_indicator_eq_frame`) are the
+columns of the band-projector frames `U_top` (`bandProjector_indicator_eq_sortedTopFrame`) are the
 orthonormal top-block eigenvectors; their wedge is the Plücker top eigenvector. -/
 def colE {d k : ℕ} (U : Matrix (Fin d) (Fin k) ℝ) (j : Fin k) :
     EuclideanSpace ℝ (Fin d) :=
@@ -633,8 +610,8 @@ the conjugated compound `C = ⋀^k f` (through the eigenbasis wedge trivializati
   `μ₁ = (∏_{i<k-1} lam i)·lam k`;
 * **the gap:** `μ₁ < μ₀`.
 
-This lands in exactly the shape consumed by `sin_sq_le_rayleigh_deficit_div_gap` (`hC`, `hv₀`,
-`hev`, `hgap`, `hμ₁`). -/
+This lands in exactly the shape consumed by `offdiag_sin_le_residual_div_gap` (`hv₀`, `hev`,
+`hgap`, `hν`). -/
 theorem plucker_eigenpair_ceiling {n : ℕ} (f : E →ₗ[ℝ] E)
     (u : OrthonormalBasis (Fin n) ℝ E) (lam : ℕ → ℝ) (hanti : Antitone lam)
     (hpos : ∀ i, 0 ≤ lam i) (hf : ∀ i, f (u i) = lam (i : ℕ) • u i)
@@ -924,8 +901,9 @@ trivialization (`u` = an orthonormal eigenbasis of the symmetric `f`). The Rayle
 `toEuclideanLin (compoundMatrix k ·)` (the compound matrix). These are the *same* abstract operator
 `⋀^k f` viewed through two isometric o.n.-basis wedge trivializations, hence unitarily equivalent by
 the orthogonal change-of-coordinates `onbChange`. Since an isometry preserves the inner product, the
-Rayleigh quotient is trivialization-independent; this lets `sin_sq_le_rayleigh_deficit_div_gap` be
-applied in eigenbasis coordinates with the deficit supplied from standard coordinates. -/
+Rayleigh quotient is trivialization-independent; this lets the sin-Θ core
+`offdiag_sin_le_residual_div_gap` be applied in eigenbasis coordinates with the top-eigenpair and
+second-eigenvalue ceiling transported from standard coordinates. -/
 
 section Reconciliation
 
@@ -973,7 +951,7 @@ trivialization.** Given the top eigenpair (`hev`) and the `μ₁`-ceiling on the
 data transports — via the orthogonal `W = onbChange b b' k` — to the `b`-trivialization (`b` = the
 standard basis): the eigenvector is `v₀ = W⁻¹ (basisFun i₀)`, the eigenvalue/gap are unchanged, and
 the Rayleigh ceiling holds verbatim on `v₀ᗮ`. This is the abstract (matrix-free) reconciliation core
-that feeds `sin_sq_le_rayleigh_deficit_div_gap` once `conjExteriorMap (onbTriv b) f` is identified
+that feeds `offdiag_sin_le_residual_div_gap` once `conjExteriorMap (onbTriv b) f` is identified
 with the standard compound. -/
 lemma eigenpair_ceiling_transport {ιE ιE' : Type*}
     [Fintype ιE] [LinearOrder ιE] [Fintype ιE'] [LinearOrder ιE']

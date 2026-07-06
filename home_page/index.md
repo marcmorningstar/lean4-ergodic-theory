@@ -6,9 +6,8 @@
 usemathjax: true
 ---
 
-This site hosts the [blueprint]({{ site.url }}/blueprint/) and the
-[API documentation]({{ site.url }}/docs/) of a **Lean 4 + Mathlib formalization of
-the Oseledets multiplicative ergodic theorem (MET)**.
+This site hosts the [blueprint]({{ site.url }}/blueprint/) (web, PDF, and dependency graph) of a
+**Lean 4 + Mathlib formalization of the Oseledets multiplicative ergodic theorem (MET)**.
 
 Three headline theorems are formalized, sorry-free:
 
@@ -26,6 +25,5 @@ Useful links:
 * [Blueprint]({{ site.url }}/blueprint/)
 * [Blueprint as pdf]({{ site.url }}/blueprint.pdf)
 * [Dependency graph]({{ site.url }}/blueprint/dep_graph_document.html)
-* [API documentation]({{ site.url }}/docs/)
 * [GitHub repository](https://github.com/marcmorningstar/lean4-ergodic-theory)
 * [Zulip chat for Lean](https://leanprover.zulipchat.com/)

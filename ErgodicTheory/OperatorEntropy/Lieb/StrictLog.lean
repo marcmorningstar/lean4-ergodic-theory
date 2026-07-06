@@ -10,15 +10,15 @@ import Mathlib.Analysis.Matrix.Order
 import Mathlib.Analysis.Matrix.PosDef
 import Mathlib.Data.Real.StarOrdered
 import Mathlib.LinearAlgebra.Complex.FiniteDimensional
-import Mathlib.LinearAlgebra.FreeModule.PID
 import Mathlib.MeasureTheory.Integral.IntegralEqImproper
 import Mathlib.MeasureTheory.SpecificCodomains.Pi
-import Mathlib.RingTheory.Flat.FaithfullyFlat.Algebra
-import Mathlib.RingTheory.Flat.TorsionFree
-import Mathlib.RingTheory.SimpleRing.Principal
 
 /-!
-# Strict operator convexity of `-log` (Petz equality, keystone B)
+# Resolvent integral representation of `-log` (Petz equality, keystone B)
+
+The scalar resolvent identity `-log x = ∫₀^∞ ((x+t)⁻¹ - (1+t)⁻¹) dt` and its matrix
+continuous-functional-calculus lift, the integral-representation input to the Petz-equality
+strict-convexity analysis.
 -/
 
 open scoped MatrixOrder ComplexOrder Matrix.Norms.L2Operator

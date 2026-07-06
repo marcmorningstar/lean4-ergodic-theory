@@ -44,18 +44,21 @@ because singular values are nonnegative (`LinearMap.singularValues_nonneg`), com
 
 ## The minimal absent geometric atom
 
-The one piece that remains open is the **dynamical covering-count lemma**: for a `C¹` self-map `T`
-of `EuclideanSpace ℝ (Fin d)`, the image `T(B(x, ε))` of an `ε`-ball is coverable by at most
-`C · ∏ᵢ max(1, σᵢ(D_x T))` balls of radius `ε`, where `σᵢ(D_x T)` are the singular values of the
-differential — i.e. the local volume-expansion is governed by the positive-part singular-value
-product `∏ᵢ max(1, σᵢ)` whose log is the object of part (A). Iterating this along an orbit through
-Lyapunov / Pesin charts upgrades the per-step bound to `exp(n · (Σ λᵢ⁺ + ε))` for the refinement
-`⋁_{k<n} T⁻ᵏ α` of a fine partition `α`. Feeding that atom-count into `entropy_le_log_card`
-(`ErgodicTheory.Entropy.Partition`) and the Fekete limit
-(`ErgodicTheory.Entropy.ksEntropyPartition`)
-reproduces `hgeo`. Formalizing this covering bound requires smooth-ergodic-theory infrastructure
-(Lyapunov charts, the Mañé/Katok covering argument, orbit-averaging) that Mathlib does not have;
-it is a multi-month build, out of scope here.
+The **linear one-step covering count** is now formalized in-tree: for a continuous linear self-map
+`L` of `EuclideanSpace ℝ (Fin d)` and `ε > 0`, the image `L '' B(x, ε)` of an `ε`-ball is covered by
+at most `6^d · ∏ᵢ max(1, σᵢ(L))` balls of radius `ε`
+(`ErgodicTheory.coveringCount_image_ball_le_volProd`, in
+`ErgodicTheory.Entropy.Ruelle.SharpCovering`) — the positive-part singular-value product whose log
+is the object of part (A). Applied to the differential `L = D_x T` of a `C¹` map this controls one
+dynamical step.
+
+The piece that remains open is the **smooth-dynamics assembly** around that linear count: iterating
+the per-step bound along an orbit through Lyapunov / Pesin charts to upgrade it to
+`exp(n · (Σ λᵢ⁺ + ε))` for the refinement `⋁_{k<n} T⁻ᵏ α` of a fine partition `α`, then feeding that
+atom-count into `entropy_le_log_card` (`ErgodicTheory.Entropy.Partition`) and the Fekete limit
+(`ErgodicTheory.Entropy.ksEntropyPartition`) to reproduce `hgeo`. That orbit-iteration step requires
+smooth-ergodic-theory infrastructure (Lyapunov charts, the Mañé/Katok orbit-averaging argument)
+that Mathlib does not have; it is out of scope here.
 
 ## References
 

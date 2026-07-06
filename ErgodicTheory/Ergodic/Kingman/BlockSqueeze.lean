@@ -28,7 +28,8 @@ variable {X : Type*} [MeasurableSpace X] {μ : Measure X} {T : X → X}
 For a non-positive subadditive cocycle and `M ≥ 1`, the full `EReal` `limsup`/`liminf` of the
 normalized cocycle equal the `limsup`/`liminf` along the `M`-subsequence
 `k ↦ g (k*M) x / (k*M)`. The hard direction (`full ≤ subseq`) combines the pointwise
-`block_sandwich` with the `c ≤ 1` ratio squeeze (`ereal_ratio_le_limsup`/`_liminf`); the easy
+`block_sandwich` with the `c ≤ 1` ratio squeeze (`ereal_ratio_le_limsup` / `ereal_liminf_le_ratio`);
+the easy
 direction is `Tendsto.limsup_comp_le_limsup` along `Tendsto (·*M) atTop atTop`. -/
 
 /-- The raw normalized cocycle `↑(g j x / j)` (with `g 0 x / 0 = 0`), indexed so that

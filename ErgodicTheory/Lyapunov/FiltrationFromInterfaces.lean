@@ -25,8 +25,6 @@ spectrum constancy, measurability of the flag levels, and exact per-vector growt
 
 * `ErgodicTheory.oseledets_filtration_of_interfaces`: the Oseledets filtration conclusion,
   given the three analytic hypotheses.
-* `ErgodicTheory.oseledets_filtration_assembled`: the same statement with the exact conclusion
-  shape of `ErgodicTheory.oseledets_filtration`.
 -/
 
 open MeasureTheory Filter Topology
@@ -71,7 +69,7 @@ the spectrum-constancy, measurability, and exact-growth layers:
   `vflag castSucc \ vflag succ` the normalized log-growth converges to the stratum exponent
   `specList A T x i` (the limsup is already pinned by `lambdaBar_eq_on_stratum`; this is
   upgraded to a genuine limit via
-  `tendsto_inv_mul_log_norm_cocycle_apply_of_bandProjector_envelope`). -/
+  `tendsto_inv_mul_log_norm_cocycle_apply`). -/
 theorem oseledets_filtration_of_interfaces
     {μ : Measure X} [IsProbabilityMeasure μ] {T : X → X}
     (hT : Ergodic T μ)
@@ -196,47 +194,5 @@ theorem oseledets_filtration_of_interfaces
       have : Fin.cast hcardx i' = i := by apply Fin.ext; simp [hi']
       rw [this]
     rwa [hval] at hgrow
-
-/-- The exact statement of `ErgodicTheory.oseledets_filtration`, derived from
-`oseledets_filtration_of_interfaces`.  The analytic hypotheses (`lam0`, `hspec`, `hmeas`,
-`hgrowth`) remain as explicit arguments; they are discharged by the spectrum-constancy,
-measurability, and exact-growth layers. -/
-theorem oseledets_filtration_assembled
-    {μ : Measure X} [IsProbabilityMeasure μ] {T : X → X}
-    (hT : Ergodic T μ)
-    (A : X → Matrix (Fin d) (Fin d) ℝ)
-    (hA : ∀ x, (A x).det ≠ 0)
-    (hAmeas : Measurable A)
-    (hint : IntegrableLogNorm A μ)
-    (hint' : IntegrableLogNorm (fun x => (A x)⁻¹) μ)
-    (lam0 : ℕ → ℝ)
-    (hspec : ∀ᵐ x ∂μ, ∃ h : specCard A T x = numExp lam0 d,
-      ∀ i : Fin (specCard A T x), specList A T x i = expEnum lam0 d (Fin.cast h i))
-    (hmeas : ∀ i : Fin (numExp lam0 d + 1),
-      MeasurableSubspace (fun x => vassembled A T (numExp lam0 d) i x))
-    (hgrowth : ∀ᵐ x ∂μ, ∀ i : Fin (specCard A T x),
-      ∀ v ∈ (vflag A T x i.castSucc : Set (EuclideanSpace ℝ (Fin d))),
-        v ∉ vflag A T x i.succ →
-        Tendsto
-          (fun n : ℕ => (n : ℝ)⁻¹ *
-            Real.log ‖Matrix.toEuclideanCLM (𝕜 := ℝ) (cocycle A T n x) v‖)
-          atTop (𝓝 (specList A T x i))) :
-    ∃ (k : ℕ) (lam : Fin k → ℝ)
-      (V : Fin (k + 1) → X → Submodule ℝ (EuclideanSpace ℝ (Fin d))),
-      StrictAnti lam ∧
-      (∀ i, MeasurableSubspace fun x => V i x) ∧
-      ∀ᵐ x ∂μ,
-        V 0 x = ⊤ ∧ V (Fin.last k) x = ⊥ ∧
-        (∀ i : Fin k, V i.succ x < V i.castSucc x) ∧
-        (∀ i : Fin (k + 1),
-          Submodule.map (Matrix.toEuclideanCLM (𝕜 := ℝ) (A x)).toLinearMap (V i x)
-            = V i (T x)) ∧
-        (∀ i : Fin k, ∀ v ∈ (V i.castSucc x : Set (EuclideanSpace ℝ (Fin d))),
-            v ∉ V i.succ x →
-            Tendsto
-              (fun n : ℕ => (n : ℝ)⁻¹ *
-                Real.log ‖Matrix.toEuclideanCLM (𝕜 := ℝ) (cocycle A T n x) v‖)
-              atTop (𝓝 (lam i))) :=
-  oseledets_filtration_of_interfaces hT A hA hAmeas hint hint' lam0 hspec hmeas hgrowth
 
 end ErgodicTheory

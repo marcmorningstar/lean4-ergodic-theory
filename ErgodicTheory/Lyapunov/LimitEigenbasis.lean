@@ -21,7 +21,6 @@ consistently with `Matrix.IsHermitian.eigenvalues₀`.
 * `limitEigenbasis_eigenpair_exp` — a.e. the eigenvalue is `Real.exp (lamSing A T x e)`.
 * `inner_limitEigenbasis_eq_zero_of_slow` — a.e., a sorted eigenvector is orthogonal to the
   slow subspace `vslow A T (exp t) x` whenever its exponent strictly exceeds `t`.
-* `abs_inner_le_one_bases` — the trivial Cauchy–Schwarz bound for orthonormal bases.
 -/
 
 open MeasureTheory Filter Topology Matrix
@@ -111,19 +110,6 @@ theorem limitEigenbasis_eigenpair_exp [MeasureTheory.IsProbabilityMeasure μ] [N
     exact key (lambdaHat A T x) (lambdaHat_isSelfAdjoint A T x).isHermitian hlh
   rw [limitEigenbasis_eigenpair, hHeq,
     heig hH ⟨(e : ℕ), lt_of_lt_of_eq e.isLt (Fintype.card_fin d).symm⟩]
-
-/-! ### The Cauchy–Schwarz bound for orthonormal bases -/
-
-/-- **The trivial inner-product bound between two orthonormal bases.**  `|⟪b₁ i, b₂ j⟫| ≤ 1`
-by Cauchy–Schwarz and the unit norms of orthonormal-basis vectors. -/
-theorem abs_inner_le_one_bases
-    (b₁ b₂ : OrthonormalBasis (Fin d) ℝ (EuclideanSpace ℝ (Fin d)))
-    (i j : Fin d) : |(inner ℝ (b₁ i) (b₂ j) : ℝ)| ≤ 1 := by
-  have hcs : ‖(inner ℝ (b₁ i) (b₂ j) : ℝ)‖ ≤ ‖b₁ i‖ * ‖b₂ j‖ :=
-    norm_inner_le_norm (𝕜 := ℝ) (b₁ i) (b₂ j)
-  rw [Real.norm_eq_abs] at hcs
-  rw [b₁.orthonormal.1 i, b₂.orthonormal.1 j, mul_one] at hcs
-  exact hcs
 
 /-! ### Orthogonality to the slow subspace -/
 

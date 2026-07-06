@@ -10,39 +10,25 @@ import ErgodicTheory.Lyapunov.StratumLogGrowthBounds
 /-!
 # The Oseledets filtration theorem from the spectral upper bound
 
-This file provides the slow-flag and per-stratum growth lemmas used to assemble the Oseledets
-filtration theorem `oseledets_filtration_of_upper'` (in `FiltrationFromSpectralIdent`) from a
-single analytic input `hupper` — the per-vector spectral upper bound: every nonzero vector of
-the slow space `vslow A T (Real.exp t) x` has upper growth exponent at most `t` — together
-with a minimized set of precisely typed residual hypotheses capturing the spectral
-identification of the Oseledets limit operator.
+This file collects the slow-flag and per-stratum growth helper lemmas that feed the assembly
+of the Oseledets filtration theorem from a single analytic input `hupper` — the per-vector
+spectral upper bound: every nonzero vector of the slow space `vslow A T (Real.exp t) x` has
+upper growth exponent at most `t`.  The full assembly (`oseledets_filtration_of_upper'`) is
+carried out downstream in `FiltrationFromSpectralIdent`; here we prove the three pieces it uses.
 
-The assembly proceeds through `ErgodicTheory.oseledets_filtration_of_slowflag`, which consumes
-three almost-everywhere interfaces: `hspec`, `hslowflag`, and `hgrowth`.  Each is discharged
-as far as `hupper` allows, isolating the remaining content into named residual hypotheses:
+* **Forward slow-flag inclusion.**  `vslow (exp t) ≤ lambdaSublevel t` is derived from
+  `hupper`: a nonzero vector of the slow space grows slowly, hence lies in the growth sublevel
+  (`vslow_subset_lambdaSublevel_of_upper`).
 
-* **`hslowflag`** (`vslow (exp t) = lambdaSublevel t`).  The forward inclusion
-  `vslow (exp t) ≤ lambdaSublevel t` is derived from `hupper`: a vector in the slow space grows
-  slowly, hence lies in the growth sublevel (`vslow_subset_lambdaSublevel_of_upper`).  The
-  reverse inclusion is taken as the typed residual hypothesis `hslowrev`.
+* **Per-stratum `limsup` upper half.**  On the `IsUltrametricGrowth` good set the per-stratum
+  `limsup` equals the exact exponent `specList i`, so in particular `limsup ≤ specList i` holds
+  unconditionally (`limsup_log_norm_cocycle_apply_le_specList_of_mem_stratum`); this is the
+  upper half consumed by `tendsto_inv_mul_log_norm_cocycle_apply_of_upper_lower`.
 
-* **`hgrowth`** via `ErgodicTheory.tendsto_inv_mul_log_norm_cocycle_apply_of_upper_lower`.  The
-  upper half `hub` holds unconditionally on the `IsUltrametricGrowth` good set
-  (`limsup_log_norm_cocycle_apply_le_specList_of_mem_stratum`); the boundedness `hbdd` comes
-  from the Furstenberg–Kesten layer
-  (`ErgodicTheory.isBoundedUnder_inv_mul_log_norm_cocycle_apply_of_mem_stratum`); the lower bound
-  `hlb` comes from the band-projector layer
-  (`ErgodicTheory.specList_le_liminf_inv_mul_log_norm_cocycle_apply_of_bandProjector`), fed the
-  residual band-projector convergence datum `hband`.
-
-* **`hspec`** via `ErgodicTheory.specList_eq_expEnum_of_subsets_standing`.  The two `Finset`
-  inclusions between the realized exponent set `spectrum` and the deterministic exponent set
-  `distinctExp lam0 d`
-  are taken as the typed residuals `hub_spec` and `hlb_spec`.
-
-The residual hypotheses `hslowrev`, `hband`, `hub_spec`, `hlb_spec` are each the minimal
-cleanly typed shape of a single spectral fact about the Oseledets limit operator; none is
-derivable from `hupper` alone.
+* **Slow-flag identification.**  Combining the forward inclusion with a reverse-inclusion
+  hypothesis `hslowrev` (`lambdaSublevel t ≤ vslow (exp t)`) yields the per-point identification
+  `vslow (exp t) = lambdaSublevel t` (`vslow_eq_lambdaSublevel_of_upper`) consumed by
+  `oseledets_filtration_of_slowflag`.
 
 ## Main results
 

@@ -65,8 +65,11 @@ Classical.choice, Quot.sound]`.
   real Arnold automorphism on 𝕋² = (ℝ/ℤ)², measure-preserving + **ergodic** via the Koopman/Fourier-character
   argument (Mathlib's multivariate `mFourierBasis`). Replaces the old constant-cocycle stand-in. **A documented
   Phase-1 wall, fully closed.**
-- **#3 2-torus Fourier** — `ErgodicTheory/Fourier/Torus2.lean`: characters as an orthonormal + **complete** Hilbert
-  basis, Parseval, the orthogonal-to-all-characters ⇒ 0 interface (completeness free from `AddCircleMulti`).
+- **#3 2-torus Fourier** — *(the standalone `ErgodicTheory/Fourier/Torus2.lean` module was removed in a
+  later cleanup)*: characters as an orthonormal + **complete** Hilbert basis, the
+  orthogonal-to-all-characters ⇒ 0 interface. The completeness/orthonormality is now taken directly from
+  Mathlib's multivariate `mFourierBasis` (`Mathlib.Analysis.Fourier.AddCircleMulti`), used inline in
+  `ErgodicTheory/Examples/CatMapToral.lean`.
 - **#4 non-vacuous Ruelle instance** — `doublingMap_ksEntropyPartition_le_sumPosExp`: the **per-partition**
   bound `h(α,T) ≤ Σλᵢ⁺ = log 2` for the doubling map (a genuine `log2 ≤ log2`, not `0 ≤ 0`). *Honest scope:*
   per-partition, not the system `h(T)`; the atom-count hypothesis is automatic for the binary partition (the

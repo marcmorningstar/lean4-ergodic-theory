@@ -31,9 +31,13 @@ exponents, and singular one-sided bounds).
 The library also includes a finite-dimensional **quantum-information layer**
 (`ErgodicTheory/OperatorEntropy/`, issues #22–#28), built on the same matrix/CFC infrastructure:
 the von Neumann and Umegaki relative entropies, Klein's inequality and **Lieb's joint-convexity
-theorem**, the **CPTP data-processing inequality** (`monotonicity_relEntropy_under_CPTP`), the
-**CNT dynamical entropy** (whose abelian corner recovers the classical Kolmogorov–Sinai entropy,
-`cntDynamicalEntropyAbelian_eq_ksEntropy`), and **both directions of Petz's equality theorem** —
+theorem**, the **partial-trace data-processing inequality** (arbitrary ρ, faithful σ;
+`relEntropyMonotone_partialTrace`) with its **faithful-ancilla Stinespring-family** extension
+(`monotonicity_relEntropy_under_stinespring`), the **CNT dynamical entropy** (whose abelian corner
+recovers the classical Kolmogorov–Sinai entropy — the system-level identity
+`cntDynamicalEntropyAbelian_eq_ksEntropy` is a disclosed `0 = 0` on the finite-permutation model, the
+substantive content being the per-resolution `vonNeumannEntropy_corrMatrix_eq_ksEntropySeq`), and
+**both directions of Petz's equality theorem** —
 recovery ⟹ saturation (`petz_recovery_implies_equality`) and, fully general, saturation ⟹
 recovery (`petz_equality_recovery_general`, for every faithful-state `KrausChannel`). All
 sorry-free and axiom-audited.
@@ -57,14 +61,16 @@ ErgodicTheory/
   TwoSided/           -- the two-sided splitting
   Continuous/         -- the continuous-flow MET
   OperatorEntropy/    -- finite-dim quantum-information layer (issues #22–#28): von Neumann &
-                      --   Umegaki relative entropy, Klein/Lieb joint convexity, the CPTP
-                      --   data-processing inequality, CNT dynamical entropy, Petz recovery +
-                      --   equality theorem (both directions)
+                      --   Umegaki relative entropy, Klein/Lieb joint convexity, the
+                      --   (partial-trace + Stinespring-family) data-processing inequality, CNT
+                      --   dynamical entropy, Petz recovery + equality theorem (both directions)
 test/
   AxiomAudit.lean     -- guarded #print-axioms regression (separate lib; not upstreamable source)
 blueprint/            -- leanblueprint LaTeX source (web + PDF; \lean-linked to declarations)
 home_page/            -- Jekyll landing page for the GitHub Pages site
-lakefile.toml         -- package config (ErgodicTheory + AxiomAudit libraries; depends on Mathlib + checkdecls)
+Frontier/             -- disclosed staging area (separate `Frontier` lake lib): import-free, sorry-free
+                      --   root; the sorry-carrying Frontier.Issue* subtree is unreachable from any default build
+lakefile.toml         -- package config (ErgodicTheory + AxiomAudit + Frontier libraries; depends on Mathlib + checkdecls)
 lean-toolchain        -- pinned Lean version
 docs/                 -- research notes, design records, references.bib, progress state
 ```

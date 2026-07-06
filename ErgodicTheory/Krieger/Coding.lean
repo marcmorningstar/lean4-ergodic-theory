@@ -231,7 +231,7 @@ and the two-sided `P`-itinerary recovers each cell of `Q` mod 0
 (twoSidedSat e P)` by mod-0 recovery monotonicity (`twoSidedSat_mono_of_codes`),
 completion-monotonicity (`eventuallyMeasurableSpace_mono`), and completion-idempotence
 (`eventuallyMeasurableSpace_idem`). Chaining gives `mα ≤ completion (twoSidedSat e P)`. This is the
-mod-0 two-sided analogue of `ErgodicTheory.Entropy.IsGenerating.mono_refine`. -/
+mod-0 two-sided analogue of the refinement-monotonicity of one-sided generators. -/
 theorem IsGeneratingTwoSidedMod0.of_codes {e : α ≃ᵐ α}
     (he : MeasurePreserving (e : α → α) μ μ) {P : MeasurePartition μ ι} {Q : MeasurePartition μ κ}
     (hQ : IsGeneratingTwoSidedMod0 e Q)
