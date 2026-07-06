@@ -69,7 +69,6 @@ import ErgodicTheory.Continuous.ReturnTimeTopExponent
 import ErgodicTheory.Continuous.SuspensionCocycle
 import ErgodicTheory.Continuous.SuspensionLapCount
 import ErgodicTheory.Continuous.SuspensionFlowCocycle
-import ErgodicTheory.Continuous.SuspensionFlowCocycleMul
 import ErgodicTheory.Continuous.SuspensionCoverCocycle
 import ErgodicTheory.Continuous.SuspensionCoverFlow
 import ErgodicTheory.Continuous.SuspensionDescent
@@ -1235,16 +1234,6 @@ info: 'ErgodicTheory.Entropy.MeasurePartition.sum_toReal_measure_eq_one' depends
 /-- info: 'ErgodicTheory.flowCocycleSection_zero' depends on axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs in
 #print axioms ErgodicTheory.flowCocycleSection_zero
-
--- Issue #5 (flow cocycle multiplicativity): the base-cocycle identity at return times.
-
-/-- info: 'ErgodicTheory.flowCocycleSection_returnTime_add' depends on axioms: [propext, Classical.choice, Quot.sound] -/
-#guard_msgs in
-#print axioms ErgodicTheory.flowCocycleSection_returnTime_add
-
-/-- info: 'ErgodicTheory.flowCocycleSection_returnTime_succ' depends on axioms: [propext, Classical.choice, Quot.sound] -/
-#guard_msgs in
-#print axioms ErgodicTheory.flowCocycleSection_returnTime_succ
 
 -- Issue #5 (cover extension): lapCount monotone + the off-section lap-count additivity.
 

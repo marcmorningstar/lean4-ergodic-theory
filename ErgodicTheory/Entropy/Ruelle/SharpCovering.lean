@@ -11,8 +11,8 @@ import Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar
 /-!
 # The sharp anisotropic one-step covering count
 
-This module proves the **sharp, anisotropic** covering-count estimate that the *isotropic* volume
-bound of `ErgodicTheory.Entropy.Ruelle.LocalCovering` left open (Liao–Qiu,
+This module proves the **sharp, anisotropic** covering-count estimate that the naive *isotropic*
+`‖L‖`-only volume bound leaves open (Liao–Qiu,
 *Margulis–Ruelle inequality for general manifolds*, §3, Lemmas 3.2–3.3).
 
 For a linear map `L : EuclideanSpace ℝ (Fin d) →L[ℝ] EuclideanSpace ℝ (Fin d)` (the derivative of
@@ -314,8 +314,8 @@ theorem cthickening_image_closedBall_subset_ellipsoid {ε δ : ℝ} (hε : 0 < �
 `L` of `EuclideanSpace ℝ (Fin d)` is bounded by `∏ᵢ 2(ε σᵢ + δ) · volume(ball 0 1)`, where `σᵢ` are
 the singular values of `L` (via the SVD `svd_exists`).
 
-This is the **sharp anisotropic** replacement for the isotropic
-`MeasureTheory.addHaar_cthickening_image_closedBall_le` (which sees only `‖L‖ = σ₀`): the thin
+This is the **sharp anisotropic** replacement for the isotropic `‖L‖`-only thickened-ball volume
+bound (which sees only `‖L‖ = σ₀`): the thin
 directions (`σᵢ ≪ 1`) genuinely shrink the product.  The proof dominates the thickened ellipsoid
 `L '' closedBall 0 ε ⊕ ball δ` by the ellipsoid `c.repr.symm '' (diagMap (2(ε σ + δ)) '' ball 0 1)`
 (`cthickening_image_closedBall_subset_ellipsoid`), transports the volume through the measure-
