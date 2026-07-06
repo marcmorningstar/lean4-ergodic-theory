@@ -247,23 +247,6 @@ theorem oneStep_sandwich (n : ℕ) (lo hi : Finset (Fin d)) (s t b : ℝ)
   have hR : 0 ≤ b * s * ‖u‖ := by positivity
   nlinarith [hchain, hL, hR]
 
-/-! ## The band-grouped Parseval envelope -/
-
-/-- **Band-restricted Parseval mass.**  The partial Parseval sum over a band `B` is exactly
-`Σ_{j ∈ B} (σ n j)² ⟪e n j, v⟫²`, and is bounded by `Sr² · ‖fastProj n B v‖²` whenever every
-singular value in `B` is `≤ Sr`.  (This is the per-band term that, with the leakage envelope on
-`‖fastProj n B v‖`, yields the `λ⁽ᵖ⁾` growth.) -/
-lemma band_partial_normSq_le (n : ℕ) (B : Finset (Fin d)) (Sr : ℝ) (hSr : 0 ≤ Sr)
-    (hσ : ∀ j ∈ B, S.σ n j ≤ Sr) (v : E) :
-    ∑ j ∈ B, (S.σ n j) ^ 2 * ⟪S.e n j, v⟫ ^ 2 ≤ Sr ^ 2 * ‖S.fastProj n B v‖ ^ 2 := by
-  rw [S.normSq_fastProj, Finset.mul_sum]
-  apply Finset.sum_le_sum
-  intro j hj
-  apply mul_le_mul_of_nonneg_right _ (sq_nonneg _)
-  apply sq_le_sq'
-  · linarith [S.σ_nonneg n j, hσ j hj, hSr]
-  · exact hσ j hj
-
 /-! ## The `k`-uniform forward chain (geometric recursion)
 
 Ruelle's Lemma 1.4 controls the leakage of *slow* mass into the *fast* bands accumulated over the
@@ -315,28 +298,6 @@ theorem geometric_recursion (a c : ℕ → ℝ) (q : ℝ) (hq : 0 ≤ q)
       rw [this, pow_zero, one_mul]
     rw [hck]
     ring
-
-/-! ## The reverse side (orthogonal block-norm symmetry)
-
-Ruelle's reverse-side estimate bounds the entries of the orthogonal change-of-basis matrix
-`S_{ij} = ⟪e_n j, e_m i⟫` on the *other* side of the band diagonal (slow `i` at time `m`, fast `j`
-at time `n`) at the full pairwise rate.  The deep route is the cofactor/permutation expansion.
-Here we
-record the elementary structural fact that already pins the reverse-side block to the same Frobenius
-mass as the forward-side block, which is the quantitative heart of the rate transfer for the
-dominant gap: for *any* orthonormal change of basis, the off-diagonal block over `(A, Aᶜ)` carries
-the same squared mass as the transposed block over `(Aᶜ, A)`.
-
-This is purely orthogonality (`SᵀS = I = SSᵀ`, realised as Parseval in each basis): no permutation
-combinatorics.  It gives the reverse-side leakage `Σ_{j∈Aᶜ}⟪e_m i, e_n j⟫²` (summed over slow `i∈A`)
-exactly in terms of the forward-side leakage, hence at the forward rate. -/
-
-/-- Parseval in an orthonormal basis `b`: `‖u‖² = Σ_i ⟪b i, u⟫²`. -/
-lemma orthonormalBasis_normSq_eq (b : OrthonormalBasis (Fin d) ℝ E) (u : E) :
-    ‖u‖ ^ 2 = ∑ i, ⟪b i, u⟫ ^ 2 := by
-  rw [← real_inner_self_eq_norm_sq, ← b.sum_inner_mul_inner u u]
-  apply Finset.sum_congr rfl
-  intro j _; rw [real_inner_comm (b j) u]; ring
 
 end SVDData
 

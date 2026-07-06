@@ -45,8 +45,6 @@ self-propagates: if it holds it holds at `T x` too, and on the full orbit.
   unconditional `Finset` algebra: they turn the two per-vector inclusions into the Finset identity /
   the `hspec` interface, using nothing but
   `ErgodicTheory.specList_eq_expEnum_of_lyapunovSpectrum_const`.
-* `lyapunovSpectrum_const_invariant_ae` is unconditional (from
-  `lyapunovSpectrum_equivariant_ae`): the identification, once true a.e., is `T`-invariant a.e.
 * The two per-vector inclusion hypotheses `hub_spec` / `hlb_spec` are the analytic interface.  The
   lower one follows from the established lower bound; the upper one is the spectral upper bound.
   They are stated here in a minimal cleanly-typed Finset shape so that the surrounding assembly can
@@ -173,34 +171,6 @@ theorem lyapunovSpectrum_eq_distinctExp_of_lambdaBar
   refine lyapunovSpectrum_eq_of_subsets ?_ ?_
   · exact (lyapunovSpectrum_subset_iff_lambdaBar_mem hx).mpr hub
   · exact (distinctExp_subset_iff_lambdaBar_attained hx).mpr hlb
-
-/-! ## Ergodic constancy of the spectrum
-
-The deterministic target `distinctExp lam0 d` is constant in `x`, so the identification
-`lyapunovSpectrum A T x = distinctExp lam0 d` is automatically `T`-invariant.  We make the
-self-propagation explicit and unconditional from `lyapunovSpectrum_equivariant_ae`: where the
-spectrum equals the deterministic constant and is `A`-equivariant, the same holds at `T x`.  This
-is the precise ergodic-constancy content — once the (deterministic) value is identified, ergodicity
-adds nothing further, because a deterministic function is already constant. -/
-
-/-- **Self-propagation of the spectrum identity along `T` (a.e.).**  Unconditional from
-`lyapunovSpectrum_equivariant_ae`: if a.e. `lyapunovSpectrum A T x = distinctExp lam0 d`, then a.e.
-`lyapunovSpectrum A T (T x) = distinctExp lam0 d` as well.  Together with the a.e. equivariance
-`lyapunovSpectrum A T x = lyapunovSpectrum A T (T x)` this exhibits the identification as
-`T`-invariant, i.e. the spectrum is a.e. equal to the *same* deterministic constant set at `x` and
-at `T x`. -/
-theorem lyapunovSpectrum_const_invariant_ae
-    {μ : Measure X} [IsProbabilityMeasure μ] {T : X → X}
-    (hT : Ergodic T μ)
-    {A : X → Matrix (Fin d) (Fin d) ℝ} (hA : ∀ x, (A x).det ≠ 0) (hAmeas : Measurable A)
-    (hint : IntegrableLogNorm A μ) (hint' : IntegrableLogNorm (fun x => (A x)⁻¹) μ)
-    (lam0 : ℕ → ℝ)
-    (hconst : ∀ᵐ x ∂μ, lyapunovSpectrum A T x = distinctExp lam0 d) :
-    ∀ᵐ x ∂μ, lyapunovSpectrum A T x = distinctExp lam0 d ∧
-      lyapunovSpectrum A T (T x) = distinctExp lam0 d := by
-  have hequiv := lyapunovSpectrum_equivariant_ae hT hA hAmeas hint hint'
-  filter_upwards [hconst, hequiv] with x hx heq
-  exact ⟨hx, by rw [← heq]; exact hx⟩
 
 /-! ## End-to-end: the `hspec` interface under the standing hypotheses
 
