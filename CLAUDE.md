@@ -49,10 +49,13 @@ style-lint regression. See `docs/progress/STATE.md` for the final composition.
 A **finite-dimensional quantum-information layer** (`ErgodicTheory/OperatorEntropy/`, issues
 #22–#28) has since been added on the same matrix/CFC infrastructure: the von Neumann and
 Umegaki relative entropies, Klein's inequality and **Lieb's joint-convexity theorem**, the
-**CPTP data-processing inequality**, the **CNT dynamical entropy** (whose abelian corner
-recovers the classical Kolmogorov–Sinai entropy), and **both directions of Petz's equality
-theorem** (Petz recovery ⟺ saturation of the data-processing inequality) — all sorry-free and
-guarded in `test/AxiomAudit.lean` to the same axiom set.
+**partial-trace data-processing inequality** (arbitrary ρ, faithful σ;
+`relEntropyMonotone_partialTrace`) with its **faithful-ancilla Stinespring-family** extension
+(`monotonicity_relEntropy_under_stinespring`), the **CNT dynamical entropy** (whose abelian corner
+recovers the classical Kolmogorov–Sinai entropy — a disclosed `0 = 0` at the system level, with the
+substantive content in the per-resolution identity `vonNeumannEntropy_corrMatrix_eq_ksEntropySeq`),
+and **both directions of Petz's equality theorem** (Petz recovery ⟺ saturation of the
+data-processing inequality) — all sorry-free and guarded in `test/AxiomAudit.lean` to the same axiom set.
 
 ## Layout
 
@@ -60,9 +63,10 @@ guarded in `test/AxiomAudit.lean` to the same axiom set.
 |---|---|
 | `ErgodicTheory.lean` | Library root; imports every module of the formalization. |
 | `ErgodicTheory/` | Library modules: `Cocycle/`, `Ergodic/`, `Lyapunov/` (incl. `Lyapunov/Extensions/` for the post-theorem corollaries), `MultiplicativeErgodic.lean` (the proved target theorem), `TwoSided/`, `Continuous/`. |
-| `ErgodicTheory/OperatorEntropy/` | Finite-dim quantum-information layer (issues #22–#28): von Neumann & Umegaki relative entropy, Klein/Lieb joint convexity, the CPTP data-processing inequality, CNT dynamical entropy (abelian corner = classical KS entropy), and the Petz recovery + equality theorem (both directions). |
+| `ErgodicTheory/OperatorEntropy/` | Finite-dim quantum-information layer (issues #22–#28): von Neumann & Umegaki relative entropy, Klein/Lieb joint convexity, the partial-trace data-processing inequality (arbitrary ρ, faithful σ) + its faithful-ancilla Stinespring-family extension, CNT dynamical entropy (abelian corner = classical KS entropy — a disclosed system-level `0 = 0`, substantive content in the per-resolution identity), and the Petz recovery + equality theorem (both directions). |
 | `test/AxiomAudit.lean` | The guarded axiom-check (separate `AxiomAudit` lib; not part of the `ErgodicTheory` library). |
-| `lakefile.toml` | Package config: the `ErgodicTheory` lib + the `AxiomAudit` test lib (both default targets), depends on Mathlib. |
+| `Frontier/` | Disclosed staging area (separate `Frontier` lake lib): import-free, sorry-free root; the sorry-carrying `Frontier.Issue*` subtree is unreachable from any default build target. |
+| `lakefile.toml` | Package config: the `ErgodicTheory` lib + the `AxiomAudit` test lib + the `Frontier` staging lib (all default targets), depends on Mathlib. |
 | `lean-toolchain` | Pinned Lean version (`leanprover/lean4:v4.30.0-rc2`). |
 | `lake-manifest.json` | Pinned dependency revisions. |
 | `.github/workflows/` | CI: `lake build` on push and PR. |

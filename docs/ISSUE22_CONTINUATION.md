@@ -1,11 +1,17 @@
 # Issue #22 — continuation handoff (DPI + Petz ⇒ no-section)
 
+> **Historical document — kept for provenance.** Issue #22 was closed 2026-07-01 and issue #28 (the
+> Petz-equality residual) closed 2026-07-03; the data-processing inequality and *both* directions of
+> Petz's equality theorem are now proved sorry-free on `main`. The "multi-month keystone" framing below
+> is a snapshot from before that work landed. For current status see the living docs (`README.md`,
+> `docs/progress/STATE.md`); this file is not maintained.
+
 > **Start here for a new session.** This branch (`wip/issue-22`) is a checkpoint: the **Phase-A
 > foundations** for issue #22 are landed and green; the **Lieb/operator-Jensen keystone** is fully
 > researched and de-risked (a *verified* skeleton is committed under `docs/issue22/`), but **not yet
 > ground**. Everything below is what you need to resume.
 
-GitHub issue: <https://github.com/marcmorningstar/lean4-oseledets/issues/22>
+GitHub issue: <https://github.com/marcmorningstar/lean4-ergodic-theory/issues/22>
 
 ---
 

@@ -3,7 +3,7 @@
 > **Status: COMPLETE.** The one-sided Oseledets multiplicative ergodic theorem is proved
 > sorry-free, together with its companion corollaries, ten additive extensions, the two-sided
 > splitting, the continuous-flow version, and a finite-dimensional **quantum-information layer**
-> (operator entropy, Lieb joint convexity, the CPTP data-processing inequality, CNT dynamical
+> (operator entropy, Lieb joint convexity, the partial-trace data-processing inequality, CNT dynamical
 > entropy, and Petz recovery + equality — issues #22–#28). The whole library builds clean, is enforced
 > linter-clean under `linter.mathlibStandardSet` (warnings promoted to errors in `lakefile.toml`,
 > so `lake build` and CI fail on any lint regression), and every headline result is guarded in
@@ -57,7 +57,8 @@ backward envelope (phases P0–P8).
 
 `ErgodicTheory.oseledets_flow` (`MultiplicativeErgodicFlow.lean`) — the continuous-time / measure-
 preserving-ℝ-flow version: exponents, a measurable **flow-equivariant** filtration
-(`map (A t x) (Vⁱ x) = Vⁱ (φ t x)` for all real `t`), and exact **continuous-parameter** growth
+(for each `t`, for a.e. `x`, `map (A t x) (Vⁱ x) = Vⁱ (φ t x)` — the null set depends on `t`, weaker
+than a single flow-invariant conull set), and exact **continuous-parameter** growth
 `(1/t) log‖A(t,x) v‖ → λᵢ` as `t → ∞`. Built by reducing to the discrete theorem at the time-1
 map (`Flow.lean` reduction identity, `Reduction.lean`), upgrading integer-time growth to the
 continuous parameter via a between-times sandwich (`BetweenTimes.lean`), and proving real-time
@@ -74,8 +75,10 @@ All results are sorry-free, linter-clean, and guarded in `test/AxiomAudit.lean`.
   Klein / Peierls inequality.
 * **Subadditivity & Lieb** (`Lieb/`) — Klein's inequality ⟹ subadditivity, and **Lieb's theorem**,
   the joint convexity of the quantum relative entropy (`relEntropyMat_jointly_convex`).
-* **Data processing** (`Lieb/DataProcessingCPTP.lean`) — the **CPTP data-processing inequality**
-  `S(Λρ‖Λσ) ≤ S(ρ‖σ)` (`monotonicity_relEntropy_under_CPTP`) and the no-section obstruction.
+* **Data processing** (`Lieb/DataProcessing*.lean`) — the **partial-trace data-processing inequality**
+  `S(Tr_E ρ ‖ Tr_E σ) ≤ S(ρ‖σ)` for arbitrary ρ and faithful σ (`relEntropyMonotone_partialTrace`), its
+  **faithful-ancilla Stinespring-family** extension (`monotonicity_relEntropy_under_stinespring`), and the
+  no-section obstruction. (No DPI for an arbitrary CPTP/Kraus channel is claimed.)
 * **Petz recovery + equality** (`Lieb/`) — the **Petz recovery map** and **both directions of
   Petz's equality theorem**: recovery ⟹ saturation of the DPI (`petz_recovery_implies_equality`,
   #22) and, fully general (#28), saturation ⟹ recovery (`petz_equality_recovery_general`, for
