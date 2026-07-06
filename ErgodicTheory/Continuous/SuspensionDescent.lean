@@ -50,13 +50,10 @@ rate** (Lyapunov exponent `lim (1/t) log ‖·‖`) does: the extra `log ‖A x�
   section at `x` past one full lap `τ x` then a residual `r ≥ 0` equals advancing from the next base
   point `T x` by `r`, post-multiplied by the single base step `A x`:
   `coverCocycle (x, 0) (τ x + r) = coverCocycle (T x, 0) r * A x`.
-* `ErgodicTheory.coverCocycle_one_lap_opNorm_le`: the operator-norm submultiplicative form of the
-  descent identity, `‖coverCocycle (x, 0) (τ x + r)‖ ≤ ‖coverCocycle (T x, 0) r‖ * ‖A x‖`, the
-  inequality through which the *Lyapunov exponent* (not the matrix) descends to the quotient.
 
 ## What is *not* in this file — the remaining gap toward the `SuspensionSpace` `FlowCocycle`
 
-This module lands the *matrix-level* descent at a single lap (and its norm shadow), but a genuine
+This module lands the *matrix-level* descent identity at a single lap, but a genuine
 quotient-well-defined `ErgodicTheory.FlowCocycle` over `SuspensionSpace T hτ` and the suspension
 flow needs three further pieces, all deferred:
 
@@ -111,23 +108,6 @@ theorem coverCocycle_one_lap (hc : ∀ x, c ≤ τ x) (hcpos : 0 < c) {r : ℝ} 
   have h := coverCocycle_section_returnTime A T hτ hc hcpos 1 hr x
   rw [returnTime_one T hτ x] at h
   rw [h, Function.iterate_one, cocycle_one]
-
-/-- **The operator-norm form of the one-lap descent.** Taking the L2 operator norm of the one-lap
-descent identity `coverCocycle_one_lap` and applying submultiplicativity (`Matrix.l2_opNorm_mul`)
-bounds the norm of the matrix accumulated past one lap by the norm at the re-based representative
-times the single bounded base factor `‖A x‖`:
-`‖coverCocycle (x, 0) (τ x + r)‖ ≤ ‖coverCocycle (T x, 0) r‖ * ‖A x‖`.
-
-This is the inequality through which the **Lyapunov exponent** descends to the quotient: in the
-growth rate `lim (1/t) log ‖coverCocycle p t‖` the extra `log ‖A x‖` from one lap is a bounded
-additive term killed by the `1/t` Birkhoff average, so the per-class growth rate is unchanged by the
-lap re-basing even though the matrix is not. -/
-theorem coverCocycle_one_lap_opNorm_le (hc : ∀ x, c ≤ τ x) (hcpos : 0 < c) {r : ℝ} (hr : 0 ≤ r)
-    (x : X) :
-    ‖coverCocycle A T hτ hc hcpos (x, 0) (τ x + r)‖
-      ≤ ‖coverCocycle A T hτ hc hcpos (T x, 0) r‖ * ‖A x‖ := by
-  rw [coverCocycle_one_lap A T hτ hc hcpos hr x]
-  exact Matrix.l2_opNorm_mul _ _
 
 end Descent
 

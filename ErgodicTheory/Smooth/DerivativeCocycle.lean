@@ -29,8 +29,8 @@ act on `EuclideanSpace ℝ (Fin d)` via `Matrix.toEuclideanCLM`.
 ## Main results
 
 * `ErgodicTheory.toEuclideanCLM_derivativeCocycle` —
-  `toEuclideanCLM (derivativeCocycle T x) = Dₓ T`.
-* `ErgodicTheory.norm_derivativeCocycle` — the generator has the same L2 operator norm as `Dₓ T`.
+  `toEuclideanCLM (derivativeCocycle T x) = Dₓ T` (an L2 isometry, so the generator has the same
+  operator norm as `Dₓ T`).
 * `ErgodicTheory.chainRule_cocycle` — the **chain-rule cocycle identity**
   `toEuclideanCLM (cocycle (derivativeCocycle T) T n x) = fderiv ℝ (T^[n]) x`.
 * `ErgodicTheory.measurable_derivativeCocycle` — measurability of the generator from continuity of
@@ -67,14 +67,6 @@ noncomputable def derivativeCocycle
     (T : EuclideanSpace ℝ (Fin d) → EuclideanSpace ℝ (Fin d)) (x : EuclideanSpace ℝ (Fin d)) :
     Matrix.toEuclideanCLM (𝕜 := ℝ) (derivativeCocycle T x) = fderiv ℝ T x :=
   (Matrix.toEuclideanCLM (𝕜 := ℝ) (n := Fin d)).apply_symm_apply _
-
-/-- The generator has the same L2 operator norm as the derivative: `‖derivativeCocycle T x‖`
-equals `‖fderiv ℝ T x‖`. This is the bridge identifying the matrix integrability hypotheses with
-the genuine `log⁺‖Dₓ T‖` ones. -/
-theorem norm_derivativeCocycle
-    (T : EuclideanSpace ℝ (Fin d) → EuclideanSpace ℝ (Fin d)) (x : EuclideanSpace ℝ (Fin d)) :
-    ‖derivativeCocycle T x‖ = ‖fderiv ℝ T x‖ := by
-  rw [← Matrix.l2_opNorm_toEuclideanCLM (derivativeCocycle T x), toEuclideanCLM_derivativeCocycle]
 
 /-- **Chain-rule cocycle identity.** For a differentiable `T`, the matrix
 `cocycle (derivativeCocycle T) T n x` represents the derivative of the `n`-th iterate `T^[n]`
@@ -142,8 +134,10 @@ nonsingular derivative cocycle and integrable log-derivative data
 `log⁺‖Dₓ T‖, log⁺‖(Dₓ T)⁻¹‖ ∈ L¹(μ)`. Then there is an `A`-equivariant Lyapunov filtration with
 the convergence `(1/n) log‖D(T^[n]) v‖ → λᵢ` along each stratum, for `A := derivativeCocycle T`.
 
-The integrability hypotheses are stated directly for the matrix generator; by
-`norm_derivativeCocycle` these are exactly the genuine `log⁺‖fderiv‖` (and inverse) conditions.
+The integrability hypotheses are stated directly for the matrix generator; since
+`toEuclideanCLM (derivativeCocycle T x) = Dₓ T` (`toEuclideanCLM_derivativeCocycle`) and
+`toEuclideanCLM` is an L2 isometry, `‖derivativeCocycle T x‖ = ‖Dₓ T‖`, so these are exactly the
+genuine `log⁺‖fderiv‖` (and inverse) conditions.
 The first conjunct records that the cocycle is the genuine tangent cocycle: each factor
 `toEuclideanCLM (cocycle (derivativeCocycle T) T n x)` is the derivative `fderiv ℝ (T^[n]) x`. -/
 theorem oseledets_filtration_derivativeCocycle

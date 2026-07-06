@@ -526,69 +526,6 @@ theorem ereal_ratio_le_limsup {c z : ℕ → ℝ} (hz : ∀ n, z n ≤ 0)
     exact hreal ε hε hε1
 
 omit [MeasurableSpace X] in
-/-- **EReal ratio squeeze (`liminf`), lower companion.** Dual of `ereal_ratio_le_limsup`:
-`liminf ↑(c · z) ≤ liminf ↑z` when `z n ≤ 0` and `c n → 1`. -/
-theorem ereal_ratio_le_liminf {c z : ℕ → ℝ} (hz : ∀ n, z n ≤ 0)
-    (hctend : Tendsto c atTop (𝓝 1)) :
-    Filter.liminf (fun n => ((c n * z n : ℝ) : EReal)) atTop
-      ≤ Filter.liminf (fun n => ((z n : ℝ) : EReal)) atTop := by
-  set Lz : EReal := Filter.liminf (fun n => ((z n : ℝ) : EReal)) atTop with hLz
-  set Lcz : EReal := Filter.liminf (fun n => ((c n * z n : ℝ) : EReal)) atTop with hLcz
-  have hLz0 : Lz ≤ 0 := by
-    rw [hLz]
-    refine le_trans (Filter.liminf_le_liminf (Eventually.of_forall fun n =>
-      (EReal.coe_le_coe_iff.2 (hz n) : ((z n : ℝ) : EReal) ≤ ((0 : ℝ) : EReal)))) ?_
-    simp [Filter.liminf_const]
-  have hkey : ∀ ε : ℝ, 0 < ε → ε < 1 → Lcz ≤ (((1 - ε : ℝ) : EReal)) * Lz := by
-    intro ε hε hε1
-    have hev : ∀ᶠ n in atTop, ((c n * z n : ℝ) : EReal) ≤ ((((1 - ε) * z n : ℝ)) : EReal) := by
-      have : ∀ᶠ n in atTop, 1 - ε ≤ c n := by
-        obtain ⟨N, hN⟩ := (Metric.tendsto_atTop.1 hctend) ε hε
-        filter_upwards [eventually_ge_atTop N] with n hn
-        have := hN n hn
-        rw [Real.dist_eq, abs_lt] at this
-        linarith [this.1]
-      filter_upwards [this] with n hcn
-      exact EReal.coe_le_coe_iff.2 (mul_le_mul_of_nonpos_right hcn (hz n))
-    have hmono : Lcz ≤ Filter.liminf (fun n => ((((1 - ε) * z n : ℝ)) : EReal)) atTop :=
-      Filter.liminf_le_liminf hev
-    have hscalar : Filter.liminf (fun n => ((((1 - ε) * z n : ℝ)) : EReal)) atTop
-        = (((1 - ε : ℝ) : EReal)) * Lz := by
-      have hfun : (fun n => ((((1 - ε) * z n : ℝ)) : EReal))
-          = fun n => (((1 - ε : ℝ) : EReal)) * ((z n : ℝ) : EReal) := by
-        funext n; rw [EReal.coe_mul]
-      rw [hfun, hLz, EReal.liminf_const_mul_of_nonneg_of_ne_top
-        (EReal.coe_nonneg.2 (by linarith)) (EReal.coe_ne_top _)]
-    rwa [hscalar] at hmono
-  rcases eq_bot_or_bot_lt Lz with hbot | hfin
-  · rw [hbot]
-    have := hkey (1/2) (by norm_num) (by norm_num)
-    rw [hbot] at this
-    rwa [EReal.mul_bot_of_pos
-      (EReal.coe_pos.2 (by norm_num : (0 : ℝ) < 1 - 1/2))] at this
-  · have hne_bot : Lz ≠ ⊥ := hfin.ne'
-    have hne_top : Lz ≠ ⊤ := (hLz0.trans_lt (by norm_num : (0 : EReal) < ⊤)).ne
-    set a : ℝ := Lz.toReal with hadef
-    have ha : ((a : ℝ) : EReal) = Lz := EReal.coe_toReal hne_top hne_bot
-    rw [← ha]
-    have hreal : ∀ ε : ℝ, 0 < ε → ε < 1 → Lcz ≤ ((((1 - ε) * a : ℝ)) : EReal) := by
-      intro ε hε hε1
-      have := hkey ε hε hε1
-      rw [← ha, ← EReal.coe_mul] at this
-      exact this
-    have htend : Tendsto (fun ε : ℝ => ((((1 - ε) * a : ℝ)) : EReal)) (𝓝[>] 0)
-        (𝓝 ((a : ℝ) : EReal)) := by
-      apply (continuous_coe_real_ereal.tendsto _).comp
-      have : Tendsto (fun ε : ℝ => (1 - ε) * a) (𝓝 0) (𝓝 ((1 - 0) * a)) :=
-        ((continuous_const.sub continuous_id).mul continuous_const).tendsto 0
-      simp only [sub_zero, one_mul] at this
-      exact this.mono_left nhdsWithin_le_nhds
-    refine ge_of_tendsto htend ?_
-    filter_upwards [self_mem_nhdsWithin, eventually_nhdsWithin_of_eventually_nhds
-      (eventually_lt_nhds (show (0 : ℝ) < 1 by norm_num))] with ε hε hε1
-    exact hreal ε hε hε1
-
-omit [MeasurableSpace X] in
 /-- **EReal `limsup` with a convergent real shift.** If `s n → σ` then
 `limsup ↑(b n + s n) = limsup ↑(b n) + ↑σ`. -/
 theorem ereal_limsup_add_tendsto {b s : ℕ → ℝ} {σ : ℝ}
