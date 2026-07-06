@@ -17,15 +17,7 @@ proof of the multiplicative ergodic theorem (the proof of Lemma 1.4 in [Ruelle, 
 theory of differentiable dynamical systems*]): the slow/fast orthogonal decomposition over
 an `SVDData`, the one-step band-leakage recursion (`oneStep_recursion`, an application of
 `oneStep_sandwich`), and the band↔SVD adapter identifying `bandProjector` with the explicit
-fast projection (`toEuclideanLin_bandProjector_eq_fastProj`), plus the lower-bound lemma
-`bandProjector_mass_ge_abs_inner_of_fix`.
-
-NOTE: the lower-bound lemma shows the envelope at an *arbitrary* cut
-`c₀ ∈ (exp λ_a, exp λ_e)` is unprovable when an intermediate stratum
-`λ_a < λ_c < λ_e` lies above the cut (the band then contains the `λ_c` Oseledets
-direction, whose overlap with `u_a(n)` decays only at rate `λ_c − λ_a`). The sound
-statement restricts the cut to the top gap below `λ_e`; the engine here closes that
-corrected envelope.
+fast projection (`toEuclideanLin_bandProjector_eq_fastProj`).
 
 ## Main results
 
@@ -33,9 +25,6 @@ corrected envelope.
   recursion for the fast-band mass along an SVD chain.
 * `ErgodicTheory.toEuclideanLin_bandProjector_eq_fastProj`: the band projector equals the
   explicit fast projection over the SVD chain `ErgodicTheory.chainSVD`.
-* `ErgodicTheory.bandProjector_mass_ge_abs_inner_of_fix`: a uniform band-mass bound dominates
-  the overlap with any unit vector fixed by the limit projector (the obstruction lemma for
-  the arbitrary-cut envelope).
 
 ## Implementation notes
 
@@ -334,74 +323,5 @@ theorem toEuclideanLin_bandProjector_eq_fastProj [NeZero d]
   have hχ1 : χ (ev j) = 1 := by
     rw [hχ, Set.indicator_of_mem (show ev j ∈ Set.Ioi c₀ from hj.2) 1, Pi.one_apply]
   rw [hχ1, one_smul, hb]
-
-/-! ## Obstruction: the arbitrary-cut envelope is too strong under intermediate strata
-
-The deterministic chain (above) shows the fast-band mass `‖P^{>c₀}_m u_a(n)‖` decays at the
-rate of the *first* `lam0`-stratum strictly above `log c₀`.  An envelope claiming decay at
-the rate `λ_e − λ_a` for an **arbitrary** cut `c₀ ∈ (exp λ_a, exp λ_e)` is strictly
-stronger.  When a third stratum `λ_c` satisfies `λ_a < λ_c < λ_e`, a cut
-`c₀ ∈ (exp λ_a, exp λ_c)` produces a band that *contains* the `λ_c` Oseledets direction,
-so the band mass is `≍ exp(−n(λ_c − λ_a))`, which is asymptotically **larger** than the
-claimed `C·exp(−n(λ_e − λ_a − δ))` (for `δ < λ_e − λ_c`).  Hence the envelope at that cut
-is false.
-
-The lemma below makes the obstruction precise: the uniform-in-`m` band-mass envelope
-dominates the overlap with *any* unit vector that the limit projector `Pinf` fixes —
-including an intermediate-stratum limit eigenvector `b'_c` (which `Pinf` fixes because
-`exp λ_c > c₀`).  So the arbitrary-cut envelope at this cut forces
-
-    |⟪b'_c, u_a(n)⟫|  ≤  C · exp(−n(λ_e − λ_a − δ)) .
-
-But the genuine graded-overlap rate between the *adjacent* strata `λ_a < λ_c` is only
-`λ_c − λ_a` (this is exactly what the graded-overlap bound gives for the pair
-`(a,c)`, and the overlap is generically of that exact order — nonzero leading coefficient).
-Whenever the adjacent overlap is non-degenerate (the generic case),
-`|⟪b'_c, u_a(n)⟫| ≍ exp(−n(λ_c − λ_a))`, which exceeds `C·exp(−n(λ_e − λ_a − δ))` for all
-large `n` (take `δ < λ_e − λ_c`).  Hence the arbitrary-cut envelope is **not provable** in
-general: it is a strictly stronger claim than the band mass actually satisfies at cuts
-`c₀ ∈ (exp λ_a, exp λ_c)` whenever a third stratum `λ_c ∈ (λ_a, λ_e)` exists.
-
-NOTE.  The graded-overlap conclusion is *still correct* (the
-`λ_e`-eigenvector overlap `|⟪b'_e, u_a(n)⟫|` does decay at `λ_e − λ_a`); only the route
-through the arbitrary-cut envelope — bounding that overlap by the band mass at an
-arbitrary cut and claiming the band mass also decays at `λ_e − λ_a` — is unsound when
-intermediate strata are present.  A sound envelope must restrict the cut to lie above the
-*immediately preceding* stratum below `λ_e` (i.e. `c₀ ∈ (exp λ_{e−1}, exp λ_e)`), or the
-consumer must transfer to the band at the cut whose first stratum above is exactly
-`λ_e`. -/
-theorem bandProjector_mass_ge_abs_inner_of_fix {d : ℕ}
-    {P : ℕ → Matrix (Fin d) (Fin d) ℝ} {Pinf : Matrix (Fin d) (Fin d) ℝ}
-    (hP : Filter.Tendsto P Filter.atTop (𝓝 Pinf)) (hPinfsa : IsSelfAdjoint Pinf)
-    (w u : EuclideanSpace ℝ (Fin d)) (hwnorm : ‖w‖ = 1)
-    (hfix : Matrix.toEuclideanLin Pinf w = w) {B : ℝ}
-    (hbound : ∀ᶠ m : ℕ in Filter.atTop, ‖Matrix.toEuclideanLin (P m) u‖ ≤ B) :
-    |(inner ℝ w u : ℝ)| ≤ B := by
-  -- Pinf self-adjoint ⟹ ⟪w, Pinf u⟫ = ⟪Pinf w, u⟫ = ⟪w, u⟫.
-  have hPinfsym : (Matrix.toEuclideanLin Pinf).IsSymmetric := by
-    rw [Matrix.isSymmetric_toEuclideanLin_iff]; rwa [Matrix.isHermitian_iff_isSelfAdjoint]
-  have hkey : (inner ℝ w u : ℝ) = (inner ℝ w (Matrix.toEuclideanLin Pinf u) : ℝ) := by
-    rw [← hPinfsym w u, hfix]
-  -- ⟪w, P m u⟫ → ⟪w, Pinf u⟫ since toEuclideanLin is continuous in the matrix and apply.
-  have hcontapply : Filter.Tendsto (fun m => Matrix.toEuclideanLin (P m) u) Filter.atTop
-      (𝓝 (Matrix.toEuclideanLin Pinf u)) := by
-    have hcont : Continuous (fun M : Matrix (Fin d) (Fin d) ℝ => Matrix.toEuclideanLin M u) := by
-      simp only [Matrix.toLpLin_apply]
-      fun_prop
-    exact (hcont.tendsto Pinf).comp hP
-  have htend : Filter.Tendsto
-      (fun m => (inner ℝ w (Matrix.toEuclideanLin (P m) u) : ℝ)) Filter.atTop
-      (𝓝 (inner ℝ w (Matrix.toEuclideanLin Pinf u) : ℝ)) :=
-    Filter.Tendsto.inner tendsto_const_nhds hcontapply
-  have habs : ∀ᶠ m : ℕ in Filter.atTop,
-      |(inner ℝ w (Matrix.toEuclideanLin (P m) u) : ℝ)| ≤ B := by
-    filter_upwards [hbound] with m hm
-    calc |(inner ℝ w (Matrix.toEuclideanLin (P m) u) : ℝ)|
-        ≤ ‖w‖ * ‖Matrix.toEuclideanLin (P m) u‖ := abs_real_inner_le_norm w _
-      _ ≤ 1 * B := by rw [hwnorm]; apply mul_le_mul (le_refl _) hm (norm_nonneg _) (by norm_num)
-      _ = B := one_mul B
-  have hlim : |(inner ℝ w (Matrix.toEuclideanLin Pinf u) : ℝ)| ≤ B :=
-    le_of_tendsto (htend.abs) habs
-  rw [hkey]; exact hlim
 
 end ErgodicTheory

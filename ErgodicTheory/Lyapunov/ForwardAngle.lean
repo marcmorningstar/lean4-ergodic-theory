@@ -39,9 +39,8 @@ arises.
 * `limsup_log_div_le_of_limsup_le_of_tendsto`: if `aₙ ≤ pₙ / qₙ` eventually (all three
   sequences eventually positive), `limsup (1/n) log pₙ ≤ P`, and `(1/n) log qₙ → Q`, then
   `limsup (1/n) log aₙ ≤ P − Q`.
-* `overlap_limsup_le_of_slow_growth` and `overlap_limsup_le_of_lambdaBar`: the block-rate
-  overlap bound, with the slow-growth hypothesis stated as a `limsup` bound and in its native
-  `lambdaBar` form respectively.
+* `overlap_limsup_le_of_slow_growth`: the block-rate overlap bound, with the slow-growth
+  hypothesis stated as a `limsup` bound.
 -/
 
 open MeasureTheory Filter Topology
@@ -270,34 +269,5 @@ theorem limsup_log_norm_cocycle_eq_lambdaBar
     intro n
     rw [← Matrix.coe_toEuclideanCLM_eq_toEuclideanLin]; rfl
   simp_rw [hpt]
-
-/-- The block-rate overlap bound in the filtration's native form: from the slow-vector
-hypothesis `lambdaBar A T x v ≤ λᵢ` (the genuine "`v` is slow" datum, from
-`ErgodicTheory/Lyapunov/Filtration.lean`, upstream of the spectral split). The two boundedness
-side-conditions on the cocycle growth are supplied by Furstenberg–Kesten-type bounds on the
-growth sequence. -/
-theorem overlap_limsup_le_of_lambdaBar [NeZero d]
-    (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (x : X)
-    (j : Fin (Fintype.card (Fin d))) {v : EuclideanSpace ℝ (Fin d)} {lamI lamL : ℝ}
-    (hσpos : ∀ᶠ n : ℕ in atTop, 0 < (Matrix.toEuclideanLin (cocycle A T n x)).singularValues j)
-    (hslow : lambdaBar A T x v ≤ lamI)
-    (hslowbdd : IsBoundedUnder (· ≤ ·) atTop (fun n : ℕ => (n : ℝ)⁻¹ *
-      Real.log ‖Matrix.toEuclideanLin (cocycle A T n x) v‖))
-    (hslowcob : IsCoboundedUnder (· ≤ ·) atTop (fun n : ℕ => (n : ℝ)⁻¹ *
-      Real.log ‖Matrix.toEuclideanLin (cocycle A T n x) v‖))
-    (hsing : Tendsto (fun n : ℕ => (n : ℝ)⁻¹ *
-      Real.log ((Matrix.toEuclideanLin (cocycle A T n x)).singularValues j)) atTop (𝓝 lamL))
-    (hvgrowpos : ∀ᶠ n : ℕ in atTop, 0 < ‖Matrix.toEuclideanLin (cocycle A T n x) v‖)
-    (hovpos : ∀ᶠ n : ℕ in atTop,
-      0 < |(inner ℝ v (sortedGramEigenbasis A T n x j) : ℝ)|)
-    (hovcob : IsCoboundedUnder (· ≤ ·) atTop (fun n : ℕ => (n : ℝ)⁻¹ *
-      Real.log |(inner ℝ v (sortedGramEigenbasis A T n x j) : ℝ)|)) :
-    limsup (fun n : ℕ => (n : ℝ)⁻¹ *
-        Real.log |(inner ℝ v (sortedGramEigenbasis A T n x j) : ℝ)|) atTop
-      ≤ lamI - lamL := by
-  refine overlap_limsup_le_of_slow_growth A T x j hσpos ?_ hslowbdd hslowcob hsing
-    hvgrowpos hovpos hovcob
-  rw [limsup_log_norm_cocycle_eq_lambdaBar]
-  exact hslow
 
 end ErgodicTheory
