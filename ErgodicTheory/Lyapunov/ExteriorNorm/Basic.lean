@@ -52,8 +52,8 @@ even `IsTopologicalAddGroup` synthesis on `⋀^k E`.
 
 To stay diamond-free we never put a normed structure on `⋀^k E`. Instead we carry an explicit
 **linear trivialization** `ε : ⋀^k E ≃ₗ[ℝ] EuclideanSpace ℝ (Fin n)` as *data* and measure the
-operator norm of the conjugated map in the genuine Euclidean target. The canonical such
-trivialization (`exteriorTrivialization`) exists because `⋀^k E` is a finite free `ℝ`-module.
+operator norm of the conjugated map in the genuine Euclidean target. Such a canonical
+trivialization exists because `⋀^k E` is a finite free `ℝ`-module.
 
 A small set of trivialization/ordering helper lemmas in this file are not `private` because the
 `Plucker` layer downstream reuses them; they are internal infrastructure, not public API.
@@ -133,22 +133,6 @@ theorem exteriorOpNorm_comp_le (k : ℕ)
   exact ContinuousLinearMap.opNorm_comp_le _ _
 
 end Engine
-
-/-! ## Existence of trivializations
-
-Every `⋀^k E` (a finite free `ℝ`-module) admits a linear equiv to a Euclidean space, via its
-finrank basis. -/
-
-section Trivialization
-
-variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
-
-/-- A canonical linear trivialization of `⋀^k E` into a Euclidean space, via the finrank basis. -/
-def exteriorTrivialization (k : ℕ) :
-    (⋀[ℝ]^k E) ≃ₗ[ℝ] EuclideanSpace ℝ (Fin (Module.finrank ℝ (⋀[ℝ]^k E))) :=
-  (Module.finBasis ℝ (⋀[ℝ]^k E)).equivFun ≪≫ₗ (EuclideanSpace.equiv _ ℝ).symm.toLinearEquiv
-
-end Trivialization
 
 /-! ## The Hodge trivialization
 
@@ -1026,35 +1010,6 @@ singular-value bridge (`toEuclideanLin`) to avoid the L2-operator vs. Frobenius
 `NormedAddCommGroup`-instance diamond on `Matrix`. The core inequality is that the top squared
 singular value is at most the sum of all squared singular values; the sum equals
 `tr(MᵀM) = ‖M‖_F²`. -/
-
-/-- The top squared singular value of `toEuclideanLin M` is at most the sum of
-all squared singular values. The sum over `Fin d` equals `tr(MᵀM) = ‖M‖_F²` (the Hilbert–Schmidt
-norm squared); combined with `‖M‖_op = σ₀` this yields `‖M‖_op ≤ ‖M‖_F`. -/
-theorem singularValues_zero_sq_le_sum (M : Matrix (Fin d) (Fin d) ℝ) :
-    (Matrix.toEuclideanLin M).singularValues 0 ^ 2
-      ≤ ∑ i : Fin d, (Matrix.toEuclideanLin M).singularValues i ^ 2 := by
-  rcases Nat.eq_zero_or_pos d with hd | hd
-  · -- `d = 0`: the top singular value vanishes (`finrank = 0 ≤ 0`) and the sum is empty.
-    subst hd
-    have hfr : Module.finrank ℝ (EuclideanSpace ℝ (Fin 0)) ≤ 0 := by
-      rw [finrank_euclideanSpace, Fintype.card_fin]
-    rw [(Matrix.toEuclideanLin M).singularValues_of_finrank_le hfr]
-    simp
-  · -- `d > 0`: the `i = 0` term is one nonneg summand of the sum.
-    have hmem := Finset.single_le_sum
-      (f := fun i : Fin d => (Matrix.toEuclideanLin M).singularValues i ^ 2)
-      (fun i _ => sq_nonneg _) (Finset.mem_univ (⟨0, hd⟩ : Fin d))
-    simpa using hmem
-
-/-- The top singular value of `toEuclideanLin M` is at most the Frobenius norm
-`√(∑ σᵢ²)`. Immediate from `singularValues_zero_sq_le_sum` and `Real.sqrt`. -/
-theorem opNorm_le_frobenius (M : Matrix (Fin d) (Fin d) ℝ) :
-    (Matrix.toEuclideanLin M).singularValues 0
-      ≤ Real.sqrt (∑ i : Fin d, (Matrix.toEuclideanLin M).singularValues i ^ 2) := by
-  rw [show (Matrix.toEuclideanLin M).singularValues 0
-      = Real.sqrt ((Matrix.toEuclideanLin M).singularValues 0 ^ 2) from
-    (Real.sqrt_sq ((Matrix.toEuclideanLin M).singularValues_nonneg 0)).symm]
-  exact Real.sqrt_le_sqrt (singularValues_zero_sq_le_sum M)
 
 /-- **The L2 operator-norm/Frobenius bridge.** The squared L2 operator norm `‖M‖²` of a
 matrix is at most the sum of the squared singular values of `toEuclideanLin M` (the squared

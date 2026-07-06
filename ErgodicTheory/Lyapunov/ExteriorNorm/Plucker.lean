@@ -101,17 +101,6 @@ theorem compoundMatrix_one (k : ℕ) :
   rw [h2]
   ext x; simp
 
-/-- For invertible `B`, `compound k B⁻¹` is a right inverse of `compound k B`
-(`compoundMatrix_mul` + `compoundMatrix_one`). -/
-theorem compoundMatrix_mul_inv (k : ℕ) {B : Matrix (Fin d) (Fin d) ℝ} (hB : B.det ≠ 0) :
-    compoundMatrix k B * compoundMatrix k B⁻¹ = 1 := by
-  rw [← compoundMatrix_mul, Matrix.mul_nonsing_inv _ (Ne.isUnit hB), compoundMatrix_one]
-
-/-- For invertible `B`, `compound k B⁻¹` is a left inverse of `compound k B`. -/
-theorem compoundMatrix_inv_mul (k : ℕ) {B : Matrix (Fin d) (Fin d) ℝ} (hB : B.det ≠ 0) :
-    compoundMatrix k B⁻¹ * compoundMatrix k B = 1 := by
-  rw [← compoundMatrix_mul, Matrix.nonsing_inv_mul _ (Ne.isUnit hB), compoundMatrix_one]
-
 /-- The compound factorisation `compound M = (compound B)⁻¹ · compound(B · M)`, for invertible
 `B`. Used in Lemma 3 to lower-bound `‖compound M‖` by `‖compound(B·M)‖`. -/
 theorem compoundMatrix_eq_inv_mul (k : ℕ) {B : Matrix (Fin d) (Fin d) ℝ} (hB : B.det ≠ 0)
@@ -172,20 +161,6 @@ theorem rayleigh_compound_eq_norm_sq (k : ℕ) (M : Matrix (Fin d) (Fin d) ℝ)
         Matrix.toEuclideanLin (compoundMatrix k M)) w) w : ℝ)
       = ‖Matrix.toEuclideanLin (compoundMatrix k M) w‖ ^ 2 := by
   rw [LinearMap.comp_apply, LinearMap.adjoint_inner_left, real_inner_self_eq_norm_sq]
-
-/-- **Lemma 2 (top-eigenvalue ceiling).** The Rayleigh quotient of the compound Gram operator is
-bounded by `‖compound M‖²·‖w‖²`; equivalently the top eigenvalue `μ₀` of
-`C_n = adjoint(compound M) ∘ₗ compound M` is `‖compound M‖²` (the squared operator norm of the
-compound = top eigenvalue of `AᵀA`). -/
-theorem rayleigh_compound_le (k : ℕ) (M : Matrix (Fin d) (Fin d) ℝ)
-    (w : EuclideanSpace ℝ (Fin (Module.finrank ℝ (⋀[ℝ]^k (EuclideanSpace ℝ (Fin d)))))) :
-    (inner ℝ ((LinearMap.adjoint (Matrix.toEuclideanLin (compoundMatrix k M)) ∘ₗ
-        Matrix.toEuclideanLin (compoundMatrix k M)) w) w : ℝ)
-      ≤ ‖compoundMatrix k M‖ ^ 2 * ‖w‖ ^ 2 := by
-  rw [rayleigh_compound_eq_norm_sq]
-  have h := norm_toEuclideanLin_apply_le (compoundMatrix k M) w
-  have hn := norm_nonneg (Matrix.toEuclideanLin (compoundMatrix k M) w)
-  nlinarith [h, norm_nonneg (compoundMatrix k M), norm_nonneg w]
 
 /-- Pure-real algebraic kernel of the deficit bound: from `BM ≤ CB·r` and `mu ≤ CBi·BM` (with all
 nonnegative) one gets `mu² − r² ≤ (1 − 1/(CB·CBi)²)·mu²`. -/
