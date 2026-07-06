@@ -51,10 +51,16 @@ so none of `Z_q`, `τ(q)`, `D_q`, `f(α)` is redefined here.
   `renyiDim_equalMeasure`, the monofractal single-point spectrum that #16 characterizes.
 * `ErgodicTheory.Multifractal.hasFlowExponent_of_tendsto_finiteTimeFlowExponent`: a converging
   finite-time estimator at a representative certifies the class's `HasFlowExponent`.
-* `ErgodicTheory.Multifractal.RefiningLimitConvergesProp`: the `ε → 0` mesh-refinement convergence
-  of the cell-mass family, stated (signature only) with a cross-reference to the #16 degenerate-
-  uniform limit `renyiDim_uniform_tendsto_dim`; the general non-uniform refining limit stays #16's
-  deferred content, so #18 does not re-request it.
+* `ErgodicTheory.Multifractal.RefiningLimitConvergesProp`: the continuum `ε → 0` mesh-refinement
+  convergence of the cell-mass family, stated (signature only) as the research-grade predicate; the
+  general non-uniform refining limit stays #16's deferred content, so #18 does not re-request it.
+* `ErgodicTheory.Multifractal.RefiningLimitConvergesSeqProp` /
+  `refiningLimitConvergesSeqProp_of_uniform`: the honest **dyadic-sequence** analogue
+  (`εₙ = 2 ^ (-n)`) of that convergence, discharged in the degenerate uniform case via the sequence
+  limit
+  `renyiDim_uniform_seq_tendsto_dim` (transported to `renyiDimMeasure`). The continuum-`ε` uniform
+  discharge is *not* stated: its count hypothesis `(Fintype.card (ι ε) : ℝ) = ε ^ (-d)` is
+  unsatisfiable for `d ≠ 0`, so it would be vacuous — see `RefiningLimit`'s module docstring.
 -/
 
 open MeasureTheory Filter Topology
@@ -219,7 +225,7 @@ theorem hasFlowExponent_of_tendsto_finiteTimeFlowExponent (hc : ∀ x, c ≤ τ 
 
 end FlowExponent
 
-/-! ### N3c — mesh-refinement convergence: statement + cross-reference to #16 (no proof)
+/-! ### N3c — mesh-refinement convergence: continuum statement + honest dyadic-sequence discharge
 
 The general `ε → 0` mesh-refinement convergence of the cell-mass family (and hence of the Rényi
 dimension built on it) to the local-dimension spectrum is, for a *genuinely multifractal*
@@ -227,44 +233,80 @@ dimension built on it) to the local-dimension spectrum is, for a *genuinely mult
 Ledrappier–Young absolute continuity of conditional measures, the same Mathlib-absent ingredient
 blocking the Pesin–SRB work (issue #10); see the module docstring of
 `ErgodicTheory.Multifractal.RefiningLimit`. So #18 does **not** re-request it: it records the
-convergence as a `Prop`-valued predicate with the honest cross-reference, and the one case that
-*is* provable — the degenerate uniform / monofractal case — is already discharged unconditionally
-by `ErgodicTheory.Multifractal.renyiDim_uniform_tendsto_dim` (the `Tendsto … (𝓝[Ioo 0 1] 0)` limit),
-which this layer simply points at rather than duplicating. -/
+continuum convergence as a `Prop`-valued predicate `RefiningLimitConvergesProp` (stated only, the
+honest research-grade target over the filter `𝓝[Ioo 0 1] 0`).
+
+The one case that *is* provable — the degenerate uniform / monofractal case — is discharged not on
+that continuum predicate but on its **dyadic-sequence** analogue `RefiningLimitConvergesSeqProp`
+(convergence along `εₙ = 2 ^ (-n)`, `n → ∞`). The reason is a genuine satisfiability obstruction: a
+uniform continuum discharge would need the count hypothesis `(Fintype.card (ι ε) : ℝ) = ε ^ (-d)`
+at every `ε ∈ (0, 1)`, which is unsatisfiable for `d ≠ 0` (a cardinality is an integer, while
+`ε ↦ ε ^ (-d)` is injective on the continuum), so any such discharge would be vacuous. Along the
+discrete sequence the count constraint becomes the *satisfiable* natural-number equation
+`Fintype.card (κ n) = 2 ^ (n * d)`, and `refiningLimitConvergesSeqProp_of_uniform` discharges the
+sequential predicate unconditionally via
+`ErgodicTheory.Multifractal.renyiDim_uniform_seq_tendsto_dim` transported to `renyiDimMeasure`
+(mirror `renyiDimMeasure_uniform_eq_dim`). -/
 
 variable {ι : ℝ → Type*} [∀ ε, Fintype (ι ε)]
 
-/-- **Mesh-refinement convergence of the cell-mass spectrum (predicate, no proof).** For a refining
-family of partitions `P ε : MeasurePartition μ (ι ε)` at scales `ε ∈ (0, 1)`, the Rényi dimension
-`renyiDimMeasure μ (P ε) ε q` built on the cell-mass families `cellMassFamily (P ε)` converges, as
-`ε → 0`, to a limit dimension `D q`:
+/-- **Mesh-refinement convergence of the cell-mass spectrum (continuum predicate, no proof).** For a
+refining family of partitions `P ε : MeasurePartition μ (ι ε)` at scales `ε ∈ (0, 1)`, the Rényi
+dimension `renyiDimMeasure μ (P ε) ε q` built on the cell-mass families `cellMassFamily (P ε)`
+converges, as `ε → 0`, to a limit dimension `D q`:
 `Tendsto (fun ε => renyiDimMeasure μ (P ε) ε q) (𝓝[Set.Ioo 0 1] 0) (𝓝 (D q))`.
 
 This is *stated only* (as the `Prop` it asserts), with no proof, by design: the general non-uniform
 refining limit is the deferred content of issue #16, item 6 (the Ledrappier–Young / exact-
 dimensionality frontier; see `ErgodicTheory.Multifractal.RefiningLimit`), so #18 does not re-request
-it. The *degenerate uniform / monofractal case* of this very convergence is already proved
-unconditionally as `ErgodicTheory.Multifractal.renyiDim_uniform_tendsto_dim` (and its measure mirror
-`renyiDimMeasure_uniform_eq_dim`), where `D q ≡ d` is the constant box-counting dimension. -/
+it. The provable degenerate case is discharged on the sequential predicate below (a uniform
+discharge of *this* continuum predicate would be vacuous — see the section comment). -/
 def RefiningLimitConvergesProp (μ : Measure X) (P : ∀ ε, MeasurePartition μ (ι ε))
     (D : ℝ → ℝ) (q : ℝ) : Prop :=
   Tendsto (fun ε => renyiDimMeasure μ (P ε) ε q) (𝓝[Set.Ioo (0 : ℝ) 1] 0) (𝓝 (D q))
 
-/-- **Discharge of the mesh-refinement convergence in the degenerate uniform case.** When the
-refining family is uniform — each `P ε` has all cells of equal mass `(Fintype.card (ι ε))⁻¹` with
-the `d`-dimensional dyadic-grid count `Fintype.card (ι ε) = ε ^ (-d)` — the mesh-refinement
-convergence predicate `RefiningLimitConvergesProp` holds with the constant limit `D q ≡ d`. This is
-exactly `ErgodicTheory.Multifractal.renyiDim_uniform_tendsto_dim` transported to `renyiDimMeasure`
-via the cell-mass family, the *only* case of the general (deferred) refining limit provable
-unconditionally. -/
-theorem refiningLimitConvergesProp_of_uniform [∀ ε, Nonempty (ι ε)] [IsProbabilityMeasure μ]
-    (P : ∀ ε, MeasurePartition μ (ι ε)) {d : ℝ}
-    (huniform : ∀ ε i, (μ ((P ε).cells i)).toReal = (Fintype.card (ι ε) : ℝ)⁻¹)
-    (hcard : ∀ ε ∈ Set.Ioo (0 : ℝ) 1, (Fintype.card (ι ε) : ℝ) = ε ^ (-d)) (q : ℝ) :
-    RefiningLimitConvergesProp μ P (fun _ => d) q := by
+variable {κ : ℕ → Type*} [∀ n, Fintype (κ n)]
+
+/-- **Sequential (dyadic-scale) mesh-refinement convergence of the cell-mass spectrum.** For a
+refining family of partitions `P n : MeasurePartition μ (κ n)` at the *discrete* dyadic scales
+`εₙ = 2 ^ (-n)`, the Rényi dimension `renyiDimMeasure μ (P n) (2 ^ (-n)) q` converges, as `n → ∞`,
+to a limit dimension `D q`:
+`Tendsto (fun n => renyiDimMeasure μ (P n) (2 ^ (-n)) q) atTop (𝓝 (D q))`.
+
+This is the honest sequential analogue of `RefiningLimitConvergesProp`: taking the refining limit
+along a discrete scale sequence (rather than the whole continuum `(0, 1)`) is what makes the uniform
+count constraint `Fintype.card (κ n) = 2 ^ (n * d)` a *satisfiable* natural-number equation, so its
+uniform case `refiningLimitConvergesSeqProp_of_uniform` is a genuine (non-vacuous) discharge. -/
+def RefiningLimitConvergesSeqProp (μ : Measure X) (P : ∀ n, MeasurePartition μ (κ n))
+    (D : ℝ → ℝ) (q : ℝ) : Prop :=
+  Tendsto (fun n => renyiDimMeasure μ (P n) ((2 : ℝ) ^ (-(n : ℝ))) q) atTop (𝓝 (D q))
+
+/-- **Discharge of the sequential mesh-refinement convergence in the degenerate uniform case.**
+When the refining family is uniform — each `P n` has all cells of equal mass
+`(Fintype.card (κ n))⁻¹` with the satisfiable dyadic count `Fintype.card (κ n) = 2 ^ (n * d)` — the
+mesh-refinement convergence predicate `RefiningLimitConvergesSeqProp` holds with the constant limit
+`D q ≡ d`. This is exactly `ErgodicTheory.Multifractal.renyiDim_uniform_seq_tendsto_dim` transported
+to `renyiDimMeasure` via the cell-mass family — the *only* case of the general (deferred) refining
+limit provable unconditionally, and non-vacuous because the count hypothesis is a natural-number
+equation instantiable at every `d : ℕ` (unlike the continuum count `ε ^ (-d)`). -/
+theorem refiningLimitConvergesSeqProp_of_uniform [∀ n, Nonempty (κ n)] [IsProbabilityMeasure μ]
+    (P : ∀ n, MeasurePartition μ (κ n)) {d : ℕ}
+    (huniform : ∀ n i, (μ ((P n).cells i)).toReal = (Fintype.card (κ n) : ℝ)⁻¹)
+    (hcard : ∀ n, 1 ≤ n → Fintype.card (κ n) = 2 ^ (n * d)) (q : ℝ) :
+    RefiningLimitConvergesSeqProp μ P (fun _ => (d : ℝ)) q := by
   refine Tendsto.congr' ?_ tendsto_const_nhds
-  refine Filter.eventuallyEq_of_mem self_mem_nhdsWithin ?_
-  intro ε hε
-  exact (renyiDimMeasure_uniform_eq_dim (P ε) (huniform ε) hε.1 hε.2 (hcard ε hε) q).symm
+  refine (Filter.eventually_atTop.2 ⟨1, ?_⟩)
+  intro n hn
+  have hε0 : (0 : ℝ) < (2 : ℝ) ^ (-(n : ℝ)) := Real.rpow_pos_of_pos (by norm_num) _
+  have hε1 : (2 : ℝ) ^ (-(n : ℝ)) < 1 := by
+    refine Real.rpow_lt_one_of_one_lt_of_neg (by norm_num) ?_
+    have : (1 : ℝ) ≤ n := by exact_mod_cast hn
+    linarith
+  have hcardR : (Fintype.card (κ n) : ℝ) = ((2 : ℝ) ^ (-(n : ℝ))) ^ (-(d : ℝ)) := by
+    rw [← Real.rpow_mul (by norm_num : (0 : ℝ) ≤ 2), neg_mul_neg, hcard n hn,
+      show ((n : ℝ) * (d : ℝ)) = ((n * d : ℕ) : ℝ) by push_cast; ring, Real.rpow_natCast]
+    push_cast
+    ring
+  exact (renyiDimMeasure_uniform_eq_dim (P n) (huniform n) hε0 hε1 hcardR q).symm
 
 end ErgodicTheory.Multifractal
