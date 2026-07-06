@@ -67,14 +67,6 @@ lemma condExpKernel_pairwise_aedisjoint [Fintype ι] {μ : Measure α} [IsProbab
   filter_upwards [hdisj] with ω hω i j hij
   exact hω i j hij
 
-/-- The pointwise `condEntropy` integrand of a family `s` equals the Shannon `entropy` of `s`
-computed against the conditional-kernel probability measure `condExpKernel μ 𝒜 ω`. -/
-lemma condEntropy_integrand_eq_entropy [Fintype ι] {μ : Measure α} [IsFiniteMeasure μ]
-    (s : ι → Set α) (ω : α) :
-    (∑ i, Real.negMulLog (@condExpKernel α mα _ μ _ 𝒜 ω (s i)).toReal)
-      = entropy (@condExpKernel α mα _ μ _ 𝒜 ω) s := by
-  rw [entropy_def]
-
 /-- **Subadditivity of conditional entropy under joins.** For two finite measurable partitions `P`
 and `Q` of a probability space, the conditional entropy of the join is at most the sum of the
 conditional entropies: `H(P ∨ Q | 𝒜) ≤ H(P | 𝒜) + H(Q | 𝒜)`.

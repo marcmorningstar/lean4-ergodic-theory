@@ -13,7 +13,6 @@ import ErgodicTheory.Lyapunov.Filtration
 import ErgodicTheory.Lyapunov.OseledetsLimit.Limit
 import ErgodicTheory.Lyapunov.Forward
 import ErgodicTheory.Lyapunov.ForwardAngle
-import ErgodicTheory.Lyapunov.ForwardUpperBound
 import ErgodicTheory.Lyapunov.ForwardMeasurable
 import ErgodicTheory.Lyapunov.ForwardV
 import ErgodicTheory.Lyapunov.SpectralMeasurable
@@ -103,7 +102,6 @@ import ErgodicTheory.Continuous.ReturnTimeTopExponent
 import ErgodicTheory.Continuous.SuspensionCocycle
 import ErgodicTheory.Continuous.SuspensionLapCount
 import ErgodicTheory.Continuous.SuspensionFlowCocycle
-import ErgodicTheory.Continuous.SuspensionFlowCocycleMul
 import ErgodicTheory.Continuous.SuspensionCoverCocycle
 import ErgodicTheory.Continuous.SuspensionCoverFlow
 import ErgodicTheory.Continuous.SuspensionDescent
@@ -177,7 +175,6 @@ import ErgodicTheory.MeasureTheory.AnalyticUniversallyMeasurable
 import ErgodicTheory.Entropy.Ruelle.AtomCount
 import ErgodicTheory.Entropy.Ruelle.VolumeDistortion
 import ErgodicTheory.Entropy.Ruelle.Crude
-import ErgodicTheory.Entropy.Ruelle.LocalCovering
 import ErgodicTheory.Entropy.Ruelle.Count
 import ErgodicTheory.Entropy.Ruelle.SharpCovering
 import ErgodicTheory.Entropy.Ruelle.MargulisRuelleSharp

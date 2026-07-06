@@ -4,32 +4,30 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Marcel Morgenstern
 -/
 import ErgodicTheory.Lyapunov.ExteriorNorm.Basic
-import Mathlib.Analysis.InnerProductSpace.SingularValues
 
 /-!
-# Positive-part volume distortion: the singular-value product the covering count consumes
+# Positive-part volume distortion: the abstract positive-part product identity
 
-This module proves the **algebraic identity** at the heart of the positive-part volume distortion
-appearing in the Margulis–Ruelle covering-count estimate (Liao–Qiu,
-*Margulis–Ruelle inequality for general manifolds*, §3, Lemmas 3.2–3.3): the local volume
-expansion factor counting only the **expanding** directions of a linear map is
+This module proves the **abstract algebraic identity** underlying the positive-part volume
+distortion of the Margulis–Ruelle covering-count analysis (Liao–Qiu,
+*Margulis–Ruelle inequality for general manifolds*, §3, Lemmas 3.2–3.3): for an antitone,
+nonnegative sequence `σ₀ ≥ σ₁ ≥ ⋯ ≥ 0`, the local volume expansion factor counting only the
+**expanding** directions is
 
-$$\prod_{i} \max(1, \sigma_i) \;=\; \sup_{0 \le k \le d} \prod_{i < k} \sigma_i,$$
-
-where `σ₀ ≥ σ₁ ≥ ⋯` are the singular values.
+$$\prod_{i} \max(1, \sigma_i) \;=\; \sup_{0 \le k \le d} \prod_{i < k} \sigma_i.$$
 
 Geometrically, the cthickening of a thin box `M '' B` is covered by a number of unit cells
 comparable to `∏ᵢ max(1, σᵢ M)` (Lemma 3.2 bounds the cover of a box with sides `aᵢ` by
-`c · ∏ᵢ max(aᵢ, 1)`; for a thickened image the relevant sides are `σᵢ`). Selecting the *optimal
-truncation* `k` of the singular-value product bridges `|det M| = ∏ σᵢ` (the full product, the
-`k = d` term) with the `∏ max(1, σᵢ)` that the count needs.
+`c · ∏ᵢ max(aᵢ, 1)`; for a thickened image the relevant sides are `σᵢ`), where `σᵢ` are the
+singular values of `M`. Selecting the *optimal truncation* `k` of the product bridges
+`|det M| = ∏ σᵢ` (the full product, the `k = d` term) with the `∏ max(1, σᵢ)` positive-part form.
+The identity below packages exactly that truncation combinatorics as an abstract statement about a
+single antitone nonnegative sequence, independent of any singular-value or covering-count machinery.
 
 ## Main results
 
 * `ErgodicTheory.prod_max_one_eq_sup_prod_range` — the **abstract algebraic identity** for any
   antitone, nonnegative sequence: `∏_{i<d} max(1, σᵢ) = ⨆_{k≤d} ∏_{i<k} σᵢ` (`Finset.sup'`).
-* `ErgodicTheory.prod_max_one_singularValues_eq_sup_prod_range` — its specialization to the singular
-  values of a linear map between finite-dimensional inner product spaces.
 
 ## Implementation notes
 
@@ -136,26 +134,5 @@ theorem prod_max_one_eq_sup_prod_range {σ : ℕ → ℝ} (hanti : Antitone σ) 
             (Finset.range_subset_range.2 hj)
             (fun i _ => le_trans zero_le_one (le_max_left _ _))
             (fun i _ _ => le_max_left _ _)
-
-/-! ## Specialization to singular values -/
-
-section SingularValues
-
-variable {E F : Type*}
-  [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
-  [NormedAddCommGroup F] [InnerProductSpace ℝ F] [FiniteDimensional ℝ F]
-
-/-- **The positive-part singular-value product as a supremum of partial products.** For a linear map
-`f` between finite-dimensional real inner product spaces, the positive-part product
-`∏_{i<d} max(1, σᵢ(f))` equals the supremum over truncations `0 ≤ k ≤ d` of the top-`k` singular
-value products `∏_{i<k} σᵢ(f)`. This is the local volume-expansion factor counting only the
-expanding directions, written in the truncated-product form the covering count uses. -/
-theorem prod_max_one_singularValues_eq_sup_prod_range (f : E →ₗ[ℝ] F) (d : ℕ) :
-    ∏ i ∈ range d, max 1 (f.singularValues i)
-      = (range (d + 1)).sup' (nonempty_range_iff.2 (Nat.succ_ne_zero d))
-          (fun k => ∏ i ∈ range k, f.singularValues i) :=
-  prod_max_one_eq_sup_prod_range f.singularValues_antitone f.singularValues_nonneg d
-
-end SingularValues
 
 end ErgodicTheory
