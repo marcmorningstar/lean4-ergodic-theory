@@ -134,12 +134,6 @@ lemma ziter_add (e : α ≃ᵐ α) (m n : ℤ) :
     ziter e (m + n) = ziter e m ∘ ziter e n := by
   rw [ziter_eq_perm_zpow, ziter_eq_perm_zpow, ziter_eq_perm_zpow, zpow_add, Equiv.Perm.coe_mul]
 
-/-- The two-sided iterate at `-n` is a two-sided inverse of the iterate at `n`:
-`ziter e n ∘ ziter e (-n) = id`. Immediate from the cocycle law and `ziter_zero`. -/
-@[simp]
-lemma ziter_comp_ziter_neg (e : α ≃ᵐ α) (n : ℤ) : ziter e n ∘ ziter e (-n) = id := by
-  rw [← ziter_add, add_neg_cancel, ziter_zero]
-
 /-- The two-sided iterate at `-n` is a left inverse of the iterate at `n`:
 `ziter e (-n) ∘ ziter e n = id`. -/
 @[simp]
@@ -181,16 +175,6 @@ def IsGeneratingTwoSided [Fintype ι] (e : α ≃ᵐ α)
     (ErgodicTheory.Entropy.generatedSigmaAlgebra μ P)) = mα
 
 variable [Fintype ι]
-
-/-- Each two-sided pullback `comap (ziter e n) σ(P)` sits below the two-sided saturation
-`⨆ n : ℤ, comap (ziter e n) σ(P)`. The always-available `≤` half (just `le_iSup`); the content of
-`IsGeneratingTwoSided` is the reverse saturation up to `mα`. -/
-lemma comap_ziter_le_iSup (e : α ≃ᵐ α) (P : ErgodicTheory.Entropy.MeasurePartition μ ι) (n : ℤ) :
-    MeasurableSpace.comap (ziter e n) (ErgodicTheory.Entropy.generatedSigmaAlgebra μ P) ≤
-      ⨆ m : ℤ, MeasurableSpace.comap (ziter e m)
-        (ErgodicTheory.Entropy.generatedSigmaAlgebra μ P) :=
-  le_iSup (fun m : ℤ => MeasurableSpace.comap (ziter e m)
-    (ErgodicTheory.Entropy.generatedSigmaAlgebra μ P)) n
 
 /-- **Forward one-sided ≤ two-sided saturation.** Every forward `ℕ`-pullback
 `comap ((e : α → α)^[n]) σ(P)` is the `n : ℤ≥0` term `comap (ziter e n) σ(P)` of the two-sided

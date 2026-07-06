@@ -151,8 +151,9 @@ theorem bernZ_ksJoinCells_eq (n : ℕ) (f : Fin n → α₀) :
 /-! ### N4a.2 — the per-`n` entropy is `n * Hnu ν` -/
 
 /-- **N4a.2 (per-`n` entropy).** The iterated-join entropy of the coordinate partition at depth `n`
-is `n * Hnu ν`. The combinatorial core is reused verbatim from the one-sided file via
-`negMulLog_prod_eq_sum`, `Finset.sum_prod_piFinset`, and `sum_measureReal_singleton_eq_one`. -/
+is `n * Hnu ν`. The combinatorial core is the shared, shift-agnostic marginalization lemma
+`sum_prod_mul_neg_log_eq_sum_negMulLog` (extracted in the one-sided file), applied per
+coordinate. -/
 theorem ksEntropySeq_coordPartitionZ_bernZ_eq (n : ℕ) :
     ksEntropySeq (measurePreserving_biShiftEquiv_bernZ ν) (coordPartitionZ (bernZ ν)) n
       = (n : ℝ) * Hnu ν := by
@@ -172,46 +173,11 @@ theorem ksEntropySeq_coordPartitionZ_bernZ_eq (n : ℕ) :
   simp_rw [negMulLog_prod_eq_sum]
   -- Swap the order: sum over `f` then `k`  →  sum over `k` then `f`.
   rw [Finset.sum_comm]
-  -- For each fixed `k`, the inner sum over `f` is `Hnu ν`.
+  -- For each fixed `k`, the inner sum over `f` is `Hnu ν` (the shared marginalization lemma,
+  -- reused verbatim from the one-sided file).
   have hinner : ∀ k : Fin n,
-      ∑ f : Fin n → α₀, (∏ j, p (f j)) * (-Real.log (p (f k))) = Hnu ν := by
-    intro k
-    classical
-    -- The per-coordinate factor: `g k = negMulLog ∘ p`, `g j = p` for `j ≠ k`.
-    set g : Fin n → α₀ → ℝ :=
-      fun j a => if j = k then Real.negMulLog (p a) else p a with hg
-    -- Rewrite each summand as a product `∏ j, g j (f j)`.
-    have hrw : ∀ f : Fin n → α₀,
-        (∏ j, p (f j)) * (-Real.log (p (f k))) = ∏ j, g j (f j) := by
-      intro f
-      -- Split the `k`-factor off both products.
-      rw [← Finset.mul_prod_erase Finset.univ (fun j => g j (f j)) (Finset.mem_univ k),
-        ← Finset.mul_prod_erase Finset.univ (fun j => p (f j)) (Finset.mem_univ k)]
-      have hgk : g k (f k) = Real.negMulLog (p (f k)) := by rw [hg]; simp
-      have hgerase : ∏ j ∈ Finset.univ.erase k, g j (f j)
-          = ∏ j ∈ Finset.univ.erase k, p (f j) := by
-        refine Finset.prod_congr rfl (fun j hj => ?_)
-        rw [hg]; simp [Finset.ne_of_mem_erase hj]
-      rw [hgk, hgerase, Real.negMulLog_eq_neg]
-      ring
-    simp_rw [hrw]
-    -- Swap sum over `f : Fin n → α₀` and product over coordinates:
-    -- `∑ f, ∏ j, g j (f j) = ∏ j, ∑ a, g j a`.
-    have hswap : ∑ f : Fin n → α₀, ∏ j, g j (f j) = ∏ j, ∑ a, g j a := by
-      rw [← Fintype.piFinset_univ (α := Fin n) (β := fun _ => α₀)]
-      exact Finset.sum_prod_piFinset Finset.univ g
-    rw [hswap]
-    -- `∏ j, ∑ a, g j a = ∏ j, (if j = k then Hnu ν else 1) = Hnu ν`.
-    have hsumg : ∀ j : Fin n, ∑ a, g j a = if j = k then Hnu ν else 1 := by
-      intro j
-      rw [hg]
-      by_cases hjk : j = k
-      · simp only [hjk, if_true]
-        rw [Hnu]
-      · simp only [hjk, if_false]
-        exact sum_measureReal_singleton_eq_one ν
-    rw [Finset.prod_congr rfl (fun j _ => hsumg j), Finset.prod_ite_eq' Finset.univ k]
-    simp
+      ∑ f : Fin n → α₀, (∏ j, p (f j)) * (-Real.log (p (f k))) = Hnu ν :=
+    fun k => sum_prod_mul_neg_log_eq_sum_negMulLog p (sum_measureReal_singleton_eq_one ν) n k
   simp_rw [hinner]
   rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
 

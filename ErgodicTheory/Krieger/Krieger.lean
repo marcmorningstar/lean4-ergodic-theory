@@ -182,7 +182,13 @@ statement is the faithful specialization of Krieger's theorem — they are preci
 upstream M1 (Rokhlin tower) and M2 (name count) layers consume to *produce* the coding data `hcode`.
 When M1+M2 are wired in, `hcode` is discharged from `he`, `_herg`, `_hap`, and `_hk`, yielding the
 unconditional theorem with no change to this interface; until then this file proves the honest
-conditional form, whose only nontrivial input is `hcode`. -/
+conditional form, whose only nontrivial input is `hcode`.
+
+**Interface theorem.** `KriegerCodingData e μ k` has no in-repo constructor (the M1+M2 coding
+combinatorics that would build one are not yet formalized), so this is an interface theorem: it is
+established relative to that antecedent as a hypothesis, and is vacuous until a `KriegerCodingData`
+is supplied. The dynamical/entropy hypotheses are therefore genuinely unused by the current proof
+term; they are retained deliberately as the faithful Krieger interface (see above). -/
 theorem krieger_finite_generator [IsProbabilityMeasure μ] {e : α ≃ᵐ α}
     (he : MeasurePreserving (e : α → α) μ μ) (_herg : Ergodic (e : α → α) μ)
     (_hap : Aperiodic e μ) {k : ℕ} (_hk : (ksEntropy he).toReal < Real.log k)

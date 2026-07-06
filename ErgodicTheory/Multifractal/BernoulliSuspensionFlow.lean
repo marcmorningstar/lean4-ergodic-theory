@@ -337,8 +337,10 @@ For the two-sided asymmetric Bernoulli shift charging two distinct symbols `i �
 mass, the single-symbol Shannon entropy `Hnu ν` is strictly positive (`Hnu_pos`). The base
 projection `π` is a factor map from the time-`1` flow map onto the base shift, so the
 factor-relative entropy invariance `factor_relative_eq` carries the partition entropy of the base
-coordinate partition (equal to `Hnu ν` by hypothesis `hbase`) onto the pulled-back partition for
-the flow, which is bounded above by the flow's metric entropy via `le_ksEntropy`.
+coordinate partition (equal to `Hnu ν`, established in the proof as the local `have hbase` from the
+companion identity `ksEntropyPartition_coordPartitionZFin_bernZ_eq` — not a theorem hypothesis) onto
+the pulled-back partition for the flow, which is bounded above by the flow's metric entropy via
+`le_ksEntropy`.
 
 The base partition-entropy identification `= Hnu ν` is supplied by the companion two-sided-Bernoulli
 entropy module (`ksEntropyPartition_coordPartitionZFin_bernZ_eq`), so this statement is

@@ -2070,11 +2070,6 @@ axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms ErgodicTheory.Krieger.measurable_fwdSentinel
 
-/-- info: 'ErgodicTheory.Krieger.measurable_sentinelParse' depends on axioms:
-[propext, Classical.choice, Quot.sound] -/
-#guard_msgs (whitespace := lax) in
-#print axioms ErgodicTheory.Krieger.measurable_sentinelParse
-
 -- Issue #15 (unconditional drive): the OFFSET-AWARE tower code. Adversarial catch: a bare
 -- position-blind sentinelParse gives the same label at x and e·x (parse_event_cannot_separate), so a
 -- naive sentinel-column recovery field is unsatisfiable. Fixed with blockOffset / sentinelParseAt
