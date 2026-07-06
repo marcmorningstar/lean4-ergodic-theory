@@ -234,7 +234,7 @@ positive mass all follow from \(\mu\) being a probability measure.
   be a probability measure on \(E\) absolutely continuous with respect to an additive Haar measure
   \(\nu\) (e.g.\ Lebesgue). Then for \(\mu\)-almost every \(x\) the local-dimension quotient
   \(\log \mu(\bar B(x,r)) / \log r\) \emph{converges}, as \(r \to 0^+\), to the ambient dimension
-  \(\dim_\R E = \operatorname{finrank}_\R E\).
+  \(\dim_{\R} E = \operatorname{finrank}_{\R} E\).
 \end{theorem}
 \begin{proof}\leanok
   \uses{localDimension}
@@ -242,7 +242,7 @@ positive mass all follow from \(\mu\) being a probability measure.
   \(\mu(\bar B(x,r))/\nu(\bar B(x,r)) \to (d\mu/d\nu)(x)\) as \(r \to 0^+\), \(\mu\)-a.e., with
   the Radon--Nikodym density finite and positive \(\mu\)-a.e.\ (from \(\mu \ll \nu\)). The Haar
   ball-volume scaling \(\nu(\bar B(x,r)) = r^{d}\,\nu(\bar B(0,1))\) with
-  \(d = \operatorname{finrank}_\R E\) factorizes the ball mass as
+  \(d = \operatorname{finrank}_{\R} E\) factorizes the ball mass as
   \(\text{ratio}(r) \cdot r^d \cdot C\) with \(\text{ratio}(r) \to L > 0\) and \(C > 0\); a
   logarithm-limit lemma then shows the quotient is \((\log \text{ratio}(r) + \log C)/\log r + d
   \to d\), since \(\log r \to -\infty\) kills the bounded numerator.
@@ -251,7 +251,7 @@ positive mass all follow from \(\mu\) being a probability measure.
 \begin{corollary}[A.e.\ value of the local dimension]\label{ae_localDimension_eq_finrank}
   \lean{ErgodicTheory.Multifractal.ae_localDimension_eq_finrank}\leanok
   \uses{localDimension, ae_tendsto_localDimension_of_absolutelyContinuous}
-  Under the same hypotheses, \(\bar d_\mu(x) = \operatorname{finrank}_\R E\) for \(\mu\)-almost
+  Under the same hypotheses, \(\bar d_\mu(x) = \operatorname{finrank}_{\R} E\) for \(\mu\)-almost
   every \(x\): the measure is exact-dimensional with dimension equal to the ambient dimension.
 \end{corollary}
 \begin{proof}\leanok
@@ -290,11 +290,11 @@ positive mass all follow from \(\mu\) being a probability measure.
   Let \(\mu\) be a probability measure on a finite-dimensional real inner-product space \(E\),
   absolutely continuous with respect to a Haar measure. Then \emph{every} set \(s\) of full
   \(\mu\)-measure has Hausdorff dimension equal to the ambient dimension:
-  \(\dim_H s = \operatorname{finrank}_\R E\).
+  \(\dim_H s = \operatorname{finrank}_{\R} E\).
 \end{theorem}
 \begin{proof}\leanok
   \uses{ae_tendsto_localDimension_of_absolutelyContinuous, dimH_eq_of_localDimension_eq}
-  The upper bound is monotonicity: \(\dim_H s \le \dim_H E = \operatorname{finrank}_\R E\). The
+  The upper bound is monotonicity: \(\dim_H s \le \dim_H E = \operatorname{finrank}_{\R} E\). The
   lower bound is the Frostman direction of the bridge, fed by the a.e.\ local-dimension limit of
   Theorem~\ref{ae_tendsto_localDimension_of_absolutelyContinuous}.
 \end{proof}
