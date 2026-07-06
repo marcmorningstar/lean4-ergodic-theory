@@ -1,4 +1,5 @@
 import ErgodicTheory.OperatorEntropy.Basic
+import ErgodicTheory.OperatorEntropy.KroneckerSpectrum
 
 /-!
 # Spectrum and von Neumann entropy of a diagonal density matrix
@@ -26,16 +27,6 @@ noncomputable section
 namespace ErgodicTheory.OperatorEntropy
 
 variable {ι : Type*} [Fintype ι] [DecidableEq ι]
-
-/-- The multiset of roots of `∏ i, (X - C (d i))` over a finite index type is the
-image multiset of `d`.  (A local re-derivation of the `KroneckerSpectrum` helper,
-kept `private` so the two modules can coexist in an aggregator.) -/
-private theorem roots_prod_X_sub_C_comp {ι : Type*} [Fintype ι] (d : ι → ℂ) :
-    (∏ i, (X - C (d i))).roots = Finset.univ.val.map d := by
-  have h : (∏ i, (X - C (d i)))
-      = ((Finset.univ.val.map d).map fun a => X - C a).prod := by
-    rw [Multiset.map_map]; rfl
-  rw [h, roots_multiset_prod_X_sub_C]
 
 /-- **Eigenvalues of a real diagonal matrix.**  For `p : ι → ℝ`, the multiset of
 eigenvalues of the Hermitian matrix `diagonal (fun i => (p i : ℂ))` equals the

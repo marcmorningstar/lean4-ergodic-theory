@@ -38,8 +38,8 @@ Working directly on **operators** (Hilbert–Schmidt maps of matrices), with a b
 These are the exact objects that, once transported to the *vectorised* Hilbert–Schmidt picture
 (the Kronecker matrices `relModularArg` of `ModularOperator.lean`), feed the rectangular
 operator-Jensen inequality `rect_isometry_neg_log_loewner` to produce the reconciliation Loewner
-pair `A ≤ B` consumed by the gap-vanishing keystone `gap_mulVec_vecOne_zero_of_relForm_re_eq`
-(`PetzEqualityM3sc`).
+pair `A ≤ B`, whose gap is placed in the kernel of the cyclic vector by the vector-kernel lemma
+`posSemidef_vec_expectation_re_zero` (`PetzEqualityM3sc`) in the `PetzEqualitySufficiency` proof.
 
 ## Downstream of this module (both steps were subsequently discharged)
 

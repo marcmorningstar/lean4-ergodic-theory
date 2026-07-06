@@ -38,8 +38,7 @@ defined through its spectral decomposition `A = U diag(λ) U*` by
 * `matrix_eq_zero_of_entriesDifferentiable_of_imagAxis`: a matrix-valued **identity theorem** —
   an entrywise-entire matrix function vanishing on the imaginary axis vanishes identically.
 * `intertwinesIt_continued`: the entire continuation of the intertwining condition.
-* `cpow_ofReal_eq_rpow`: the **spectral bridge** `cpow hA (r : ℂ) = A ^ r` (the CFC real power),
-  and its corollaries `cpow_one`, `cpow_zero`.
+* `cpow_ofReal_eq_rpow`: the **spectral bridge** `cpow hA (r : ℂ) = A ^ r` (the CFC real power).
 -/
 
 open Matrix Filter Topology
@@ -236,12 +235,6 @@ lemma cpow_ofReal_eq_rpow {A : Matrix n n ℂ} (hA : A.PosDef) (r : ℝ) :
   rw [← Complex.ofReal_mul, ← Complex.ofReal_exp, Real.rpow_def_of_pos hpos,
     mul_comm (Real.log (hA.1.eigenvalues i)) r]
   rfl
-
-/-- `cpow hA 1 = A`. -/
-lemma cpow_one {A : Matrix n n ℂ} (hA : A.PosDef) : cpow hA (1 : ℂ) = A := by
-  have h := cpow_ofReal_eq_rpow hA 1
-  rw [Complex.ofReal_one] at h
-  rw [h, CFC.rpow_one A hA.posSemidef.nonneg]
 
 /-! ## The KMS-point specialisation
 
