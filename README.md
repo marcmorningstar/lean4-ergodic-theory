@@ -61,9 +61,9 @@ ErgodicTheory/
   TwoSided/           -- the two-sided splitting
   Continuous/         -- the continuous-flow MET
   OperatorEntropy/    -- finite-dim quantum-information layer (issues #22–#28): von Neumann &
-                      --   Umegaki relative entropy, Klein/Lieb joint convexity, the CPTP
-                      --   data-processing inequality, CNT dynamical entropy, Petz recovery +
-                      --   equality theorem (both directions)
+                      --   Umegaki relative entropy, Klein/Lieb joint convexity, the
+                      --   (partial-trace + Stinespring-family) data-processing inequality, CNT
+                      --   dynamical entropy, Petz recovery + equality theorem (both directions)
 test/
   AxiomAudit.lean     -- guarded #print-axioms regression (separate lib; not upstreamable source)
 blueprint/            -- leanblueprint LaTeX source (web + PDF; \lean-linked to declarations)
