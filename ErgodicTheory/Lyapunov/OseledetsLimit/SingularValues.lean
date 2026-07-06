@@ -44,8 +44,8 @@ cocycle and fed to Kingman's ergodic theorem (`tendsto_kingman_ergodic`).
 * `ErgodicTheory.integrable_logSprod`, `ErgodicTheory.bddBelow_logSprod` — integrability/lower
   bound.
 * `ErgodicTheory.tendsto_gammaK` — the genuine ergodic `Γ_k` limit.
-* `ErgodicTheory.lamSing`, `ErgodicTheory.tendsto_log_singularValue`,
-  `ErgodicTheory.lamSing_antitone` — the per-singular-value exponents.
+* `ErgodicTheory.lamSing`, `ErgodicTheory.tendsto_log_singularValue` — the per-singular-value
+  exponents.
 * `ErgodicTheory.sq_singularValues_eq_gram_eigenvalue` — squared singular values are Gram
   eigenvalues.
 -/

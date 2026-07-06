@@ -187,37 +187,6 @@ theorem cfc_ne_zero_of_eigenvalue
     continuousOn_const hsa
   exact hg (heqon hmem)
 
-omit [MeasurableSpace X] [NeZero d] in
-/-- The slow projector at `exp s` is nonzero when `s` is realized by some eigenvalue `lamSing j`:
-`cfc (indicator (Iic (exp s))) lambdaHat` takes value `1` at the eigenvalue
-`exp (lamSing j) ≤ exp s`, so it is not the zero CFC. -/
-theorem slowProjector_ne_zero_of_mem
-    {A : X → Matrix (Fin d) (Fin d) ℝ} {T : X → X} {x : X} {s : ℝ} {j : Fin d}
-    (hspec : _root_.spectrum ℝ (lambdaHat A T x)
-      = Set.range (fun i : Fin d => Real.exp (lamSing A T x (i : ℕ))))
-    (hjs : lamSing A T x (j : ℕ) ≤ s) :
-    slowProjector A T (Real.exp s) x ≠ 0 := by
-  intro h0
-  -- `cfc g M = 0 = cfc 0 M` forces `g = 0` on the spectrum (`eqOn_of_cfc_eq_cfc`).
-  have hsa : IsSelfAdjoint (lambdaHat A T x) := lambdaHat_isSelfAdjoint A T x
-  have hmem : Real.exp (lamSing A T x (j : ℕ)) ∈ _root_.spectrum ℝ (lambdaHat A T x) := by
-    rw [hspec]; exact ⟨j, rfl⟩
-  have hcont : ContinuousOn (Set.indicator (Set.Iic (Real.exp s)) (1 : ℝ → ℝ))
-      (_root_.spectrum ℝ (lambdaHat A T x)) :=
-    (Matrix.finite_real_spectrum (A := lambdaHat A T x)).continuousOn _
-  have hcfceq : cfc (Set.indicator (Set.Iic (Real.exp s)) (1 : ℝ → ℝ)) (lambdaHat A T x)
-      = cfc (0 : ℝ → ℝ) (lambdaHat A T x) := by
-    rw [cfc_zero]; exact h0
-  have heqon := eqOn_of_cfc_eq_cfc (R := ℝ) (a := lambdaHat A T x) hcfceq hcont
-    continuousOn_const hsa
-  have hval : Set.indicator (Set.Iic (Real.exp s)) (1 : ℝ → ℝ)
-      (Real.exp (lamSing A T x (j : ℕ))) = 0 := heqon hmem
-  -- but the indicator is `1` at that eigenvalue (`exp (lamSing j) ≤ exp s`).
-  have h1 : Set.indicator (Set.Iic (Real.exp s)) (1 : ℝ → ℝ)
-      (Real.exp (lamSing A T x (j : ℕ))) = 1 :=
-    Set.indicator_of_mem (Set.mem_Iic.mpr (Real.exp_le_exp.mpr hjs)) _
-  rw [h1] at hval; exact one_ne_zero hval
-
 /-! ## Range membership for idempotent matrices -/
 
 omit [NeZero d] in

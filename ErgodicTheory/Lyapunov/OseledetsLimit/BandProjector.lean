@@ -23,13 +23,11 @@ limiting spectral projectors from the candidates.
 
 ## Main results
 
-* `ErgodicTheory.bandProjector_isSelfAdjoint`, `ErgodicTheory.bandProjector_mul_self`,
-  `ErgodicTheory.bandProjector_rank` — the band-projector algebra.
+* `ErgodicTheory.bandProjector_isSelfAdjoint`, `ErgodicTheory.bandProjector_indicator_mul_self` —
+  the band-projector algebra.
 * `ErgodicTheory.norm_cfc_le_of_forall_eigenvalue_abs_le` — the spectral-block operator-norm bound.
 * `ErgodicTheory.exists_tendsto_cfc_of_summable` — CFC convergence from summable increments.
-* `ErgodicTheory.sin_sq_le_rayleigh_deficit_div_gap`,
-  `ErgodicTheory.offdiag_sin_le_residual_div_gap` — the
-  abstract Rayleigh-deficit / sin-Θ core.
+* `ErgodicTheory.offdiag_sin_le_residual_div_gap` — the abstract off-diagonal sin-Θ core.
 -/
 
 open Module InnerProductSpace MeasureTheory Filter Topology
@@ -68,32 +66,18 @@ theorem bandProjector_isSelfAdjoint (A : X → Matrix (Fin d) (Fin d) ℝ) (T : 
     (n : ℕ) (x : X) : IsSelfAdjoint (bandProjector A T χ n x) :=
   cfc_predicate _ _
 
-set_option linter.unusedSectionVars false in
-/-- If the cutoff `χ` is idempotent on the spectrum of `qpow` (i.e. `χ = χ²` there — true
-for a `0/1` indicator separated from the spectrum by a gap), the band projector is idempotent: a
-genuine orthogonal projector. Conditional; the gap hypothesis that supplies `hidem` is discharged by
-the root-test layer below. -/
-theorem bandProjector_mul_self (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) {χ : ℝ → ℝ} (n : ℕ)
-    (x : X) (hχ : ContinuousOn χ (_root_.spectrum ℝ (qpow A T n x)))
-    (hidem : (_root_.spectrum ℝ (qpow A T n x)).EqOn (fun t => χ t * χ t) χ) :
-    bandProjector A T χ n x * bandProjector A T χ n x = bandProjector A T χ n x := by
-  rw [bandProjector, ← cfc_mul χ χ _, cfc_congr hidem]
-
 /-! ## The band projector is the top-block eigenprojector
 
 For a cutoff `χ` equal on the (finite) spectrum of `qpow A T n x` to the `0/1` indicator of
 `(c, ∞)`, the band projector `bandProjector A T χ n x = cfc χ (qpow…)` is a genuine orthogonal
-projector (self-adjoint idempotent) whose **rank** equals the number of eigenvalues of `qpow`
-strictly above `c` — i.e. the dimension of the top eigenvalue-block. The explicit Hermitian-CFC
-triple-product formula `cfc χ A = U · diag(χ ∘ eigenvalues) · Uᴴ` makes the projector concrete;
-the rank is the count of nonzero diagonal entries, and a `{0,1}`-valued `χ` selects exactly the
-eigenvalues above the cut. -/
+projector: self-adjoint and idempotent. The explicit Hermitian-CFC triple-product formula
+`cfc χ A = U · diag(χ ∘ eigenvalues) · Uᴴ` makes the projector concrete, exhibiting it as the
+orthogonal projector onto the eigenvalue-block selected by the `{0,1}`-valued `χ`. -/
 
 set_option linter.unusedSectionVars false in
 /-- When `χ` equals the `0/1` indicator of `(c, ∞)` on the spectrum of `qpow`, the band
-projector is idempotent (a genuine orthogonal projector). Specialization of `bandProjector_mul_self`
-to the indicator cutoff, whose continuity hypothesis is discharged because the spectrum is finite
-and the indicator is `0/1`-valued (hence `χ² = χ` on it). -/
+projector is idempotent (a genuine orthogonal projector): the continuity hypothesis is discharged
+because the spectrum is finite and the indicator is `0/1`-valued (hence `χ² = χ` on it). -/
 theorem bandProjector_indicator_mul_self (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) {c : ℝ}
     (n : ℕ) (x : X) :
     bandProjector A T (Set.indicator (Set.Ioi c) 1) n x
@@ -125,137 +109,13 @@ theorem cfc_eq_eigenvectorUnitary_conj {m : Type*} [Fintype m] [DecidableEq m] {
           * star (hM.eigenvectorUnitary : Matrix m m 𝕜) := by
   rw [hM.cfc_eq χ, Matrix.IsHermitian.cfc, Unitary.conjStarAlgAut_apply]
 
-/-- **Rank of the band projector.** The rank of `bandProjector A T χ n x = cfc χ (qpow…)`
-is the number of eigenvalues `i` of `qpow A T n x` with `χ (eigenvalues i) ≠ 0`. Computed from the
-explicit Hermitian-CFC triple product `U · diag(χ ∘ eig) · Uᴴ`: conjugation by the (invertible)
-eigenvector unitary preserves rank, and the rank of the diagonal is the count of nonzero entries. -/
-theorem bandProjector_rank (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X) (χ : ℝ → ℝ)
-    (n : ℕ) (x : X) :
-    (bandProjector A T χ n x).rank
-      = Fintype.card {i : Fin d //
-          χ ((qpow_isSelfAdjoint A T n x).isHermitian.eigenvalues i) ≠ 0} := by
-  classical
-  set hM := (qpow_isSelfAdjoint A T n x).isHermitian with hMdef
-  set U : Matrix (Fin d) (Fin d) ℝ := (hM.eigenvectorUnitary : Matrix (Fin d) (Fin d) ℝ) with hU
-  -- The eigenvector unitary has unit determinant (both `U` and `star U`).
-  have hUstar : U * star U = 1 := Unitary.coe_mul_star_self hM.eigenvectorUnitary
-  have hdetU : IsUnit U.det :=
-    IsUnit.of_mul_eq_one (a := U.det) (star U).det
-      (by rw [← Matrix.det_mul, hUstar, Matrix.det_one])
-  have hdetUs : IsUnit (star U).det :=
-    IsUnit.of_mul_eq_one (a := (star U).det) U.det
-      (by rw [← Matrix.det_mul, Unitary.coe_star_mul_self hM.eigenvectorUnitary, Matrix.det_one])
-  -- The band projector is the unitary conjugate of the diagonal of `χ ∘ eigenvalues`.
-  rw [bandProjector, cfc_eq_eigenvectorUnitary_conj hM χ, ← hU]
-  -- Strip the unitary factors (rank is invariant under multiplication by invertible matrices).
-  rw [Matrix.rank_mul_eq_left_of_isUnit_det _ _ hdetUs,
-    Matrix.rank_mul_eq_right_of_isUnit_det _ _ hdetU, Matrix.rank_diagonal]
-  -- The nonzero diagonal entries are exactly the indices with `χ (eigenvalues i) ≠ 0`.
-  refine Fintype.card_congr (Equiv.subtypeEquivRight (fun i => ?_))
-  simp only [Function.comp_apply, RCLike.ofReal_real_eq_id, id_eq, ne_eq]
-
-/-! ## Frame form: the band projector is `U_top · U_topᵀ`
-
-The Frobenius back-transport `ExteriorNorm.norm_proj_sub_le_wedge` consumes the band projector in
-the
-shape `P = U Uᵀ` with `Uᵀ U = 1` (orthonormal columns). The `0/1` indicator cutoff selects exactly
-the eigenvectors of `qpow` with eigenvalue `> c`; through the explicit Hermitian-CFC triple product
-`cfc χ M = U · diag(χ ∘ eig) · Uᴴ` (`cfc_eq_eigenvectorUnitary_conj`), the band projector equals
-`U_top · U_topᵀ`, where `U_top` is the column-submatrix of the eigenvector unitary selecting the
-columns above the cut. The selected columns are orthonormal (`U_topᵀ U_top = 1`). -/
-
-set_option linter.unusedSectionVars false in
-/-- **Diag-selection.** For a real matrix `U` and the `0/1` indicator of `(c, ∞)` precomposed with a
-scalar `e : Fin d → ℝ`, conjugating the indicator diagonal by `U` selects the columns of `U` whose
-`e`-value exceeds `c`: `U · diag(𝟙_{(c,∞)} ∘ e) · Uᵀ = U_S · U_Sᵀ`, where `U_S` is the
-column-submatrix of `U` on `S = {i | c < e i}`. -/
-theorem diag_indicator_conj_eq_submatrix (U : Matrix (Fin d) (Fin d) ℝ) (c : ℝ)
-    (e : Fin d → ℝ) :
-    U * Matrix.diagonal (fun i => Set.indicator (Set.Ioi c) (1 : ℝ → ℝ) (e i)) * Uᵀ
-      = (U.submatrix id (Subtype.val : {i // c < e i} → Fin d))
-          * (U.submatrix id (Subtype.val : {i // c < e i} → Fin d))ᵀ := by
-  classical
-  ext a b
-  rw [Matrix.mul_assoc, Matrix.mul_apply]
-  simp only [Matrix.diagonal_mul, Matrix.transpose_apply]
-  rw [Matrix.mul_apply]
-  simp only [Matrix.transpose_apply, Matrix.submatrix_apply, id_eq]
-  rw [← Finset.sum_subtype (s := Finset.univ.filter (fun i => c < e i))
-      (p := fun i => c < e i) (fun i => by simp) (fun i => U a i * U b i)]
-  rw [Finset.sum_filter]
-  refine Finset.sum_congr rfl (fun i _ => ?_)
-  by_cases hi : c < e i
-  · rw [Set.indicator_of_mem (Set.mem_Ioi.mpr hi), Pi.one_apply, if_pos hi, one_mul]
-  · rw [Set.indicator_of_notMem (by simpa using hi), if_neg hi, zero_mul, mul_zero]
-
-set_option linter.unusedSectionVars false in
-/-- **Orthonormal columns of the selected submatrix.** If `U` has orthonormal columns
-(`Uᵀ U = 1`, e.g. an eigenvector unitary), then any column-subselection of `U` still has orthonormal
-columns: `U_Sᵀ U_S = 1`. (`U_S = U.submatrix id Subtype.val` over a subtype of column indices.) -/
-theorem submatrix_transpose_mul_self_eq_one (U : Matrix (Fin d) (Fin d) ℝ) (c : ℝ)
-    (e : Fin d → ℝ) (hU : Uᵀ * U = 1) :
-    (U.submatrix id (Subtype.val : {i // c < e i} → Fin d))ᵀ
-        * (U.submatrix id (Subtype.val : {i // c < e i} → Fin d)) = 1 := by
-  classical
-  ext s t
-  rw [Matrix.mul_apply]
-  simp only [Matrix.transpose_apply, Matrix.submatrix_apply, id_eq]
-  have hsum : ∑ a, U a (s : Fin d) * U a (t : Fin d) = (Uᵀ * U) (s : Fin d) (t : Fin d) := by
-    rw [Matrix.mul_apply]; simp [Matrix.transpose_apply]
-  rw [hsum, hU, Matrix.one_apply, Matrix.one_apply]
-  by_cases hst : s = t
-  · simp [hst]
-  · rw [if_neg hst, if_neg (fun h => hst (Subtype.ext h))]
-
-/-- **CFC indicator = `U_top · U_topᵀ`.** For a Hermitian real matrix `M` with eigenvector unitary
-`U` and eigenvalues `eig`, the band projector cut by the `0/1` indicator of `(c, ∞)` is
-`U_top · U_topᵀ`, where `U_top` is the column-submatrix of `U` selecting the eigenvectors with
-eigenvalue `> c`. Combines `cfc_eq_eigenvectorUnitary_conj` (the triple product
-`U · diag(χ ∘ eig) · Uᴴ`) with `diag_indicator_conj_eq_submatrix`. -/
-theorem cfc_indicator_eq_submatrix_mul (M : Matrix (Fin d) (Fin d) ℝ)
-    (hM : M.IsHermitian) (c : ℝ) :
-    cfc (Set.indicator (Set.Ioi c) (1 : ℝ → ℝ)) M
-      = (hM.eigenvectorUnitary : Matrix (Fin d) (Fin d) ℝ).submatrix id
-            (Subtype.val : {i // c < hM.eigenvalues i} → Fin d)
-          * ((hM.eigenvectorUnitary : Matrix (Fin d) (Fin d) ℝ).submatrix id
-            (Subtype.val : {i // c < hM.eigenvalues i} → Fin d))ᵀ := by
-  classical
-  rw [cfc_eq_eigenvectorUnitary_conj hM (Set.indicator (Set.Ioi c) 1)]
-  have hdiag : (Matrix.diagonal
-        (RCLike.ofReal ∘ Set.indicator (Set.Ioi c) (1 : ℝ → ℝ) ∘ hM.eigenvalues)
-      : Matrix (Fin d) (Fin d) ℝ)
-      = Matrix.diagonal (fun i => Set.indicator (Set.Ioi c) (1 : ℝ → ℝ) (hM.eigenvalues i)) := by
-    congr 1
-  rw [hdiag, Matrix.star_eq_conjTranspose,
-    (hM.eigenvectorUnitary : Matrix (Fin d) (Fin d) ℝ).conjTranspose_eq_transpose_of_trivial,
-    diag_indicator_conj_eq_submatrix]
-
-/-- **The band-projector frame extraction.** The band projector of `qpow` cut
-by the `0/1` indicator of `(c, ∞)` is `U_top · U_topᵀ`, with `U_top` the column-submatrix of the
-eigenvector unitary of `qpow A T n x` selecting the eigenvectors with eigenvalue `> c`, and the
-selected columns are orthonormal (`U_topᵀ U_top = 1`). This is the `P = U Uᵀ` input consumed by the
-Frobenius back-transport `ExteriorNorm.norm_proj_sub_le_wedge`. -/
-theorem bandProjector_indicator_eq_frame (A : X → Matrix (Fin d) (Fin d) ℝ) (T : X → X)
-    {c : ℝ} (n : ℕ) (x : X) :
-    let hM := (qpow_isSelfAdjoint A T n x).isHermitian
-    let Utop := (hM.eigenvectorUnitary : Matrix (Fin d) (Fin d) ℝ).submatrix id
-      (Subtype.val : {i // c < hM.eigenvalues i} → Fin d)
-    bandProjector A T (Set.indicator (Set.Ioi c) 1) n x = Utop * Utopᵀ
-      ∧ Utopᵀ * Utop = 1 := by
-  intro hM Utop
-  refine ⟨?_, ?_⟩
-  · exact cfc_indicator_eq_submatrix_mul (qpow A T n x) hM c
-  · exact submatrix_transpose_mul_self_eq_one
-      (hM.eigenvectorUnitary : Matrix (Fin d) (Fin d) ℝ) c hM.eigenvalues
-      (Unitary.coe_star_mul_self hM.eigenvectorUnitary)
-
 /-! ## Sorted frame: the band projector is the SORTED top-`k` gram eigenframe projector
 
 The Plücker eigenpair `ExteriorNorm.plucker_eigenpair_ceiling_standard'` and the det-Gram bridge
 `ExteriorNorm.det_transpose_mul_eq_inner_onbTriv` both speak of the **sorted** gram eigenbasis: the
 top eigenvector wedge is `onbTriv basisFun (⋀ {u₀, …, u_{k-1}})` of the orthonormal eigenframe `u`
-with **antitone** eigenvalues `lam = σ²`. The `bandProjector_indicator_eq_frame` expresses
-the band projector through `qpow`'s **unsorted** eigenvector unitary; this subsection reconciles the
+with **antitone** eigenvalues `lam = σ²`. The band projector is expressed through `qpow`'s
+**unsorted** eigenvector unitary via its `cfc`; this subsection reconciles the
 two by showing the band projector equals `W Wᵀ`, where `W` is the `d×k` matrix whose columns are the
 **sorted** top-`k` gram eigenvectors. Both are the orthogonal projector onto the same eigenvalue-`>
 c`
@@ -634,61 +494,6 @@ theorem exists_tendsto_cfc_of_summable {d : ℕ} (H : ℕ → Matrix (Fin d) (Fi
     ∃ L, Tendsto (fun n => cfc χ (H n)) atTop (𝓝 L) :=
   cauchySeq_tendsto_of_complete (cauchySeq_cfc_of_summable H χ hsum)
 
-/-! ## The rank-1 Rayleigh-gap sin-Θ core
-
-The irreducible analytic kernel of the gapped band-projector Cauchy estimate. It is an
-elementary (Parseval + one scalar inequality) replacement for an abstract Davis–Kahan sin-Θ
-theorem, which Mathlib lacks entirely. Stated abstractly for a symmetric operator on any real inner
-product space (upstreamable, no dynamics): if a unit vector `v'` nearly maximizes the Rayleigh
-quotient of `C`, it is close to the top eigenvector `v₀`, with the squared sine of the angle
-controlled by the Rayleigh deficit divided by the spectral gap. The cocycle consumer takes
-`C = ⋀^k Qₙ` and `v'` the top eigenvector of `⋀^k Qₙ₊₁`, where the deficit is the one-step
-distortion. -/
-
-/-- **The rank-1 Rayleigh-gap sin-Θ bound.** For a symmetric operator `C` with a top unit
-eigenvector `v₀` of eigenvalue `μ₀`, whose `v₀`-orthogonal complement has Rayleigh quotient bounded
-above by a strictly smaller `μ₁`, any unit vector `v'` whose Rayleigh quotient is within `ε` of `μ₀`
-makes a small angle with `v₀`: the squared sine `‖v' - ⟪v', v₀⟫ v₀‖²` is at most `ε / (μ₀ - μ₁)`. -/
-theorem sin_sq_le_rayleigh_deficit_div_gap {E : Type*} [NormedAddCommGroup E]
-    [InnerProductSpace ℝ E] {C : E →ₗ[ℝ] E} (hC : C.IsSymmetric)
-    {μ₀ μ₁ : ℝ} {v₀ : E} (hv₀ : ‖v₀‖ = 1) (hev : C v₀ = μ₀ • v₀) (hgap : μ₁ < μ₀)
-    (hμ₁ : ∀ w : E, ⟪w, v₀⟫_ℝ = 0 → ⟪C w, w⟫_ℝ ≤ μ₁ * ‖w‖ ^ 2)
-    {v' : E} (hv' : ‖v'‖ = 1) {ε : ℝ} (hRay : μ₀ - ε ≤ ⟪C v', v'⟫_ℝ) :
-    ‖v' - (⟪v', v₀⟫_ℝ) • v₀‖ ^ 2 ≤ ε / (μ₀ - μ₁) := by
-  set p : ℝ := ⟪v', v₀⟫_ℝ with hp
-  set w : E := v' - p • v₀ with hw
-  have hv₀v₀ : ⟪v₀, v₀⟫_ℝ = 1 := by rw [real_inner_self_eq_norm_sq, hv₀]; norm_num
-  have hwv₀ : ⟪w, v₀⟫_ℝ = 0 := by
-    rw [hw, inner_sub_left, real_inner_smul_left, hv₀v₀, hp]; ring
-  have hv₀w : ⟪v₀, w⟫_ℝ = 0 := by rw [real_inner_comm]; exact hwv₀
-  have hdecomp : v' = p • v₀ + w := by rw [hw]; abel
-  -- Pythagoras: `1 = p² + ‖w‖²`.
-  have hpv : ‖p • v₀‖ ^ 2 = p ^ 2 := by
-    rw [norm_smul, hv₀, mul_one, Real.norm_eq_abs, sq_abs]
-  have hpyth : (1 : ℝ) = p ^ 2 + ‖w‖ ^ 2 := by
-    have h2 : ‖v'‖ ^ 2 = ‖p • v₀‖ ^ 2 + 2 * ⟪p • v₀, w⟫_ℝ + ‖w‖ ^ 2 := by
-      rw [hdecomp]; exact norm_add_sq_real _ _
-    rw [hv', hpv, real_inner_smul_left, hv₀w] at h2
-    nlinarith [h2]
-  -- Rayleigh decomposition: `⟪C v', v'⟫ = μ₀ p² + ⟪C w, w⟫`.
-  have hCwv₀ : ⟪C w, v₀⟫_ℝ = 0 := by
-    simp [hC w v₀, hev, real_inner_smul_right, hwv₀]
-  have hray : ⟪C v', v'⟫_ℝ = μ₀ * p ^ 2 + ⟪C w, w⟫_ℝ := by
-    have hCv' : C v' = (p * μ₀) • v₀ + C w := by
-      rw [hdecomp, map_add, map_smul, hev, smul_smul]
-    rw [hCv', hdecomp]
-    simp only [inner_add_left, inner_add_right, real_inner_smul_left, real_inner_smul_right,
-      hv₀v₀, hv₀w, hCwv₀, mul_zero, add_zero, mul_one]
-    ring
-  have hb : ⟪C w, w⟫_ℝ ≤ μ₁ * ‖w‖ ^ 2 := hμ₁ w hwv₀
-  -- the algebraic kernel: `c + s = 1`, `μ₀ - ε ≤ μ₀ c + b`, `b ≤ μ₁ s` force `s ≤ ε/(μ₀-μ₁)`.
-  set s : ℝ := ‖w‖ ^ 2 with hs
-  have hgap' : 0 < μ₀ - μ₁ := by linarith
-  rw [le_div_iff₀ hgap']
-  have hp2 : p ^ 2 = 1 - s := by rw [hs] at hpyth ⊢; linarith
-  rw [hray, hp2] at hRay
-  nlinarith [hRay, hb]
-
 /-! ## The tempered one-step factor
 
 The relative-gap projector-increment bound carries a one-step distortion factor
@@ -827,7 +632,7 @@ theorem tendsto_logNorm_compound_orbit_div_atTop_zero {A : X → Matrix (Fin d) 
 
 /-! ## Refined Davis–Kahan off-diagonal sin-Θ
 
-The Rayleigh-DEFICIT bound `sin_sq_le_rayleigh_deficit_div_gap` is *true* but the WRONG tool for the
+The Rayleigh-*deficit* form of the rank-1 sin-Θ bound is *true* but the WRONG tool for the
 gapped band-projector summability: feeding it the only provable deficit `ε ≤ (1−1/κ²)μ₀` yields
 `sin²θ ≤ (1−1/κ²)/(1−r²)`, which is NOT summable along the orbit (the one-step `κ` is tempered with
 positive mean, so `1−1/κ²` does not decay), and the route is structurally circular (`ε ≈ μ₀ sin²θ`).
@@ -839,8 +644,8 @@ the extra `σₖ/σₖ₋₁` factor the deficit route loses. -/
 with top unit eigenvector `vt` (eigenvalue `μ₀`), an unperturbed top eigenline `v₀`, and a Rayleigh
 ceiling `ν < μ₀` of `C` on `v₀^⊥`, the sine of the angle between `vt` and `v₀` is bounded by the
 *off-diagonal residual* `‖C v₀ − ⟪C v₀, v₀⟫ v₀‖` over the gap `μ₀ − ν`. Elementary (Rayleigh +
-Cauchy–Schwarz + `|⟪vt,v₀⟫| ≤ 1`); no symmetry, no functional calculus. This replaces the
-deficit-form `sin_sq_le_rayleigh_deficit_div_gap` as the load-bearing sin-Θ core. -/
+Cauchy–Schwarz + `|⟪vt,v₀⟫| ≤ 1`); no symmetry, no functional calculus. This is the
+load-bearing sin-Θ core, replacing the earlier Rayleigh-deficit form. -/
 theorem offdiag_sin_le_residual_div_gap {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
     {C : E →ₗ[ℝ] E} {μ₀ ν : ℝ} {v₀ vt : E} (hv₀ : ‖v₀‖ = 1) (hvtnorm : ‖vt‖ = 1)
     (hev : C vt = μ₀ • vt) (hgap : ν < μ₀)
