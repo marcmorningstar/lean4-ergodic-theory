@@ -2322,10 +2322,10 @@ axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms ErgodicTheory.Multifractal.renyiDim_uniform_eq_dim
 
-/-- info: 'ErgodicTheory.Multifractal.renyiDim_uniform_tendsto_dim' depends on axioms:
+/-- info: 'ErgodicTheory.Multifractal.renyiDim_uniform_seq_tendsto_dim' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms ErgodicTheory.Multifractal.renyiDim_uniform_tendsto_dim
+#print axioms ErgodicTheory.Multifractal.renyiDim_uniform_seq_tendsto_dim
 
 /-- info: 'ErgodicTheory.Multifractal.ae_tendsto_localDimension_of_absolutelyContinuous' depends on
 axioms: [propext, Classical.choice, Quot.sound] -/
@@ -2412,10 +2412,10 @@ axioms: [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms ErgodicTheory.Multifractal.not_isHeterogeneous_iff_equalMeasure
 
-/-- info: 'ErgodicTheory.Multifractal.refiningLimitConvergesProp_of_uniform' depends on axioms:
+/-- info: 'ErgodicTheory.Multifractal.refiningLimitConvergesSeqProp_of_uniform' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms ErgodicTheory.Multifractal.refiningLimitConvergesProp_of_uniform
+#print axioms ErgodicTheory.Multifractal.refiningLimitConvergesSeqProp_of_uniform
 
 /-! ### Issue #19 — the chaotic Bernoulli-suspension flow object
 (positive metric entropy + a non-uniform ergodic invariant measure on which `D_q` is `q`-dependent) -/
