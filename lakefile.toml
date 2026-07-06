@@ -1,10 +1,11 @@
 name = "ErgodicTheory"
-# `Frontier` is included so its (trivial, import-nothing, sorry-free) *root* olean is built on a plain
-# `lake build`. The blueprint CI's `checkdecls` imports the root module of every workspace `lean_lib`
-# (`ws.root.leanLibs`); without a built `Frontier.olean` that import fails with "unknown module prefix
-# 'Frontier'" and aborts the decl check. Only the root builds by default — the sorry-carrying
-# `Frontier.Issue*` subtree is still built explicitly (see the `Frontier` lib note below).
-defaultTargets = ["ErgodicTheory", "AxiomAudit", "Frontier"]
+version = "1.0.0"
+description = "A Lean 4 + Mathlib formalization of the Oseledets multiplicative ergodic theorem (MET), with a leanblueprint and doc-gen4 documentation."
+keywords = ["ergodic-theory", "dynamical-systems", "lyapunov-exponents", "oseledets", "entropy", "quantum-information", "mathlib", "mathematics"]
+homepage = "https://marcmorningstar.github.io/lean4-ergodic-theory/"
+license = "Apache-2.0"
+testDriver = "AxiomAudit"
+defaultTargets = ["ErgodicTheory", "AxiomAudit"]
 
 [leanOptions]
 autoImplicit = false
@@ -41,16 +42,3 @@ moreLeanArgs = ["-Dweak.linter.mathlibStandardSet=true", "-DwarningAsError=true"
 [[lean_lib]]
 name = "AxiomAudit"
 srcDir = "test"
-
-# Frontier: STAGING library for the in-progress TOP-DOWN formalization of the missing Mathlib-scale
-# infrastructure (#4 Ruelle-inequality geometric core; #6 measurable singular filtration). Deliberately
-# NOT linted and NOT warning-as-error, so top-down skeletons carrying `sorry` compile and track (with
-# warm leancheck) during development WITHOUT polluting the green `ErgodicTheory` / `AxiomAudit` build. Only
-# the library *root* (`Frontier.lean`, a sorry-free docstring that imports nothing) is a default target
-# — needed so the blueprint CI's `checkdecls` can import every workspace lib root (see the
-# `defaultTargets` note above). The sorry-carrying `Frontier.Issue*` subtree is NOT reachable from the
-# root and so is NOT built by a plain `lake build`; build those explicitly via `lake build
-# Frontier.<Module>`. A subtree migrates into `ErgodicTheory/` proper (which enforces sorry-free) only once
-# it is fully sorry-free. autoImplicit stays off (package `[leanOptions]`), matching Mathlib style.
-[[lean_lib]]
-name = "Frontier"

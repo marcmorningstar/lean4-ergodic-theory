@@ -1,13 +1,9 @@
-# docs/ — research, plans, and progress
+# docs/ — supporting documents
 
-This tree is the project's **durable record** and crash-recovery point for the
-Oseledets formalization workflow (see `../PROMPT.md`). Everything an agent needs
-to resume work after a restart lives here and is committed alongside the code.
+Supporting material for the `ErgodicTheory` library, committed alongside the code.
 
-| Folder | Holds |
+| File | Holds |
 |---|---|
-| `research/` | Scraped sources (PDFs, notes), surveys, and the understanding of the theorem and its proof route. |
-| `plan/` | The dependency map and the phased, top-down implementation plan. |
-| `progress/` | A single living **state** document — current target, what's done, current phase, what's next, and where the open `sorry`s are. Written to be resumable from alone. |
-
-The folders are populated by the workflow as it runs; they start empty.
+| `references.bib` | Bibliography for the blueprint and the library. |
+| `mathlib-conventions-report.md` | An evidence-backed guide to Mathlib style and naming conventions, used to keep the library at merge quality. |
+| `progress/STATE.md` | A map of the finished library — what is proved and where. |

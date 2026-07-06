@@ -29,12 +29,9 @@
 /blueprint/src/*.bbl
 /blueprint/src/*.blg
 
-# Claude Code session state — agent worktrees are temporary working copies
-# created during parallel agent execution, not source.
-.claude/worktrees/
-.claude/sessions/
-.claude/cache/
-.claude/local/
+# Claude Code local config and session state (untracked).
+.claude/
+CLAUDE.md
 
 # Python bytecode (leancheck engine + hooks)
 __pycache__/

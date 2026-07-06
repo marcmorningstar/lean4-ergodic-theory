@@ -98,8 +98,8 @@ modular-cocycle intertwining `partialTrace_equality_imp_intertwinesIt`.
 ## Trust story
 
 - **Sorry-free**: warnings are promoted to errors in `lakefile.toml`, so any `sorry` fails
-  `lake build` (and CI). In-progress material lives in the separate `Frontier` staging library,
-  unreachable from the default build.
+  `lake build` (and CI). `main` is sorry-free everywhere; in-progress/experimental material lives
+  on the `frontier` branch and reaches `main` only through clean, sorry-free PRs.
 - **Linter-enforced**: the whole `ErgodicTheory` library builds under Mathlib's
   `linter.mathlibStandardSet` with warnings-as-errors, so CI fails on any style-lint regression.
 - **Axiom-audited**: `test/AxiomAudit.lean` guards 496 declarations with
@@ -138,11 +138,9 @@ test/
   AxiomAudit.lean     -- guarded #print-axioms regression (separate lib; not upstreamable source)
 blueprint/            -- leanblueprint LaTeX source (web + PDF; \lean-linked to declarations)
 home_page/            -- Jekyll landing page for the GitHub Pages site
-Frontier/             -- disclosed staging area (separate `Frontier` lake lib): import-free, sorry-free
-                      --   root; the sorry-carrying Frontier.Issue* subtree is unreachable from any default build
-lakefile.toml         -- package config (ErgodicTheory + AxiomAudit + Frontier libraries)
+lakefile.toml         -- package config (ErgodicTheory + AxiomAudit libraries)
 lean-toolchain        -- pinned Lean version (leanprover/lean4:v4.30.0-rc2)
-docs/                 -- research notes, design records, references.bib, progress state
+docs/                 -- Mathlib-conventions guide, references.bib, finished-library state map
 ```
 
 ## Building
