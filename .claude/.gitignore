@@ -1,0 +1,9 @@
+# On the `dev-tooling` branch, .claude/ is tracked. Keep the ephemeral session/runtime
+# state out of it so `tooling-sync save` never commits junk. (On main/frontier the whole
+# .claude/ directory is gitignored, so this file is simply inert there.)
+worktrees/
+sessions/
+cache/
+local/
+*.lock
+scheduled_tasks.lock

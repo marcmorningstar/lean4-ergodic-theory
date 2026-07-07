@@ -4,6 +4,31 @@ This repository is a **Lean 4 + Mathlib formalization of the Oseledets
 multiplicative ergodic theorem (MET)**. It is a single-purpose Lean project
 (not a monorepo).
 
+## Branch layout (main stays clean — READ THIS before committing)
+
+Three branches with strict separation of concerns:
+
+| Branch | Holds | `.claude/` + `CLAUDE.md` |
+|---|---|---|
+| `main` | Clean, public, upstreamable library. Feature work lands here via clean PRs. | gitignored (untracked) |
+| `frontier` | `main` + one thin overlay commit: the `Frontier/` staging lib + internal campaign docs. Rebased onto main as it advances. | gitignored (untracked) |
+| `dev-tooling` | **Orphan branch, never merged.** The *only* git home of `.claude/` + `CLAUDE.md`. | tracked here |
+
+**Why:** `.claude/` + `CLAUDE.md` are gitignored on `main` **and** `frontier`, so they can never be
+swept into a feature commit by `git add -A` and never leak into a PR to `main`. They still live on
+disk (campaigns work) and are versioned — just on `dev-tooling`.
+
+**Sync the tooling** with the helper (`.claude/scripts/tooling-sync`):
+
+```bash
+.claude/scripts/tooling-sync pull            # refresh on-disk .claude/ + CLAUDE.md from dev-tooling
+.claude/scripts/tooling-sync save "message"  # commit current on-disk tooling to dev-tooling + push
+```
+
+**Rebase frontier when main advances:** `git switch frontier && git rebase main && git push
+--force-with-lease origin frontier` (replays the single overlay commit). Do **not** `git reset`
+(deny-listed in settings); it isn't needed.
+
 ## ⚠️ Orchestration rules for the goal loop (DO NOT FORGET)
 
 When grinding the open issues (#4/#5/#6) as an autonomous orchestrator, these are **invariants**,
