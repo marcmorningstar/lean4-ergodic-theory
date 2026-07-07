@@ -191,6 +191,7 @@ import ErgodicTheory.Examples.CatMapOrbit
 import ErgodicTheory.Examples.CatMapToral
 import ErgodicTheory.Examples.CatMapDerivativeCocycle
 import ErgodicTheory.Examples.CatMapPerPartition
+import ErgodicTheory.Examples.CatMapSuspensionFlow
 import ErgodicTheory.Examples.Rokhlin.AbstractEqui
 import ErgodicTheory.Examples.Rokhlin.DoublingCrux
 import ErgodicTheory.Examples.Rokhlin.DoublingEquality
@@ -225,6 +226,7 @@ import ErgodicTheory.Krieger.StageBuild
 import ErgodicTheory.Krieger.Weave
 import ErgodicTheory.Krieger.Bracket
 import ErgodicTheory.Multifractal
+import ErgodicTheory.Livsic
 import ErgodicTheory.OperatorEntropy
 import ErgodicTheory.OperatorEntropy.RelativeEntropy
 import ErgodicTheory.OperatorEntropy.PetzRecovery
@@ -278,6 +280,8 @@ This module imports the whole development.
 * `ErgodicTheory.Continuous.*` — the continuous-flow MET `oseledets_flow` and its special-flow
   (suspension) layer.
 * `ErgodicTheory.OperatorEntropy.*` — the finite-dimensional quantum-information layer.
+* `ErgodicTheory.Livsic.*` — the Livšic cohomological rigidity theorem (`livsic_fullShift`) for the
+  one-sided full shift, with its continuous- and bounded-measurable rigidity tiers.
 
 The target theorem `ErgodicTheory.oseledets_filtration`, the two-sided `oseledets_splitting`,
 the flow

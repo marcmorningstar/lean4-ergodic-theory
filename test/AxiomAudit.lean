@@ -224,6 +224,18 @@ import ErgodicTheory.OperatorEntropy.Lieb.DataProcessingCPTP
 import ErgodicTheory.OperatorEntropy.Lieb.PetzEqualityRecovery28
 import ErgodicTheory.OperatorEntropy.Lieb.PetzEqualitySufficiency
 import ErgodicTheory.OperatorEntropy.Lieb.PetzEqualityGeneral
+-- Direct imports of the issue #30 cat-map suspension-flow witness and the issue #29 Livšic modules
+-- whose declarations are guarded below (keeping each guarded declaration's defining module imported
+-- directly, so the axiom guards cannot silently narrow if an umbrella is ever pruned).
+import ErgodicTheory.Examples.CatMapSuspensionFlow
+import ErgodicTheory.Livsic.Defs
+import ErgodicTheory.Livsic.HolderExtend
+import ErgodicTheory.Livsic.Abstract
+import ErgodicTheory.Livsic.FullShiftClosing
+import ErgodicTheory.Livsic.DenseOrbit
+import ErgodicTheory.Livsic.ContinuousRigidity
+import ErgodicTheory.Livsic.BoundedRigidity
+import ErgodicTheory.Livsic.FullShift
 
 /-!
 # Axiom audit
@@ -2849,3 +2861,127 @@ data-processing input is an explicit hypothesis, the Lieb-gated piece staying ou
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms ErgodicTheory.OperatorEntropy.Lieb.partialTrace_equality_imp_intertwinesIt
+
+-- Issue #30 (cat-map suspension flow carries the base's derivative cocycle): the four headlines of
+-- `ErgodicTheory.Examples.CatMapSuspensionFlow`.
+
+/-- info: 'ErgodicTheory.CatMapToral.catSuspension_ae_hasFlowExponent' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.CatMapToral.catSuspension_ae_hasFlowExponent
+
+/-- info: 'ErgodicTheory.CatMapToral.catSuspension_ae_hasFlowExponent_flowOrbit' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.CatMapToral.catSuspension_ae_hasFlowExponent_flowOrbit
+
+/-- info: 'ErgodicTheory.CatMapToral.catSuspensionFlow_ownExponent_pos' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.CatMapToral.catSuspensionFlow_ownExponent_pos
+
+/-- info: 'ErgodicTheory.CatMapToral.catSuspension_flowExponent_eq_base_div_roof' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.CatMapToral.catSuspension_flowExponent_eq_base_div_roof
+
+-- Issue #29 (Livšic cohomological rigidity): the abstract equivalence and its supporting steps.
+
+/-- info: 'ErgodicTheory.isHolderCoboundary_iff' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.isHolderCoboundary_iff
+
+/-- info: 'ErgodicTheory.exists_holderCoboundary_of_denseOrbit' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.exists_holderCoboundary_of_denseOrbit
+
+/-- info: 'ErgodicTheory.exists_holderWith_extension' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.exists_holderWith_extension
+
+/-- info: 'ErgodicTheory.IsCoboundary.hasVanishingPeriodicSums' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.IsCoboundary.hasVanishingPeriodicSums
+
+/-- info: 'ErgodicTheory.not_isCoboundary_of_periodicSum_ne_zero' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.not_isCoboundary_of_periodicSum_ne_zero
+
+-- Issue #29 (full-shift instance): the closing property, the dense orbit, and the rigidity tiers.
+
+/-- info: 'ErgodicTheory.Livsic.expClosing_shiftMap' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.Livsic.expClosing_shiftMap
+
+/-- info: 'ErgodicTheory.Livsic.exists_denseRange_shiftMap_orbit' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.Livsic.exists_denseRange_shiftMap_orbit
+
+/-- info: 'ErgodicTheory.Livsic.hasVanishingPeriodicSums_of_continuous_coboundary' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.Livsic.hasVanishingPeriodicSums_of_continuous_coboundary
+
+/-- info: 'ErgodicTheory.Livsic.hasVanishingPeriodicSums_of_bounded_aeCoboundary' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.Livsic.hasVanishingPeriodicSums_of_bounded_aeCoboundary
+
+-- Issue #29 (headline full-shift Livšic equivalence, its `Fin m` form, and the corollaries).
+
+/-- info: 'ErgodicTheory.Livsic.livsic_fullShift' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.Livsic.livsic_fullShift
+
+/-- info: 'ErgodicTheory.Livsic.livsic_fullShift_fin' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.Livsic.livsic_fullShift_fin
+
+/-- info: 'ErgodicTheory.Livsic.phi_not_isCoboundary' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.Livsic.phi_not_isCoboundary
+
+/-- info: 'ErgodicTheory.Livsic.phi_not_isHolderCoboundary' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.Livsic.phi_not_isHolderCoboundary
+
+/-- info: 'ErgodicTheory.Livsic.psi_isHolderCoboundary' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.Livsic.psi_isHolderCoboundary
+
+/-- info: 'ErgodicTheory.Livsic.psi_hasVanishingPeriodicSums' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.Livsic.psi_hasVanishingPeriodicSums
+
+/-- info: 'ErgodicTheory.Livsic.psi_isHolderCoboundary_via_livsic' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.Livsic.psi_isHolderCoboundary_via_livsic
+
+/-- info: 'ErgodicTheory.Livsic.isOpenPosMeasure_bern' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.Livsic.isOpenPosMeasure_bern
+
+/-- info: 'ErgodicTheory.Livsic.isHolderCoboundary_of_continuous_aeCoboundary' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.Livsic.isHolderCoboundary_of_continuous_aeCoboundary
+
+/-- info: 'ErgodicTheory.Livsic.isHolderCoboundary_of_bounded_aeCoboundary' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.Livsic.isHolderCoboundary_of_bounded_aeCoboundary
