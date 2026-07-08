@@ -126,6 +126,9 @@ import ErgodicTheory.Continuous.SuspensionStandardBorel
 import ErgodicTheory.Smooth.DerivativeCocycle
 import ErgodicTheory.Smooth.Expanding
 import ErgodicTheory.Smooth.RokhlinExpanding
+import ErgodicTheory.Smooth.Pesin.SRBData
+import ErgodicTheory.Smooth.Pesin.ManeLowerBound
+import ErgodicTheory.Smooth.Pesin.PesinFormula
 import ErgodicTheory.Examples.Elementary
 import ErgodicTheory.Entropy.Partition
 import ErgodicTheory.Entropy.Join
@@ -195,6 +198,7 @@ import ErgodicTheory.Examples.CatMapSuspensionFlow
 import ErgodicTheory.Examples.Rokhlin.AbstractEqui
 import ErgodicTheory.Examples.Rokhlin.DoublingCrux
 import ErgodicTheory.Examples.Rokhlin.DoublingEquality
+import ErgodicTheory.Examples.Rokhlin.DoublingPesin
 import ErgodicTheory.Krieger.ZIterate
 import ErgodicTheory.Krieger.SmallSet
 import ErgodicTheory.Krieger.FirstReturn

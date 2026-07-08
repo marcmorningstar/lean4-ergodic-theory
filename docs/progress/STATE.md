@@ -64,6 +64,27 @@ map (`Flow.lean` reduction identity, `Reduction.lean`), upgrading integer-time g
 continuous parameter via a between-times sandwich (`BetweenTimes.lean`), and proving real-time
 equivariance via a discrete-limsup shift-invariance (`Equivariance.lean`).
 
+## Pesin / SRB volume case (`ErgodicTheory/Smooth/Pesin/`, `ErgodicTheory/Examples/Rokhlin/`)
+
+The volume-case Pesin entropy formula, discharging the hard leaf of issue #10. All sorry-free and
+guarded in `test/AxiomAudit.lean`.
+
+* **SRB data** (`Pesin/SRBData.lean`) — the redesigned volume-case `SRBProperty` and the
+  `UnstableJacobianRate` (integrated log unstable Jacobian).
+* **Rokhlin inequality & reverse leaf** (`Pesin/ManeLowerBound.lean`) — the standalone,
+  generator-free **Rokhlin inequality** `∫ log|det DₓT| dμ ≤ h_μ(T)`
+  (`integral_log_abs_det_le_ksEntropy`, via `strictFuture_le_comap` and the
+  spectrum-sum bookkeeping `sumPosExp_eq_sumAllExp_of_nonneg`), whence the SRB reverse
+  inequality `∑ λᵢ⁺ ≤ h_μ(T)` (`sumPosExp_le_ksEntropy_of_SRB`).
+* **Pesin formula** (`Pesin/PesinFormula.lean`) — `pesin_entropy_formula_spectral` and
+  `pesin_entropy_formula`: `h_μ(T) = ∑ λᵢ⁺`, a `le_antisymm` of `margulisRuelle_sharp` (forward)
+  and the SRB reverse leaf.
+* **Doubling-map witness** (`Examples/Rokhlin/DoublingPesin.lean`) — the first non-vacuous
+  full-system Pesin instance in the library: the binary-expansion generator
+  (`borel_le_generateFrom_dyadicArcs`, `binPartition_isGenerating`) gives
+  `ksEntropy_doublingMap_eq_log_two`, and `pesin_formula_doublingMap` witnesses
+  `h = ∑ λ⁺ = log 2` on a compact carrier.
+
 ## Quantum-information layer (`ErgodicTheory/OperatorEntropy/`)
 
 A self-contained finite-dimensional quantum-information cluster added on top of the MET core

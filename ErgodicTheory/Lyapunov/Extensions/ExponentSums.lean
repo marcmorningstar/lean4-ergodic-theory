@@ -158,6 +158,24 @@ theorem sumNegExp_eq_zero_iff :
   · intro h i hi
     exact absurd (Finset.mem_filter.mp hi).2 (not_lt.mpr (h i))
 
+/-- **Positive-exponent sum = full exponent sum, under a nonnegative spectrum.** If every Lyapunov
+exponent is nonnegative, the positive-exponent sum equals the full exponent sum: the extra
+`univ`-summands (exponent `≤ 0`, hence `= 0` here) vanish.
+
+This is a purely spectral fact about `sumPosExp`/`sumAllExp`. It generalizes the expanding case
+`sumPosExp_eq_sumAllExp_of_expanding` (all exponents strictly positive) to a merely nonnegative
+spectrum, and it is the step that specializes the SRB reverse inequality to the volume case
+(`hspec` = nonnegative spectrum). -/
+theorem sumPosExp_eq_sumAllExp_of_nonneg
+    (hnn : ∀ i, 0 ≤ exponents hT hA hAmeas hint hint' i) :
+    sumPosExp hT hA hAmeas hint hint' = sumAllExp hT hA hAmeas hint hint' := by
+  rw [sumPosExp, sumAllExp]
+  refine Finset.sum_subset (Finset.filter_subset _ _) (fun i _ hi => ?_)
+  have hle : exponents hT hA hAmeas hint hint' i ≤ 0 := by
+    by_contra h
+    exact hi (Finset.mem_filter.mpr ⟨Finset.mem_univ i, not_le.mp h⟩)
+  exact le_antisymm hle (hnn i)
+
 /-- **Negativity of the negative-exponent sum.** The sum of the strictly negative exponents is
 strictly negative iff at least one exponent is negative. -/
 theorem sumNegExp_neg_iff :

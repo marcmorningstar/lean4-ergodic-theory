@@ -181,16 +181,14 @@ theorem exponents_pos_of_expanding (hdiff : Differentiable ℝ T)
     (log_le_exponents_of_expanding hT hdet hint hint' hdiff hK hexp i)
 
 /-- **For an expanding map, the positive-exponent sum is the full exponent sum.** Because every
-Lyapunov exponent is strictly positive, the positive-part filter `{i | 0 < exponents i}` is all of
-`Finset.univ`, so `∑λ⁺ = ∑λ`. -/
+Lyapunov exponent is strictly positive (`exponents_pos_of_expanding`), it is in particular
+nonnegative, so this is the immediate specialization of `sumPosExp_eq_sumAllExp_of_nonneg`. -/
 theorem sumPosExp_eq_sumAllExp_of_expanding (hdiff : Differentiable ℝ T)
     {K : ℝ} (hK : 1 < K) (hexp : ∀ x v, K * ‖v‖ ≤ ‖fderiv ℝ T x v‖) :
     sumPosExp hT hdet (measurable_derivativeCocycle T) hint hint'
-      = sumAllExp hT hdet (measurable_derivativeCocycle T) hint hint' := by
-  rw [sumPosExp, sumAllExp]
-  refine Finset.sum_congr ?_ (fun _ _ => rfl)
-  rw [Finset.filter_true_of_mem (fun i _ =>
-    exponents_pos_of_expanding hT hdet hint hint' hdiff hK hexp i)]
+      = sumAllExp hT hdet (measurable_derivativeCocycle T) hint hint' :=
+  sumPosExp_eq_sumAllExp_of_nonneg hT hdet (measurable_derivativeCocycle T) hint hint'
+    (fun i => (exponents_pos_of_expanding hT hdet hint hint' hdiff hK hexp i).le)
 
 /-- **The Pesin = Rokhlin right-hand-side identity for an expanding map.** For an ergodic,
 log-integrable, differentiable uniformly expanding self-map `T`, the sum of the strictly positive

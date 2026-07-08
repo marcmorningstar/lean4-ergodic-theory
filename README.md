@@ -10,7 +10,7 @@ entropy theory, **Krieger's finite generator theorem**, the pointwise
 **multifractal formalism**, and a finite-dimensional **quantum-information layer**
 (Lieb's joint convexity, the data-processing inequality, Petz's equality theorem).
 
-**306 modules · ~85,000 lines · ~2,200 theorems — sorry-free, linter-enforced, and with 496
+**310 modules · ~85,000 lines · ~2,200 theorems — sorry-free, linter-enforced, and with 532
 declarations continuously axiom-audited down to `[propext, Classical.choice, Quot.sound]`.**
 
 📖 **[Project site](https://marcmorningstar.github.io/lean4-ergodic-theory/)** ·
@@ -32,6 +32,10 @@ All declarations live in the `ErgodicTheory` namespace (omitted below).
 | `Entropy.abramov_rokhlin` | The Abramov–Rokhlin addition formula `h(T) = h(S) + h(T \| comap π)` for skew products |
 | `Entropy.ksEntropy_eq_ksEntropyPartition_of_generating` | The Kolmogorov–Sinai generator theorem `h(T) = h(T,P)` (with a two-sided variant) |
 | `margulisRuelle_sharp` | The Margulis–Ruelle inequality `h_μ(T) ≤ ∑ λᵢ⁺` |
+| `integral_log_abs_det_le_ksEntropy` | The **Rokhlin inequality** `∫ log|det DₓT| dμ ≤ h_μ(T)` (generator-free, for `μ ≪ volume`) |
+| `sumPosExp_le_ksEntropy_of_SRB` | The SRB reverse Pesin inequality `∑ λᵢ⁺ ≤ h_μ(T)`, discharging the hard leaf of issue #10 |
+| `pesin_entropy_formula_spectral` | The **volume-case Pesin entropy formula** `h_μ(T) = ∑ λᵢ⁺` (both inequalities combined) |
+| `Examples.Rokhlin.pesin_formula_doublingMap` | The first non-vacuous full-system Pesin instance: `h = ∑ λ⁺ = log 2` for the doubling map |
 | `OperatorEntropy.Lieb.relEntropyMat_jointly_convex` | **Lieb's theorem**: joint convexity of the Umegaki relative entropy |
 | `OperatorEntropy.Lieb.relEntropyMonotone_partialTrace` | The partial-trace data-processing inequality `S(Tr_E ρ ‖ Tr_E σ) ≤ S(ρ‖σ)` (arbitrary ρ, faithful σ) |
 | `OperatorEntropy.Lieb.petz_equality_recovery_general` | Petz's equality theorem, fully general: DPI saturation ⟹ Petz recovery, for every faithful-state Kraus channel |
@@ -75,10 +79,14 @@ suspension flow realizing a genuinely `q`-dependent spectrum.
 ### Smooth maps and worked examples (`Smooth/`, `Examples/`)
 
 The derivative (tangent) cocycle of a smooth self-map, feeding the MET, and the foliation-free
-expanding-case **Pesin = Rokhlin identity** `∑λ⁺ = ∫ log|det DₓT| dμ`. Concrete systems
-instantiate the abstract theory end to end: the **Arnold cat map** as a genuine hyperbolic
+expanding-case **Pesin = Rokhlin identity** `∑λ⁺ = ∫ log|det DₓT| dμ`. On top of this, the
+**volume-case Pesin entropy formula** `h_μ(T) = ∑λ⁺` is now discharged (issue #10): the reverse
+SRB inequality `∑λ⁺ ≤ h_μ(T)` follows from the standalone, generator-free **Rokhlin inequality**
+`∫ log|det DₓT| dμ ≤ h_μ(T)`, combined with Margulis–Ruelle for the forward direction. Concrete
+systems instantiate the abstract theory end to end: the **Arnold cat map** as a genuine hyperbolic
 automorphism of 𝕋² (measure-preserving, ergodic, positive top exponent, entropy bounds) and the
-**doubling map** (Lyapunov spectrum, Ruelle bound, Rokhlin entropy equality).
+**doubling map**, which now carries the first non-vacuous full-system Pesin instance in the
+library — `h = ∑λ⁺ = log 2` (Lyapunov spectrum, Ruelle bound, binary-expansion generator).
 
 ### Quantum information (`OperatorEntropy/`)
 
@@ -102,7 +110,7 @@ modular-cocycle intertwining `partialTrace_equality_imp_intertwinesIt`.
   on the `frontier` branch and reaches `main` only through clean, sorry-free PRs.
 - **Linter-enforced**: the whole `ErgodicTheory` library builds under Mathlib's
   `linter.mathlibStandardSet` with warnings-as-errors, so CI fails on any style-lint regression.
-- **Axiom-audited**: `test/AxiomAudit.lean` guards 496 declarations with
+- **Axiom-audited**: `test/AxiomAudit.lean` guards 532 declarations with
   `#guard_msgs in #print axioms` on every build. (This certifies axiom-cleanliness; theorems with
   hypotheses are, as always, exactly as strong as their hypotheses — the blueprint states them in
   full.)
@@ -128,8 +136,8 @@ ErgodicTheory/
   Krieger/            -- Krieger's finite generator theorem, SMB, Rokhlin towers, coding
   Multifractal/       -- Z_q, τ(q), Rényi dimensions D_q, local/Hausdorff dimension,
                       --   Bernoulli-suspension witness
-  Smooth/             -- derivative cocycle, expanding-case Pesin = Rokhlin identity
-  Examples/           -- Arnold cat map, doubling map, Rokhlin-equality witnesses
+  Smooth/             -- derivative cocycle, Rokhlin inequality, volume-case Pesin formula
+  Examples/           -- Arnold cat map, doubling map, Pesin/Rokhlin-equality witnesses
   OperatorEntropy/    -- quantum information: relative entropy, Klein/Lieb, data processing,
                       --   CNT dynamical entropy, Petz recovery + equality
   MeasureTheory/      -- classical residuals (analytic sets universally measurable, covering

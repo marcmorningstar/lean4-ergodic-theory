@@ -92,6 +92,9 @@ import ErgodicTheory.Continuous.SuspensionFlowExponentFinal
 import ErgodicTheory.Smooth.DerivativeCocycle
 import ErgodicTheory.Smooth.Expanding
 import ErgodicTheory.Smooth.RokhlinExpanding
+import ErgodicTheory.Smooth.Pesin.SRBData
+import ErgodicTheory.Smooth.Pesin.ManeLowerBound
+import ErgodicTheory.Smooth.Pesin.PesinFormula
 import ErgodicTheory.Examples.Elementary
 import ErgodicTheory.Entropy.Partition
 import ErgodicTheory.Entropy.Join
@@ -123,6 +126,7 @@ import ErgodicTheory.Examples.CatMapPerPartition
 import ErgodicTheory.Examples.Rokhlin.AbstractEqui
 import ErgodicTheory.Examples.Rokhlin.DoublingCrux
 import ErgodicTheory.Examples.Rokhlin.DoublingEquality
+import ErgodicTheory.Examples.Rokhlin.DoublingPesin
 import ErgodicTheory.Entropy.CondChainRule
 import ErgodicTheory.Entropy.CondPullback
 import ErgodicTheory.Entropy.CondJointPullback
@@ -2406,6 +2410,61 @@ axioms: [propext, Classical.choice, Quot.sound] -/
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms ErgodicTheory.pesin_formula_expanding
+
+/-- info: 'ErgodicTheory.sumPosExp_eq_sumAllExp_of_nonneg' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.sumPosExp_eq_sumAllExp_of_nonneg
+
+/-- info: 'ErgodicTheory.strictFuture_le_comap' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.strictFuture_le_comap
+
+/-- info: 'ErgodicTheory.integral_log_abs_det_le_ksEntropy' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.integral_log_abs_det_le_ksEntropy
+
+/-- info: 'ErgodicTheory.sumPosExp_le_ksEntropy_of_SRB' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.sumPosExp_le_ksEntropy_of_SRB
+
+/-- info: 'ErgodicTheory.pesin_entropy_formula_spectral' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.pesin_entropy_formula_spectral
+
+/-- info: 'ErgodicTheory.pesin_entropy_formula' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.pesin_entropy_formula
+
+/-- info: 'ErgodicTheory.Examples.Rokhlin.pesin_identity_doublingMap_perPartition' depends on
+axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.Examples.Rokhlin.pesin_identity_doublingMap_perPartition
+
+/-- info: 'ErgodicTheory.Examples.Rokhlin.borel_le_generateFrom_dyadicArcs' depends on
+axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.Examples.Rokhlin.borel_le_generateFrom_dyadicArcs
+
+/-- info: 'ErgodicTheory.Examples.Rokhlin.binPartition_isGenerating' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.Examples.Rokhlin.binPartition_isGenerating
+
+/-- info: 'ErgodicTheory.Examples.Rokhlin.ksEntropy_doublingMap_eq_log_two' depends on
+axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.Examples.Rokhlin.ksEntropy_doublingMap_eq_log_two
+
+/-- info: 'ErgodicTheory.Examples.Rokhlin.pesin_formula_doublingMap' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.Examples.Rokhlin.pesin_formula_doublingMap
 
 /-- info: 'ErgodicTheory.Multifractal.dimH_eq_ksEntropyPartition_div_log_two' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/

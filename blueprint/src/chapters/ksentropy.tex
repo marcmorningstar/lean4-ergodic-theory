@@ -455,3 +455,85 @@ Kolmogorov--Sinai entropy from above.
   determinant with the determinant of the matrix derivative cocycle. An instantiated equality
   (the doubling map on the circle) is exhibited elsewhere in the library.
 \end{proof}
+
+\section{Rokhlin's inequality and the volume-case Pesin formula}
+
+The equality of \Cref{ksEntropyPartition_eq_integral_log_abs_det} needs a generating cell-injective
+partition; dropping generation but keeping the change-of-variables estimate leaves a one-sided,
+partition-free bound, which is the reverse half of Pesin's theorem in the absolutely continuous
+case. Combined with the sharp Margulis--Ruelle inequality it closes the volume-case
+Pesin entropy formula (issue \#10), the second hard leaf of the smooth theory.
+
+\begin{theorem}[Rokhlin's inequality]\label{integral_log_abs_det_le_ksEntropy}
+  \lean{ErgodicTheory.integral_log_abs_det_le_ksEntropy}\leanok
+  \uses{ksEntropy, ksEntropyPartition_eq_integral_log_abs_det, sumAllExp_eq_integral_log_abs_det}
+  Let \(T\) be a measure-preserving, differentiable self-map of \(\R^d\) with \(\mu\ll\mathrm{vol}\)
+  and everywhere-nonsingular derivative. Then, with no generating-partition hypothesis,
+  \[
+    \int \log\,\abs{\det D_xT}\;d\mu(x) \;\le\; h(T).
+  \]
+  This is the generator-free lower bound on entropy (Rokhlin 1967, \S9; Coud\`ene, Cor.~12.1): the
+  integrated log volume distortion never exceeds the Kolmogorov--Sinai entropy.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{ksEntropyPartition_eq_integral_log_abs_det}
+  For each finite partition \(\xi\) the strict-future \(\sigma\)-algebra is contained in
+  \(\operatorname{comap}T\), so Coud\`ene's conditional change-of-variables computes
+  \(H(\xi\mid T^{-1}m_\alpha)=\int\log\abs{\det D_xT}\,d\mu\) as a lower bound for \(h(T,\xi)\); taking
+  the supremum over \(\xi\) preserves the inequality against the fixed right-hand side.
+\end{proof}
+
+\begin{theorem}[SRB reverse inequality]\label{sumPosExp_le_ksEntropy_of_SRB}
+  \lean{ErgodicTheory.sumPosExp_le_ksEntropy_of_SRB}\leanok
+  \uses{integral_log_abs_det_le_ksEntropy, sumAllExp_eq_integral_log_abs_det, exponents}
+  Let \(T\) be ergodic on \(\R^d\) with \(\mu\ll\mathrm{vol}\), a nonsingular log-integrable
+  derivative cocycle, and all Lyapunov exponents nonnegative (the volume/SRB regime). Then
+  \[
+    \sum_{\lambda_i>0}\lambda_i \;\le\; h(T),
+  \]
+  the reverse of the sharp Margulis--Ruelle bound (Pesin 1977; Ma\~n\'e 1981; Ledrappier--Young 1985).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{integral_log_abs_det_le_ksEntropy, sumAllExp_eq_integral_log_abs_det}
+  With all exponents nonnegative the positive-part sum equals the full exponent sum, which by the
+  determinant identity (\Cref{sumAllExp_eq_integral_log_abs_det}) is \(\int\log\abs{\det D_xT}\,d\mu\);
+  Rokhlin's inequality (\Cref{integral_log_abs_det_le_ksEntropy}) bounds that integral by \(h(T)\).
+\end{proof}
+
+\begin{theorem}[Volume-case Pesin entropy formula]\label{pesin_entropy_formula_spectral}
+  \lean{ErgodicTheory.pesin_entropy_formula_spectral}\leanok
+  \uses{margulisRuelle_sharp, sumPosExp_le_ksEntropy_of_SRB, exponents, ksEntropy}
+  Under the combined hypotheses (ergodic differentiable \(T\) on \(\R^d\), \(\mu\ll\mathrm{vol}\),
+  nonsingular log-integrable cocycle, nonnegative spectrum, and the Ma\~n\'e/Katok atom count), the
+  Kolmogorov--Sinai entropy is exactly the sum of the positive Lyapunov exponents:
+  \[
+    h(T) \;=\; \sum_{\lambda_i>0}\lambda_i.
+  \]
+  This is Pesin's entropy formula in the absolutely continuous case (Pesin 1977, Ledrappier--Young
+  1985), obtained here foliation-free.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{margulisRuelle_sharp, sumPosExp_le_ksEntropy_of_SRB}
+  An antisymmetry of the two inequalities: \(h(T)\le\sum\lambda_i^{+}\) is the sharp Margulis--Ruelle
+  bound (\Cref{margulisRuelle_sharp}) and \(\sum\lambda_i^{+}\le h(T)\) is the SRB reverse leaf
+  (\Cref{sumPosExp_le_ksEntropy_of_SRB}).
+\end{proof}
+
+\begin{theorem}[Doubling map: the Pesin formula, witnessed]\label{pesin_formula_doublingMap}
+  \lean{ErgodicTheory.Examples.Rokhlin.pesin_formula_doublingMap}\leanok
+  \uses{pesin_entropy_formula_spectral, doublingMap_sumPosExp_eq_log_two}
+  For the doubling map \(x\mapsto 2x\) on the circle with Lebesgue measure,
+  \[
+    h(T) \;=\; \sum\lambda^{+} \;=\; \log 2 .
+  \]
+  This is the first non-vacuous full-system instance of the volume-case Pesin formula in the
+  library: the binary-expansion coding gives a genuine generating partition on a compact carrier,
+  so both sides are computed rather than degenerate.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{pesin_entropy_formula_spectral, doublingMap_sumPosExp_eq_log_two}
+  The binary partition generates the Borel \(\sigma\)-algebra (via the dyadic-arc expansion), so the
+  system entropy is \(\log 2\); the constant-cocycle spectrum contributes \(\sum\lambda^{+}=\log 2\)
+  (\Cref{doublingMap_sumPosExp_eq_log_two}); the two agree, instantiating
+  \Cref{pesin_entropy_formula_spectral}.
+\end{proof}
