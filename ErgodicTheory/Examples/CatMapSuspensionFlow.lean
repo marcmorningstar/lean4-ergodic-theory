@@ -37,11 +37,13 @@ space-level special-flow headline
 ## Honest caveats
 
 * `HasFlowExponent q L` is **existential over representatives**: for `μ̂`-a.e. orbit class `q`,
-  *some* representative `(x, s)` realises the cover-cocycle growth rate `L`. Cross-representative
-  uniqueness (and hence the fully representative-free quotient identity
-  `λ_flow = λ_base / ∫τ` as a `Quotient.lift`) needs base-cocycle invertibility across a *signed*
-  orbit step and is **deferred**, exactly as recorded in the gap discussion of
-  `ErgodicTheory.Continuous.SuspensionSpaceExponent`.
+  *some* representative `(x, s)` realises the cover-cocycle growth rate `L`. The
+  representative-free upgrade — the genuine `Quotient.lift` value `flowExponentAt q` and its
+  cross-representative uniqueness across a *signed* orbit step — is **provided** in
+  `ErgodicTheory/Examples/CatMapSuspensionFlowQuotient.lean`: `catSuspension_flowExponentAt_eq_log`,
+  `catSuspension_flowExponentAt_eq_base_div_roof` (the descended `λ_flow = λ_base / ∫τ`), and
+  `catSuspension_flowExponentAt_pos`. The base generator here is the constant cat matrix `catℝ`
+  (`det = 1 ≠ 0`), which supplies exactly the global invertibility that makes that descent total.
 * The tangent cocycle enters as the **Grade-2a universal-cover** reading of the derivative:
   `catLift` is the genuine ℝ²-linear lift of the cat map (`coverProj_comp_catLift`), and its
   Fréchet-derivative cocycle is the constant `catℝ`. The **Grade-2b** chart-native reading through

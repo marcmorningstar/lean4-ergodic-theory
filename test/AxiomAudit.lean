@@ -248,6 +248,10 @@ import ErgodicTheory.Livsic.DenseOrbit
 import ErgodicTheory.Livsic.ContinuousRigidity
 import ErgodicTheory.Livsic.BoundedRigidity
 import ErgodicTheory.Livsic.FullShift
+-- Direct imports of the issue #37 representative-free flow-exponent modules whose declarations are
+-- guarded below (the descended `flowExponentAt` quotient and its cat-suspension instantiation).
+import ErgodicTheory.Continuous.SuspensionFlowExponentQuotient
+import ErgodicTheory.Examples.CatMapSuspensionFlowQuotient
 
 /-!
 # Axiom audit
@@ -3164,3 +3168,49 @@ counterexample to subadditivity of the CNT entropy sequence (#26). -/
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms ErgodicTheory.Livsic.isHolderCoboundary_of_bounded_aeCoboundary
+
+/-! ### Issue #37 — representative-free flow exponent as a genuine `SuspensionSpace → ℝ` function -/
+
+-- Issue #37 (signed-step closure + `Quotient.lift` descent of the special-flow exponent): the
+-- cover-cocycle positivity, signed-step uniqueness, the descended `flowExponentAt`, its readoff and
+-- a.e. identification, and the three cat-suspension instantiations.
+
+/-- info: 'ErgodicTheory.coverCocycle_norm_pos' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.coverCocycle_norm_pos
+
+/-- info: 'ErgodicTheory.tendsto_exponent_iff_of_orbitRel' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.tendsto_exponent_iff_of_orbitRel
+
+/-- info: 'ErgodicTheory.flowExponentAt' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.flowExponentAt
+
+/-- info: 'ErgodicTheory.flowExponentAt_eq_of_hasFlowExponent' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.flowExponentAt_eq_of_hasFlowExponent
+
+/-- info: 'ErgodicTheory.ae_flowExponentAt_eq_base_div_roof' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.ae_flowExponentAt_eq_base_div_roof
+
+/-- info: 'ErgodicTheory.CatMapToral.catSuspension_flowExponentAt_eq_log' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.CatMapToral.catSuspension_flowExponentAt_eq_log
+
+/-- info: 'ErgodicTheory.CatMapToral.catSuspension_flowExponentAt_eq_base_div_roof' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.CatMapToral.catSuspension_flowExponentAt_eq_base_div_roof
+
+/-- info: 'ErgodicTheory.CatMapToral.catSuspension_flowExponentAt_pos' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.CatMapToral.catSuspension_flowExponentAt_pos

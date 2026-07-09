@@ -122,6 +122,7 @@ import ErgodicTheory.Continuous.SuspensionReturnTimeMeasurable
 import ErgodicTheory.Continuous.SuspensionExponentSetEquiv
 import ErgodicTheory.Continuous.SuspensionExponentSetMeasurable
 import ErgodicTheory.Continuous.SuspensionFlowExponentFinal
+import ErgodicTheory.Continuous.SuspensionFlowExponentQuotient
 import ErgodicTheory.Continuous.SuspensionStandardBorel
 import ErgodicTheory.Smooth.DerivativeCocycle
 import ErgodicTheory.Smooth.Expanding
@@ -195,6 +196,7 @@ import ErgodicTheory.Examples.CatMapToral
 import ErgodicTheory.Examples.CatMapDerivativeCocycle
 import ErgodicTheory.Examples.CatMapPerPartition
 import ErgodicTheory.Examples.CatMapSuspensionFlow
+import ErgodicTheory.Examples.CatMapSuspensionFlowQuotient
 import ErgodicTheory.Examples.Rokhlin.AbstractEqui
 import ErgodicTheory.Examples.Rokhlin.DoublingCrux
 import ErgodicTheory.Examples.Rokhlin.DoublingEquality
