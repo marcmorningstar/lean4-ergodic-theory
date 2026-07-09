@@ -210,9 +210,17 @@ import ErgodicTheory.OperatorEntropy.Klein
 import ErgodicTheory.OperatorEntropy.Additivity
 import ErgodicTheory.OperatorEntropy.Subadditivity
 import ErgodicTheory.OperatorEntropy.DiagonalSpectrum
+import ErgodicTheory.OperatorEntropy.EntropyRank
+import ErgodicTheory.OperatorEntropy.EntropyStrictPos
+import ErgodicTheory.OperatorEntropy.PartialTraceKraus
 import ErgodicTheory.OperatorEntropy.CNT.Refinement
 import ErgodicTheory.OperatorEntropy.CNT.Construction
 import ErgodicTheory.OperatorEntropy.CNT.AbelianCorner
+import ErgodicTheory.OperatorEntropy.CNT.GramFactorization
+import ErgodicTheory.OperatorEntropy.CNT.FiniteDimZero
+import ErgodicTheory.OperatorEntropy.CNT.AbelianCornerFull
+import ErgodicTheory.OperatorEntropy.CNT.AbelianFekete
+import ErgodicTheory.OperatorEntropy.CNT.SubadditivityCounterexample
 import ErgodicTheory.OperatorEntropy.RelativeEntropy
 import ErgodicTheory.OperatorEntropy.PetzRecovery
 import ErgodicTheory.OperatorEntropy.Lieb.OperatorConvex
@@ -2920,6 +2928,118 @@ data-processing input is an explicit hypothesis, the Lieb-gated piece staying ou
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms ErgodicTheory.OperatorEntropy.Lieb.partialTrace_equality_imp_intertwinesIt
+
+/-! ### Issues #25 + #26 — literal-Kraus partial traces and the finite-dimensional CNT collapse
+The explicit block-inclusion Kraus form of the partial traces (#25); the entropy-rank maximum-entropy
+bound and the non-idempotent strict positivity; the Gram-factorisation rank bound of the CNT
+correlation matrix; the finite-dimensional vanishing of the CNT/ALF entropy rate with its
+abelian-corner / KS-entropy consequences; the abelian Fekete well-definedness; and the explicit
+counterexample to subadditivity of the CNT entropy sequence (#26). -/
+
+/-- info: 'ErgodicTheory.OperatorEntropy.partialTraceRight_eq_kraus' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.partialTraceRight_eq_kraus
+
+/-- info: 'ErgodicTheory.OperatorEntropy.partialTraceLeft_eq_kraus' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.partialTraceLeft_eq_kraus
+
+/-- info: 'ErgodicTheory.OperatorEntropy.sum_conjTranspose_mul_krausInclusionRight' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.sum_conjTranspose_mul_krausInclusionRight
+
+/-- info: 'ErgodicTheory.OperatorEntropy.krausInclusionRight_mul_conjTranspose' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.krausInclusionRight_mul_conjTranspose
+
+/-- info: 'ErgodicTheory.OperatorEntropy.krausInclusionLeft_mul_conjTranspose' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.krausInclusionLeft_mul_conjTranspose
+
+/-- info: 'ErgodicTheory.OperatorEntropy.sum_conjTranspose_mul_krausInclusionLeft' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.sum_conjTranspose_mul_krausInclusionLeft
+
+/-- info: 'ErgodicTheory.OperatorEntropy.vonNeumannEntropy_le_log_rank' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.vonNeumannEntropy_le_log_rank
+
+/-- info: 'ErgodicTheory.OperatorEntropy.vonNeumannEntropy_le_log_card' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.vonNeumannEntropy_le_log_card
+
+/-- info: 'ErgodicTheory.OperatorEntropy.vonNeumannEntropy_pos_of_sq_ne' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.vonNeumannEntropy_pos_of_sq_ne
+
+/-- info: 'ErgodicTheory.OperatorEntropy.CNT.corrVal_eq_conjTranspose_mul_self' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.CNT.corrVal_eq_conjTranspose_mul_self
+
+/-- info: 'ErgodicTheory.OperatorEntropy.CNT.rank_corrVal_le' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.CNT.rank_corrVal_le
+
+/-- info: 'ErgodicTheory.OperatorEntropy.CNT.vonNeumannEntropy_corrMatrix_le_log' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.CNT.vonNeumannEntropy_corrMatrix_le_log
+
+/-- info: 'ErgodicTheory.OperatorEntropy.CNT.cntEntropyPartition_eq_zero' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.CNT.cntEntropyPartition_eq_zero
+
+/-- info: 'ErgodicTheory.OperatorEntropy.CNT.tendsto_cntEntropySeq_div' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.CNT.tendsto_cntEntropySeq_div
+
+/-- info: 'ErgodicTheory.OperatorEntropy.CNT.cntDynamicalEntropy_eq_zero' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.CNT.cntDynamicalEntropy_eq_zero
+
+/-- info: 'ErgodicTheory.OperatorEntropy.CNT.cntDynamicalEntropyAbelianFull_eq_ksEntropy' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.CNT.cntDynamicalEntropyAbelianFull_eq_ksEntropy
+
+/-- info: 'ErgodicTheory.OperatorEntropy.CNT.cntDynamicalEntropyAbelian_le_full' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.CNT.cntDynamicalEntropyAbelian_le_full
+
+/-- info: 'ErgodicTheory.OperatorEntropy.CNT.ksEntropy_eq_cntDynamicalEntropy' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.CNT.ksEntropy_eq_cntDynamicalEntropy
+
+/-- info: 'ErgodicTheory.OperatorEntropy.CNT.tendsto_cntEntropyPartition_abelian' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.CNT.tendsto_cntEntropyPartition_abelian
+
+/-- info: 'ErgodicTheory.OperatorEntropy.CNT.subadditive_vonNeumannEntropy_corrMatrix_abelian' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.CNT.subadditive_vonNeumannEntropy_corrMatrix_abelian
+
+/-- info: 'ErgodicTheory.OperatorEntropy.CNT.not_subadditive_cnt_entropySeq' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.CNT.not_subadditive_cnt_entropySeq
 
 -- Issue #30 (cat-map suspension flow carries the base's derivative cocycle): the four headlines of
 -- `ErgodicTheory.Examples.CatMapSuspensionFlow`.

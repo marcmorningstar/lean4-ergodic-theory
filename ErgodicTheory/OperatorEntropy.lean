@@ -10,9 +10,17 @@ import ErgodicTheory.OperatorEntropy.Klein
 import ErgodicTheory.OperatorEntropy.Additivity
 import ErgodicTheory.OperatorEntropy.Subadditivity
 import ErgodicTheory.OperatorEntropy.DiagonalSpectrum
+import ErgodicTheory.OperatorEntropy.EntropyRank
+import ErgodicTheory.OperatorEntropy.EntropyStrictPos
+import ErgodicTheory.OperatorEntropy.PartialTraceKraus
 import ErgodicTheory.OperatorEntropy.CNT.Refinement
 import ErgodicTheory.OperatorEntropy.CNT.Construction
 import ErgodicTheory.OperatorEntropy.CNT.AbelianCorner
+import ErgodicTheory.OperatorEntropy.CNT.GramFactorization
+import ErgodicTheory.OperatorEntropy.CNT.FiniteDimZero
+import ErgodicTheory.OperatorEntropy.CNT.AbelianCornerFull
+import ErgodicTheory.OperatorEntropy.CNT.AbelianFekete
+import ErgodicTheory.OperatorEntropy.CNT.SubadditivityCounterexample
 import ErgodicTheory.OperatorEntropy.RelativeEntropy
 import ErgodicTheory.OperatorEntropy.RelEntropyAdditivity
 import ErgodicTheory.OperatorEntropy.StinespringReduction
@@ -82,6 +90,28 @@ dilation, and both directions of Petz's equality theorem.
   system-level identity is `0 = 0`; the substantive content is the per-resolution identity below.
 * `ErgodicTheory.OperatorEntropy.CNT.vonNeumannEntropy_corrMatrix_eq_ksEntropySeq` — the substantive
   per-resolution identity `S(corrMatrix n) = ksEntropySeq n` underlying that collapse.
+* `ErgodicTheory.OperatorEntropy.partialTraceRight_eq_kraus` / `partialTraceLeft_eq_kraus` — the
+  literal explicit-Kraus (block-inclusion) presentation of the partial traces,
+  `Tr_B M = ∑ⱼ Eⱼ M Eⱼᴴ`, with the Kraus operators named as honest `Matrix` `def`s (issue #25).
+* `ErgodicTheory.OperatorEntropy.vonNeumannEntropy_le_log_rank` — the maximum-entropy bound
+  `S(ρ) ≤ log(rank ρ)`; `vonNeumannEntropy_pos_of_sq_ne` — strict positivity of the entropy for a
+  non-idempotent (mixed) state.
+* `ErgodicTheory.OperatorEntropy.CNT.corrVal_eq_conjTranspose_mul_self` / `rank_corrVal_le` — the
+  CNT correlation matrix is a Gram matrix `Vᴴ V`, so its rank is `≤ d²` uniformly in the resolution.
+* `ErgodicTheory.OperatorEntropy.CNT.cntDynamicalEntropy_eq_zero` and `cntEntropyPartition_eq_zero`
+  — the finite-dimensional collapse: the CNT/ALF entropy rate is `≡ 0` for every operational
+  partition, with `tendsto_cntEntropySeq_div` the accompanying well-definedness (the rate is a
+  genuine limit) (issue #26).
+* `ErgodicTheory.OperatorEntropy.CNT.ksEntropy_eq_cntDynamicalEntropy` and
+  `cntDynamicalEntropyAbelianFull_eq_ksEntropy` — the classical KS entropy equals the full (resp.
+  full-diagonal) CNT dynamical entropy of `adPerm σ`, upgrading the one-sided abelian-corner bound
+  (both sides `0` in finite dimension).
+* `ErgodicTheory.OperatorEntropy.CNT.subadditive_vonNeumannEntropy_corrMatrix_abelian` and
+  `tendsto_cntEntropyPartition_abelian` — on the abelian corner the entropy sequence is
+  `Subadditive` (Fekete), so the CNT rate is a genuine limit there; `not_subadditive_cnt_entropySeq`
+  exhibits an explicit two-element operational partition (identity dynamics, pure state) for which
+  subadditivity **fails**, explaining why the CNT rate must be defined as an infimum, not a Fekete
+  limit (issue #26).
 * `ErgodicTheory.OperatorEntropy.relEntropy_nonneg` — nonnegativity of the Umegaki relative
   entropy `D(ρ‖σ) ≥ 0` (Klein's inequality).
 * `ErgodicTheory.OperatorEntropy.Lieb.relEntropyMat_jointly_convex` — Lieb's joint convexity of

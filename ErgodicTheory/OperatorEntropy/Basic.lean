@@ -74,4 +74,12 @@ state (the maximally mixed state of a two-level system). -/
 example : 0 ≤ vonNeumannEntropy (DensityMatrix.maximallyMixed : DensityMatrix (Fin 2)) :=
   vonNeumannEntropy_nonneg _
 
+/-- **Hilbert–Schmidt trace identity.** For square matrices `A B`, the trace of `Aᴴ B` is the
+double sum `∑_{i,j} conj(Aᵢⱼ) · Bᵢⱼ` over the product index set — the Frobenius/Hilbert–Schmidt
+inner product `⟪A, B⟫ = Tr(Aᴴ B)` written in coordinates. -/
+theorem trace_conjTranspose_mul_eq_sum {m : Type*} [Fintype m] (A B : Matrix m m ℂ) :
+    (Aᴴ * B).trace = ∑ p : m × m, star (A p.1 p.2) * B p.1 p.2 := by
+  rw [Fintype.sum_prod_type, Finset.sum_comm]
+  simp only [Matrix.trace, Matrix.diag_apply, Matrix.mul_apply, Matrix.conjTranspose_apply]
+
 end ErgodicTheory.OperatorEntropy
