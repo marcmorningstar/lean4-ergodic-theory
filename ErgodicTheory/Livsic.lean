@@ -12,6 +12,15 @@ import ErgodicTheory.Livsic.FullShiftClosing
 import ErgodicTheory.Livsic.ContinuousRigidity
 import ErgodicTheory.Livsic.BoundedRigidity
 import ErgodicTheory.Livsic.FullShift
+import ErgodicTheory.Livsic.ErgodicDenseOrbit
+import ErgodicTheory.Livsic.DoublingClosing
+import ErgodicTheory.Livsic.Doubling
+import ErgodicTheory.Livsic.SubshiftFiniteType
+import ErgodicTheory.Livsic.SubshiftDenseOrbit
+import ErgodicTheory.Livsic.BiShiftMetric
+import ErgodicTheory.Livsic.BiShiftClosing
+import ErgodicTheory.Livsic.BiShiftDenseOrbit
+import ErgodicTheory.Livsic.BiShiftFull
 
 /-!
 # The Livšic cohomological rigidity theorem
@@ -45,11 +54,35 @@ tiers.
 * `ErgodicTheory.Livsic.FullShift` — the headline instance `livsic_fullShift` (and its `Fin m`
   specialization), the `Shift (Fin 2)` non-vacuity witnesses, and the two rigidity corollaries over
   a fully supported Bernoulli measure.
+* `ErgodicTheory.Livsic.ErgodicDenseOrbit` — the generic topological-dynamics input
+  `ergodic_exists_denseRange_iterate`: an ergodic map on a second-countable open-positive
+  probability space has a point with dense forward orbit (feeds the doubling-map and cat-map
+  instances).
+* `ErgodicTheory.Livsic.DoublingClosing` / `ErgodicTheory.Livsic.Doubling` — the **smooth expanding
+  instance** (issue #33) for the doubling map `y ↦ 2 • y` on `UnitAddCircle`: the rounding closing
+  construction `expClosing_doublingMap` and the headline equivalence `livsic_doublingMap`, with the
+  obstruction witness `const_one_not_isCoboundary_doublingMap` and the positive witness
+  `norm_coboundary_isHolderCoboundary`.
+* `ErgodicTheory.Livsic.SubshiftFiniteType` / `ErgodicTheory.Livsic.SubshiftDenseOrbit` — the
+  **one-sided subshift-of-finite-type tier**: the unconditional `δ = 1/2` closing property
+  `expClosing_sftShiftMap` (admissible with no connecting word or irreducibility hypothesis), the
+  conditional equivalence `livsic_sft`, the dense-orbit construction
+  `exists_denseRange_sftShiftMap_orbit` under a `SafeSymbol`, and the headline **golden-mean shift**
+  instance `livsic_goldenMean` (with the properness certificate `goldenMean_proper`).
+* `ErgodicTheory.Livsic.BiShiftMetric` / `…BiShiftClosing` / `…BiShiftDenseOrbit` /
+  `…BiShiftFull` — the **two-sided (invertible) full-shift tier** (issue #32): the `ℤ`-indexed
+  θ-ultrametric substrate, the min-regime two-sided closing property `expClosing_biShiftMap`, the
+  bilateral dense orbit `exists_denseRange_biShiftMap_orbit`, and the headline equivalence
+  `livsic_biShift` with its rigidity corollaries
+  `isHolderCoboundary_of_continuous_aeCoboundary_biShift` and
+  `isHolderCoboundary_of_bounded_aeCoboundary_biShift` over a fully supported two-sided Bernoulli
+  measure (`isOpenPosMeasure_bernZ`).
 
 The full shift is the simplest mixing subshift of finite type (no admissibility bookkeeping), so its
-closing property is unconditional. Deferred to follow-up issues: general SFTs (transition-matrix
-admissibility), the two-sided shift, and the unbounded measurable regularity tier (the classical
-Livšic *regularity* theorem, Katok–Hasselblatt 19.2.4).
+closing property is unconditional. The follow-up issues #32 and #33 close the two-sided full shift,
+the general one-sided SFT (with the golden-mean instance and the smooth doubling-map instance) and
+the cat-map instance (`ErgodicTheory.Examples.CatMapClosing`). Still deferred: the unbounded
+measurable regularity tier (the classical Livšic *regularity* theorem, Katok–Hasselblatt 19.2.4).
 
 ## References
 
