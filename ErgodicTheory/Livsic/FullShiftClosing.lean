@@ -67,88 +67,19 @@ theorem expClosing_shiftMap {α : ℝ} (hα : 0 < α) :
     refine le_of_eq ?_
     rw [Finset.sum_congr rfl hz, Finset.sum_const_zero, ← hxeq, dist_self,
       Real.zero_rpow (ne_of_gt hα), mul_zero]
-  · -- Main case: `x ≠ σ^n x`, so `n ≥ 1` and the first-difference index `N` is well defined.
-    set N := PiNat.firstDiff x (shiftMap^[n] x) with hN
+  · -- Main case `x ≠ σ^n x` (`n ≥ 1`): the periodic shadow is the periodization `p i := x (i%n)`.
     have hn : 0 < n :=
       Nat.pos_of_ne_zero (by rintro rfl; exact hne_x (Function.iterate_zero_apply _ _).symm)
-    have hdist : dist x (shiftMap^[n] x) = (1 / 2 : ℝ) ^ N := PiNat.dist_eq_of_ne hne_x
-    set θ := (1 / 2 : ℝ) ^ α with hθdef
-    have hθ0 : 0 < θ := by rw [hθdef]; exact Real.rpow_pos_of_pos (by norm_num) α
-    have hθ1 : θ < 1 := by rw [hθdef]; exact Real.rpow_lt_one (by norm_num) (by norm_num) hα
-    -- `((1/2)^m)^α = θ^m`: the npow/rpow interchange, used both ways (shared `half_pow_rpow`).
-    have hpow : ∀ m : ℕ, ((1 / 2 : ℝ) ^ m) ^ α = θ ^ m := fun m => by
-      rw [hθdef]; exact half_pow_rpow α m
-    have hgeom : ∑ i ∈ Finset.range n, θ ^ i ≤ (1 - θ)⁻¹ :=
-      geomSum_range_le_inv_one_sub hθ0.le hθ1 n
     -- The periodic shadow: repeat the first `n` symbols of `x`.
     set p : Shift α₀ := fun i => x (i % n) with hp
-    -- `x` is `n`-periodic below index `N` because `x` and `σ^n x` agree there.
-    have hper : ∀ j, j < N → x j = x (j + n) := by
-      intro j hj
-      have hjfd : j < PiNat.firstDiff x (shiftMap^[n] x) := by rw [← hN]; exact hj
-      have h1 : x j = (shiftMap^[n] x) j := PiNat.apply_eq_of_lt_firstDiff hjfd
-      rwa [shiftMap_iterate_apply] at h1
     -- `p` is genuinely `n`-periodic.
     have hper_p : shiftMap^[n] p = p := by
       funext i
       rw [shiftMap_iterate_apply]
       simp only [hp, Nat.add_mod_right]
-    -- `p` agrees with `x` on the first `n + N` coordinates.
-    have hagree : ∀ i, i < n + N → p i = x i := by
-      intro i
-      induction i using Nat.strongRecOn with
-      | ind i ih =>
-        intro hi
-        rcases lt_or_ge i n with hlt | hge
-        · simp only [hp, Nat.mod_eq_of_lt hlt]
-        · simp only [hp]
-          rw [Nat.mod_eq_sub_mod hge]
-          have hind : p (i - n) = x (i - n) := ih (i - n) (by omega) (by omega)
-          simp only [hp] at hind
-          rw [hind, hper (i - n) (by omega)]
-          congr 1
-          omega
-    -- Per-step shadowing bound `dist (σ^i x) (σ^i p) ≤ (1/2)^(n+N-i)`.
-    have hle_i : ∀ i ∈ Finset.range n,
-        dist (shiftMap^[i] x) (shiftMap^[i] p) ≤ (1 / 2 : ℝ) ^ (n + N - i) := by
-      intro i hi
-      simp only [Finset.mem_range] at hi
-      rw [← agree_iff_dist_le]
-      intro j hj
-      simp only [shiftMap_iterate_apply]
-      exact (hagree (j + i) (by omega)).symm
-    -- The `α`-th power of each shadowing distance is `≤ θ^(n+N-i)`.
-    have hterm : ∀ i ∈ Finset.range n,
-        dist (shiftMap^[i] x) (shiftMap^[i] p) ^ α ≤ θ ^ (n + N - i) := by
-      intro i hi
-      calc dist (shiftMap^[i] x) (shiftMap^[i] p) ^ α
-          ≤ ((1 / 2 : ℝ) ^ (n + N - i)) ^ α :=
-            Real.rpow_le_rpow dist_nonneg (hle_i i hi) hα.le
-        _ = θ ^ (n + N - i) := hpow (n + N - i)
-    have hsum1 : ∑ i ∈ Finset.range n, dist (shiftMap^[i] x) (shiftMap^[i] p) ^ α
-        ≤ ∑ i ∈ Finset.range n, θ ^ (n + N - i) := Finset.sum_le_sum hterm
-    -- Reindex `i ↦ n-1-i` to expose the geometric series `θ^(N+1) · ∑ θ^i`.
-    have hreflect : ∑ i ∈ Finset.range n, θ ^ (n + N - i)
-        = θ ^ (N + 1) * ∑ i ∈ Finset.range n, θ ^ i := by
-      rw [Finset.mul_sum, ← Finset.sum_range_reflect (fun i => θ ^ (n + N - i)) n]
-      apply Finset.sum_congr rfl
-      intro i hi
-      simp only [Finset.mem_range] at hi
-      change θ ^ (n + N - (n - 1 - i)) = θ ^ (N + 1) * θ ^ i
-      rw [← pow_add]
-      congr 1
-      omega
-    have hsum2 : ∑ i ∈ Finset.range n, θ ^ (n + N - i) ≤ θ ^ (N + 1) * (1 - θ)⁻¹ := by
-      rw [hreflect]
-      exact mul_le_mul_of_nonneg_left hgeom (pow_nonneg hθ0.le (N + 1))
-    have hfin : θ ^ (N + 1) * (1 - θ)⁻¹
-        = θ / (1 - θ) * dist x (shiftMap^[n] x) ^ α := by
-      rw [hdist, hpow N, pow_succ]
-      ring
+    -- The shadow bound is exactly the ambient periodization estimate `sum_shadow_le`.
     refine ⟨p, hper_p, ?_⟩
-    calc ∑ i ∈ Finset.range n, dist (shiftMap^[i] x) (shiftMap^[i] p) ^ α
-        ≤ ∑ i ∈ Finset.range n, θ ^ (n + N - i) := hsum1
-      _ ≤ θ ^ (N + 1) * (1 - θ)⁻¹ := hsum2
-      _ = θ / (1 - θ) * dist x (shiftMap^[n] x) ^ α := hfin
+    rw [hp]
+    exact sum_shadow_le hα n hn x hne_x
 
 end ErgodicTheory.Livsic

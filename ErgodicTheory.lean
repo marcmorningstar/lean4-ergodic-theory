@@ -197,6 +197,9 @@ import ErgodicTheory.Examples.CatMapDerivativeCocycle
 import ErgodicTheory.Examples.CatMapPerPartition
 import ErgodicTheory.Examples.CatMapSuspensionFlow
 import ErgodicTheory.Examples.CatMapSuspensionFlowQuotient
+import ErgodicTheory.Examples.CatMapCover
+import ErgodicTheory.Examples.CatMapEigenShadow
+import ErgodicTheory.Examples.CatMapClosing
 import ErgodicTheory.Examples.Rokhlin.AbstractEqui
 import ErgodicTheory.Examples.Rokhlin.DoublingCrux
 import ErgodicTheory.Examples.Rokhlin.DoublingEquality

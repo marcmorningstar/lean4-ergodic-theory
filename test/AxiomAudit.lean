@@ -248,6 +248,20 @@ import ErgodicTheory.Livsic.DenseOrbit
 import ErgodicTheory.Livsic.ContinuousRigidity
 import ErgodicTheory.Livsic.BoundedRigidity
 import ErgodicTheory.Livsic.FullShift
+-- Direct imports of the issue #32 (two-sided shift, SFTs, cat map) + issue #33 (doubling map)
+-- Livšic-II modules whose declarations are guarded below.
+import ErgodicTheory.Livsic.ErgodicDenseOrbit
+import ErgodicTheory.Livsic.DoublingClosing
+import ErgodicTheory.Livsic.Doubling
+import ErgodicTheory.Livsic.SubshiftFiniteType
+import ErgodicTheory.Livsic.SubshiftDenseOrbit
+import ErgodicTheory.Livsic.BiShiftMetric
+import ErgodicTheory.Livsic.BiShiftClosing
+import ErgodicTheory.Livsic.BiShiftDenseOrbit
+import ErgodicTheory.Livsic.BiShiftFull
+import ErgodicTheory.Examples.CatMapCover
+import ErgodicTheory.Examples.CatMapEigenShadow
+import ErgodicTheory.Examples.CatMapClosing
 -- Direct imports of the issue #37 representative-free flow-exponent modules whose declarations are
 -- guarded below (the descended `flowExponentAt` quotient and its cat-suspension instantiation).
 import ErgodicTheory.Continuous.SuspensionFlowExponentQuotient
@@ -267,7 +281,8 @@ inequality, CNT dynamical entropy, and both directions of Petz's equality theore
 
 Each `#guard_msgs in #print axioms` block below pins a declaration's axiom set and **fails the
 build if it ever differs**. Almost every block expects `[propext, Classical.choice, Quot.sound]`;
-a few (e.g. `ErgodicTheory.Krieger.sentinelEncodeList_injective`) honestly expect a smaller set. This
+a few (e.g. `ErgodicTheory.Krieger.sentinelEncodeList_injective`, and `ErgodicTheory.goldenMean_proper`,
+a decidable non-membership fact, needing only `[propext]`) honestly expect a smaller set. This
 `AxiomAudit` library is a `defaultTargets` entry (see `lakefile.toml`), so the check runs on every
 `lake build` as a continuously-enforced regression test rather than an informational dump (it
 produces no output on success).
@@ -3214,3 +3229,124 @@ counterexample to subadditivity of the CNT entropy sequence (#26). -/
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms ErgodicTheory.CatMapToral.catSuspension_flowExponentAt_pos
+
+/-! ### Issues #32 + #33 — Livšic II (two-sided shift, SFTs, cat map) + doubling instance -/
+
+-- Issue #33 (smooth expanding doubling-map instance): the generic ergodic dense orbit, the rounding
+-- closing property, the headline equivalence, and its obstruction/positive witnesses.
+
+/-- info: 'ErgodicTheory.ergodic_exists_denseRange_iterate' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.ergodic_exists_denseRange_iterate
+
+/-- info: 'ErgodicTheory.expClosing_doublingMap' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.expClosing_doublingMap
+
+/-- info: 'ErgodicTheory.livsic_doublingMap' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.livsic_doublingMap
+
+/-- info: 'ErgodicTheory.doublingMap_periodic_iff' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.doublingMap_periodic_iff
+
+/-- info: 'ErgodicTheory.const_one_not_isCoboundary_doublingMap' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.const_one_not_isCoboundary_doublingMap
+
+/-- info: 'ErgodicTheory.norm_coboundary_isHolderCoboundary' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.norm_coboundary_isHolderCoboundary
+
+-- Issue #32 (one-sided subshift-of-finite-type tier): the unconditional `δ = 1/2` closing property,
+-- the conditional equivalence, the safe-symbol dense orbit, and the golden-mean instance.
+
+/-- info: 'ErgodicTheory.expClosing_sftShiftMap' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.expClosing_sftShiftMap
+
+/-- info: 'ErgodicTheory.livsic_sft' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.livsic_sft
+
+/-- info: 'ErgodicTheory.exists_denseRange_sftShiftMap_orbit' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.exists_denseRange_sftShiftMap_orbit
+
+/-- info: 'ErgodicTheory.livsic_goldenMean' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.livsic_goldenMean
+
+-- `goldenMean_proper` is a decidable non-membership fact, so it honestly needs only `[propext]`
+-- (a strict subset of the standard set — no `Classical.choice`, no `Quot.sound`, no `sorryAx`).
+/-- info: 'ErgodicTheory.goldenMean_proper' depends on axioms:
+[propext] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.goldenMean_proper
+
+-- Issue #32 (two-sided full-shift tier): the min-regime closing property, the bilateral dense orbit,
+-- the headline equivalence, and the fully-supported-measure rigidity corollaries.
+
+/-- info: 'ErgodicTheory.expClosing_biShiftMap' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.expClosing_biShiftMap
+
+/-- info: 'ErgodicTheory.exists_denseRange_biShiftMap_orbit' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.exists_denseRange_biShiftMap_orbit
+
+/-- info: 'ErgodicTheory.livsic_biShift' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.livsic_biShift
+
+/-- info: 'ErgodicTheory.livsic_biShift_fin' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.livsic_biShift_fin
+
+/-- info: 'ErgodicTheory.isOpenPosMeasure_bernZ' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.isOpenPosMeasure_bernZ
+
+/-- info: 'ErgodicTheory.isHolderCoboundary_of_continuous_aeCoboundary_biShift' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.isHolderCoboundary_of_continuous_aeCoboundary_biShift
+
+/-- info: 'ErgodicTheory.isHolderCoboundary_of_bounded_aeCoboundary_biShift' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.isHolderCoboundary_of_bounded_aeCoboundary_biShift
+
+-- Issue #32 (cat-map instance): the summed exponential closing property, the headline Livšic
+-- equivalence, and the constant-observable obstruction witness for Arnold's cat map on `T²`.
+
+/-- info: 'ErgodicTheory.CatMapToral.expClosing_catTorus' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.CatMapToral.expClosing_catTorus
+
+/-- info: 'ErgodicTheory.CatMapToral.livsic_catTorus' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.CatMapToral.livsic_catTorus
+
+/-- info: 'ErgodicTheory.CatMapToral.const_one_not_isCoboundary_catTorus' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.CatMapToral.const_one_not_isCoboundary_catTorus
