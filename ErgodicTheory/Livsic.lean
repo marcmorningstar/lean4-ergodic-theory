@@ -21,6 +21,7 @@ import ErgodicTheory.Livsic.BiShiftMetric
 import ErgodicTheory.Livsic.BiShiftClosing
 import ErgodicTheory.Livsic.BiShiftDenseOrbit
 import ErgodicTheory.Livsic.BiShiftFull
+import ErgodicTheory.Livsic.FlowCoboundary
 
 /-!
 # The Livšic cohomological rigidity theorem
@@ -77,6 +78,13 @@ tiers.
   `isHolderCoboundary_of_continuous_aeCoboundary_biShift` and
   `isHolderCoboundary_of_bounded_aeCoboundary_biShift` over a fully supported two-sided Bernoulli
   measure (`isOpenPosMeasure_bernZ`).
+* `ErgodicTheory.Livsic.FlowCoboundary` — the **flow-coboundary obstruction tier** (issue #36): the
+  regularity-free flow coboundary `IsFlowCoboundary Φ F` (the flow analogue of `IsCoboundary`,
+  `u (Φ t q) − u q = ∫₀ᵗ F (Φ s q) ds`) and its periodic-orbit obstruction
+  `not_isFlowCoboundary_of_periodicOrbitIntegral_ne_zero` (a nonzero closed-orbit integral defeats
+  every transfer function). The concrete suspension-flow landing of this tier — the induced base
+  observable and both obstruction directions on the mapping-torus flow — lives in
+  `ErgodicTheory.Continuous.SuspensionCoboundary`.
 
 The full shift is the simplest mixing subshift of finite type (no admissibility bookkeeping), so its
 closing property is unconditional. The follow-up issues #32 and #33 close the two-sided full shift,
