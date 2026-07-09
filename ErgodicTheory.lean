@@ -124,6 +124,7 @@ import ErgodicTheory.Continuous.SuspensionExponentSetMeasurable
 import ErgodicTheory.Continuous.SuspensionFlowExponentFinal
 import ErgodicTheory.Continuous.SuspensionFlowExponentQuotient
 import ErgodicTheory.Continuous.SuspensionStandardBorel
+import ErgodicTheory.Continuous.SuspensionCoboundary
 import ErgodicTheory.Smooth.DerivativeCocycle
 import ErgodicTheory.Smooth.Expanding
 import ErgodicTheory.Smooth.RokhlinExpanding
@@ -200,6 +201,7 @@ import ErgodicTheory.Examples.CatMapSuspensionFlowQuotient
 import ErgodicTheory.Examples.CatMapCover
 import ErgodicTheory.Examples.CatMapEigenShadow
 import ErgodicTheory.Examples.CatMapClosing
+import ErgodicTheory.Examples.CatMapFlowCoboundary
 import ErgodicTheory.Examples.Rokhlin.AbstractEqui
 import ErgodicTheory.Examples.Rokhlin.DoublingCrux
 import ErgodicTheory.Examples.Rokhlin.DoublingEquality

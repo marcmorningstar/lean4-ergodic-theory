@@ -266,6 +266,11 @@ import ErgodicTheory.Examples.CatMapClosing
 -- guarded below (the descended `flowExponentAt` quotient and its cat-suspension instantiation).
 import ErgodicTheory.Continuous.SuspensionFlowExponentQuotient
 import ErgodicTheory.Examples.CatMapSuspensionFlowQuotient
+-- Direct imports of the issue #36 Livšic flow tier: the regularity-free flow coboundary and its
+-- periodic-orbit obstruction, and the suspension-flow landing whose declarations are guarded below.
+import ErgodicTheory.Livsic.FlowCoboundary
+import ErgodicTheory.Continuous.SuspensionCoboundary
+import ErgodicTheory.Examples.CatMapFlowCoboundary
 
 /-!
 # Axiom audit
@@ -3350,3 +3355,75 @@ counterexample to subadditivity of the CNT entropy sequence (#26). -/
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms ErgodicTheory.CatMapToral.const_one_not_isCoboundary_catTorus
+
+/-! ### Issue #36 — Livšic flow tier: periodic-orbit obstruction for suspension flows -/
+
+-- The regularity-free flow coboundary and its generic periodic-orbit obstruction.
+
+/-- info: 'ErgodicTheory.not_isFlowCoboundary_of_periodicOrbitIntegral_ne_zero' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.not_isFlowCoboundary_of_periodicOrbitIntegral_ne_zero
+
+-- The suspension-flow landing: cross-section return, induced base coboundary, and both obstruction
+-- tiers (induced periodic sum and flow-native closed-orbit integral) plus the bridge identity.
+
+/-- info: 'ErgodicTheory.suspensionFlowMap_roof' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.suspensionFlowMap_roof
+
+/-- info: 'ErgodicTheory.inducedBaseCocycle_isCoboundary' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.inducedBaseCocycle_isCoboundary
+
+/-- info: 'ErgodicTheory.not_isFlowCoboundary_of_inducedPeriodicSum_ne_zero' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.not_isFlowCoboundary_of_inducedPeriodicSum_ne_zero
+
+/-- info: 'ErgodicTheory.suspensionFlow_orbit_periodic' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.suspensionFlow_orbit_periodic
+
+/-- info: 'ErgodicTheory.not_isFlowCoboundary_suspensionFlowMap_of_periodicOrbitIntegral_ne_zero' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.not_isFlowCoboundary_suspensionFlowMap_of_periodicOrbitIntegral_ne_zero
+
+/-- info: 'ErgodicTheory.suspension_periodicOrbitIntegral_eq_birkhoffSum' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.suspension_periodicOrbitIntegral_eq_birkhoffSum
+
+/-- info: 'ErgodicTheory.not_isFlowCoboundary_suspensionFlow_of_inducedPeriodicSum_ne_zero' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.not_isFlowCoboundary_suspensionFlow_of_inducedPeriodicSum_ne_zero
+
+/-- info: 'ErgodicTheory.not_isFlowCoboundary_suspensionFlow_of_periodicOrbitIntegral_ne_zero' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.not_isFlowCoboundary_suspensionFlow_of_periodicOrbitIntegral_ne_zero
+
+-- The per-lap identity feeding the bridge.
+
+/-- info: 'ErgodicTheory.suspensionCoboundary_lap_integral' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.suspensionCoboundary_lap_integral
+
+-- The trivial inhabitant (zero observable is a flow coboundary) and the concrete non-vacuity
+-- witness (the constant `1` is not a flow coboundary of the cat-map suspension flow).
+
+/-- info: 'ErgodicTheory.isFlowCoboundary_zero' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.isFlowCoboundary_zero
+
+/-- info: 'ErgodicTheory.CatMapToral.const_one_not_isFlowCoboundary_catSuspension' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.CatMapToral.const_one_not_isFlowCoboundary_catSuspension
