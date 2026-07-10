@@ -280,6 +280,18 @@ import ErgodicTheory.Multifractal.BernoulliSuspensionTimeOneErgodic
 import ErgodicTheory.Entropy.KSEntropyPow
 import ErgodicTheory.Continuous.SuspensionRescale
 import ErgodicTheory.Continuous.SuspensionEntropyDescent
+-- Direct imports of the issue #34 unbounded measurable Livšic rigidity tier (Katok–Hasselblatt
+-- 19.2.4): the classical Lusin theorem, the two-sided natural-extension factor + past ⊗ future
+-- product structure, the stable/unstable essential-oscillation bounds, the Fubini glue, and the full
+-- measurable-rigidity equivalence — all guarded below.
+import ErgodicTheory.MeasureTheory.LusinContinuousOn
+import ErgodicTheory.Livsic.MeasurableRigidity
+import ErgodicTheory.Livsic.BiShiftFactor
+import ErgodicTheory.Livsic.BiShiftProductStructure
+import ErgodicTheory.Livsic.BiShiftStableOscillation
+import ErgodicTheory.Livsic.BiShiftUnstableOscillation
+import ErgodicTheory.Livsic.BiShiftMeasurableRigidity
+import ErgodicTheory.Livsic.MeasurableRigidityFull
 
 /-!
 # Axiom audit
@@ -3552,3 +3564,102 @@ counterexample to subadditivity of the CNT entropy sequence (#26). -/
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms ErgodicTheory.ksEntropy_bernConstSuspension_time_one_mul
+
+/-! ### Issue #34 — measurable Livšic rigidity (unbounded tier) via the two-sided extension -/
+
+-- The classical Lusin theorem (continuous-on-a-compact form), the consumer of the measurable tier.
+
+/-- info: 'ErgodicTheory.lusin_continuousOn' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.lusin_continuousOn
+
+-- The one-sided measurable-solution tier: uniqueness modulo constants and conditional regularity.
+
+/-- info: 'ErgodicTheory.Livsic.aeCoboundary_unique_mod_const' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.Livsic.aeCoboundary_unique_mod_const
+
+/-- info: 'ErgodicTheory.Livsic.measurable_solution_ae_eq_holder' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.Livsic.measurable_solution_ae_eq_holder
+
+-- The two-sided natural-extension factor map and its transport properties (W1).
+
+/-- info: 'ErgodicTheory.toShift' does not depend on any axioms -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.toShift
+
+/-- info: 'ErgodicTheory.toShift_comp_biShiftMap' depends on axioms: [propext, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.toShift_comp_biShiftMap
+
+/-- info: 'ErgodicTheory.map_toShift_bernZ' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.map_toShift_bernZ
+
+/-- info: 'ErgodicTheory.measurePreserving_toShift' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.measurePreserving_toShift
+
+/-- info: 'ErgodicTheory.holderWith_comp_toShift' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.holderWith_comp_toShift
+
+/-- info: 'ErgodicTheory.isAeCoboundaryOf_comp_toShift' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.isAeCoboundaryOf_comp_toShift
+
+-- The past ⊗ future product structure of the two-sided Bernoulli measure (W2).
+
+/-- info: 'ErgodicTheory.map_joinPF_bernZ' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.map_joinPF_bernZ
+
+-- The two symmetric essential-oscillation bounds (W3 stable, W4 unstable): Lusin + reverse Fatou.
+
+/-- info: 'ErgodicTheory.stable_pair_osc' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.stable_pair_osc
+
+/-- info: 'ErgodicTheory.unstable_pair_osc' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.unstable_pair_osc
+
+-- The Fubini glue and the two-sided headline (W5): essential boundedness + clamp.
+
+/-- info: 'ErgodicTheory.essBounded_of_measurable_aeCoboundary_biShift' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.essBounded_of_measurable_aeCoboundary_biShift
+
+/-- info: 'ErgodicTheory.hasVanishingPeriodicSums_of_measurable_aeCoboundary_biShift' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.hasVanishingPeriodicSums_of_measurable_aeCoboundary_biShift
+
+-- The one-sided descent and the full Katok–Hasselblatt 19.2.4 equivalence (W6).
+
+/-- info: 'ErgodicTheory.Livsic.hasVanishingPeriodicSums_of_measurable_aeCoboundary' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.Livsic.hasVanishingPeriodicSums_of_measurable_aeCoboundary
+
+/-- info: 'ErgodicTheory.Livsic.livsic_measurable_rigidity' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.Livsic.livsic_measurable_rigidity
+
+/-- info: 'ErgodicTheory.Livsic.measurable_aeCoboundary_ae_eq_holder' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.Livsic.measurable_aeCoboundary_ae_eq_holder

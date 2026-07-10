@@ -22,6 +22,13 @@ import ErgodicTheory.Livsic.BiShiftClosing
 import ErgodicTheory.Livsic.BiShiftDenseOrbit
 import ErgodicTheory.Livsic.BiShiftFull
 import ErgodicTheory.Livsic.FlowCoboundary
+import ErgodicTheory.Livsic.MeasurableRigidity
+import ErgodicTheory.Livsic.BiShiftFactor
+import ErgodicTheory.Livsic.BiShiftProductStructure
+import ErgodicTheory.Livsic.BiShiftStableOscillation
+import ErgodicTheory.Livsic.BiShiftUnstableOscillation
+import ErgodicTheory.Livsic.BiShiftMeasurableRigidity
+import ErgodicTheory.Livsic.MeasurableRigidityFull
 
 /-!
 # The Livšic cohomological rigidity theorem
@@ -85,12 +92,29 @@ tiers.
   every transfer function). The concrete suspension-flow landing of this tier — the induced base
   observable and both obstruction directions on the mapping-torus flow — lives in
   `ErgodicTheory.Continuous.SuspensionCoboundary`.
+* `ErgodicTheory.Livsic.MeasurableRigidity` — the **measurable-solution tier** (uniqueness modulo
+  constants `aeCoboundary_unique_mod_const` via Bernoulli ergodicity, and conditional regularity
+  `measurable_solution_ae_eq_holder`).
+* `ErgodicTheory.Livsic.BiShiftFactor` / `…BiShiftProductStructure` / `…BiShiftStableOscillation` /
+  `…BiShiftUnstableOscillation` / `…BiShiftMeasurableRigidity` / `…MeasurableRigidityFull` — the
+  **unbounded measurable rigidity tier** (issue #34, the classical Livšic *regularity* theorem,
+  Katok–Hasselblatt 19.2.4). Working through the two-sided natural extension (`toShift` factor over
+  the past ⊗ future Bernoulli product structure `joinPF`), the two symmetric essential-oscillation
+  bounds (`stable_pair_osc`, same-future pairs; `unstable_pair_osc`, same-past pairs — the classical
+  **Lusin theorem** `ErgodicTheory.lusin_continuousOn` of
+  `ErgodicTheory.MeasureTheory.LusinContinuousOn` + reverse Fatou, no Birkhoff ergodic theorem, no
+  boundedness of the transfer function) feed the Fubini glue to make a merely **measurable** a.e.
+  transfer function essentially bounded; a clamp then discharges vanishing periodic sums. The
+  finale is the full equivalence
+  `livsic_measurable_rigidity`: over a fully supported Bernoulli measure a Hölder observable
+  admits a measurable a.e. transfer function **iff** all of its periodic Birkhoff sums vanish.
 
 The full shift is the simplest mixing subshift of finite type (no admissibility bookkeeping), so its
 closing property is unconditional. The follow-up issues #32 and #33 close the two-sided full shift,
 the general one-sided SFT (with the golden-mean instance and the smooth doubling-map instance) and
-the cat-map instance (`ErgodicTheory.Examples.CatMapClosing`). Still deferred: the unbounded
-measurable regularity tier (the classical Livšic *regularity* theorem, Katok–Hasselblatt 19.2.4).
+the cat-map instance (`ErgodicTheory.Examples.CatMapClosing`). Issue #34 closes the unbounded
+measurable regularity tier (the classical Livšic *regularity* theorem, Katok–Hasselblatt 19.2.4),
+the last remaining tier of this file.
 
 ## References
 
