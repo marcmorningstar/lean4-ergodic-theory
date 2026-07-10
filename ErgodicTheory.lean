@@ -184,6 +184,7 @@ import ErgodicTheory.Entropy.KSEntropyConjugacy
 import ErgodicTheory.Entropy.ProductIdEntropy
 import ErgodicTheory.MeasureTheory.CoveringFromVolume
 import ErgodicTheory.MeasureTheory.AnalyticUniversallyMeasurable
+import ErgodicTheory.MeasureTheory.LusinContinuousOn
 import ErgodicTheory.Entropy.Ruelle.AtomCount
 import ErgodicTheory.Entropy.Ruelle.VolumeDistortion
 import ErgodicTheory.Entropy.Ruelle.Crude

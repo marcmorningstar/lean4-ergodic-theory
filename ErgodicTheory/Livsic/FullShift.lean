@@ -44,12 +44,13 @@ for every Hölder observable `φ` (exponent `0 < r ≤ 1`).
 * `isHolderCoboundary_of_bounded_aeCoboundary` — bounded-tier rigidity: a **bounded** measurable
   a.e. solution likewise forces `φ` to be a Hölder coboundary.
 
-## Deferred tiers (follow-up issues)
+## Companion tiers (formerly deferred, since discharged)
 
-* general subshifts of finite type (admissibility via a transition matrix, closing on the SFT);
-* the two-sided (invertible) shift;
-* the unbounded measurable regularity tier (the classical Livšic *regularity* theorem, needing a
-  Lusin-continuity argument).
+* general subshifts of finite type — `ErgodicTheory.Livsic.SubshiftFiniteType` (issue #32);
+* the two-sided (invertible) shift — `ErgodicTheory.Livsic.BiShiftFull` (issue #32);
+* the unbounded measurable regularity tier (the classical Livšic *regularity* theorem, via a
+  Lusin-continuity argument on the two-sided natural extension) —
+  `ErgodicTheory.Livsic.MeasurableRigidityFull` (issue #34).
 
 ## References
 

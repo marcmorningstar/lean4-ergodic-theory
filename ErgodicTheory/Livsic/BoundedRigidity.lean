@@ -27,10 +27,10 @@ middle rung of the three-tier structure recorded in `ErgodicTheory.Livsic.Contin
    full shift. The endpoint difference `u (T^[N] x) − u x` of the a.e. telescoped Birkhoff sum is
    controlled *uniformly in `N`* precisely because `u` is bounded — this is what makes the tier work
    and is exactly where unboundedness would break it.
-3. **Unbounded-measurable tier — deliberately deferred.** For genuinely unbounded measurable `u` the
-   uniform endpoint control fails; the theorem becomes the classical Livšic *regularity* theorem
-   (Katok–Hasselblatt, Theorem 19.2.4), whose proof needs a Lusin-continuity/regularity argument.
-   Left as a follow-up issue.
+3. **Unbounded-measurable tier** (`ErgodicTheory.Livsic.MeasurableRigidityFull`, issue #34). For
+   genuinely unbounded measurable `u` the uniform endpoint control fails; the theorem becomes the
+   classical Livšic *regularity* theorem (Katok–Hasselblatt, Theorem 19.2.4), discharged there by a
+   Lusin-continuity argument on the two-sided natural extension (`livsic_measurable_rigidity`).
 
 ## The argument (bounded `u`)
 

@@ -34,10 +34,11 @@ The Livšic regularity programme splits by the regularity one assumes of the a.e
    **bounded**; the everywhere upgrade is unavailable, and one instead runs a periodic-orbit
    shadowing argument on cylinders of the full shift, using that the endpoint difference
    `u (T^[N] x) − u x` is controlled *uniformly in `N`* precisely because `u` is bounded.
-3. **Unbounded-measurable tier — deliberately deferred.** For a genuinely unbounded measurable `u`
-   the uniform endpoint control breaks, and the theorem is the classical Livšic *regularity* theorem
-   (Katok–Hasselblatt, Theorem 19.2.4), whose proof needs a Lusin-continuity/regularity argument.
-   This is left as a follow-up issue.
+3. **Unbounded-measurable tier** (`ErgodicTheory.Livsic.MeasurableRigidityFull`, issue #34). For a
+   genuinely unbounded measurable `u` the uniform endpoint control breaks, and the theorem is the
+   classical Livšic *regularity* theorem (Katok–Hasselblatt, Theorem 19.2.4). It is discharged by a
+   Lusin-continuity argument on the two-sided natural extension (stable/unstable
+   essential-oscillation bounds + reverse Fatou + clamp): `livsic_measurable_rigidity`.
 
 The substantive content of the harder tiers is precisely the *promotion of a merely measurable `u`
 to a controllable one*; once that promotion is available, the present lemma finishes.
