@@ -271,6 +271,15 @@ import ErgodicTheory.Examples.CatMapSuspensionFlowQuotient
 import ErgodicTheory.Livsic.FlowCoboundary
 import ErgodicTheory.Continuous.SuspensionCoboundary
 import ErgodicTheory.Examples.CatMapFlowCoboundary
+import ErgodicTheory.Multifractal.BernoulliTwoSidedMixing
+import ErgodicTheory.Ergodic.EigenvalueMixing
+import ErgodicTheory.Continuous.SuspensionTimeOneCoeff
+import ErgodicTheory.Continuous.SuspensionTimeOneParseval
+import ErgodicTheory.Continuous.SuspensionTimeOneErgodic
+import ErgodicTheory.Multifractal.BernoulliSuspensionTimeOneErgodic
+import ErgodicTheory.Entropy.KSEntropyPow
+import ErgodicTheory.Continuous.SuspensionRescale
+import ErgodicTheory.Continuous.SuspensionEntropyDescent
 
 /-!
 # Axiom audit
@@ -3427,3 +3436,119 @@ counterexample to subadditivity of the CNT entropy sequence (#26). -/
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms ErgodicTheory.CatMapToral.const_one_not_isFlowCoboundary_catSuspension
+/-! ### Issues #35 + #38 — time-1 ergodicity (irrational constant roof) + suspension entropy descent -/
+
+-- Issue #35 (time-1 ergodicity): strong mixing of the two-sided Bernoulli shift and the
+-- eigenfunction-vanishing criterion feeding the Fourier/Parseval fibre argument, the twisted
+-- eigenfunction relations, the per-fibre Parseval bridge and dichotomy, the abstract constant-roof
+-- time-1 ergodicity, and its Bernoulli instantiation with the concrete `r := √2` non-vacuity witness.
+
+/-- info: 'ErgodicTheory.Multifractal.tendsto_measureReal_inter_preimage_iterate' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.Multifractal.tendsto_measureReal_inter_preimage_iterate
+
+/-- info: 'ErgodicTheory.eigenfunction_ae_zero_of_mixing' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.eigenfunction_ae_zero_of_mixing
+
+/-- info: 'ErgodicTheory.coeffFn_twist' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.coeffFn_twist
+
+/-- info: 'ErgodicTheory.coeffFn_liftedIndicator_twist' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.coeffFn_liftedIndicator_twist
+
+/-- info: 'ErgodicTheory.parseval_bridge' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.parseval_bridge
+
+/-- info: 'ErgodicTheory.fibre_indicator_dichotomy' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.fibre_indicator_dichotomy
+
+/-- info: 'ErgodicTheory.ergodic_suspensionFlowMap_one_const_roof' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.ergodic_suspensionFlowMap_one_const_roof
+
+/-- info: 'ErgodicTheory.Multifractal.ergodic_suspensionFlow_timeOne_const_irrational' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.Multifractal.ergodic_suspensionFlow_timeOne_const_irrational
+
+/-- info: 'ErgodicTheory.Multifractal.ergodic_suspensionFlow_packaged_timeOne_const_irrational' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.Multifractal.ergodic_suspensionFlow_packaged_timeOne_const_irrational
+
+/-- info: 'ErgodicTheory.Multifractal.ergodic_suspensionFlow_timeOne_sqrtTwo' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.Multifractal.ergodic_suspensionFlow_timeOne_sqrtTwo
+
+-- Issue #38 (suspension entropy descent): the entropy power rule `h(Tⁿ) = n·h(T)`, the time-`r`
+-- rescaling conjugacy of the constant-roof suspension (its measurable equivalence, invariant-measure
+-- transport, and the `h(ζ^{(r)}_r) = Hnu` seal), and the flow-homogeneity descent giving the
+-- time-1 entropy `h(ζ^{(r)}_1) = Hnu / r` for rational `r`.
+
+/-- info: 'ErgodicTheory.Entropy.ksEntropy_iterate' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.Entropy.ksEntropy_iterate
+
+/-- info: 'ErgodicTheory.suspensionRescale' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.suspensionRescale
+
+/-- info: 'ErgodicTheory.map_suspensionRescale_suspensionMeasure' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.map_suspensionRescale_suspensionMeasure
+
+/-- info: 'ErgodicTheory.ksEntropy_suspensionFlowMap_const_eq_unit' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.ksEntropy_suspensionFlowMap_const_eq_unit
+
+/-- info: 'ErgodicTheory.ksEntropy_bernConstSuspension_time_r' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.ksEntropy_bernConstSuspension_time_r
+
+/-- info: 'ErgodicTheory.flow_iterate' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.flow_iterate
+
+/-- info: 'ErgodicTheory.nsmul_ksEntropy_flow' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.nsmul_ksEntropy_flow
+
+/-- info: 'ErgodicTheory.nsmul_ksEntropy_bernSuspensionFlow_inv' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.nsmul_ksEntropy_bernSuspensionFlow_inv
+
+/-- info: 'ErgodicTheory.ksEntropy_bernSuspensionFlow_frac' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.ksEntropy_bernSuspensionFlow_frac
+
+/-- info: 'ErgodicTheory.ksEntropy_bernConstSuspension_time_one' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.ksEntropy_bernConstSuspension_time_one
+
+/-- info: 'ErgodicTheory.ksEntropy_bernConstSuspension_time_one_mul' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.ksEntropy_bernConstSuspension_time_one_mul

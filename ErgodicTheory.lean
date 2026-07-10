@@ -4,6 +4,7 @@ import ErgodicTheory.Cocycle.FurstenbergKesten
 import ErgodicTheory.Ergodic.MaximalErgodic
 import ErgodicTheory.Ergodic.Birkhoff
 import ErgodicTheory.Ergodic.Kingman.Core
+import ErgodicTheory.Ergodic.EigenvalueMixing
 import ErgodicTheory.Lyapunov.ExteriorNorm.Weyl
 import ErgodicTheory.Lyapunov.MeasurableSubspace
 import ErgodicTheory.Lyapunov.Measurable
@@ -125,6 +126,11 @@ import ErgodicTheory.Continuous.SuspensionFlowExponentFinal
 import ErgodicTheory.Continuous.SuspensionFlowExponentQuotient
 import ErgodicTheory.Continuous.SuspensionStandardBorel
 import ErgodicTheory.Continuous.SuspensionCoboundary
+import ErgodicTheory.Continuous.SuspensionTimeOneCoeff
+import ErgodicTheory.Continuous.SuspensionTimeOneParseval
+import ErgodicTheory.Continuous.SuspensionTimeOneErgodic
+import ErgodicTheory.Continuous.SuspensionRescale
+import ErgodicTheory.Continuous.SuspensionEntropyDescent
 import ErgodicTheory.Smooth.DerivativeCocycle
 import ErgodicTheory.Smooth.Expanding
 import ErgodicTheory.Smooth.RokhlinExpanding
@@ -143,6 +149,7 @@ import ErgodicTheory.Entropy.KSEntropySystem
 import ErgodicTheory.Entropy.KSEntropyProps
 import ErgodicTheory.Entropy.KSEntropyJoin
 import ErgodicTheory.Entropy.KSEntropyMono
+import ErgodicTheory.Entropy.KSEntropyPow
 import ErgodicTheory.Entropy.MargulisRuelleAbstract
 import ErgodicTheory.Entropy.MargulisRuelleSharpened
 -- Conditional / relative entropy + Abramov–Rokhlin (issue #13)
