@@ -1,0 +1,790 @@
+\chapter{Livšic theory}
+\label{ch:livsic}
+
+The rigidity theory of the preceding chapters concerned \emph{spectral} invariants --- Lyapunov
+exponents, entropies, dimensions. This chapter develops a different kind of rigidity, the
+\emph{cohomological} rigidity of A.~N.~Livšic (1972): over a hyperbolic-type map \(T\), a Hölder
+observable \(\varphi\) is a coboundary --- \(\varphi = u\circ T - u\) for a Hölder transfer function
+\(u\) --- \emph{if and only if} its Birkhoff sum vanishes around every periodic orbit. The forward
+implication is a one-line telescoping identity; the converse reconstructs \(u\) from the periodic
+data alone, and is the substance of the theorem. It is the exact obstruction theory for the
+cohomological equation \(\varphi = u\circ T - u\): the countable family of closed-orbit sums is a
+\emph{complete} set of invariants for solvability.
+
+The library builds the full ladder. An \emph{abstract} Hölder Livšic theorem
+(\Cref{thm:livsic-iff}) is proved from three regularity-free ingredients --- a dense forward orbit,
+a Hölder observable, and a single geometric hypothesis, the \emph{exponential closing property}
+(\Cref{def:livsic-expclosing}) --- following the dense-orbit construction of Katok--Hasselblatt
+(\emph{Introduction to the Modern Theory of Dynamical Systems}, Theorem 19.2.1). That abstraction is
+then discharged on five concrete systems: the one-sided full shift, the two-sided (invertible) full
+shift, subshifts of finite type (with the golden-mean shift as headline), the doubling map of the
+circle, and --- the culmination --- the Arnold cat map, a genuine Anosov diffeomorphism. On top of
+the existence theorem sit the \emph{measurable rigidity} tiers, which weaken the transfer function
+from Hölder to merely measurable: a continuous tier, a bounded-measurable tier, and the full
+unbounded-measurable tier (Katok--Hasselblatt 19.2.4), the last routed through the two-sided natural
+extension with stable/unstable essential-oscillation bounds. Finally a \emph{flow} tier ports the
+obstruction direction to suspension flows, where it is exercised on the cat-map suspension.
+
+Everything here is formalized sorry-free on the same substrate as the multiplicative theory and is
+verified by the guarded axiom audit to rest only on
+\(\{\texttt{propext},\texttt{Classical.choice},\texttt{Quot.sound}\}\). Throughout, \(T:X\to X\) is
+a self-map of a metric space, \(\varphi:X\to\R\) an observable, and \(S_n\varphi\,x =
+\sum_{k<n}\varphi(T^k x)\) its Birkhoff sum (Mathlib's \(\texttt{birkhoffSum}\)). This is, to our
+knowledge, the first formalization of the Livšic theorem in any proof assistant.
+
+\section{The abstract Hölder Livšic theorem}
+
+\begin{definition}[Coboundary]\label{def:livsic-coboundary}
+  \lean{ErgodicTheory.IsCoboundary}\leanok
+  An observable \(\varphi\) is a \emph{coboundary} for a bare map \(T:X\to X\) if
+  \(\varphi = u\circ T - u\) for some transfer function \(u:X\to\R\), with no regularity assumed on
+  \(u\).
+\end{definition}
+
+\begin{definition}[Hölder coboundary]\label{def:livsic-holdercoboundary}
+  \lean{ErgodicTheory.IsHolderCoboundary}\leanok
+  \uses{def:livsic-coboundary}
+  On a metric space, \(\varphi\) is a \emph{Hölder coboundary} for \(T\) if
+  \(\varphi = u\circ T - u\) with \(u\) Hölder continuous (some exponent \(0 < r\), constant \(C\)).
+  This is the target regularity of the Livšic theorem; forgetting the modulus of \(u\) shows a
+  Hölder coboundary is a coboundary.
+\end{definition}
+
+\begin{definition}[Vanishing periodic sums]\label{def:livsic-vps}
+  \lean{ErgodicTheory.HasVanishingPeriodicSums}\leanok
+  \(\varphi\) \emph{has vanishing periodic sums} for \(T\) if every Birkhoff sum around a periodic
+  orbit vanishes: whenever \(T^n p = p\), one has \(S_n\varphi\,p = \sum_{i<n}\varphi(T^i p) = 0\).
+  This is the obstruction class the Livšic theorem certifies as complete.
+\end{definition}
+
+\begin{lemma}[Telescoping identity]\label{lem:livsic-telescope}
+  \lean{ErgodicTheory.birkhoffSum_eq_of_coboundary}\leanok
+  \uses{def:livsic-coboundary}
+  If \(\varphi\,x = u(T x) - u\,x\) for all \(x\), then the Birkhoff sum collapses to the endpoints,
+  \(S_n\varphi\,x = u(T^n x) - u\,x\). Pure algebra --- no metric, no regularity, valid for a bare
+  \(T\).
+\end{lemma}
+\begin{proof}\leanok
+  \uses{def:livsic-coboundary}
+  Induction on \(n\) through \(\texttt{birkhoffSum\_succ}\): the successor term \(\varphi(T^k x) =
+  u(T^{k+1}x) - u(T^k x)\) cancels against the running endpoint, leaving \(u(T^n x) - u\,x\).
+\end{proof}
+
+\begin{theorem}[Trivial direction and its obstruction certificate]\label{thm:livsic-trivial}
+  \lean{ErgodicTheory.IsCoboundary.hasVanishingPeriodicSums}\leanok
+  \uses{def:livsic-coboundary, def:livsic-vps, lem:livsic-telescope}
+  A coboundary has vanishing periodic sums. Contrapositively, a single non-vanishing periodic sum
+  defeats \emph{every} coboundary: if \(T^n p = p\) and \(S_n\varphi\,p\ne 0\), then \(\varphi\) is
+  not a coboundary of any transfer function
+  (\lean{ErgodicTheory.not_isCoboundary_of_periodicSum_ne_zero}).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{lem:livsic-telescope, def:livsic-vps}
+  Apply the telescoping identity (\Cref{lem:livsic-telescope}) at a periodic point:
+  \(S_n\varphi\,p = u(T^n p) - u\,p = u\,p - u\,p = 0\). The certificate is its contrapositive.
+  Both hold for a bare \(T:X\to X\) and any \(u\); this is the downstream ``no continuous section''
+  obstruction.
+\end{proof}
+
+The converse is the theorem. Its geometric engine is an abstracted closing property, stated in
+\emph{summed-bound} form so that a single abstraction covers both the two-sided Anosov and the
+one-sided/expanding shadowing regimes.
+
+\begin{definition}[Exponential closing property]\label{def:livsic-expclosing}
+  \lean{ErgodicTheory.ExpClosing}\leanok
+  \(T\) has the \emph{exponential closing property} \(\texttt{ExpClosing}\,T\,\alpha\,\delta\,K\) if
+  every point \(x\) that almost \(n\)-returns (\(\operatorname{dist}(x,T^n x)\le\delta\)) is shadowed by a genuine
+  \(n\)-periodic point \(p\) (\(T^n p = p\)) whose orbit \(\alpha\)-Hölder-shadows that of \(x\) with
+  \emph{total} cost controlled by the return gap:
+  \[
+    \sum_{i<n}\operatorname{dist}(T^i x, T^i p)^{\alpha} \;\le\; K\cdot\operatorname{dist}(x,T^n x)^{\alpha}.
+  \]
+  Summing the per-step cost (rather than hardcoding a per-term \(\min\)-exponent bound) is
+  deliberate: the individual terms decay like \(\theta^{\min(i,\,n-i)}\) (two-sided Anosov) or
+  \(\theta^{\,n-i}\) (one-sided/expanding), and both sum to a constant multiple of the endpoint gap.
+  Abstracting the sum keeps the crux estimate regime-agnostic.
+\end{definition}
+
+\begin{lemma}[The crux estimate]\label{lem:livsic-crux}
+  \lean{ErgodicTheory.abs_birkhoffSum_le}\leanok
+  \uses{def:livsic-expclosing, def:livsic-vps}
+  Let \(\varphi\) be \(r\)-Hölder with constant \(C_\varphi\), let \(T\) satisfy
+  \(\texttt{ExpClosing}\,T\,r\,\delta\,K\), and let \(\varphi\) have vanishing periodic sums. Then
+  any almost-\(n\)-return is controlled by its gap,
+  \[
+    \abs{S_n\varphi\,x} \;\le\; C_\varphi\,K\cdot\operatorname{dist}(x,T^n x)^{r},
+    \qquad\text{whenever } \operatorname{dist}(x,T^n x)\le\delta.
+  \]
+\end{lemma}
+\begin{proof}\leanok
+  \uses{def:livsic-expclosing, def:livsic-vps}
+  Subtract the (vanishing) periodic Birkhoff sum of the shadowing point \(p\) from that of \(x\):
+  \(S_n\varphi\,x = \sum_{i<n}\bigl(\varphi(T^i x) - \varphi(T^i p)\bigr)\). Bound each term by
+  Hölder continuity, \(\abs{\varphi(T^i x) - \varphi(T^i p)}\le C_\varphi\operatorname{dist}(T^i x,T^i p)^{r}\),
+  and collapse the summed shadowing cost through the summed closing bound. The closing exponent and
+  the Hölder exponent are the same \(r\), so the geometric bookkeeping matches term by term with no
+  constraint on \(r\).
+\end{proof}
+
+\begin{lemma}[McShane--Whitney Hölder extension]\label{lem:livsic-mcshane}
+  \lean{ErgodicTheory.exists_holderWith_extension}\leanok
+  A real-valued function that is \(\texttt{HolderOnWith}\ C\ r\) (exponent \(r\le 1\)) on a subset
+  \(s\) of a metric space extends to a global \(\texttt{HolderWith}\ C\ r\) function agreeing with it
+  on \(s\), with the \emph{same} constant and exponent.
+\end{lemma}
+\begin{proof}\leanok
+  The McShane infimal-convolution formula \(v(x) = \inf_{y\in s}\bigl(u(y) + C\operatorname{dist}(x,y)^{r}\bigr)\).
+  For \(r\le 1\) the modulus \(t\mapsto C t^{r}\) is subadditive, so the infimum is finite, agrees
+  with \(u\) on \(s\), and inherits the Hölder bound with the same constant.
+\end{proof}
+
+\begin{theorem}[Abstract existence, Katok--Hasselblatt 19.2.1]\label{thm:livsic-existence}
+  \lean{ErgodicTheory.exists_holderCoboundary_of_denseOrbit}\leanok
+  \uses{def:livsic-holdercoboundary, def:livsic-vps, def:livsic-expclosing, lem:livsic-crux, lem:livsic-mcshane}
+  Let \(T\) be continuous on a compact metric space \(X\), let \(\varphi\) be \(r\)-Hölder
+  (\(0 < r\le 1\)), suppose \(T\) has the summed exponential closing property, and suppose some
+  point \(x_0\) has a dense forward orbit. If \(\varphi\) has vanishing periodic sums, then
+  \(\varphi\) is a Hölder coboundary.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{lem:livsic-crux, lem:livsic-mcshane, thm:livsic-trivial}
+  The classical dense-orbit construction. Enumerate the orbit \(e_n = T^n x_0\) and set the running
+  transfer values \(w_n = S_n\varphi\,x_0\); define \(u_0\) on the orbit by \(u_0(e_m) = w_m\). This
+  is well-defined because two indices landing on the same orbit point give equal Birkhoff sums (the
+  difference is a Birkhoff sum around a periodic orbit, which vanishes). The close-pair increment
+  \(\abs{w_b - w_a}\) is a Birkhoff sum over the segment \([a,b)\), so the crux estimate
+  (\Cref{lem:livsic-crux}) gives it a Hölder modulus on the orbit; compactness bounds \(u_0\), which
+  upgrades the modulus to a genuine \(\texttt{HolderOnWith}\). Extend to a global Hölder \(v\) by
+  McShane (\Cref{lem:livsic-mcshane}). The on-orbit cohomology identity \(\varphi(e_m) = v(e_{m+1}) -
+  v(e_m)\) (with \(e_{m+1} = T e_m\)) then transports to all of \(X\) by density and continuity
+  (\(\texttt{Continuous.ext\_on}\)), giving \(\varphi = v\circ T - v\).
+\end{proof}
+
+\begin{theorem}[The Livšic equivalence]\label{thm:livsic-iff}
+  \lean{ErgodicTheory.isHolderCoboundary_iff}\leanok
+  \uses{thm:livsic-trivial, thm:livsic-existence}
+  Under the standing hypotheses (continuous \(T\) on a compact metric space, \(r\)-Hölder
+  \(\varphi\) with \(0 < r\le 1\), summed exponential closing, and a dense forward orbit),
+  \[
+    \varphi \text{ is a Hölder coboundary} \iff \varphi \text{ has vanishing periodic sums}.
+  \]
+\end{theorem}
+\begin{proof}\leanok
+  \uses{thm:livsic-trivial, thm:livsic-existence}
+  Forward: the pure telescoping obstruction (\Cref{thm:livsic-trivial}). Backward: the dense-orbit
+  reconstruction (\Cref{thm:livsic-existence}). This is the interface every concrete instance below
+  discharges by supplying continuity, compactness, a closing constant, and a dense orbit.
+\end{proof}
+
+\section{Concrete instances}
+
+Each instance of \Cref{thm:livsic-iff} needs a metric substrate, continuity, compactness, an
+\(\texttt{ExpClosing}\) constant, and a dense forward orbit. The instances below range from the
+combinatorially trivial full shift to a genuine Anosov diffeomorphism.
+
+\subsection{The one-sided full shift}
+
+The full shift \(\sigma\) on \(\texttt{Shift}\ \alpha_0 = (\N\to\alpha_0)\) over a finite alphabet
+carries the \(\texttt{PiNat}\) ultrametric with \(\operatorname{dist}(x,y) = (1/2)^{N}\) at first disagreement
+index \(N\). It carries \emph{no admissibility bookkeeping} --- every finite word is legal --- so
+the closing property is available unconditionally.
+
+\begin{lemma}[Shift metric substrate]\label{lem:livsic-shiftmetric}
+  \lean{ErgodicTheory.Livsic.lipschitzWith_two_shiftMap}\leanok
+  The left shift is \(2\)-Lipschitz for the \(\texttt{PiNat}\) ultrametric
+  (\lean{ErgodicTheory.Livsic.instIsUltrametricDist_shift}), hence continuous; the full shift over a
+  finite discrete alphabet is compact by Tychonoff.
+\end{lemma}
+\begin{proof}\leanok
+  Dropping the first coordinate moves the first-disagreement index down by one, doubling the
+  distance at worst; compactness is a product of finite discrete spaces.
+\end{proof}
+
+\begin{theorem}[Closing for the full shift]\label{thm:livsic-shift-closing}
+  \lean{ErgodicTheory.Livsic.expClosing_shiftMap}\leanok
+  \uses{def:livsic-expclosing}
+  For every exponent \(\alpha > 0\) the full shift satisfies \(\texttt{ExpClosing}\,\sigma\,\alpha\,1\,K\)
+  with \(K = (1/2)^{\alpha}/(1 - (1/2)^{\alpha})\).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{def:livsic-expclosing}
+  A point that almost \(n\)-returns is shadowed by the front-anchored periodization
+  \(p_i := x_{i\bmod n}\), automatically admissible on the full shift. The \(i\)-th shifted pair
+  agrees on the first \(n-i\) coordinates, so \(\operatorname{dist}(\sigma^i x,\sigma^i p)\le(1/2)^{\,n-i}\); the
+  \(\alpha\)-powers form a geometric series summing to \(K\cdot\operatorname{dist}(x,\sigma^n x)^{\alpha}\).
+\end{proof}
+
+\begin{definition}[The rich point]\label{def:livsic-richpoint}
+  \lean{ErgodicTheory.Livsic.richPoint}\leanok
+  The \emph{rich point} is the sequence obtained by concatenating all finite words (enumerated
+  through the alphabet's countable encoding). Every finite word appears as a block, so every target
+  is approximated by some forward iterate.
+\end{definition}
+
+\begin{theorem}[Dense orbit for the full shift]\label{thm:livsic-shift-dense}
+  \lean{ErgodicTheory.Livsic.exists_denseRange_shiftMap_orbit_alphabet}\leanok
+  \uses{def:livsic-richpoint}
+  Over a nonempty finite alphabet the forward orbit of the rich point is dense.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{def:livsic-richpoint}
+  To match a target on its first \(N\) coordinates, shift the rich point to the block equal to that
+  length-\(N\) prefix; the resulting iterate lies within \((1/2)^{N}\) of the target.
+\end{proof}
+
+\begin{theorem}[Livšic for the one-sided full shift]\label{thm:livsic-fullshift}
+  \lean{ErgodicTheory.Livsic.livsic_fullShift}\leanok
+  \uses{thm:livsic-iff, lem:livsic-shiftmetric, thm:livsic-shift-closing, thm:livsic-shift-dense}
+  For a Hölder \(\varphi\) (exponent \(0 < r\le 1\)) on the full shift over a finite discrete
+  alphabet,
+  \[
+    \varphi \text{ is a Hölder coboundary for } \sigma \iff \varphi \text{ has vanishing periodic sums}.
+  \]
+\end{theorem}
+\begin{proof}\leanok
+  \uses{thm:livsic-iff, lem:livsic-shiftmetric, thm:livsic-shift-closing, thm:livsic-shift-dense}
+  Feed \Cref{thm:livsic-iff} the substrate (\Cref{lem:livsic-shiftmetric}), the closing constant
+  (\Cref{thm:livsic-shift-closing}, \(\delta = 1\)), and the dense orbit
+  (\Cref{thm:livsic-shift-dense}).
+\end{proof}
+
+The instance is non-vacuous on the binary shift. The locally constant potential
+\(\phi\,x = \mathbf 1[x_0 = 1]\) is \emph{not} a coboundary
+(\lean{ErgodicTheory.Livsic.phi_not_isCoboundary}): its period-\(1\) sum at the fixed point
+\(\underline 1\) is \(1\ne 0\), so the obstruction certificate of \Cref{thm:livsic-trivial} applies.
+By contrast \(\psi = \phi\circ\sigma - \phi\) \emph{is} a Hölder coboundary
+(\lean{ErgodicTheory.Livsic.psi_isHolderCoboundary}) by construction, and re-deriving that fact
+\emph{through} the hard backward direction of \Cref{thm:livsic-fullshift} exercises the dense-orbit
+reconstruction end-to-end on a concrete witness
+(\lean{ErgodicTheory.Livsic.psi_isHolderCoboundary_via_livsic}).
+
+\subsection{The two-sided full shift}
+
+The invertible finale requires a bi-infinite metric. Rather than transport the \(\texttt{PiNat}\)
+metric through a \(\Z\simeq\N\) reindexing (which scrambles the cylinder dictionary), the library
+builds the \(\Z\)-indexed \(\theta\)-ultrametric \emph{directly}, measuring first disagreement by
+absolute value of the integer coordinate.
+
+\begin{definition}[The \(\Z\)-indexed \(\theta\)-ultrametric]\label{def:livsic-bishift-metric}
+  \lean{ErgodicTheory.biShiftMetricSpace}\leanok
+  On \(\texttt{BiShift}\ \alpha_0 = (\Z\to\alpha_0)\), set \(\operatorname{dist}(x,y) = (1/2)^{N}\) where
+  \(N\) is the least \(\abs{j}\) at which \(x_j\ne y_j\) (\lean{ErgodicTheory.distZ}); the symmetric
+  cylinders \(\{y : \forall\,\abs{j}<N,\ y_j = x_j\}\) are the balls. The metric is built against
+  the pre-existing product topology, so \(\texttt{CompactSpace}\) and \(\texttt{BorelSpace}\) are
+  inherited with no diamond.
+\end{definition}
+
+\begin{lemma}[Two-sided geometric bound]\label{lem:livsic-minregime}
+  \lean{ErgodicTheory.min_regime_sum_le}\leanok
+  For \(0\le\theta<1\), \(\ \sum_{i<n}\theta^{\min(i,\,n-i)} \le 2\,(1-\theta)^{-1}\).
+\end{lemma}
+\begin{proof}\leanok
+  The two-sided profile \(\theta^{\min(i,\,n-i)}\) is dominated termwise by \(\theta^{i} +
+  \theta^{\,n-i}\); the first arm is a geometric partial sum and the second reflects to another one,
+  giving \emph{twice} the one-sided bound.
+\end{proof}
+
+\begin{theorem}[Closing for the two-sided full shift]\label{thm:livsic-bishift-closing}
+  \lean{ErgodicTheory.expClosing_biShiftMap}\leanok
+  \uses{def:livsic-expclosing, def:livsic-bishift-metric, lem:livsic-minregime}
+  For every \(\alpha>0\) the two-sided full shift \(\tilde\sigma\) is \(2\)-Lipschitz
+  (\lean{ErgodicTheory.lipschitzWith_two_biShiftMap}) and satisfies
+  \(\texttt{ExpClosing}\,\tilde\sigma\,\alpha\,1\,K\) with \(K = 2/(1 - (1/2)^{\alpha})\) --- twice
+  the one-sided constant.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{def:livsic-expclosing, lem:livsic-minregime}
+  The shadow of an almost-\(n\)-return is the \emph{central} periodization \(p_j := x_{j\bmod n}\)
+  (integer \(\bmod\)), which repeats the central block \(x_0,\dots,x_{n-1}\). If \(x\) and
+  \(\tilde\sigma^n x\) first differ at \(\abs{\cdot}=N\), then \(x\) is genuinely periodic on the
+  whole window \(-N < j < n+N\), so \(p\) agrees with \(x\) there and the per-step shadowing distance
+  follows the bilateral profile \(\theta^{\min(i,\,n-i)}\); \Cref{lem:livsic-minregime} sums it.
+\end{proof}
+
+\begin{theorem}[Livšic for the two-sided full shift]\label{thm:livsic-bishift}
+  \lean{ErgodicTheory.livsic_biShift}\leanok
+  \uses{thm:livsic-iff, def:livsic-bishift-metric, thm:livsic-bishift-closing}
+  For a Hölder \(\varphi\) (\(0 < r\le 1\)) on the two-sided full shift, \(\varphi\) is a Hölder
+  coboundary for the bilateral shift iff all its periodic Birkhoff sums vanish. The dense forward
+  orbit is \lean{ErgodicTheory.exists_denseRange_biShiftMap_orbit} (the one-sided rich point placed
+  on the non-negative axis, padded on the negative axis).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{thm:livsic-iff, thm:livsic-bishift-closing}
+  Instantiate \Cref{thm:livsic-iff} with the \(\Z\)-ultrametric, the doubled closing constant, and
+  the two-sided dense orbit. Compactness comes with no metric/measure diamond because the metric
+  reuses the product topology whose Borel structure carries the two-sided Bernoulli measure.
+\end{proof}
+
+\subsection{Subshifts of finite type and the golden-mean shift}
+
+A subshift of finite type (SFT) is cut out of the full shift by a \(0/1\) transition matrix
+\(M\). Here the closing property becomes delicate --- the front-anchored periodization has a wrap
+transition that need not be legal --- and the library isolates a clean design finding that dissolves
+the difficulty.
+
+\begin{definition}[The SFT carrier and shift]\label{def:livsic-sft}
+  \lean{ErgodicTheory.SFTCarrier}\leanok
+  For \(M:\Fin k\to\Fin k\to\texttt{Bool}\), the \emph{carrier}
+  \(\texttt{SFTCarrier}\ M = \{x : \forall i,\ M(x_i, x_{i+1})\}\) is the closed shift-invariant set
+  of admissible sequences; as a subtype (\lean{ErgodicTheory.SFT}) it inherits the ultrametric and,
+  being closed in the compact full shift, is compact. The \emph{SFT shift}
+  \lean{ErgodicTheory.sftShiftMap} is the restriction of \(\sigma\), still \(2\)-Lipschitz.
+\end{definition}
+
+\begin{lemma}[The \(\delta = 1/2\) crux]\label{lem:livsic-sft-half}
+  \lean{ErgodicTheory.sft_head_eq_of_dist_le_half}\leanok
+  \uses{def:livsic-sft}
+  If \(x\) almost \(n\)-returns within radius \(1/2\), then \(x_0 = x_n\).
+\end{lemma}
+\begin{proof}\leanok
+  \uses{def:livsic-sft}
+  \(\operatorname{dist}(x,\sigma^n x)\le 1/2\) forces agreement on coordinate \(0\), i.e.\ \(x_0 = (\sigma^n x)_0 =
+  x_n\).
+\end{proof}
+
+\begin{theorem}[Closing for the SFT, unconditional in \(M\)]\label{thm:livsic-sft-closing}
+  \lean{ErgodicTheory.expClosing_sftShiftMap}\leanok
+  \uses{def:livsic-expclosing, def:livsic-sft, lem:livsic-sft-half}
+  For every \(\alpha>0\) and \emph{every} transition matrix \(M\), the SFT shift satisfies
+  \(\texttt{ExpClosing}\,(\texttt{sftShiftMap}\ M)\,\alpha\,(1/2)\,K\) at the reduced closing radius
+  \(\delta = 1/2\), with the same constant \(K = (1/2)^{\alpha}/(1-(1/2)^{\alpha})\) as the full
+  shift --- \emph{with no irreducibility hypothesis on \(M\)}.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{lem:livsic-sft-half}
+  The design finding: at radius \(1/2\) the periodization \(p_i := x_{i\bmod n}\) is admissible for
+  \emph{any} \(M\). By \Cref{lem:livsic-sft-half} the wrap transition \(M(x_{n-1}, x_0) =
+  M(x_{n-1}, x_n)\) coincides with the interior transition \(M(x_{n-1}, x_{(n-1)+1})\), which is
+  legal because \(x\) itself is admissible. No connecting word is needed. The shadow bound then
+  transports the full-shift estimate through the subtype metric.
+\end{proof}
+
+Irreducibility is used \emph{only} to build a dense orbit. The library isolates exactly the
+combinatorial input the dense-orbit construction needs, disclosed honestly as strictly stronger than
+irreducibility.
+
+\begin{definition}[Safe symbol]\label{def:livsic-safesymbol}
+  \lean{ErgodicTheory.SafeSymbol}\leanok
+  A \emph{safe symbol} for \(M\) is a symbol \(s\) allowed adjacent to every symbol:
+  \(M(a,s)\) and \(M(s,a)\) hold for all \(a\). This is \emph{strictly stronger} than irreducibility
+  of \(M\); a general irreducible SFT need not have one, and dense orbits for such SFTs are
+  \textbf{not} delivered here. The golden-mean shift has \(s = 0\).
+\end{definition}
+
+\begin{theorem}[Dense orbit for an SFT with a safe symbol]\label{thm:livsic-sft-dense}
+  \lean{ErgodicTheory.exists_denseRange_sftShiftMap_orbit}\leanok
+  \uses{def:livsic-safesymbol, def:livsic-sft}
+  If \(M\) has a safe symbol, the SFT shift has a point with dense forward orbit.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{def:livsic-safesymbol}
+  Mirror the full-shift rich point, but first \emph{sanitize} each decoded word (keep it if
+  admissible, drop it otherwise) and pad every block with one trailing safe symbol. The pad makes
+  every inter-block junction legal, so the whole sequence lands in the carrier; every admissible
+  target word is retained verbatim as its own block, giving density.
+\end{proof}
+
+\begin{theorem}[Livšic for a one-sided SFT]\label{thm:livsic-sft}
+  \lean{ErgodicTheory.livsic_sft}\leanok
+  \uses{thm:livsic-iff, def:livsic-sft, thm:livsic-sft-closing}
+  For a Hölder \(\varphi\) (\(0 < r\le 1\)) on the SFT and a dense forward orbit under the SFT shift,
+  \(\varphi\) is a Hölder coboundary iff all its periodic Birkhoff sums vanish.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{thm:livsic-iff, thm:livsic-sft-closing}
+  Instantiate \Cref{thm:livsic-iff} with the subtype substrate and the unconditional
+  \(\delta = 1/2\) closing (\Cref{thm:livsic-sft-closing}); the dense orbit is the sole hypothesis,
+  the only place a combinatorial assumption on \(M\) enters.
+\end{proof}
+
+\begin{theorem}[The golden-mean shift, unconditional]\label{thm:livsic-goldenmean}
+  \lean{ErgodicTheory.livsic_goldenMean}\leanok
+  \uses{thm:livsic-sft, thm:livsic-sft-dense, def:livsic-safesymbol}
+  For the golden-mean shift (\lean{ErgodicTheory.goldenMeanM}: forbid the block \(11\), Lind--Marcus
+  \S1.2), a Hölder \(\varphi\) (\(0 < r\le 1\)) is a Hölder coboundary iff all its periodic Birkhoff
+  sums vanish --- with no external hypotheses.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{thm:livsic-sft, thm:livsic-sft-dense}
+  The symbol \(0\) is safe (it forbids nothing), so \Cref{thm:livsic-sft-dense} supplies the dense
+  orbit and \Cref{thm:livsic-sft} closes the equivalence. The shift is a \emph{proper} subshift ---
+  the all-ones sequence contains the forbidden block, \lean{ErgodicTheory.goldenMean_proper} --- so
+  the instance is not the full shift in disguise.
+\end{proof}
+
+\subsection{The doubling map}
+
+The doubling map \(y\mapsto 2y\) on the circle is the canonical smooth expanding endomorphism. Its
+dense orbit comes from a generic ergodicity lemma, and its closing is an explicit rounding
+construction.
+
+\begin{theorem}[Dense orbit from ergodicity]\label{thm:livsic-ergodic-dense}
+  \lean{ErgodicTheory.ergodic_exists_denseRange_iterate}\leanok
+  On a second-countable space with an open-positive probability measure, an ergodic map has a point
+  with dense forward orbit.
+\end{theorem}
+\begin{proof}\leanok
+  For each basic open \(o\) the visiting set \(U_o = \bigcup_n T^{-n}o\) is almost invariant, hence
+  null or conull by ergodicity; since \(o\subseteq U_o\) has positive measure it is conull.
+  Intersecting over the countable basis leaves a conull set of points whose orbit visits every basic
+  open set, i.e.\ a dense orbit; nonemptiness follows from the probability normalization. This
+  generic lemma is Mathlib-upstreamable and is reused for the cat map.
+\end{proof}
+
+\begin{theorem}[Closing for the doubling map]\label{thm:livsic-doubling-closing}
+  \lean{ErgodicTheory.expClosing_doublingMap}\leanok
+  \uses{def:livsic-expclosing}
+  For every \(r>0\) the doubling map satisfies \(\texttt{ExpClosing}\ r\ 1\ (2^{r}/(2^{r}-1))\).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{def:livsic-expclosing}
+  Because \(T^n = (2^n)\cdot\) is a group endomorphism, the periodic shadow of \(x = \bar a\) is
+  obtained by \emph{rounding}: with \(M = 2^n - 1\) and \(k = \operatorname{round}(Ma)\), the point
+  \(p = \bar a - \overline{(Ma-k)/M}\) is genuinely \(n\)-periodic (\(M\cdot p = 0\)) and lies within
+  \(\norm{x - 2^n x}/M\) of \(x\) (\lean{ErgodicTheory.exists_doubling_periodic_shadow}). The
+  \(i\)-th orbit points satisfy \(\operatorname{dist}(2^i x, 2^i p)\le 2^i\norm{x-p}\), and the \(r\)-powers sum to
+  a geometric series bounded via \(2^n/(2^n-1)\le 2\).
+\end{proof}
+
+\begin{theorem}[Livšic for the doubling map]\label{thm:livsic-doubling}
+  \lean{ErgodicTheory.livsic_doublingMap}\leanok
+  \uses{thm:livsic-iff, thm:livsic-ergodic-dense, thm:livsic-doubling-closing}
+  For a Hölder \(\varphi\) (\(0 < r\le 1\)) on the circle, \(\varphi\) is a Hölder coboundary for the
+  doubling map iff all its periodic Birkhoff sums vanish.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{thm:livsic-iff, thm:livsic-ergodic-dense, thm:livsic-doubling-closing}
+  The doubling map is continuous, the circle compact, the closing is
+  \Cref{thm:livsic-doubling-closing}, and the dense orbit is \Cref{thm:livsic-ergodic-dense} applied
+  to the ergodicity of the doubling map for Haar measure
+  (\lean{ErgodicTheory.exists_denseRange_doublingMap_orbit}). Non-vacuity: the constant \(1\) is not
+  a coboundary (\lean{ErgodicTheory.const_one_not_isCoboundary_doublingMap}), its sum at the fixed
+  point \(0\) being \(1\ne 0\).
+\end{proof}
+
+\subsection{The Arnold cat map}
+
+The culmination is Livšic on a genuine Anosov diffeomorphism: the hyperbolic toral automorphism
+\(\texttt{catTorus}:\mathbb{T}^2\to\mathbb{T}^2\) induced by \(\bigl(\begin{smallmatrix}2&1\\1&1\end{smallmatrix}\bigr)\).
+Here the Anosov closing lemma admits an \emph{exact}, non-iterative solution.
+
+\begin{definition}[Covering projection]\label{def:livsic-catproj}
+  \lean{ErgodicTheory.CatMapToral.catProj}\leanok
+  \(\texttt{catProj}:\R^2\to\mathbb{T}^2\) is the coordinatewise quotient projection; it intertwines the
+  linear map \(\texttt{cat}_{\R} = \bigl(\begin{smallmatrix}2&1\\1&1\end{smallmatrix}\bigr)\)
+  upstairs with \(\texttt{catTorus}\) downstairs and is distance-nonincreasing.
+\end{definition}
+
+\begin{definition}[Exact shadow solution]\label{def:livsic-catshadow}
+  \lean{ErgodicTheory.CatMapToral.catShadowSol}\leanok
+  For a lifted return defect \(e\), \(\texttt{catShadowSol}\ n\ e\) solves the cohomological
+  equation \((\texttt{cat}_{\R}^n - 1)\,w = e\) in closed form in the hyperbolic eigenbasis --- \(1\)
+  is not an eigenvalue of any power of the hyperbolic matrix, so \(\texttt{cat}_{\R}^n - 1\) is
+  invertible on \(\R^2\).
+\end{definition}
+
+\begin{theorem}[Anosov exact-solve closing]\label{thm:livsic-cat-closing}
+  \lean{ErgodicTheory.CatMapToral.expClosing_catTorus}\leanok
+  \uses{def:livsic-expclosing, def:livsic-catproj, def:livsic-catshadow}
+  For every exponent \(0 < \alpha\le 1\), \(\texttt{catTorus}\) has the summed exponential closing
+  property with radius \(1\) and an explicit constant \(2\,C_{\mathrm{sh}}^{\alpha}/(1-\theta^{\alpha})\),
+  where \(\theta<1\) is the contraction ratio (the small eigenvalue).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{def:livsic-catproj, def:livsic-catshadow}
+  Lift an almost-return to \(d = \texttt{cat}_{\R}^n v - v\), reduce it to its nearest-integer
+  representative \(e\), solve \(w = \texttt{catShadowSol}\ n\ e\), and project
+  \(p = \texttt{catProj}(v - w)\). Then \(p\) is \emph{exactly} \(n\)-periodic because \(d - e\) is an
+  integer vector (invisible to the projection), and its forward orbit two-sidedly geometrically
+  shadows that of \(x\): the shadow displacement at step \(i\) is \(\norm{\texttt{cat}_{\R}^i w}\),
+  whose eigenbasis decomposition gives the two-sided \(\theta^{\min(i,\,n-i)}\) profile with summed
+  \(\alpha\)-power bounded by the return-gap constant.
+\end{proof}
+
+\begin{theorem}[Livšic for the Arnold cat map]\label{thm:livsic-cat}
+  \lean{ErgodicTheory.CatMapToral.livsic_catTorus}\leanok
+  \uses{thm:livsic-iff, thm:livsic-ergodic-dense, thm:livsic-cat-closing}
+  For a Hölder \(\varphi\) (\(0 < r\le 1\)) on \(\mathbb{T}^2\), \(\varphi\) is a Hölder coboundary for the
+  Anosov diffeomorphism \(\texttt{catTorus}\) iff all its periodic Birkhoff sums vanish.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{thm:livsic-iff, thm:livsic-ergodic-dense, thm:livsic-cat-closing}
+  \(\texttt{catTorus}\) is continuous, \(\mathbb{T}^2\) compact, the closing is
+  \Cref{thm:livsic-cat-closing}, and the dense orbit is \Cref{thm:livsic-ergodic-dense} applied to
+  the genuine ergodicity of the cat map for Haar measure. Non-vacuity: the constant \(1\) is not a
+  coboundary (\lean{ErgodicTheory.CatMapToral.const_one_not_isCoboundary_catTorus}), its sum at the
+  fixed point \(0\) being \(1\ne 0\).
+\end{proof}
+
+\section{Measurable rigidity tiers}
+
+The existence theorem produces a \emph{Hölder} transfer function. The measurable rigidity programme
+asks the converse robustness question: if the cohomological equation is solved only
+\emph{almost everywhere} by a merely \emph{measurable} \(u\), must \(\varphi\) already have vanishing
+periodic sums (hence be a genuine Hölder coboundary)? This splits into three tiers by the regularity
+assumed of \(u\).
+
+\begin{definition}[Almost-everywhere coboundary]\label{def:livsic-aecob}
+  \lean{ErgodicTheory.IsAeCoboundaryOf}\leanok
+  \(\varphi\) is an \emph{a.e.\ coboundary} of \(u\) over \(\mu\) if \(\varphi = u\circ T - u\) holds
+  \(\mu\)-almost-everywhere. This is the measurable analogue of \Cref{def:livsic-coboundary}.
+\end{definition}
+
+\subsection{Continuous and bounded tiers}
+
+\begin{theorem}[Continuous tier]\label{thm:livsic-continuous-tier}
+  \lean{ErgodicTheory.Livsic.hasVanishingPeriodicSums_of_continuous_coboundary}\leanok
+  \uses{def:livsic-aecob, thm:livsic-trivial}
+  If \(\varphi\) is continuous and equals the coboundary of a \emph{continuous} \(u\) only
+  \(\mu\)-a.e., for a fully supported \(\mu\) (\(\texttt{IsOpenPosMeasure}\)), then \(\varphi\) has
+  vanishing periodic sums.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{thm:livsic-trivial}
+  Full support forces a.e.-equal continuous functions to be equal, so the a.e.\ equation upgrades to
+  an \emph{everywhere} coboundary and \Cref{thm:livsic-trivial} finishes. No ergodicity or
+  hyperbolicity is used. On the full shift, a fully supported Bernoulli law is open-positive, giving
+  the corollary \lean{ErgodicTheory.Livsic.isHolderCoboundary_of_continuous_aeCoboundary}.
+\end{proof}
+
+\begin{theorem}[Bounded tier]\label{thm:livsic-bounded-tier}
+  \lean{ErgodicTheory.Livsic.vanishingPeriodicSum_of_bounded_shadowing}\leanok
+  \uses{def:livsic-aecob, def:livsic-vps}
+  Let \(T\) preserve a probability measure \(\mu\), let \(p\) be \(n\)-periodic, and let
+  \(\varphi = u\circ T - u\) \(\mu\)-a.e.\ with \(u\) \emph{bounded} (\(\abs u\le M\)). If each
+  cylinder \(D_m\) around \(p\) has positive measure and shadows the Birkhoff sum of \(p\) up to a
+  uniform additive constant \(B\), then \(S_n\varphi\,p = 0\).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{def:livsic-vps}
+  Around the periodic orbit \(S_{nm}\varphi\,p = m\cdot S_n\varphi\,p\). A.e.\ telescoping gives
+  \(S_{nm}\varphi\,x = u(T^{nm}x) - u\,x\), bounded by \(2M\) \emph{uniformly in \(m\)}. Picking a
+  witness in the positive-measure \(D_m\) yields \(\abs{m\cdot S_n\varphi\,p}\le B + 2M\), a bound
+  independent of \(m\); if \(S_n\varphi\,p\ne 0\) the left side is unbounded, a contradiction. The
+  uniformity of \(B\) and \(2M\) in \(m\) is exactly where unboundedness of \(u\) would break the
+  argument.
+\end{proof}
+
+Instantiated on the full shift with a fully supported Bernoulli law --- cylinders are charged, and a
+Hölder observable shadows along a cylinder with a depth-independent constant --- the bounded core
+gives \lean{ErgodicTheory.Livsic.hasVanishingPeriodicSums_of_bounded_aeCoboundary}, which promotes to
+the Hölder-coboundary conclusion \lean{ErgodicTheory.Livsic.isHolderCoboundary_of_bounded_aeCoboundary}
+through \Cref{thm:livsic-fullshift}.
+
+\subsection{The full measurable tier via the natural extension}
+
+For a genuinely unbounded measurable \(u\) the uniform endpoint control of the bounded tier breaks,
+and the theorem becomes the classical Livšic \emph{regularity} theorem (Katok--Hasselblatt 19.2.4).
+The library discharges it through the two-sided natural extension, and does so with two disclosed
+proof innovations: there is \emph{no Hölder-version construction} of the transfer function and
+\emph{no Birkhoff ergodic theorem} --- the oscillation bounds are obtained by reverse Fatou.
+
+\begin{lemma}[The natural-extension factor]\label{lem:livsic-toshift}
+  \lean{ErgodicTheory.toShift}\leanok
+  The restriction \(\texttt{toShift}:\texttt{BiShift}\ \alpha_0\to\texttt{Shift}\ \alpha_0\) to the
+  non-negative coordinates is a measure-preserving factor map
+  (\lean{ErgodicTheory.measurePreserving_toShift}) intertwining the two-sided shift with the
+  one-sided one: the one-sided Bernoulli system is a factor of the invertible two-sided one. Hölder
+  data, measurability, and the a.e.\ cohomological equation all transport \emph{up} this factor.
+\end{lemma}
+\begin{proof}\leanok
+  The factor map is \(1\)-Lipschitz for the respective \(\theta\)-ultrametrics and pushes the
+  two-sided Bernoulli measure to the one-sided one; pulling the a.e.\ identity back along it and
+  rewriting through the intertwining transports the coboundary equation.
+\end{proof}
+
+\begin{lemma}[Product structure]\label{lem:livsic-joinpf}
+  \lean{ErgodicTheory.joinPF}\leanok
+  The bilateral shift space splits measurably as \(\text{past}\otimes\text{future}\) via
+  \(\texttt{joinPF}\), under which the two-sided Bernoulli measure is the product of the past and
+  future Bernoulli laws (measure-preservingly).
+\end{lemma}
+\begin{proof}\leanok
+  The past (\(j<0\)) and future (\(j\ge 0\)) coordinate blocks are independent under the i.i.d.\
+  Bernoulli measure, so the joining map is measure preserving; this is the substrate for the Fubini
+  glue below.
+\end{proof}
+
+\begin{lemma}[Stable and unstable essential oscillation]\label{lem:livsic-osc}
+  \lean{ErgodicTheory.stable_pair_osc}\leanok
+  \uses{def:livsic-aecob, lem:livsic-joinpf}
+  For a measurable a.e.\ transfer function of an \(r\)-Hölder \(\varphi\) over the two-sided
+  Bernoulli measure, and for a.e.\ \emph{stable} pair (two pasts, one shared future) the values of
+  \(u\) differ by at most \(C\theta/(1-\theta)\); symmetrically for a.e.\ \emph{unstable} pair (two
+  futures, one shared past), \lean{ErgodicTheory.unstable_pair_osc}.
+\end{lemma}
+\begin{proof}\leanok
+  \uses{lem:livsic-joinpf}
+  Points sharing a future have forward orbits that converge, so the telescoped Birkhoff sums of
+  \(\varphi\) along them differ by a convergent geometric tail; Lusin regularity plus \emph{reverse
+  Fatou} on the return set (in place of a Birkhoff density of returns) turns this into an a.e.\
+  essential bound on \(u\)'s oscillation. The unstable bound is the \(\tilde\sigma^{-1}\) mirror,
+  reversing the cocycle to \(\psi = -\varphi\circ\tilde\sigma^{-1}\).
+\end{proof}
+
+\begin{theorem}[Essential boundedness of the transfer]\label{thm:livsic-essbdd}
+  \lean{ErgodicTheory.essBounded_of_measurable_aeCoboundary_biShift}\leanok
+  \uses{lem:livsic-osc, lem:livsic-joinpf}
+  A merely measurable (possibly unbounded) a.e.\ solution \(u\) of the cohomological equation over
+  the two-sided Bernoulli measure is essentially bounded.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{lem:livsic-osc, lem:livsic-joinpf}
+  The Fubini glue: over the \(\text{past}\otimes\text{future}\) product a typical base point
+  \((a_0,b_0)\) connects to a.e.\ \((a,b)\) in two holonomy moves,
+  \((a,b)\xrightarrow{\text{unstable}}(a,b_0)\xrightarrow{\text{stable}}(a_0,b_0)\), so
+  \(\abs u\le\abs{u(a_0,b_0)} + C_s + C_u\) almost everywhere by the two oscillation bounds of
+  \Cref{lem:livsic-osc}.
+\end{proof}
+
+\begin{theorem}[Two-sided measurable headline]\label{thm:livsic-measurable-bishift}
+  \lean{ErgodicTheory.hasVanishingPeriodicSums_of_measurable_aeCoboundary_biShift}\leanok
+  \uses{thm:livsic-essbdd, thm:livsic-bounded-tier}
+  Over a fully supported two-sided Bernoulli measure, an \(r\)-Hölder \(\varphi\) that is the a.e.\
+  coboundary of a merely measurable (possibly unbounded) \(u\) has vanishing periodic sums.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{thm:livsic-essbdd, thm:livsic-bounded-tier}
+  With the essential bound \(M\) from \Cref{thm:livsic-essbdd}, the clamp \(v = \max(-M',\min(M',u))\)
+  is a bounded-everywhere measurable function agreeing with \(u\) a.e., hence itself an a.e.\ transfer
+  function (the shift being measure preserving); the already-shipped bounded tier
+  (\Cref{thm:livsic-bounded-tier}, two-sided form) discharges vanishing periodic sums. No
+  Hölder-version construction, no ergodic theorem.
+\end{proof}
+
+\begin{theorem}[One-sided measurable headline]\label{thm:livsic-measurable-oneside}
+  \lean{ErgodicTheory.Livsic.hasVanishingPeriodicSums_of_measurable_aeCoboundary}\leanok
+  \uses{thm:livsic-measurable-bishift, lem:livsic-toshift}
+  Over a fully supported one-sided Bernoulli measure, an \(r\)-Hölder \(\varphi\) that is the a.e.\
+  coboundary of a merely measurable transfer function has vanishing periodic sums.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{thm:livsic-measurable-bishift, lem:livsic-toshift}
+  Transport \(\varphi,u\) up the natural-extension factor (\Cref{lem:livsic-toshift}); apply the
+  two-sided headline (\Cref{thm:livsic-measurable-bishift}) to \(\varphi\circ\texttt{toShift}\); then
+  \emph{descend} through a periodic lift --- a one-sided \(n\)-periodic point lifts to the
+  bi-infinite \(n\)-periodization, whose lifted Birkhoff sum equals the one-sided sum, so vanishing
+  descends.
+\end{proof}
+
+\begin{theorem}[Full measurable Livšic rigidity, Katok--Hasselblatt 19.2.4]\label{thm:livsic-measurable-full}
+  \lean{ErgodicTheory.Livsic.livsic_measurable_rigidity}\leanok
+  \uses{thm:livsic-measurable-oneside, thm:livsic-fullshift}
+  Over a fully supported Bernoulli measure, an \(r\)-Hölder \(\varphi\) (\(0 < r\le 1\)) admits some
+  \emph{measurable} a.e.\ transfer function \emph{iff} all its periodic Birkhoff sums vanish.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{thm:livsic-measurable-oneside, thm:livsic-fullshift}
+  Forward: the one-sided measurable headline (\Cref{thm:livsic-measurable-oneside}). Backward:
+  vanishing periodic sums feed the substantive backward direction of \Cref{thm:livsic-fullshift} to
+  produce a genuine Hölder transfer function, which --- being Hölder --- is continuous, hence
+  measurable and an exact (so a.e.) coboundary. Composed with the uniqueness of the a.e.\ solution
+  modulo constants (ergodicity of the Bernoulli shift), the measurable solution is a.e.\ the Hölder
+  one up to an additive constant
+  (\lean{ErgodicTheory.Livsic.measurable_aeCoboundary_ae_eq_holder}).
+\end{proof}
+
+\section{The flow tier}
+
+The final layer ports the Livšic obstruction to continuous-time flows. For a one-parameter flow
+\(\Phi:\R\to Q\to Q\) and observable \(F:Q\to\R\), the cohomological equation is read integrally.
+
+\begin{definition}[Flow coboundary]\label{def:livsic-flowcob}
+  \lean{ErgodicTheory.IsFlowCoboundary}\leanok
+  \(F\) is a \emph{flow coboundary} for \(\Phi\) if it is the flow-time derivative (read integrally)
+  of some transfer function \(u\):
+  \[
+    u(\Phi_t q) - u\,q \;=\; \int_0^t F(\Phi_s q)\,ds
+    \qquad\text{for all } q,\,t.
+  \]
+  No integrability is assumed --- the interval integral is read as an opaque real, so the predicate
+  is a bare cohomological one mirroring \Cref{def:livsic-coboundary}.
+\end{definition}
+
+\begin{theorem}[Flow periodic-orbit obstruction]\label{thm:livsic-flow-obstruction}
+  \lean{ErgodicTheory.not_isFlowCoboundary_of_periodicOrbitIntegral_ne_zero}\leanok
+  \uses{def:livsic-flowcob}
+  If \(\Phi_P q = q\) and the closed-orbit integral \(\int_0^P F(\Phi_s q)\,ds\ne 0\), then \(F\) is
+  not a flow coboundary of any transfer function.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{def:livsic-flowcob}
+  The fundamental-theorem-of-calculus telescoping around a closed orbit: a transfer function would
+  force the orbit integral to equal \(u(\Phi_P q) - u\,q = u\,q - u\,q = 0\). Needs only a bare flow.
+\end{proof}
+
+This obstruction is landed on the concrete suspension (mapping-torus) flow \(\zeta_t\) of a base
+automorphism \(T\) under a roof \(\tau\), via the cross-section \(x\mapsto[x,0]\).
+
+\begin{definition}[Induced base observable]\label{def:livsic-induced}
+  \lean{ErgodicTheory.inducedBaseCocycle}\leanok
+  The \emph{induced base observable} of a flow observable \(F\) is the one-lap roof integral
+  \(\texttt{inducedBaseCocycle}\ F\ x = \int_0^{\tau x} F([x,s])\,ds\).
+\end{definition}
+
+\begin{theorem}[A flow coboundary induces a base coboundary]\label{thm:livsic-induced-cob}
+  \lean{ErgodicTheory.inducedBaseCocycle_isCoboundary}\leanok
+  \uses{def:livsic-flowcob, def:livsic-induced, def:livsic-coboundary}
+  If \(F\) is a flow coboundary of the suspension flow with transfer function \(u\), then its induced
+  base observable is a discrete coboundary for the base map \(T\), with transfer function
+  \(u\circ(x\mapsto[x,0])\).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{def:livsic-flowcob, def:livsic-induced}
+  Evaluate the flow-coboundary equation at the section point \([x,0]\) over one lap \(t = \tau x\):
+  flowing that long carries \([x,0]\) to \([Tx,0]\), collapsing the left side to
+  \(u([Tx,0]) - u([x,0])\), while the descent \(\zeta_s[x,0] = [x,s]\) identifies the lap integrand
+  with the induced observable.
+\end{proof}
+
+\begin{theorem}[Tier-1 suspension obstruction]\label{thm:livsic-flow-tier1}
+  \lean{ErgodicTheory.not_isFlowCoboundary_of_inducedPeriodicSum_ne_zero}\leanok
+  \uses{thm:livsic-induced-cob, thm:livsic-trivial}
+  If \(p\) is an \(n\)-periodic base point and the periodic Birkhoff sum of the induced base
+  observable does not vanish, then \(F\) is not a flow coboundary of the suspension flow.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{thm:livsic-induced-cob, thm:livsic-trivial}
+  Combine \Cref{thm:livsic-induced-cob} with the discrete obstruction certificate of
+  \Cref{thm:livsic-trivial} applied to the induced base observable.
+\end{proof}
+
+\begin{theorem}[The lap bridge]\label{thm:livsic-lap-bridge}
+  \lean{ErgodicTheory.suspension_periodicOrbitIntegral_eq_birkhoffSum}\leanok
+  \uses{def:livsic-induced}
+  The integral of \(F\) around one full closed flow orbit above an \(n\)-periodic base point equals
+  the base Birkhoff sum of the induced base observable, identifying the tier-1 and (flow-native)
+  tier-2 obstruction quantities.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{def:livsic-induced}
+  The lap decomposition: cut the closed orbit at the successive cross-section returns
+  (times \(S_k\tau\,p\)); each lap contributes exactly \(\texttt{inducedBaseCocycle}\ F\ (T^k p)\) by
+  a change of variables, and summing the adjacent laps (under per-lap interval integrability)
+  reassembles the base Birkhoff sum. The flow-native tier-2 obstruction
+  \lean{ErgodicTheory.not_isFlowCoboundary_suspensionFlowMap_of_periodicOrbitIntegral_ne_zero}
+  follows by closing a base periodic orbit into a flow-periodic one of period \(S_n\tau\,p\).
+\end{proof}
+
+\begin{theorem}[Non-vacuity: the cat-map suspension flow]\label{thm:livsic-cat-suspension}
+  \lean{ErgodicTheory.CatMapToral.const_one_not_isFlowCoboundary_catSuspension}\leanok
+  \uses{thm:livsic-flow-tier1}
+  The constant observable \(1\) is \emph{not} a flow coboundary of the suspension flow over the
+  Arnold cat map under the unit roof \(\tau\equiv 1\).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{thm:livsic-flow-tier1}
+  Take the fixed point \(0\) of the cat map (base period \(1\)): the induced base observable summed
+  around it is the single lap integral \(\int_0^{\tau(0)} 1\,ds = \tau(0) = 1\ne 0\), so the tier-1
+  packaged obstruction (\Cref{thm:livsic-flow-tier1}) defeats every transfer function. This exhibits
+  a concrete \(F\) with a genuine nonzero closed-orbit integral, certifying the flow obstruction is
+  non-vacuous.
+\end{proof}
+
+\paragraph{The remaining wall.} Only the \emph{trivial} (obstruction) direction of the flow Livšic
+theorem is delivered. The converse --- vanishing of all closed-orbit integrals implies \(F\) is a
+\emph{Hölder} flow coboundary --- is \textbf{not} proved: its genuine obstacle is the Hölder gluing
+of the reconstructed transfer function across the fundamental-domain seam \(s = \tau\), which lies
+beyond this regularity-free layer. It is recorded here as a disclosed open front, the flow analogue
+of the fully proved discrete equivalence \Cref{thm:livsic-iff}.

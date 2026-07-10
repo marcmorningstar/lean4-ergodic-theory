@@ -79,11 +79,19 @@ splitting (Chapter~\ref{chap:twosided}), and the continuous-flow theorem
 
 \section{Beyond the multiplicative theory}
 
-The library does not stop at the multiplicative theorems. Four further layers, each with
-its own chapter, extend the development across classical entropy theory, symbolic
-dynamics, dimension theory, and smooth examples.
+The library does not stop at the multiplicative theorems. Several further layers, each with
+its own chapter, extend the development across suspension flows, classical entropy theory,
+symbolic dynamics, dimension theory, smooth examples, Pesin's entropy formula, cohomological
+rigidity, and the descriptive set theory underpinning the singular filtration.
 
 \begin{itemize}
+  \item \textbf{Suspension flows} (Chapter~\ref{ch:suspension}): the exponents, ergodicity,
+    and entropy of the flow built over a base map under a roof function. The
+    representative-free flow exponent descends the base exponent through the Abramov
+    normalization \(\lambda_{\mathrm{flow}}=\lambda_{\mathrm{base}}/\!\int\tau\), with the
+    six cat-map instances; the time-one map of a Bernoulli suspension is ergodic exactly for
+    an irrational roof; and for a rational roof the flow's Kolmogorov--Sinai entropy descends
+    to \(H_\nu/r\), giving the power rule \(h(T^{n})=n\,h(T)\).
   \item \textbf{Kolmogorov--Sinai entropy} (Chapter~\ref{chap:ksentropy}): the Shannon
     entropy of a finite measurable partition, conditional entropy, the Kolmogorov--Sinai
     entropy as a Fekete limit over iterated joins, the generator theorems and the
@@ -106,12 +114,28 @@ dynamics, dimension theory, and smooth examples.
     expanding-case identity of the Pesin and Rokhlin right-hand sides, and the classical
     examples---the doubling map with its instantiated Rokhlin equality at rate
     \(\log 2\), and the ergodic Arnold cat map with its explicit Lyapunov spectrum.
+  \item \textbf{Pesin's entropy formula} (Chapter~\ref{chap:pesin}): the volume case of the
+    reverse inequality \(\sum_{\lambda_i>0}\lambda_i\le h_\mu(T)\) via a generator-free
+    Rokhlin inequality, assembling both directions into the entropy formula
+    \(h_\mu(T)=\sum_{\lambda_i>0}\lambda_i\) for an SRB (volume-absolutely-continuous)
+    measure, crowned by the fully non-vacuous doubling-map instance
+    \(h_\mu(T)=\sum\lambda^{+}=\log 2\); the mixed-spectrum Ledrappier--Young case is stated
+    honestly as the remaining wall.
+  \item \textbf{Livšic theory} (Chapter~\ref{ch:livsic}): the cohomological rigidity of
+    H\"older cocycles---the abstract Livšic iff (a cocycle is a coboundary exactly when its
+    periodic sums vanish), instantiated over the one-sided and two-sided full shifts,
+    subshifts of finite type, the doubling map, and the Arnold cat map, together with the
+    continuous, bounded, and full measurable rigidity tiers and the flow obstruction.
 \end{itemize}
+
+The final descriptive-set-theoretic layer (Chapter~\ref{ch:dst}) develops Lusin's theorem,
+Novikov's generalized separation, the Kunugui--Novikov and compact-section projection
+theorems, and their payoff: the \emph{everywhere}-Borel measurability of the singular
+Lyapunov filtration, refining the almost-everywhere measurability of the multiplicative core.
 
 Like the headline theorems, every result in these layers is formalized sorry-free and
 passes the same guarded axiom audit. The blueprint documents these principal chains
-rather than every module of the library; some supporting material (for instance the
-singular-filtration measurability layer) is not given a chapter of its own.
+rather than every module of the library.
 
 \section{A finite-dimensional quantum-information layer}
 

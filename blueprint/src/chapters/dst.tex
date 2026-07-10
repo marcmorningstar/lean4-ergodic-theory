@@ -1,0 +1,446 @@
+\chapter{Descriptive set theory: projection theorems and the everywhere-Borel filtration}
+\label{ch:dst}
+
+The measurable multiplicative theory of the preceding chapters produces the singular
+(``issue \#6'') forward Lyapunov filtration only \emph{almost everywhere}: the a.e.\ route
+(Chapter~\ref{chap:lyapunov}) proves the projector \(x\mapsto\mathrm{orthProjMatrix}(V x)\)
+\texttt{AEMeasurable} by pushing a measurable graph through the universal measurability of analytic
+sets. Upgrading that to \emph{everywhere} Borel measurability --- the payoff of issue \#11 --- is a
+genuinely descriptive-set-theoretic problem: the sublevel set \(\{x\mid \mathrm{infDist}\,c\,(V
+x)\le r\}\) is the projection to the base of a Borel subset of a product of Polish spaces, and
+Borel sets are not closed under projection (their projections are exactly the analytic sets, which
+need not be Borel). What rescues the situation is that the fibres one projects are \emph{compact},
+and for Borel sets with compact sections the projection \emph{is} Borel --- the \textbf{Novikov
+projection theorem}. This chapter formalises the full ladder that reaches it, entirely from
+Mathlib's binary Lusin separation, and consumes it for the everywhere-Borel singular filtration.
+
+The ladder is classical (Srivastava, \emph{A Course on Borel Sets}, \S\S4.6--4.7; Kechris,
+\emph{Classical Descriptive Set Theory}, \S\S14, 28): the generalized first separation theorem of
+Novikov (the \(\N\)-ary generalization of binary Lusin separation) \(\Rightarrow\) the weak
+reduction principle for coanalytic sets \(\Rightarrow\) the Saint Raymond and Kunugui--Novikov
+section theorems \(\Rightarrow\) the compact-section projection theorem. Notably \emph{no coanalytic
+pointclass need be developed}: the whole reduction ladder is run on analytic sets and their Borel
+separators. The chapter opens with the classical Lusin theorem in its continuous-on-a-compact form
+(a companion descriptive-set-theoretic result, consumed by the measurable Livšic tier) and closes
+with an honest statement of the general \(\sigma\)-compact-section theorem (Arsenin--Kunugui) as a
+documented research frontier.
+
+Throughout, spaces are Polish (separable completely metrizable) carrying their Borel
+\(\sigma\)-algebra, ``analytic'' means a continuous image of Baire space \(\N\to\N\) (Mathlib's
+\texttt{MeasureTheory.AnalyticSet}), and everything is formalized sorry-free and audited to the
+axiom set \(\{\texttt{propext},\ \texttt{Classical.choice},\ \texttt{Quot.sound}\}\).
+
+\section{Lusin's theorem}
+
+We first record the classical Lusin theorem, a companion descriptive result that Mathlib supplies
+the ingredients for but not the assembled statement.
+
+\begin{theorem}[Lusin's theorem, continuous-on-a-compact form]\label{thm:dst-lusin}
+  \lean{ErgodicTheory.lusin_continuousOn}\leanok
+  Let \(u:X\to\R\) be Borel measurable on a Polish space \(X\) carrying a finite Borel measure
+  \(\mu\). For every tolerance \(\varepsilon\neq 0\) there is a \emph{compact} set \(K\subseteq X\)
+  with \(\mu(K^{\mathsf c})<\varepsilon\) on which \(u\) is continuous
+  (\(\mathrm{ContinuousOn}\,u\,K\)).
+\end{theorem}
+\begin{proof}\leanok
+  The arctan-compression route (Cohn, \emph{Measure Theory}, 2nd ed., Thm.~7.4.4; Rudin,
+  \emph{Real and Complex Analysis}, Thm.~2.24), which avoids any integrability hypothesis on
+  \(u\). Replace \(u\) by the bounded measurable \(v=\arctan\circ u\), valued in
+  \((-\pi/2,\pi/2)\) hence in \(L^1(\mu)\) since \(\mu\) is finite. Bounded continuous functions
+  are dense in \(L^1\) (a finite measure on a metrizable Borel space is weakly regular), so pick
+  continuous \(g_n\) with \(\mathrm{eLpNorm}(v-g_n)\,1\,\mu\to 0\); \(L^1\)-convergence gives
+  convergence in measure, hence an a.e.-convergent subsequence. Egorov's theorem upgrades this to
+  \emph{uniform} convergence off a small measurable set, and inner regularity carves a compact
+  \(K\) out of its complement with \(\mu(K^{\mathsf c})<\varepsilon\). On \(K\) the continuous
+  \(g_n\) converge uniformly to \(v\), so \(v\) is continuous on \(K\); composing with \(\tan\)
+  (continuous on \((-\pi/2,\pi/2)\), and \(\tan\circ\arctan=\mathrm{id}\)) recovers
+  \(\mathrm{ContinuousOn}\,u\,K\).
+\end{proof}
+
+\section{Analytic-set closure lemmas}
+
+The reduction ladder is run on analytic sets, and needs three closure properties that are genuine
+gaps in Mathlib's \texttt{AnalyticSet} API. All three are natural upstream candidates for
+\texttt{Mathlib.MeasureTheory.Constructions.Polish.Basic} (Srivastava \S4.3; Kechris \S14).
+
+\begin{lemma}[Binary intersection of analytic sets is analytic]\label{thm:dst-inter}
+  \lean{MeasureTheory.AnalyticSet.inter'}\leanok
+  In a Hausdorff space, if \(s\) and \(t\) are analytic then so is \(s\cap t\).
+\end{lemma}
+\begin{proof}\leanok
+  Write \(s\cap t=\bigcap_{b:\mathrm{Bool}}\mathrm{cond}\,b\,s\,t\) and apply Mathlib's countable
+  intersection \texttt{AnalyticSet.iInter} over the two-element index \(\mathrm{Bool}\).
+\end{proof}
+
+\begin{lemma}[Binary union of analytic sets is analytic]\label{thm:dst-union}
+  \lean{MeasureTheory.AnalyticSet.union'}\leanok
+  If \(s\) and \(t\) are analytic then so is \(s\cup t\).
+\end{lemma}
+\begin{proof}\leanok
+  Write \(s\cup t=\bigcup_{b:\mathrm{Bool}}\mathrm{cond}\,b\,s\,t\) and apply the countable union
+  \texttt{AnalyticSet.iUnion} over \(\mathrm{Bool}\).
+\end{proof}
+
+\begin{lemma}[Product of analytic sets is analytic]\label{thm:dst-prod}
+  \lean{MeasureTheory.AnalyticSet.prod'}\leanok
+  If \(s\subseteq X\) and \(t\subseteq Y\) are analytic then \(s\times t\subseteq X\times Y\) is
+  analytic.
+\end{lemma}
+\begin{proof}\leanok
+  Parametrise \(s=\mathrm{range}\,f\), \(t=\mathrm{range}\,g\) by continuous maps from Polish
+  spaces (\texttt{analyticSet\_iff\_exists\_polishSpace\_range}); then \(s\times t\) is the range of
+  the continuous product map \(f\times g\) from the product Polish space.
+\end{proof}
+
+The a.e.\ singular filtration of Chapter~\ref{chap:lyapunov} is built on a fourth, deeper property
+of analytic sets --- their \emph{universal measurability} --- which the everywhere route of this
+chapter deliberately bypasses (it produces \emph{null}-measurability, hence only \texttt{AEMeasurable}
+projectors). We cross-reference it here for contrast.
+
+\begin{theorem}[Analytic sets are universally measurable]\label{thm:dst-nullmeas}
+  \lean{MeasureTheory.AnalyticSet.nullMeasurableSet}\leanok
+  Every analytic set in a standard Borel space is \texttt{NullMeasurableSet} for every s-finite
+  measure.
+\end{theorem}
+\begin{proof}\leanok
+  Choquet's capacitability theorem (Kechris, Thm.~30.13; Srivastava, Thm.~4.3.1): for a finite
+  Borel measure the compact capacity \(\mathrm{compactCap}\,\mu\,s=\sup\{\mu K\mid K\text{ compact},
+  K\subseteq s\}\) agrees with \(\mu s\) on analytic sets, so an increasing union of compact
+  subsets exhausts \(s\) up to a null set, giving \(s=^{\mu}B\) with \(B\) Borel; the s-finite case
+  dominates \(\mu\) by a finite measure. This route needs no analytic complement (Suslin's theorem
+  does), which is exactly why it applies to a Borel projection. It underlies the \emph{a.e.}\
+  singular tier (\Cref{thm:dst-aemeasurable}); the everywhere upgrade below replaces it by the
+  Novikov projection theorem.
+\end{proof}
+
+\section{Novikov's generalized first separation theorem}
+
+The engine of the whole development is the \(\N\)-ary generalization, due to Novikov (with the
+elegant proof of Mokobodzki), of Mathlib's binary Lusin separation
+\texttt{measurablySeparable\_range\_of\_disjoint}. Where the binary theorem separates two disjoint
+analytic sets by a Borel set, Novikov's theorem separates a \emph{countable} family with empty
+intersection by measurable supersets that still intersect emptily.
+
+\begin{definition}[Borel-separated family]\label{thm:dst-sepfam}
+  \lean{ErgodicTheory.SepFam}\leanok
+  A countable family \(E:\N\to\mathcal P(X)\) is \emph{Borel separated} (\texttt{SepFam}) if there
+  are measurable supersets \(B_n\supseteq E_n\) with empty intersection
+  \(\bigcap_n B_n=\emptyset\) (Srivastava's terminology after 4.6.1).
+\end{definition}
+
+\begin{lemma}[The single-entry split, Lemma 4.6.2]\label{thm:dst-sepfam-split}
+  \lean{ErgodicTheory.sepFam_of_forall_update}\leanok
+  \uses{thm:dst-sepfam}
+  Fix a position \(j\) and a countable decomposition \(E_j\subseteq\bigcup_m G_m\). If every
+  refinement \(\mathrm{update}\,E\,j\,(G_m)\) (replacing the \(j\)-th entry by \(G_m\)) is Borel
+  separated, then so is \(E\). Its contrapositive existential form
+  \lean{ErgodicTheory.exists_not_sepFam_update}
+  states: if \(E\) is \emph{not} separated then some refinement \(\mathrm{update}\,E\,j\,(G_m)\) is
+  not separated either.
+\end{lemma}
+\begin{proof}\leanok
+  \uses{thm:dst-sepfam}
+  Given separators \(B^{(m)}\) for each refinement, assemble a separator for \(E\): at position
+  \(j\) take \(\bigcup_m B^{(m)}_j\), at every other position \(n\) take \(\bigcap_m B^{(m)}_n\).
+  These are measurable, contain \(E\) (using \(E_j\subseteq\bigcup_m G_m\) at \(j\)), and have
+  empty intersection: a point in the intersection lies in some \(B^{(m_0)}_j\), hence in
+  \(\bigcap_n B^{(m_0)}_n=\emptyset\), a contradiction.
+\end{proof}
+
+\begin{lemma}[One stage of the Mokobodzki recursion, inductive Lemma 4.6.2]\label{thm:dst-stage-step}
+  \lean{ErgodicTheory.stage_step}\leanok
+  \uses{thm:dst-sepfam-split}
+  Applied to images \(A_n=\mathrm{range}\,f_n\) of continuous maps \(f_n:(\N\to\N)\to X\) from Baire
+  space, consider the stage-\(k\) family
+  \lean{ErgodicTheory.famE}
+  \(\mathrm{famE}\,f\,\sigma\,k=\bigl(f_n[\mathrm{cylinder}(\sigma_n,k-n)]\bigr)_n\) of
+  cylinder images around centres \(\sigma_n\). If \(\mathrm{famE}\,f\,\sigma\,k\) is not Borel
+  separated, there are refined centres \(\sigma'\), each within the length-\((k-n)\) cylinder of
+  \(\sigma_n\), for which \(\mathrm{famE}\,f\,\sigma'\,(k+1)\) is still not separated.
+\end{lemma}
+\begin{proof}\leanok
+  \uses{thm:dst-sepfam-split}
+  Extend the entries one coordinate at a time along the mixed-length intermediate family
+  \lean{ErgodicTheory.famMix}
+  \(\mathrm{famMix}\), by an inner induction over the position \(j\le k+1\): decompose the
+  \(j\)-th cylinder into the one-longer cylinders \(\bigcup_m\mathrm{cylinder}(\mathrm{update}\,
+  \sigma'_j\,(k-j)\,m)\), and invoke the single-entry split
+  (\Cref{thm:dst-sepfam-split}) to pick a coordinate value \(m_0\) preserving non-separatedness.
+  At \(j=k+1\) the mixed family is exactly \(\mathrm{famE}\,f\,\sigma'\,(k+1)\).
+\end{proof}
+
+\begin{theorem}[First separation for ranges, Srivastava 4.6.1]\label{thm:dst-sepfam-ranges}
+  \lean{ErgodicTheory.sepFam_ranges}\leanok
+  \uses{thm:dst-stage-step}
+  If \(f_n:(\N\to\N)\to X\) are continuous with \(\bigcap_n\mathrm{range}\,f_n=\emptyset\), then the
+  family \((\mathrm{range}\,f_n)\) is Borel separated.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{thm:dst-stage-step, thm:dst-sepfam}
+  Suppose not. Iterating one stage of the recursion (\Cref{thm:dst-stage-step}) from the trivial
+  centres builds, by dependent choice, centres refining coordinate by coordinate; a stationarity
+  argument (coordinate \(i\) of entry \(n\) freezes from stage \(n+i+1\) on) produces diagonal
+  limit points \(\alpha_n\in\N\to\N\) such that every truncated family
+  \(\bigl(f_n[\mathrm{cylinder}(\alpha_n,k-n)]\bigr)\) is non-separated, hence in
+  particular nonempty. If all \(f_n(\alpha_n)\) coincided, that common value would lie in
+  \(\bigcap_n\mathrm{range}\,f_n=\emptyset\); so two differ, and Hausdorff-separate them by open
+  \(u\ni f_i(\alpha_i)\), \(v\ni f_j(\alpha_j)\). At a late enough stage the ultrametric cylinders
+  around \(\alpha_i,\alpha_j\) shrink inside \(f_i^{-1}u\), \(f_j^{-1}v\), so
+  \((u,v,\mathrm{univ},\dots)\) is a Borel separator of that truncated family --- contradicting its
+  non-separatedness.
+\end{proof}
+
+\begin{theorem}[Generalized first separation theorem, Novikov; Srivastava 4.6.1]\label{thm:dst-first-separation}
+  \lean{ErgodicTheory.generalized_first_separation}\leanok
+  \uses{thm:dst-sepfam-ranges}
+  A countable family \((A_n)\) of analytic sets with empty intersection is Borel separated: there
+  are measurable \(B_n\supseteq A_n\) with \(\bigcap_n B_n=\emptyset\).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{thm:dst-sepfam-ranges}
+  If some \(A_{n_0}=\emptyset\), take \(B_{n_0}=\emptyset\) and \(B_n=\mathrm{univ}\) otherwise.
+  Otherwise every \(A_n\) is a nonempty continuous image of Baire space, \(A_n=\mathrm{range}\,f_n\),
+  and \Cref{thm:dst-sepfam-ranges} applies verbatim.
+\end{proof}
+
+\section{The reduction ladder}
+
+From the first separation theorem the ladder proceeds through the weak reduction principle to the
+two section theorems, all on Polish spaces and their Borel structure --- no coanalytic pointclass
+is developed.
+
+\begin{theorem}[Weak reduction principle for coanalytic sets, Srivastava 4.6.5]\label{thm:dst-weak-reduction}
+  \lean{ErgodicTheory.weak_reduction_coanalytic}\leanok
+  \uses{thm:dst-first-separation, thm:dst-inter}
+  If \((S_n)\) is a countable family with analytic complements (the \(S_n\) are coanalytic) and
+  Borel union \(\bigcup_n S_n\), there are pairwise-disjoint measurable \(D_n\subseteq S_n\) with
+  \(\bigcup_n D_n=\bigcup_n S_n\).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{thm:dst-first-separation, thm:dst-inter}
+  Apply \Cref{thm:dst-first-separation} to the analytic sets \((\bigcup_m S_m)\cap(S_n)^{\mathsf c}\)
+  (analytic by \Cref{thm:dst-inter}), whose intersection over \(n\) is empty. The resulting Borel
+  separators \(D'_n\) give measurable pieces \((\bigcup_m S_m)\setminus D'_n\subseteq S_n\) with the
+  correct union; disjointifying (\texttt{disjointed}) produces the pairwise-disjoint family.
+\end{proof}
+
+\begin{theorem}[Saint Raymond's theorem, Srivastava 4.7.1]\label{thm:dst-saint-raymond}
+  \lean{ErgodicTheory.saintRaymond_closedSections}\leanok
+  \uses{thm:dst-weak-reduction, thm:dst-inter, thm:dst-union, thm:dst-prod}
+  For disjoint analytic \(A_0,A_1\subseteq X\times Y\) whose \(A_0\)-sections \(\{y\mid(x,y)\in
+  A_0\}\) are closed, and a countable basis \((V_n)\) of \(Y\), there are Borel \(B_n\subseteq X\)
+  with \(A_1\subseteq\bigcup_n B_n\times V_n\) and \(A_0\cap\bigcup_n B_n\times V_n=\emptyset\).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{thm:dst-weak-reduction, thm:dst-inter, thm:dst-union, thm:dst-prod}
+  Replace \(A_1\) by a Borel Lusin separator \(A_1'\) from \(A_0\)
+  (\texttt{AnalyticSet.measurablySeparable}). Let \(C_n=\{x\mid V_n\text{ misses the section
+  }(A_0)_x\}\); its complement is the analytic projection \(\pi_X(A_0\cap(X\times V_n))\)
+  (\Cref{thm:dst-inter}), and the closed sections give the basis decomposition
+  \(A_0^{\mathsf c}=\bigcup_n C_n\times V_n\). Feed the coanalytic family
+  \(S_n=A_1'\cap(C_n\times V_n)\) --- whose complements are analytic by \Cref{thm:dst-union} and
+  \Cref{thm:dst-prod} and whose union is the Borel \(A_1'\) --- to the weak reduction principle
+  (\Cref{thm:dst-weak-reduction}), then Lusin-separate each analytic projection \(\pi_X(D_n)\) from
+  the analytic \((C_n)^{\mathsf c}\) to get the Borel \(B_n\).
+\end{proof}
+
+\begin{theorem}[Kunugui--Novikov theorem, Srivastava 4.7.2]\label{thm:dst-kunugui-novikov}
+  \lean{ErgodicTheory.kunuguiNovikov_openSections}\leanok
+  \uses{thm:dst-saint-raymond}
+  A Borel \(B\subseteq X\times Y\) all of whose sections \(\{y\mid(x,y)\in B\}\) are open is a
+  countable union of Borel rectangles \(B=\bigcup_n B_n\times V_n\) over any countable basis
+  \((V_n)\) of \(Y\).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{thm:dst-saint-raymond}
+  The special case \(A_0=B^{\mathsf c}\), \(A_1=B\) of Saint Raymond's theorem: closed sections of
+  \(B^{\mathsf c}\) are exactly open sections of \(B\). Saint Raymond covers \(B\) by
+  \(\bigcup_n B_n\times V_n\) while keeping it disjoint from \(B^{\mathsf c}\), forcing the reverse
+  inclusion and hence equality.
+\end{proof}
+
+\section{The compact-section projection theorem}
+
+The headline of the ladder is Novikov's theorem that a Borel set with compact sections has a Borel
+projection (Srivastava 4.7.11; Kechris \S28, Arsenin--Kunugui). It is reached in two moves: the
+compact-fibre-space case via a topology refinement making the set closed, then the general case by
+compactifying the fibre through the Hilbert cube.
+
+\begin{lemma}[Enumerated countable basis]\label{thm:dst-nat-basis}
+  \lean{ErgodicTheory.exists_nat_basis}\leanok
+  A second-countable space admits an \(\N\)-indexed basis \((V_n)\) (with possible empty entries):
+  every point of every open set lies in some \(V_n\) contained in that open set.
+\end{lemma}
+\begin{proof}\leanok
+  Insert \(\emptyset\) into a countable topological basis to make it a nonempty countable set, then
+  enumerate it as a range.
+\end{proof}
+
+\begin{theorem}[Closed sections become closed after a topology refinement, Srivastava 4.7.4]\label{thm:dst-finer-polish}
+  \lean{ErgodicTheory.exists_finer_polish_isClosed_of_closedSections}\leanok
+  \uses{thm:dst-kunugui-novikov, thm:dst-nat-basis}
+  For a Borel \(B\subseteq X\times Y\) with closed sections, there is a finer Polish topology
+  \(t'\le t_X\) on \(X\) alone in which \(B\) becomes closed (in the product topology \(t'\times
+  t_Y\)).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{thm:dst-kunugui-novikov, thm:dst-nat-basis}
+  The complement \(B^{\mathsf c}\) has open sections, so Kunugui--Novikov
+  (\Cref{thm:dst-kunugui-novikov}) writes it as \(\bigcup_n B_n\times V_n\) with the \(V_n\) from an
+  enumerated basis (\Cref{thm:dst-nat-basis}). Each Borel \(B_n\) is \emph{clopenable}: there is a
+  finer Polish topology making it clopen. Amalgamating these countably many refinements into a
+  single Polish topology \(t'\) (\texttt{PolishSpace.exists\_polishSpace\_forall\_le}) makes every
+  \(B_n\) open, hence \(B^{\mathsf c}=\bigcup_n B_n\times V_n\) open and \(B\) closed in
+  \(t'\times t_Y\).
+\end{proof}
+
+\begin{theorem}[Compact-section projection, compact fibre space]\label{thm:dst-proj-compact}
+  \lean{ErgodicTheory.measurableSet_image_fst_of_isCompact_sections_of_compactSpace}\leanok
+  \uses{thm:dst-finer-polish}
+  If \(Y\) is compact, a Borel \(B\subseteq X\times Y\) with compact sections has Borel projection
+  \(\pi_X(B)\).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{thm:dst-finer-polish}
+  Refine \(X\)'s topology to make \(B\) closed (\Cref{thm:dst-finer-polish}; compact sections are
+  in particular closed). The first projection \(X\times Y\to X\) is a proper map when \(Y\) is
+  compact, hence closed, so \(\pi_X(B)\) is closed in the refined topology \(t'\), thus Borel for
+  \(t'\). Since \(t'\le t_X\) with both Polish, the two Borel \(\sigma\)-algebras coincide
+  (\texttt{borel\_eq\_borel\_of\_le}, Lusin--Souslin), so \(\pi_X(B)\) is Borel for the original
+  topology.
+\end{proof}
+
+\begin{lemma}[Continuous injection into the Hilbert cube]\label{thm:dst-cube}
+  \lean{ErgodicTheory.exists_continuous_injective_toCube}\leanok
+  Every Polish space \(Y\) admits a continuous injection into the compact Polish cube
+  \(\N\to[0,1]\).
+\end{lemma}
+\begin{proof}\leanok
+  For \(Y\) nonempty, fix a dense sequence \((u_n)\) in a compatible complete metric and send
+  \(y\mapsto\bigl(\min(\mathrm{dist}(y,u_n),1)\bigr)_n\). This is continuous, and injective: if two
+  points have equal coordinates then approximating each by the dense sequence forces their distance
+  to \(0\). The empty case is vacuous.
+\end{proof}
+
+\begin{theorem}[Novikov compact-section projection theorem, Srivastava 4.7.11]\label{thm:dst-proj}
+  \lean{ErgodicTheory.measurableSet_image_fst_of_isCompact_sections}\leanok
+  \uses{thm:dst-proj-compact, thm:dst-cube}
+  For Polish \(X,Y\), a Borel \(B\subseteq X\times Y\) all of whose sections are compact has Borel
+  projection \(\pi_X(B)\) (Kechris, Thm.~28.8).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{thm:dst-proj-compact, thm:dst-cube}
+  Compactify the fibre: push \(B\) into \(X\times(\N\to[0,1])\) along \(\mathrm{id}\times e\) for a
+  continuous injection \(e\) (\Cref{thm:dst-cube}), which is a measurable embedding by
+  Lusin--Souslin, so the image is Borel with the same first projection. The pushed sections are
+  \(e[\,\text{compact section}\,]\), still compact hence closed in the compact cube, so the
+  compact-fibre-space case (\Cref{thm:dst-proj-compact}) gives the Borel projection.
+\end{proof}
+
+\section{The everywhere-Borel singular Oseledets filtration}
+
+We now discharge the payoff of issue \#11: the singular forward Lyapunov projector, previously
+known only \texttt{AEMeasurable}, is \emph{everywhere} \texttt{Measurable}. The key geometric
+observation is that closed-ball slices of a subspace fibre are compact, so the compact-section
+projection theorem applies directly --- no \(\sigma\)-compact machinery is needed.
+
+\begin{theorem}[Everywhere-Borel distance map via closed balls]\label{thm:dst-infdist}
+  \lean{ErgodicTheory.measurable_infDist_of_measurableGraph}\leanok
+  \uses{thm:dst-proj}
+  Let \(V:X\to\mathrm{Submodule}\,\R\,(\R^d)\) over a standard Borel base \(X\) have a measurable
+  graph \(\{(x,v)\mid v\in V x\}\). Then for every \(c\in\R^d\) the map \(x\mapsto\mathrm{infDist}\,
+  c\,(V x)\) is \texttt{Measurable}.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{thm:dst-proj}
+  By \texttt{measurable\_of\_Iic} it suffices that each sublevel \(\{x\mid\mathrm{infDist}\,c\,(V
+  x)\le r\}\) is Borel. This set is the first projection of the graph sliced with the
+  \emph{closed} ball, \(\{(x,v)\mid v\in V x\}\cap(X\times\overline B(c,r))\): a point \(x\) is in
+  the sublevel iff the closed subspace \(V x\) --- which attains its distance to \(c\) --- meets
+  \(\overline B(c,r)\). Each section \(V x\cap\overline B(c,r)\) is a closed subspace intersected
+  with a compact ball in the proper Euclidean space, hence \emph{compact}, so the Novikov
+  projection theorem (\Cref{thm:dst-proj}) makes the projection Borel.
+\end{proof}
+
+\begin{theorem}[Everywhere-measurable orthogonal projector from a measurable graph]\label{thm:dst-projmatrix-converter}
+  \lean{ErgodicTheory.measurable_orthProjMatrix_of_measurableGraph}\leanok
+  \uses{thm:dst-infdist, orthProjMatrix}
+  Over a standard Borel base \(X\), a measurable subspace graph \(\{(x,v)\mid v\in V x\}\) makes the
+  orthogonal-projection matrix \(x\mapsto\mathrm{orthProjMatrix}(V x)\) \texttt{Measurable}.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{thm:dst-infdist, orthProjMatrix}
+  Reduce to entrywise measurability (\texttt{Matrix} carries the Pi structure). Each entry is a
+  projected-basis coordinate (\texttt{orthProjMatrix\_apply}), which the polarisation identity
+  \texttt{starProjection\_apply\_coord} writes as a fixed real combination of the three scalar
+  distance maps \(x\mapsto\mathrm{infDist}\,c\,(V x)\) for \(c\) among the two basis vectors and
+  their difference. Each is \texttt{Measurable} by \Cref{thm:dst-infdist}, and \texttt{Measurable}
+  arithmetic with \texttt{measurable\_pi\_lambda} assembles the full projector.
+\end{proof}
+
+For contrast we record the a.e.\ tier, which the everywhere converter strictly strengthens.
+
+\begin{theorem}[A.e.-measurable projector from a measurable graph]\label{thm:dst-aeconverter}
+  \lean{ErgodicTheory.aemeasurable_orthProjMatrix_of_measurableGraph}\leanok
+  \uses{thm:dst-nullmeas, orthProjMatrix}
+  For any s-finite measure \(\mu\) on a standard Borel base, a measurable subspace graph makes
+  \(x\mapsto\mathrm{orthProjMatrix}(V x)\) \texttt{AEMeasurable}.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{thm:dst-nullmeas, orthProjMatrix}
+  The same polarisation reduction, but the distance sublevels are obtained only up to a null set,
+  from the universal measurability of the analytic projection (\Cref{thm:dst-nullmeas}) rather than
+  its honest Borel-ness. This is the route of Chapter~\ref{chap:lyapunov}; the everywhere converter
+  (\Cref{thm:dst-projmatrix-converter}) replaces \Cref{thm:dst-nullmeas} by the Novikov projection
+  theorem.
+\end{proof}
+
+\begin{theorem}[Issue \#11 headline: everywhere-Borel forward Lyapunov projector]\label{thm:dst-headline}
+  \lean{ErgodicTheory.measurable_orthProjMatrix_lambdaSublevel}\leanok
+  \uses{thm:dst-projmatrix-converter, lambdaSublevel, lambdaBar, IsUltrametricGrowth}
+  Let \(A:X\to\Matrix_d(\R)\) be a measurable generator and \(T:X\to X\) measurable over a standard
+  Borel base \(X\), and assume the \emph{everywhere} ultrametric-growth gate
+  \(\forall x,\ \mathrm{IsUltrametricGrowth}(\mathrm{lambdaBar}\,A\,T\,x)\). Then for every
+  threshold \(c\) the sublevel projector \(x\mapsto\mathrm{orthProjMatrix}(\mathrm{lambdaSublevel}\,
+  A\,T\,x\,c)\) is \emph{everywhere} \texttt{Measurable}. No invertibility (\(\det\neq 0\)),
+  ergodicity, measure-preservation, or log-norm integrability is assumed --- \(A\) and \(T\) are
+  unrelated, the invertible-MET hypotheses traded for the everywhere gate.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{thm:dst-projmatrix-converter}
+  The sublevel filtration has a measurable graph
+  \lean{ErgodicTheory.measurableSet_graph_lambdaSublevel}
+  built from the measurable data \(A,T\) and the everywhere gate, and the general converter
+  (\Cref{thm:dst-projmatrix-converter}) turns that graph into the everywhere-measurable projector
+  via the Novikov compact-section projection theorem.
+\end{proof}
+
+\begin{theorem}[The a.e.\ sublevel projector, issue \#6]\label{thm:dst-aemeasurable}
+  \lean{ErgodicTheory.aemeasurable_orthProjMatrix_lambdaSublevel}\leanok
+  \uses{thm:dst-aeconverter, lambdaSublevel, isUltrametricGrowth_lambdaBar}
+  For the invertible-MET data (ergodic, measure-preserving \(T\), integrable log-norms), the
+  sublevel projector \(x\mapsto\mathrm{orthProjMatrix}(\mathrm{lambdaSublevel}\,A\,T\,x\,c)\) is
+  \texttt{AEMeasurable}.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{thm:dst-aeconverter, isUltrametricGrowth_lambdaBar}
+  Here the ultrametric-growth gate holds only a.e.\ (\texttt{isUltrametricGrowth\_lambdaBar},
+  itself needing invertibility, ergodicity, and integrable log-norms), so the a.e.\ converter
+  (\Cref{thm:dst-aeconverter}) applies. The everywhere headline
+  (\Cref{thm:dst-headline}) is strictly stronger: it drops every dynamical hypothesis in exchange
+  for the pointwise gate.
+\end{proof}
+
+\section{An honest frontier: the general \texorpdfstring{\(\sigma\)}{sigma}-compact-section theorem}
+
+The compact-section projection theorem (\Cref{thm:dst-proj}) suffices for the subspace-valued
+Oseledets filtration precisely because closed-ball slices of the subspace fibres are compact
+(\Cref{thm:dst-infdist}). The fully general theorem --- that a Borel set with
+\(\sigma\)-\emph{compact} sections has Borel projection (the Arsenin--Kunugui theorem, Saint
+Raymond 5.12.2; Kechris \S28) --- is a strictly deeper result whose formalization would require the
+Effros Borel structure on the hyperspace of closed sets, \(\Pi^1_1\)-boundedness, and the
+transfinite rank analysis of coanalytic sets. It is \emph{not} formalized in this development, and
+is recorded here as a documented research frontier. The everywhere-Borel singular filtration of
+this chapter deliberately routes around it: the closed-ball compactification of the fibre keeps the
+whole issue \#11 payoff inside the compact-section case, so no \(\sigma\)-compact machinery is ever
+invoked.
