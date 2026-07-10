@@ -29,6 +29,8 @@ import ErgodicTheory.Multifractal.BernoulliTwoSidedGenerating
 import ErgodicTheory.Multifractal.BernoulliTwoSidedSystemEntropy
 import ErgodicTheory.Multifractal.BernoulliSuspensionEntropy
 import ErgodicTheory.Multifractal.BernoulliSuspensionCondEntropy
+import ErgodicTheory.Multifractal.BernoulliTwoSidedMixing
+import ErgodicTheory.Multifractal.BernoulliSuspensionTimeOneErgodic
 
 /-!
 # Coarse-grained multifractal analysis of an invariant measure
