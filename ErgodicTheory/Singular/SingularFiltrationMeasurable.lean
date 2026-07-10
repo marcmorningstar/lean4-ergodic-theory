@@ -128,11 +128,15 @@ variable {μ : Measure X} [SFinite μ] {T : X → X}
 /-- **The singular issue #6 headline: an a.e.-measurable forward Lyapunov projector.** For a
 measurable generator `A` (`hA`) and a measurable `T` (`hT`) over a standard Borel base `X`, an
 arbitrary s-finite measure `μ`, and the everywhere `IsUltrametricGrowth` gate `hUM` (the pointwise
-form of the a.e. `ErgodicTheory.isUltrametricGrowth_lambdaBar`, automatic e.g. for a bounded
-generator), the orthogonal-projection matrix `x ↦ orthProjMatrix (lambdaSublevel A T x c)` of the
-forward Lyapunov sublevel filtration is `AEMeasurable`. **No invertibility (`det ≠ 0`), ergodicity,
-measure-preservation, or log-norm integrability is assumed** — `A`, `T`, and `μ` are unrelated, so
-the result is strictly more general than the invertible MET setting.
+form of the a.e. `ErgodicTheory.isUltrametricGrowth_lambdaBar`, which itself needs invertibility,
+ergodicity, and integrable log-norms; the everywhere form is satisfiable — e.g. `A ≡ 1` gives
+`lambdaBar ≡ 0` — but it is *not* automatic for a merely bounded singular generator: boundedness
+yields only the floored `ErgodicTheory.isUltrametricGrowth_max_lambdaBar` for
+`max (lambdaBar A T x ·) 0`), the orthogonal-projection matrix
+`x ↦ orthProjMatrix (lambdaSublevel A T x c)` of the forward Lyapunov sublevel filtration is
+`AEMeasurable`. **No invertibility (`det ≠ 0`), ergodicity, measure-preservation, or log-norm
+integrability is assumed** — `A`, `T`, and `μ` are unrelated, the invertible-MET hypotheses being
+traded for the everywhere gate `hUM`.
 
 The sublevel filtration has a measurable graph (`ErgodicTheory.measurableSet_graph_lambdaSublevel`),
 which the general a.e. converter `aemeasurable_orthProjMatrix_of_measurableGraph` turns into the

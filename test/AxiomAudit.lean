@@ -293,6 +293,17 @@ import ErgodicTheory.Livsic.BiShiftUnstableOscillation
 import ErgodicTheory.Livsic.BiShiftMeasurableRigidity
 import ErgodicTheory.Livsic.MeasurableRigidityFull
 
+-- Direct imports of the issue #11 Arsenin–Kunugui tier: the analytic-set closure lemmas, the
+-- generalized first separation and coanalytic weak-reduction theorems, the Saint Raymond /
+-- Kunugui–Novikov section theorems, the compact-section projection (Novikov, Srivastava 4.7.11),
+-- and the everywhere-Borel singular filtration converter — all guarded below.
+import ErgodicTheory.MeasureTheory.AnalyticSetLemmas
+import ErgodicTheory.MeasureTheory.NovikovSeparation
+import ErgodicTheory.MeasureTheory.CoanalyticReduction
+import ErgodicTheory.MeasureTheory.KunuguiNovikov
+import ErgodicTheory.MeasureTheory.CompactSectionProjection
+import ErgodicTheory.Singular.SingularFiltrationBorel
+
 /-!
 # Axiom audit
 
@@ -3663,3 +3674,89 @@ counterexample to subadditivity of the CNT entropy sequence (#26). -/
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms ErgodicTheory.Livsic.measurable_aeCoboundary_ae_eq_holder
+
+/-! ### Issue #11 — Arsenin–Kunugui: compact-section projection + everywhere-Borel singular filtration -/
+
+-- The descriptive-set-theory infrastructure: analytic-set closure lemmas (finite intersections,
+-- unions, products), the generalized first separation theorem (Srivastava 4.6.1), and the
+-- coanalytic weak-reduction theorem.
+
+/-- info: 'MeasureTheory.AnalyticSet.inter'' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms MeasureTheory.AnalyticSet.inter'
+
+/-- info: 'MeasureTheory.AnalyticSet.union'' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms MeasureTheory.AnalyticSet.union'
+
+/-- info: 'MeasureTheory.AnalyticSet.prod'' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms MeasureTheory.AnalyticSet.prod'
+
+/-- info: 'ErgodicTheory.sepFam_ranges' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.sepFam_ranges
+
+/-- info: 'ErgodicTheory.generalized_first_separation' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.generalized_first_separation
+
+/-- info: 'ErgodicTheory.weak_reduction_coanalytic' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.weak_reduction_coanalytic
+
+-- The Saint Raymond disjoint-closed-sections and Kunugui–Novikov open-sections theorems
+-- (Srivastava 4.7.1, 4.7.2).
+
+/-- info: 'ErgodicTheory.saintRaymond_closedSections' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.saintRaymond_closedSections
+
+/-- info: 'ErgodicTheory.kunuguiNovikov_openSections' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.kunuguiNovikov_openSections
+
+-- The finer-Polish-topology reduction (Srivastava 4.7.4) and the compact-section projection
+-- theorem (Novikov, Srivastava 4.7.11): the image of a Borel set with compact sections is Borel.
+
+/-- info: 'ErgodicTheory.exists_finer_polish_isClosed_of_closedSections' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.exists_finer_polish_isClosed_of_closedSections
+
+/-- info: 'ErgodicTheory.measurableSet_image_fst_of_isCompact_sections_of_compactSpace' depends on
+axioms: [propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.measurableSet_image_fst_of_isCompact_sections_of_compactSpace
+
+/-- info: 'ErgodicTheory.measurableSet_image_fst_of_isCompact_sections' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.measurableSet_image_fst_of_isCompact_sections
+
+-- The issue #11 headline consumers: a measurable graph yields a measurable distance-to-fibre map,
+-- the general measurable-graph → measurable-orthogonal-projection converter, and its specialization
+-- to the singular λ̄-sublevel filtration (the everywhere-Borel singular filtration).
+
+/-- info: 'ErgodicTheory.measurable_infDist_of_measurableGraph' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.measurable_infDist_of_measurableGraph
+
+/-- info: 'ErgodicTheory.measurable_orthProjMatrix_of_measurableGraph' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.measurable_orthProjMatrix_of_measurableGraph
+
+/-- info: 'ErgodicTheory.measurable_orthProjMatrix_lambdaSublevel' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.measurable_orthProjMatrix_lambdaSublevel
