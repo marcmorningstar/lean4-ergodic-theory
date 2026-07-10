@@ -232,15 +232,16 @@ against \(*\).
 \end{proof}
 
 \begin{theorem}[Explicit Kraus form of the partial traces]\label{partialTraceRight_eq_kraus}
-  \lean{ErgodicTheory.OperatorEntropy.partialTraceRight_eq_kraus}\leanok
+  \lean{ErgodicTheory.OperatorEntropy.partialTraceRight_eq_kraus,
+    ErgodicTheory.OperatorEntropy.partialTraceLeft_eq_kraus}\leanok
   \uses{partialTraceRight, krausInclusionRight, krausConjRight_eq_submatrix}
   Both partial traces are genuine sums of Kraus conjugations:
   \[
     \Tr_B M \;=\; \sum_{j\in n_B} E_j\,M\,E_j^{*},
     \qquad
-    \Tr_A M \;=\; \sum_{i\in n_A} F_i\,M\,F_i^{*}
-    \;\;(\lean{ErgodicTheory.OperatorEntropy.partialTraceLeft_eq_kraus}).
+    \Tr_A M \;=\; \sum_{i\in n_A} F_i\,M\,F_i^{*}.
   \]
+  The left analogue is \texttt{partialTraceLeft\_eq\_kraus}.
 \end{theorem}
 \begin{proof}\leanok
   \uses{partialTraceRight, krausConjRight_eq_submatrix}
@@ -263,16 +264,17 @@ against \(*\).
 \end{proof}
 
 \begin{lemma}[Completeness relation]\label{sum_conjTranspose_mul_krausInclusionRight}
-  \lean{ErgodicTheory.OperatorEntropy.sum_conjTranspose_mul_krausInclusionRight}\leanok
+  \lean{ErgodicTheory.OperatorEntropy.sum_conjTranspose_mul_krausInclusionRight,
+    ErgodicTheory.OperatorEntropy.sum_conjTranspose_mul_krausInclusionLeft}\leanok
   \uses{krausInclusionRight}
   The block inclusions satisfy the Kraus completeness / trace-preservation relation on the full
   \(A\otimes B\) space,
   \[
     \sum_{j\in n_B} E_j^{*}E_j \;=\; 1,
     \qquad
-    \sum_{i\in n_A} F_i^{*}F_i \;=\; 1
-    \;\;(\lean{ErgodicTheory.OperatorEntropy.sum_conjTranspose_mul_krausInclusionLeft}).
+    \sum_{i\in n_A} F_i^{*}F_i \;=\; 1.
   \]
+  The left analogue is \texttt{sum\_conjTranspose\_mul\_krausInclusionLeft}.
 \end{lemma}
 \begin{proof}\leanok
   \uses{krausInclusionRight}
