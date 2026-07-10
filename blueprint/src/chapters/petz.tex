@@ -626,3 +626,311 @@ positive classical join entropy.)
   endpoint by the corner equality (Theorem~\ref{cntDynamicalEntropyAbelian_eq_ksEntropy}) turns this
   into the claimed bound.
 \end{proof}
+
+\subsection{Finite-dimensional vanishing of the CNT rate (issue \#26)}
+\label{sec:cnt-finitedim}
+
+The one-sided bound above (Theorem~\ref{ksEntropy_le_cntDynamicalEntropy}) is completed in two
+complementary directions. First, in \emph{finite dimension} the CNT/ALF dynamical entropy of
+\emph{any} dynamics vanishes identically: the correlation matrices are Gram matrices factoring
+through the fixed \(d^{2}\)-dimensional matrix space \(\Matrix_d(\mathbb{C})\), so their rank --- and
+hence their entropy --- is bounded independently of the resolution \(n\), squeezing the rate to
+\(0\). This is the well-known degeneracy of quantum dynamical entropy in finite dimension
+(Alicki--Fannes, \emph{Quantum Dynamical Systems}, OUP 2001, where the AF entropy vanishes precisely
+because \(\operatorname{rank}(\rho[X^{(n)}])\le(\dim\mathcal H)^{2}\); Neshveyev--Størmer,
+\emph{Dynamical Entropy in Operator Algebras}, Springer 2006, that the CNT entropy of a
+finite-dimensional algebra is \(0\)). We disclose it honestly: the system-level equalities are
+degenerate \(0 = 0\) collapses, and the substantive content is the \emph{per-resolution}
+rank/entropy bound below --- and, on the abelian corner, the collapse
+\(S(\mathrm{corrMatrix}\,n) = H(\text{join}_n)\) already recorded in
+Theorem~\ref{vonNeumannEntropy_corrMatrix_eq_ksEntropySeq}.
+
+\begin{definition}[Hilbert--Schmidt Gram vectors]\label{gramVec}
+  \lean{ErgodicTheory.OperatorEntropy.CNT.gramVec}\leanok
+  \uses{refine, corrMatrix}
+  For a dynamics \(\Phi\), a state \(\rho\) on \(\mathbb{C}^{d}\) and an operational partition \(X\),
+  the depth-\(n\) \emph{Gram vectors} are the Hilbert--Schmidt vectors
+  \(w_f = (\mathrm{refine}\,\Phi\,X\,n\,f)\cdot\sqrt{\rho}\), reshaped into the matrix
+  \(\mathrm{gramVec}\,\Phi\,\rho\,X\,n\) with rows indexed by \(\Fin d\times\Fin d\) and columns by
+  the classical index set \((\Fin k)^{\Fin n}\); here \(\sqrt{\rho} = \texttt{CFC.sqrt}\,\rho\) is
+  the continuous-functional-calculus positive-semidefinite square root.
+\end{definition}
+
+\begin{theorem}[Gram factorization of the correlation matrix]\label{corrVal_eq_conjTranspose_mul_self}
+  \lean{ErgodicTheory.OperatorEntropy.CNT.corrVal_eq_conjTranspose_mul_self}\leanok
+  \uses{gramVec, corrMatrix}
+  The CNT correlation matrix is the Gram matrix of its Hilbert--Schmidt vectors:
+  \[
+    \mathrm{corrMatrix}\,\Phi\,\rho\,X\,n
+      \;=\; (\mathrm{gramVec}\,\Phi\,\rho\,X\,n)^{\dagger}\,(\mathrm{gramVec}\,\Phi\,\rho\,X\,n).
+  \]
+\end{theorem}
+\begin{proof}\leanok
+  \uses{gramVec}
+  Entrywise this is the trace identity \(\tr\bigl((A\sqrt\rho)^{\dagger}(B\sqrt\rho)\bigr)
+  = \tr(\rho\,A^{\dagger}B)\), valid for the Hermitian square root \(\sqrt\rho\)
+  (\(\sqrt\rho^{\dagger} = \sqrt\rho\), \(\sqrt\rho\,\sqrt\rho = \rho\)) by trace cyclicity, applied
+  with \(A = \mathrm{refine}(g)\), \(B = \mathrm{refine}(f)\): the left side is the \((g,f)\) Gram
+  entry \(\langle w_g, w_f\rangle\), the right side is the \((g,f)\) correlation entry.
+\end{proof}
+
+\begin{theorem}[Uniform rank bound]\label{rank_corrVal_le}
+  \lean{ErgodicTheory.OperatorEntropy.CNT.rank_corrVal_le}\leanok
+  \uses{corrVal_eq_conjTranspose_mul_self, gramVec}
+  The correlation density matrix of an \(n\)-fold refinement has rank at most \(d^{2}\),
+  \emph{uniformly in \(n\)}:
+  \[
+    \operatorname{rank}\bigl(\mathrm{corrMatrix}\,\Phi\,\rho\,X\,n\bigr) \;\le\; d^{2}.
+  \]
+\end{theorem}
+\begin{proof}\leanok
+  \uses{corrVal_eq_conjTranspose_mul_self}
+  A Gram matrix \(V^{\dagger}V\) has the same rank as \(V\)
+  (\(\texttt{rank\_conjTranspose\_mul\_self}\)), and by
+  Theorem~\ref{corrVal_eq_conjTranspose_mul_self} the correlation matrix is such a Gram matrix with
+  \(V = \mathrm{gramVec}\) having only \(\#(\Fin d\times\Fin d) = d^{2}\) rows; a matrix rank is at
+  most its number of rows.
+\end{proof}
+
+\begin{theorem}[Uniform entropy bound]\label{vonNeumannEntropy_corrMatrix_le_log}
+  \lean{ErgodicTheory.OperatorEntropy.CNT.vonNeumannEntropy_corrMatrix_le_log}\leanok
+  \uses{rank_corrVal_le}
+  At every resolution \(n\), the von Neumann entropy of the correlation matrix is bounded by
+  \(\log(d^{2})\), a constant independent of \(n\):
+  \[
+    S\bigl(\mathrm{corrMatrix}\,\Phi\,\rho\,X\,n\bigr) \;\le\; \log\bigl(d^{2}\bigr).
+  \]
+\end{theorem}
+\begin{proof}\leanok
+  \uses{rank_corrVal_le}
+  Chain the maximum-entropy inequality \(S\le\log(\operatorname{rank})\)
+  (Theorem~\ref{vonNeumannEntropy_le_log_rank}) with the uniform rank bound
+  \(\operatorname{rank}\le d^{2}\) (Theorem~\ref{rank_corrVal_le}), using monotonicity of \(\log\)
+  and positivity of the rank (Lemma~\ref{DensityMatrix.rank_pos}).
+\end{proof}
+
+\begin{theorem}[The entropy rate vanishes for every partition]\label{cntEntropyPartition_eq_zero}
+  \lean{ErgodicTheory.OperatorEntropy.CNT.cntEntropyPartition_eq_zero}\leanok
+  \uses{vonNeumannEntropy_corrMatrix_le_log, cntDynamicalEntropy}
+  For every operational partition \(X\), the CNT partition entropy is \(0\):
+  \(h_\Phi(\rho,X) = \inf_{n\ge 1}S(\mathrm{corrMatrix}\,n)/n = 0\).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{vonNeumannEntropy_corrMatrix_le_log}
+  The rate is nonnegative, and by the uniform bound
+  (Theorem~\ref{vonNeumannEntropy_corrMatrix_le_log}) each averaged term satisfies
+  \(0\le S(\mathrm{corrMatrix}\,n)/n\le\log(d^{2})/n\); since \(\log(d^{2})/n\to 0\), the infimum is
+  \(0\).
+\end{proof}
+
+\begin{theorem}[The \(\inf\)-rate is a genuine limit]\label{tendsto_cntEntropySeq_div}
+  \lean{ErgodicTheory.OperatorEntropy.CNT.tendsto_cntEntropySeq_div}\leanok
+  \uses{cntEntropyPartition_eq_zero}
+  For every operational partition, the entropy rate converges to the partition entropy,
+  \(S(\mathrm{corrMatrix}\,n)/n\to h_\Phi(\rho,X)\); the \(\inf\)-definition captures a true limit
+  here because \(0\le S(\mathrm{corrMatrix}\,n)/n\le\log(d^{2})/n\to 0\).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{cntEntropyPartition_eq_zero, vonNeumannEntropy_corrMatrix_le_log}
+  Squeeze between \(0\) and \(\log(d^{2})/n\to 0\); the limit is \(0\), which
+  Theorem~\ref{cntEntropyPartition_eq_zero} identifies with \(h_\Phi(\rho,X)\).
+\end{proof}
+
+\begin{theorem}[Finite-dimensional CNT dynamical entropy vanishes]\label{cntDynamicalEntropy_eq_zero}
+  \lean{ErgodicTheory.OperatorEntropy.CNT.cntDynamicalEntropy_eq_zero}\leanok
+  \uses{cntEntropyPartition_eq_zero, cntDynamicalEntropy}
+  The full CNT/ALF dynamical entropy of any finite-dimensional dynamics vanishes,
+  \(h_\Phi(\rho) = 0\).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{cntEntropyPartition_eq_zero}
+  Every term of the defining supremum over operational partitions is \(0\)
+  (Theorem~\ref{cntEntropyPartition_eq_zero}); the trivial one-cell partition \(x = 1\) witnesses
+  nonemptiness at \(k = 1\), so the supremum is \(0\). This is the Alicki--Fannes / Neshveyev--Størmer
+  finite-dimensional degeneracy.
+\end{proof}
+
+\subsection{The abelian corner as a Fekete limit and the KS equality (issue \#26)}
+\label{sec:cnt-abelian-full}
+
+On the abelian corner the per-resolution collapse
+\(S(\mathrm{corrMatrix}\,n) = H(\text{join}_n)\) (Theorem~\ref{vonNeumannEntropy_corrMatrix_eq_ksEntropySeq})
+endows the CNT sequence with structure the general construction lacks: it inherits the classical
+Fekete subadditivity, so its \(\inf\)-rate is a genuine limit; and the abelian supremum upgrades to a
+literal equality with the Kolmogorov--Sinai entropy, promoting the one-sided
+Theorem~\ref{ksEntropy_le_cntDynamicalEntropy} to a full identity. Both sides are again \(0\) --- a
+permutation of a finite set has zero KS entropy --- so the system-level equalities are degenerate;
+we state them as such, with the non-vacuous content residing in the per-resolution collapse.
+
+\begin{theorem}[Abelian-corner Fekete subadditivity]\label{subadditive_vonNeumannEntropy_corrMatrix_abelian}
+  \lean{ErgodicTheory.OperatorEntropy.CNT.subadditive_vonNeumannEntropy_corrMatrix_abelian}\leanok
+  \uses{vonNeumannEntropy_corrMatrix_eq_ksEntropySeq}
+  On the diagonal corner the correlation-entropy sequence
+  \(n\mapsto S\bigl(\mathrm{corrMatrix}\,(\mathrm{adPerm}\,\sigma)\,\rho_\mu\,(\mathrm{projPartition}\,c)\,n\bigr)\)
+  is \emph{subadditive}, \(S(m+n)\le S(m) + S(n)\).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{vonNeumannEntropy_corrMatrix_eq_ksEntropySeq}
+  By the per-resolution diagonal collapse
+  (Theorem~\ref{vonNeumannEntropy_corrMatrix_eq_ksEntropySeq}) the sequence coincides term by term
+  with the classical iterated-join entropy sequence \(\texttt{ksEntropySeq}\) of the system
+  \((\Fin d,\mu,\sigma)\), whose subadditivity is the classical Fekete inequality
+  (Theorem~\ref{ksEntropySeq_subadditive}). In the non-commutative case this subadditivity fails ---
+  see \S\ref{sec:cnt-counterexample}.
+\end{proof}
+
+\begin{theorem}[Abelian-corner Fekete convergence]\label{tendsto_cntEntropyPartition_abelian}
+  \lean{ErgodicTheory.OperatorEntropy.CNT.tendsto_cntEntropyPartition_abelian}\leanok
+  \uses{subadditive_vonNeumannEntropy_corrMatrix_abelian, cntEntropyPartition_eq_ksEntropyPartition}
+  On the diagonal corner the averaged entropies converge to the per-partition CNT rate,
+  \[
+    \frac1n\,S\bigl(\mathrm{corrMatrix}\,(\mathrm{adPerm}\,\sigma)\,\rho_\mu\,(\mathrm{projPartition}\,c)\,n\bigr)
+      \;\longrightarrow\; h_{\mathrm{adPerm}\,\sigma}(\rho_\mu,\mathrm{projPartition}\,c).
+  \]
+  The a priori infimum is thus a true limit on the abelian corner.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{subadditive_vonNeumannEntropy_corrMatrix_abelian, cntEntropyPartition_eq_ksEntropyPartition}
+  Rewriting the rate through the partition-level equality
+  (Theorem~\ref{cntEntropyPartition_eq_ksEntropyPartition}) and the diagonal collapse turns the
+  averaged sequence into the classical \(\frac1n H(\text{join}_n)\), which converges by Fekete's
+  lemma (Theorem~\ref{tendsto_ksEntropySeq}).
+\end{proof}
+
+\begin{definition}[Full abelian-corner CNT entropy]\label{cntDynamicalEntropyAbelianFull}
+  \lean{ErgodicTheory.OperatorEntropy.CNT.cntDynamicalEntropyAbelianFull}\leanok
+  \uses{cntDynamicalEntropy, cntDynamicalEntropyAbelian}
+  The \emph{full abelian-corner CNT dynamical entropy} is the supremum of the partition rate over
+  \emph{all} operational partitions whose operators are diagonal (soft / POVM partitions of the
+  diagonal subalgebra), a wider family than the sharp projection partitions of
+  \(\mathrm{cntDynamicalEntropyAbelian}\) (Definition~\ref{cntDynamicalEntropyAbelian}).
+\end{definition}
+
+\begin{theorem}[The abelian sups vanish]\label{cntDynamicalEntropyAbelianFull_eq_zero}
+  \lean{ErgodicTheory.OperatorEntropy.CNT.cntDynamicalEntropyAbelianFull_eq_zero}\leanok
+  \uses{cntDynamicalEntropyAbelianFull, cntEntropyPartition_eq_zero}
+  In finite dimension the full diagonal supremum vanishes,
+  \(h^{\mathrm{ab,full}}_{\mathrm{adPerm}\,\sigma}(\rho_\mu) = 0\), as does the sharp projection
+  supremum \(h^{\mathrm{ab}}_{\mathrm{adPerm}\,\sigma}(\rho_\mu) = 0\)
+  \lean{ErgodicTheory.OperatorEntropy.CNT.cntDynamicalEntropyAbelian_eq_zero}.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{cntEntropyPartition_eq_zero}
+  Each diagonal (resp.\ projection) partition already has entropy rate \(0\)
+  (Theorem~\ref{cntEntropyPartition_eq_zero}); the diagonal projection partition of the constant cell
+  map \(\Fin d\to\Fin 1\) witnesses nonemptiness, so each supremum is \(0\).
+\end{proof}
+
+\begin{lemma}[Free monotonicity]\label{cntDynamicalEntropyAbelian_le_full}
+  \lean{ErgodicTheory.OperatorEntropy.CNT.cntDynamicalEntropyAbelian_le_full}\leanok
+  \uses{cntDynamicalEntropyAbelianFull}
+  The sharp abelian-corner entropy is dominated by the full diagonal version,
+  \(h^{\mathrm{ab}}_{\mathrm{adPerm}\,\sigma}(\rho_\mu)
+    \le h^{\mathrm{ab,full}}_{\mathrm{adPerm}\,\sigma}(\rho_\mu)\), since every projection partition
+  \(\mathrm{projPartition}\,c\) is diagonal.
+\end{lemma}
+\begin{proof}\leanok
+  \uses{cntDynamicalEntropyAbelianFull}
+  Each term of the projection supremum is a term of the wider diagonal supremum
+  (\(\mathrm{projPartition}\,c\) has diagonal operators, \(\texttt{Matrix.isDiag\_diagonal}\)), so the
+  smaller sup is \(\le\) the larger.
+\end{proof}
+
+\begin{theorem}[Full abelian corner \(=\) KS entropy]\label{cntDynamicalEntropyAbelianFull_eq_ksEntropy}
+  \lean{ErgodicTheory.OperatorEntropy.CNT.cntDynamicalEntropyAbelianFull_eq_ksEntropy}\leanok
+  \uses{cntDynamicalEntropyAbelianFull_eq_zero, cntDynamicalEntropyAbelian_eq_ksEntropy}
+  For a \(\sigma\)-invariant state with every mass positive, the full diagonal CNT dynamical entropy
+  equals the classical Kolmogorov--Sinai entropy of the permutation system,
+  \(h^{\mathrm{ab,full}}_{\mathrm{adPerm}\,\sigma}(\rho_\mu) = h_\mu(\sigma)\). Both sides are \(0\).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{cntDynamicalEntropyAbelianFull_eq_zero, cntDynamicalEntropyAbelian_eq_ksEntropy}
+  The full diagonal sup is \(0\) (Theorem~\ref{cntDynamicalEntropyAbelianFull_eq_zero}); the sharp
+  abelian sup is both \(0\) and equal to \(h_\mu(\sigma)\) by the corner equality
+  (Theorem~\ref{cntDynamicalEntropyAbelian_eq_ksEntropy}), so \(h_\mu(\sigma) = 0\) and the two match.
+\end{proof}
+
+\begin{theorem}[KS entropy \(=\) full CNT dynamical entropy]\label{ksEntropy_eq_cntDynamicalEntropy}
+  \lean{ErgodicTheory.OperatorEntropy.CNT.ksEntropy_eq_cntDynamicalEntropy}\leanok
+  \uses{cntDynamicalEntropy_eq_zero, cntDynamicalEntropyAbelian_eq_ksEntropy, ksEntropy_le_cntDynamicalEntropy}
+  Under the same positivity hypothesis, the classical Kolmogorov--Sinai entropy of \(\sigma\) equals
+  the \emph{full} CNT dynamical entropy --- the supremum over \emph{all} operational partitions, not
+  merely the diagonal ones:
+  \[
+    h_\mu(\sigma) \;=\; h_{\mathrm{adPerm}\,\sigma}(\rho_\mu).
+  \]
+  This upgrades the one-sided bound Theorem~\ref{ksEntropy_le_cntDynamicalEntropy} to an equality.
+  Both sides are \(0\): the KS entropy of a finite-set permutation, and (by
+  Theorem~\ref{cntDynamicalEntropy_eq_zero}) the finite-dimensional CNT dynamical entropy --- so the
+  equality, while honest, is degenerate.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{cntDynamicalEntropy_eq_zero, cntDynamicalEntropyAbelian_eq_ksEntropy}
+  The corner equality (Theorem~\ref{cntDynamicalEntropyAbelian_eq_ksEntropy}) with the abelian
+  vanishing shows \(h_\mu(\sigma) = 0\), and the finite-dimensional vanishing
+  (Theorem~\ref{cntDynamicalEntropy_eq_zero}) shows \(h_{\mathrm{adPerm}\,\sigma}(\rho_\mu) = 0\);
+  the two zeroes coincide.
+\end{proof}
+
+\subsection{Failure of subadditivity: an explicit counterexample (issue \#26)}
+\label{sec:cnt-counterexample}
+
+The Fekete subadditivity of \S\ref{sec:cnt-abelian-full} is a special feature of the abelian corner,
+not a general property of the CNT construction. For a genuinely non-commutative operational partition
+the sequence \(n\mapsto S(\rho[X^{(n)}]) = S(\mathrm{corrMatrix}\,\Phi\,\rho\,X\,n)\) need \emph{not}
+be subadditive --- which is exactly why the CNT/ALF entropy of a partition is defined as an infimum
+rate rather than a Fekete limit of a subadditive sequence (Alicki--Fannes use a \(\limsup\) for the
+same reason). We exhibit an explicit witness in the simplest possible dynamical setting: the identity
+dynamics \(\Phi = \mathrm{id}\) on \(\Matrix_2(\mathbb{C})\), the invariant pure state
+\(\rho = |0\rangle\langle 0| = \operatorname{diag}(1,0)\), and the two-element operational partition
+\[
+  x_0 \;=\; \tfrac{1}{\sqrt 2}\begin{pmatrix}1 & 0\\ 1 & 0\end{pmatrix},\qquad
+  x_1 \;=\; \begin{pmatrix}0 & 1\\ 0 & 0\end{pmatrix},\qquad
+  x_0^{\dagger}x_0 + x_1^{\dagger}x_1 = 1.
+\]
+
+\begin{lemma}[Resolution \(1\): zero entropy]\label{entropy_corrMatrix_one_eq_zero}
+  \lean{ErgodicTheory.OperatorEntropy.CNT.entropy_corrMatrix_one_eq_zero}\leanok
+  For the pure state \(\rho\), the length-\(1\) correlation matrix is the classical pure state
+  \(\operatorname{diag}(1,0)\), so \(S(\rho[X^{(1)}]) = 0\).
+\end{lemma}
+\begin{proof}\leanok
+  Since \(\Phi = \mathrm{id}\), the depth-\(1\) refinement along \(f\) is just \(x_{f(0)}\); the
+  \(\rho\)-weighted pairing \(\tr(\rho\,x_g^{\dagger}x_f)\) reads off column \(0\) of the pure state,
+  giving \(\operatorname{diag}(1,0)\) on the classical index. A pure classical distribution has
+  Shannon entropy \(0\).
+\end{proof}
+
+\begin{lemma}[Resolution \(2\): positive entropy]\label{entropy_corrMatrix_two_pos}
+  \lean{ErgodicTheory.OperatorEntropy.CNT.entropy_corrMatrix_two_pos}\leanok
+  \uses{vonNeumannEntropy_pos_of_sq_ne}
+  For the same pure state, the length-\(2\) correlation matrix is \emph{not} idempotent (its
+  diagonal \(w_{00}\)-entry violates \(M^{2} = M\): the computation yields \(3/8\ne 1/2\)), hence
+  \(S(\rho[X^{(2)}]) > 0\).
+\end{lemma}
+\begin{proof}\leanok
+  \uses{vonNeumannEntropy_pos_of_sq_ne}
+  The depth-\(2\) refinement along \(f\) is \(x_{f(0)}x_{f(1)}\); computing the \((w_{00},w_{00})\)
+  entry of \(M^{2}\) against \(M\) gives \(3/8\) versus \(1/2\), so \(M^{2}\ne M\). Strict positivity
+  of the entropy for a non-idempotent state (Theorem~\ref{vonNeumannEntropy_pos_of_sq_ne}) then
+  yields \(S(\rho[X^{(2)}]) > 0\).
+\end{proof}
+
+\begin{theorem}[The CNT entropy sequence is not subadditive]\label{not_subadditive_cnt_entropySeq}
+  \lean{ErgodicTheory.OperatorEntropy.CNT.not_subadditive_cnt_entropySeq}\leanok
+  \uses{entropy_corrMatrix_one_eq_zero, entropy_corrMatrix_two_pos}
+  The CNT/ALF entropy sequence \(n\mapsto S(\rho[X^{(n)}])\) of the partition above, under the
+  identity dynamics and the invariant pure state, is \emph{not} subadditive: it violates
+  \(u_2\le u_1 + u_1\), since
+  \[
+    S(\rho[X^{(2)}]) \;>\; 0 \;=\; 2\,S(\rho[X^{(1)}]).
+  \]
+  This is a feature, not a defect: it is precisely why the CNT rate is an infimum (an \(\texttt{sInf}\)),
+  not a Fekete limit of a subadditive sequence.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{entropy_corrMatrix_one_eq_zero, entropy_corrMatrix_two_pos}
+  If the sequence were subadditive, the instance \(u_2\le u_1 + u_1\) would force
+  \(S(\rho[X^{(2)}])\le 2\,S(\rho[X^{(1)}]) = 0\) by Lemma~\ref{entropy_corrMatrix_one_eq_zero},
+  contradicting \(S(\rho[X^{(2)}]) > 0\) (Lemma~\ref{entropy_corrMatrix_two_pos}).
+\end{proof}

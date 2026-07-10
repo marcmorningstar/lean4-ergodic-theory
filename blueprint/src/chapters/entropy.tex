@@ -110,6 +110,178 @@ states of a bipartite system and the data-processing inequality.
   semidefinite matrices is positive semidefinite.
 \end{proof}
 
+\section{Maximum entropy and strict positivity}
+
+Beyond nonnegativity, the von Neumann entropy is pinned between two spectral extremes. From above
+it is bounded by the logarithm of the rank --- the finite-dimensional maximum-entropy principle,
+saturated by the maximally mixed state on the support --- and from below it is \emph{strictly}
+positive unless the state is pure. Both are consequences of the same eigenvalue analysis, and the
+upper bound is powered by a single uniform-weight Jensen lemma shared verbatim with the classical
+entropy layer of Chapter~\ref{chap:ksentropy}.
+
+\begin{lemma}[Maximum-entropy Jensen bound]\label{sum_negMulLog_le_log_card}
+  \lean{ErgodicTheory.sum_negMulLog_le_log_card}\leanok
+  For a probability vector \(p\) supported on a nonempty finite set \(s\) (\(p_i\ge 0\) and
+  \(\sum_{i\in s}p_i = 1\)), the entropy sum is bounded by the log-cardinality,
+  \[
+    \sum_{i\in s}\operatorname{negMulLog}(p_i) \;\le\; \log\abs s,
+  \]
+  with equality at the uniform distribution \(p\equiv 1/\abs s\).
+\end{lemma}
+\begin{proof}\leanok
+  The concave Jensen inequality (\(\texttt{ConcaveOn.le\_map\_sum}\)) for
+  \(\operatorname{negMulLog}\) with the uniform weights \(w_i = \abs s^{-1}\) gives
+  \(\abs s^{-1}\sum_i\operatorname{negMulLog}(p_i)\le\operatorname{negMulLog}\bigl(\abs
+  s^{-1}\sum_i p_i\bigr) = \operatorname{negMulLog}(\abs s^{-1})\); evaluating
+  \(\operatorname{negMulLog}(\abs s^{-1}) = \abs s^{-1}\log\abs s\) and cancelling the positive
+  factor \(\abs s^{-1}\) gives the claim. This is factored out of both entropy layers so the single
+  Jensen argument is not inlined twice.
+\end{proof}
+
+\begin{lemma}[A state has positive rank]\label{DensityMatrix.rank_pos}
+  \lean{ErgodicTheory.OperatorEntropy.DensityMatrix.rank_pos}\leanok
+  \uses{DensityMatrix, DensityMatrix.sum_eigenvalues_eq_one}
+  The rank of a density matrix is strictly positive, \(0 < \operatorname{rank}\rho\).
+\end{lemma}
+\begin{proof}\leanok
+  \uses{DensityMatrix.sum_eigenvalues_eq_one}
+  The eigenvalues sum to \(1\ne 0\) (\Cref{DensityMatrix.sum_eigenvalues_eq_one}), so at least one
+  is nonzero; the rank of a Hermitian matrix is the number of nonzero eigenvalues
+  (\(\texttt{IsHermitian.rank\_eq\_card\_non\_zero\_eigs}\)), hence at least \(1\).
+\end{proof}
+
+\begin{theorem}[Maximum-entropy bound]\label{vonNeumannEntropy_le_log_rank}
+  \lean{ErgodicTheory.OperatorEntropy.vonNeumannEntropy_le_log_rank}\leanok
+  The von Neumann entropy of a density matrix is at most the logarithm of its rank,
+  \[
+    S(\rho) \;\le\; \log\bigl(\operatorname{rank}\rho\bigr).
+  \]
+  Among all states supported on a \(k\)-dimensional subspace, the maximally mixed state --- with
+  entropy \(\log k\) --- is the most disordered.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{vonNeumannEntropy, sum_negMulLog_le_log_card, DensityMatrix.rank_pos}
+  Restrict the entropy sum \(S(\rho) = \sum_i\operatorname{negMulLog}(\lambda_i)\) to the support
+  \(s = \{i : \lambda_i\ne 0\}\); the off-support terms vanish because
+  \(\operatorname{negMulLog}(0) = 0\), and the restricted eigenvalues still sum to \(1\). The support
+  cardinality equals the rank (\(\texttt{IsHermitian.rank\_eq\_card\_non\_zero\_eigs}\)) and is
+  positive (\Cref{DensityMatrix.rank_pos}), so the uniform-weight Jensen bound
+  (\Cref{sum_negMulLog_le_log_card}) applied on \(s\) gives
+  \(S(\rho)\le\log\abs s = \log(\operatorname{rank}\rho)\).
+\end{proof}
+
+\begin{corollary}[Bound by the ambient dimension]\label{vonNeumannEntropy_le_log_card}
+  \lean{ErgodicTheory.OperatorEntropy.vonNeumannEntropy_le_log_card}\leanok
+  \(S(\rho)\le\log(\#n)\), the logarithm of the ambient Hilbert-space dimension.
+\end{corollary}
+\begin{proof}\leanok
+  \uses{vonNeumannEntropy_le_log_rank}
+  The rank never exceeds the number of columns, \(\operatorname{rank}\rho\le\#n\); monotonicity of
+  \(\log\) applied to \Cref{vonNeumannEntropy_le_log_rank} gives the bound.
+\end{proof}
+
+\begin{theorem}[Strict positivity off the pure states]\label{vonNeumannEntropy_pos_of_sq_ne}
+  \lean{ErgodicTheory.OperatorEntropy.vonNeumannEntropy_pos_of_sq_ne}\leanok
+  If a density matrix is not idempotent (\(\rho^2\ne\rho\)) then its von Neumann entropy is strictly
+  positive, \(0 < S(\rho)\). Equivalently, a zero-entropy state is a pure state --- a rank-one
+  projection.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{vonNeumannEntropy, vonNeumannEntropy_nonneg}
+  Entropy is a sum of nonnegative terms (\Cref{vonNeumannEntropy_nonneg}), so \(S(\rho) = 0\) forces
+  every \(\operatorname{negMulLog}(\lambda_i) = 0\); since each \(\lambda_i\in[0,1]\) this drives
+  every eigenvalue to \(\{0,1\}\). A diagonal matrix with \(\{0,1\}\) entries is idempotent, and
+  idempotency is transported through the spectral unitary (a \(*\)-algebra automorphism, hence
+  multiplicative), yielding \(\rho^2 = \rho\) --- contradicting the hypothesis. Hence \(S(\rho) > 0\).
+\end{proof}
+
+\section{Explicit block-inclusion Kraus form of the partial trace}
+
+The complete positivity of \Cref{PosSemidef.partialTraceRight} was read off a Kraus decomposition
+\(\Tr_B M = \sum_j E_j M E_j^{*}\) into block-inclusion isometries. We now record that
+decomposition as a literal theorem with the Kraus operators named as honest matrices --- the
+Stinespring presentation of the partial trace --- together with the two structural identities the
+block operators satisfy. Naming the operators as concrete \(\Matrix\)-typed \(\texttt{def}\)s
+(rather than bare lambdas) is the load-bearing point of issue \#25: it resolves the
+\(\texttt{CStarMatrix}/\Matrix\) multiplication-elaboration ambiguity that a bare lambda triggers
+against \(*\).
+
+\begin{definition}[Block-inclusion Kraus operators]\label{krausInclusionRight}
+  \lean{ErgodicTheory.OperatorEntropy.krausInclusionRight}\leanok
+  For each \(j\in n_B\), the \emph{right block-inclusion operator}
+  \(E_j\in\Matrix_{n_A,\,n_A\times n_B}(\C)\) is the co-isometry onto the \(A\)-factor picking out the
+  \(j\)-th \(B\)-slice,
+  \[
+    (E_j)_{a,\,(a',j')} \;=\; [\,(a',j') = (a,j)\,].
+  \]
+  The \emph{left block-inclusion operator} \(F_i\in\Matrix_{n_B,\,n_A\times n_B}(\C)\),
+  \lean{ErgodicTheory.OperatorEntropy.krausInclusionLeft}
+  \((F_i)_{b,\,(i',b')} = [\,(i',b') = (i,b)\,]\), is defined symmetrically for the \(A\)-factor.
+\end{definition}
+
+\begin{lemma}[Kraus conjugation is a block compression]\label{krausConjRight_eq_submatrix}
+  \lean{ErgodicTheory.OperatorEntropy.krausConjRight_eq_submatrix}\leanok
+  \uses{krausInclusionRight}
+  The conjugation \(E_j M E_j^{*}\) is exactly the \((j,j)\)-diagonal block of \(M\), the submatrix
+  \(M_{(a,j),(a',j)}\) on the \(A\)-index.
+\end{lemma}
+\begin{proof}\leanok
+  \uses{krausInclusionRight}
+  Entrywise: the two \(E_j\)-factors select the row index \((a,j)\) and column index \((a',j)\)
+  through the indicator, leaving \(M_{(a,j),(a',j)}\), which is the asserted \(\texttt{submatrix}\).
+\end{proof}
+
+\begin{theorem}[Explicit Kraus form of the partial traces]\label{partialTraceRight_eq_kraus}
+  \lean{ErgodicTheory.OperatorEntropy.partialTraceRight_eq_kraus}\leanok
+  \uses{partialTraceRight, krausInclusionRight, krausConjRight_eq_submatrix}
+  Both partial traces are genuine sums of Kraus conjugations:
+  \[
+    \Tr_B M \;=\; \sum_{j\in n_B} E_j\,M\,E_j^{*},
+    \qquad
+    \Tr_A M \;=\; \sum_{i\in n_A} F_i\,M\,F_i^{*}
+    \;\;(\lean{ErgodicTheory.OperatorEntropy.partialTraceLeft_eq_kraus}).
+  \]
+\end{theorem}
+\begin{proof}\leanok
+  \uses{partialTraceRight, krausConjRight_eq_submatrix}
+  By \Cref{krausConjRight_eq_submatrix} each summand \(E_j M E_j^{*}\) is the \(j\)-th diagonal block
+  submatrix; summing the diagonal blocks over \(j\) is precisely the block-compression form of the
+  partial trace already established for \(\Tr_B\) (and symmetrically for \(\Tr_A\)).
+\end{proof}
+
+\begin{lemma}[Co-isometry of each block inclusion]\label{krausInclusionRight_mul_conjTranspose}
+  \lean{ErgodicTheory.OperatorEntropy.krausInclusionRight_mul_conjTranspose}\leanok
+  \uses{krausInclusionRight}
+  Each block inclusion is a co-isometry onto its factor: for every \(j\),
+  \(E_j E_j^{*} = 1\) on \(\C^{n_A}\), and symmetrically \(F_i F_i^{*} = 1\) on \(\C^{n_B}\)
+  \lean{ErgodicTheory.OperatorEntropy.krausInclusionLeft_mul_conjTranspose}.
+\end{lemma}
+\begin{proof}\leanok
+  \uses{krausInclusionRight}
+  \((E_j E_j^{*})_{a,a'} = \sum_{(a'',j')}[\,(a'',j') = (a,j)\,][\,(a'',j') = (a',j)\,]
+  = [\,a = a'\,]\), the identity on the \(A\)-factor.
+\end{proof}
+
+\begin{lemma}[Completeness relation]\label{sum_conjTranspose_mul_krausInclusionRight}
+  \lean{ErgodicTheory.OperatorEntropy.sum_conjTranspose_mul_krausInclusionRight}\leanok
+  \uses{krausInclusionRight}
+  The block inclusions satisfy the Kraus completeness / trace-preservation relation on the full
+  \(A\otimes B\) space,
+  \[
+    \sum_{j\in n_B} E_j^{*}E_j \;=\; 1,
+    \qquad
+    \sum_{i\in n_A} F_i^{*}F_i \;=\; 1
+    \;\;(\lean{ErgodicTheory.OperatorEntropy.sum_conjTranspose_mul_krausInclusionLeft}).
+  \]
+\end{lemma}
+\begin{proof}\leanok
+  \uses{krausInclusionRight}
+  \(\bigl(\sum_j E_j^{*}E_j\bigr)_{(p),(p')} = \sum_{a,j}[\,p = (a,j)\,][\,p' = (a,j)\,]
+  = [\,p = p'\,]\), the identity on \(\C^{n_A\times n_B}\). This is a genuinely different identity
+  from the co-isometry \Cref{krausInclusionRight_mul_conjTranspose}: summing that one instead gives
+  \(\sum_j E_j E_j^{*} = \#n_B\cdot 1\), not \(1\).
+\end{proof}
+
 \section{Umegaki relative entropy and Klein's inequality}
 
 \begin{definition}[Umegaki relative entropy]\label{relEntropy}
