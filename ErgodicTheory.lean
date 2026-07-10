@@ -185,6 +185,11 @@ import ErgodicTheory.Entropy.ProductIdEntropy
 import ErgodicTheory.MeasureTheory.CoveringFromVolume
 import ErgodicTheory.MeasureTheory.AnalyticUniversallyMeasurable
 import ErgodicTheory.MeasureTheory.LusinContinuousOn
+import ErgodicTheory.MeasureTheory.AnalyticSetLemmas
+import ErgodicTheory.MeasureTheory.NovikovSeparation
+import ErgodicTheory.MeasureTheory.CoanalyticReduction
+import ErgodicTheory.MeasureTheory.KunuguiNovikov
+import ErgodicTheory.MeasureTheory.CompactSectionProjection
 import ErgodicTheory.Entropy.Ruelle.AtomCount
 import ErgodicTheory.Entropy.Ruelle.VolumeDistortion
 import ErgodicTheory.Entropy.Ruelle.Crude
@@ -196,6 +201,7 @@ import ErgodicTheory.Singular.JointMeasurableLambdaBar
 import ErgodicTheory.Singular.GraphAndDim
 import ErgodicTheory.Singular.MeasurableProjection
 import ErgodicTheory.Singular.SingularFiltrationMeasurable
+import ErgodicTheory.Singular.SingularFiltrationBorel
 import ErgodicTheory.Lyapunov.Extensions.ConstantCocycleSpectralRadius
 import ErgodicTheory.Lyapunov.Extensions.SingularStratumExponent
 import ErgodicTheory.Continuous.SuspensionPartialSumExponent
