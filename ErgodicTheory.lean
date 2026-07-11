@@ -89,6 +89,7 @@ import ErgodicTheory.TwoSided.RestrictedExponent
 import ErgodicTheory.TwoSided.Transversality
 import ErgodicTheory.TwoSided.SplittingAssembly
 import ErgodicTheory.Continuous.Flow
+import ErgodicTheory.Continuous.FlowCondEntropyShift
 import ErgodicTheory.Continuous.Reduction
 import ErgodicTheory.Continuous.BetweenTimes
 import ErgodicTheory.Continuous.Equivariance
@@ -166,6 +167,7 @@ import ErgodicTheory.Entropy.FactorMap
 import ErgodicTheory.Entropy.Generator
 import ErgodicTheory.Entropy.FactorEntropy
 import ErgodicTheory.Entropy.FactorGeneratorSaturate
+import ErgodicTheory.Entropy.FinJoin
 import ErgodicTheory.Entropy.CondGivenPartitionBridge
 import ErgodicTheory.Entropy.AbramovRokhlinPartition
 import ErgodicTheory.Entropy.AbramovRokhlin
