@@ -90,6 +90,7 @@ import ErgodicTheory.TwoSided.Transversality
 import ErgodicTheory.TwoSided.SplittingAssembly
 import ErgodicTheory.Continuous.Flow
 import ErgodicTheory.Continuous.FlowCondEntropyShift
+import ErgodicTheory.Continuous.FlowEntropyContinuity
 import ErgodicTheory.Continuous.Reduction
 import ErgodicTheory.Continuous.BetweenTimes
 import ErgodicTheory.Continuous.Equivariance
