@@ -16,10 +16,11 @@ mean roof $\int\tau$. This yields the Lyapunov analogue
 $\lambda_{\mathrm{flow}} = \lambda_{\mathrm{base}}/\int\tau$ of Abramov's entropy formula
 $h(\text{flow}) = h(\text{base})/\int\tau$ (L. M. Abramov, \emph{On the entropy of a flow},
 Dokl.\ Akad.\ Nauk SSSR \textbf{128} (1959) 873--875; L. Barreira, \emph{Lyapunov Exponents},
-Birkh\"auser 2017, Ch.~3, on exponents under time rescaling). Two of the three invariants come
-with an honest arithmetic wall, disclosed as such: the time-$1$ ergodicity holds exactly for
-\emph{irrational} roofs, while the time-$1$ entropy identity is proved only for \emph{rational}
-roofs --- complementary conditions, both features of what the discrete machinery reaches.
+Birkh\"auser 2017, Ch.~3, on exponents under time rescaling). The time-$1$ ergodicity holds
+exactly for \emph{irrational} roofs; the time-$1$ entropy identity $h(\zeta^{(r)}_1) = H_\nu/r$
+is now proved for \emph{every} roof $r > 0$ via the abstract Abramov flow-entropy homogeneity
+$h(\varphi_t) = t\,h(\varphi_1)$ (\Cref{thm:flow-abramov-hom}), following Ito's elementary
+generator-free argument --- retiring the former rational-roof restriction.
 Throughout, the standing references for the special-flow bookkeeping are Cornfeld--Fomin--Sinai
 (\emph{Ergodic Theory}, Grundlehren \textbf{245}, Springer 1982, Ch.~10--11) and the
 Ambrose--Kakutani structure theorem for measurable flows (Duke Math.\ J.\ \textbf{9} (1942)
@@ -681,23 +682,117 @@ The Abramov time-change conjugates a constant-$r$ roof to the unit roof, rescali
   $(H_\nu/r) \cdot r = H_\nu$ is real arithmetic.
 \end{proof}
 
-\subsection*{The irrational-roof wall, and the complementary conditions}
+\section{Abstract Abramov flow-entropy homogeneity}
 
-For an \emph{irrational} roof the identity $h(\zeta^{(r)}_1) = H_\nu/r$ is still true, but its proof
-requires the full Abramov flow-entropy homogeneity $h(\varphi_t) = |t|\,h(\varphi_1)$ for
-\emph{every} real time $t$ --- the deep half of Abramov's theorem, needing flow generators/Rokhlin
-towers (the Ambrose--Kakutani structure). Only the rational skeleton
-$h(\varphi_{nt}) = n\,h(\varphi_t)$ along $\N$-multiples is available from the discrete power rule,
-and the multiplicative group $\{a/b\}$ generated from a single positive time never reaches irrational
-scalings. The value is thus known, but the technique for irrational $r$ is out of scope here; this is
-disclosed as the entropy-side wall.
+The rational restriction of \Cref{thm:susp-timeOneEntropy} is an artefact of the discrete power
+rule, not of the mathematics: the full Abramov homogeneity $h(\varphi_t) = t\,h(\varphi_1)$ holds
+for \emph{every} real time $t > 0$. We prove it abstractly for any measure-continuous
+measure-preserving flow on a standard Borel probability space, following Ito's elementary
+generator-free argument (Y.~Ito, \emph{An elementary proof of Abramov's result on the entropy of a
+flow}, Nagoya Math.\ J.\ \textbf{41} (1971), 1--5), which avoids the flow generators / Rokhlin
+towers (Ambrose--Kakutani structure) of Abramov's original approach (L.~M.~Abramov, \emph{On the
+entropy of a flow}, Dokl.\ Akad.\ Nauk SSSR \textbf{128} (1959) 873--875).
 
-The two headline restrictions are \emph{complementary}, not contradictory. The time-$1$ map is
-ergodic exactly for \emph{irrational} roofs (\Cref{thm:susp-bernTimeOne}) and genuinely non-ergodic
-for rational ones (\Cref{thm:susp-notErgodic}); the time-$1$ entropy identity is proved exactly for
-\emph{rational} roofs (\Cref{thm:susp-timeOneEntropy}). The entropy value $H_\nu/r$ holds for every
-$r > 0$ --- only its proof here is restricted to rational $r$ --- and Kolmogorov--Sinai entropy is
-defined (and equals $H_\nu/r$) also on the non-ergodic rational-roof time-$1$ maps. The ergodicity
-proof turns on the deck twist $e^{2\pi i n r}$ being nontrivial (irrational $r$), while the entropy
-proof turns on $r$ lying in the rational scaling group; each condition is the negation of the other's
-obstruction.
+\begin{definition}[Measure-continuity of a flow]\label{def:flow-measCont}
+  \lean{ErgodicTheory.MeasurePreservingFlow.MeasureContinuous}\leanok
+  A measure-preserving flow $\varphi$ is \emph{measure-continuous} if for every measurable set $A$
+  the real measure of the symmetric difference $\varphi_t^{-1} A \,\triangle\, A$ tends to $0$ as
+  $t \to 0$.
+\end{definition}
+
+\begin{theorem}[Measure-continuity of the suspension flow]\label{thm:flow-suspMeasCont}
+  \lean{ErgodicTheory.tendsto_measureReal_symmDiff_suspensionFlowMap}\leanok
+  \uses{bernSuspensionFlow}
+  The unit-roof suspension flow of an \emph{arbitrary} measure-preserving base is measure-continuous:
+  for every measurable $A$, $\mu\!\left(\varphi_t^{-1} A \,\triangle\, A\right) \to 0$ as $t \to 0$.
+  This is the keystone hypothesis; the Bernoulli suspension flow instantiates it
+  (\lean{ErgodicTheory.measureContinuous_bernSuspensionFlow}).
+\end{theorem}
+\begin{proof}\leanok
+  Fibre-translation continuity of the roof-1 fundamental box, combined with dominated convergence
+  over the box.
+\end{proof}
+
+\begin{theorem}[Ito's L1: the partition moves little under a small shift]\label{thm:flow-L1}
+  \lean{ErgodicTheory.condEntropyGivenPartition_flow_tendsto_zero}\leanok
+  \uses{def:flow-measCont}
+  For a measure-continuous flow and a finite partition $P$, the conditional Shannon entropy
+  $H(\varphi_t P \mid P) \to 0$ as $t \to 0$ (Ito's (2.2)).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{def:flow-measCont}
+  The self-conditioning $H(P \mid P) = 0$, and the cell measures $\mu(\varphi_t^{-1}P_i \cap P_j)$
+  are continuous at $t = 0$ by measure-continuity; continuity of the Shannon cell functional
+  transports the limit.
+\end{proof}
+
+\begin{theorem}[Two-family Shannon comparison]\label{thm:flow-finJoin}
+  \lean{ErgodicTheory.Entropy.entropy_finJoin_le_add_sum_condEntropy}\leanok
+  For two finite families $\beta = (\beta_k)$, $\gamma = (\gamma_k)$ of finite partitions,
+  $H\!\left(\bigvee_k \gamma_k\right) \le H\!\left(\bigvee_k \beta_k\right)
+  + \sum_k H(\gamma_k \mid \beta_k)$.
+\end{theorem}
+\begin{proof}\leanok
+  Pure Shannon entropy: refinement monotonicity, the chain rule, conditional subadditivity over the
+  family, and anti-monotonicity of conditioning.
+\end{proof}
+
+\begin{theorem}[$\varepsilon$--$\delta$ alignment proposition]\label{thm:flow-ratioLUB}
+  \lean{ErgodicTheory.exists_isLUB_ksEntropyPartition_flow_ratio}\leanok
+  \uses{def:flow-measCont, thm:flow-L1, thm:flow-finJoin}
+  For a measure-continuous flow on a standard Borel space and a finite partition $P$, the ratio
+  $t \mapsto h(\varphi_t, P)/t$ converges as $t \downarrow 0$ to its least upper bound
+  $L \in \overline{\R}$ over all positive times. The statement is genuinely in $\overline{\R}$: the
+  $\R$-valued form is false for infinite-entropy flows, and this repair is disclosed in-module.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{thm:flow-L1, thm:flow-finJoin}
+  The alignment inequality (from \Cref{thm:flow-L1} and \Cref{thm:flow-finJoin}) makes each slope
+  eventually dominate every value below the supremum; the supremum is thus the limit.
+\end{proof}
+
+\begin{theorem}[Abstract Abramov homogeneity]\label{thm:flow-abramov-hom}
+  \lean{ErgodicTheory.ksEntropy_flow_eq_mul}\leanok
+  \uses{thm:flow-ratioLUB, thm:susp-nsmulKs}
+  For a measure-continuous measure-preserving flow $\varphi$ on a standard Borel probability space
+  and $t > 0$, $\;h(\varphi_t) = t \cdot h(\varphi_1)$ in $\overline{\R}$.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{thm:flow-ratioLUB, thm:susp-nsmulKs}
+  Interchange the supremum over partitions with the alignment proposition
+  (\Cref{thm:flow-ratioLUB}), using the discrete $\N$-homogeneity (\Cref{thm:susp-nsmulKs}); at
+  $t = 1$ the slope is $h(\varphi_1)$, giving the stated multiple.
+\end{proof}
+
+\begin{theorem}[Unit-roof time-$s$ entropy, all $s > 0$]\label{thm:flow-timeS}
+  \lean{ErgodicTheory.ksEntropy_bernSuspensionFlow_time_s_eq}\leanok
+  \uses{thm:flow-abramov-hom, ksEntropy_bernSuspensionFlow_one_eq_Hnu}
+  For the unit-roof Bernoulli suspension flow and every $s > 0$,
+  $h(\zeta^{(1)}_s) = s \cdot H_\nu$.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{thm:flow-abramov-hom}
+  \Cref{thm:flow-abramov-hom} for the measure-continuous Bernoulli suspension flow, at the finite
+  value $h(\zeta^{(1)}_1) = H_\nu$.
+\end{proof}
+
+\begin{theorem}[Constant-roof time-one entropy, all roofs (issue \#48)]\label{thm:flow-timeOneAll}
+  \lean{ErgodicTheory.ksEntropy_bernConstSuspension_time_one_irrational}\leanok
+  \uses{thm:flow-timeS}
+  For \emph{every} roof $r > 0$ (irrational included), the time-$1$ map of the constant-roof
+  Bernoulli suspension flow has Kolmogorov--Sinai entropy $H_\nu/r$.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{thm:flow-timeS}
+  Fibre time-rescaling reduces $h(\zeta^{(r)}_1)$ to the unit-roof $h(\zeta^{(1)}_{1/r})$;
+  \Cref{thm:flow-timeS} at $s = 1/r$ gives $(1/r)\,H_\nu = H_\nu/r$.
+\end{proof}
+
+This retires the entropy-side wall of \Cref{thm:susp-timeOneEntropy}: the value $H_\nu/r$ now holds,
+with a formalized proof, for \emph{every} roof $r > 0$. The two headline features of the constant-roof
+time-$1$ map are then \emph{complementary}. Ergodicity holds exactly for \emph{irrational} roofs
+(\Cref{thm:susp-bernTimeOne}) and fails for rational ones (\Cref{thm:susp-notErgodic}); the entropy
+is $H_\nu/r$ for all $r > 0$ (\Cref{thm:flow-timeOneAll}), so on the irrational roofs a single object
+carries both an ergodic time-$1$ map and pinned positive entropy $H_\nu/r$. The ergodicity turns on
+the deck twist $e^{2\pi i n r}$ being nontrivial (irrational $r$); the entropy, on the flow
+homogeneity, which no longer sees the arithmetic of $r$.

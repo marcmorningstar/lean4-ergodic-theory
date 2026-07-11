@@ -554,3 +554,50 @@ constant cocycle), then formalize the genuine toral dynamics, and finally combin
   measure-preserving base \(\operatorname{catTorus}\) (\Cref{measurePreserving_catTorus}) at the
   rate \(R = \log\bigl((3+\sqrt5)/2\bigr)\).
 \end{proof}
+
+\subsection{Eigenfunction rigidity and the ergodic time-one cat suspension}
+
+The cat map has no nontrivial measurable eigenfunctions with unimodular eigenvalue \(\ne 1\); this
+Fourier rigidity is exactly the spectral hypothesis of the abstract time-one ergodicity theorem
+(\Cref{thm:susp-timeOneErgodic}), so it upgrades the cat map to an ergodic time-one suspension in
+the same way the Bernoulli shift does (\Cref{thm:susp-bernTimeOne}).
+
+\begin{theorem}[Cat-map eigenfunction rigidity]\label{thm:catTorus-eigZero}
+  \lean{ErgodicTheory.CatMapToral.catTorus_eigenfunction_ae_zero}\leanok
+  \uses{ergodic_catTorus}
+  A measurable \(g : \mathbb{T}^2 \to \mathbb{C}\) with \(g(\operatorname{catTorus} x) = l\cdot g(x)\)
+  for all \(x\), where \(\norm{l} = 1\) and \(l \ne 1\), vanishes almost everywhere.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{ergodic_catTorus}
+  Since \(\norm{l} = 1\), the modulus \(\norm{g}\) is \(\operatorname{catTorus}\)-invariant, hence
+  a.e.\ constant by ergodicity (\Cref{ergodic_catTorus}); so \(g \in L^2\). The eigen-equation
+  transports the multivariate Fourier coefficients \(\texttt{mFourier}\,n\) of \(g\) along the
+  infinite \(\operatorname{catTorus}\)-orbit of indices with the unimodular weight \(l\); Parseval
+  forces every nonzero mode to vanish, and \(l \ne 1\) kills the constant mode. (Einsiedler--Ward,
+  \emph{Ergodic Theory with a View towards Number Theory}, \S2.4.)
+\end{proof}
+
+\begin{theorem}[Time-one ergodicity of the irrational-roof cat suspension]\label{thm:catSusp-timeOne}
+  \lean{ErgodicTheory.CatMapToral.ergodic_catSuspension_timeOne_const_irrational}\leanok
+  \uses{thm:susp-timeOneErgodic, thm:catTorus-eigZero, measurePreserving_catTorus}
+  For the Arnold cat map with Haar \(\operatorname{volume}\) on \(\mathbb{T}^2\) and any positive
+  \emph{irrational} roof \(r\), the time-\(1\) map of the constant-roof suspension flow is ergodic
+  for the invariant suspension probability measure.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{thm:susp-timeOneErgodic, thm:catTorus-eigZero}
+  Discharge the abstract \Cref{thm:susp-timeOneErgodic} with base ergodicity
+  (\Cref{ergodic_catTorus}) and the no-nontrivial-eigenfunctions input
+  (\Cref{thm:catTorus-eigZero}).
+\end{proof}
+
+\begin{theorem}[Concrete non-vacuity witness $r = \sqrt2$]\label{thm:catSusp-sqrt2}
+  \lean{ErgodicTheory.CatMapToral.ergodic_catSuspension_timeOne_sqrtTwo}\leanok
+  \uses{thm:catSusp-timeOne}
+  The irrational roof \(r := \sqrt2\) yields an ergodic time-\(1\) map of the cat suspension.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{thm:catSusp-timeOne}
+  Instantiate \Cref{thm:catSusp-timeOne} at \(r = \sqrt2\), positive and irrational.
+\end{proof}
