@@ -140,6 +140,7 @@ import ErgodicTheory.Smooth.Pesin.PesinFormula
 import ErgodicTheory.Examples.Elementary
 import ErgodicTheory.Entropy.Partition
 import ErgodicTheory.Entropy.Join
+import ErgodicTheory.Entropy.JoinEntropyCompare
 import ErgodicTheory.Entropy.Subadditive
 import ErgodicTheory.Entropy.Subadditive2
 import ErgodicTheory.Entropy.Fekete
