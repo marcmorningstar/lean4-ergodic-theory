@@ -313,6 +313,11 @@ import ErgodicTheory.Continuous.FlowCondEntropyShift
 import ErgodicTheory.Continuous.FlowEntropyContinuity
 import ErgodicTheory.Continuous.SuspensionMeasureContinuity
 import ErgodicTheory.Continuous.FlowAbramov
+-- Direct imports of the issue #54/#55 constant-roof suspension-flow Livšic tier and the cat-map
+-- toral-mixing / eigenfunction-rigidity modules whose declarations are guarded below.
+import ErgodicTheory.Continuous.SuspensionLivsic
+import ErgodicTheory.Examples.CatMapSuspensionLivsic
+import ErgodicTheory.Examples.CatMapMixing
 
 /-!
 # Axiom audit
@@ -3823,3 +3828,56 @@ axioms: [propext, Classical.choice, Quot.sound] -/
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms ErgodicTheory.ksEntropy_bernConstSuspension_time_one_irrational
+
+/-! ### Issues #54/#55 — constant-roof suspension Livšic + cat-map toral mixing / rigidity -/
+
+-- The general constant-roof suspension-flow Livšic equivalence (a flow observable is a coboundary
+-- iff every periodic Birkhoff sum of its induced base observable vanishes) and its
+-- closed-orbit-integral form.
+
+/-- info: 'ErgodicTheory.livsic_suspensionFlow_constRoof' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.livsic_suspensionFlow_constRoof
+
+/-- info: 'ErgodicTheory.livsic_suspensionFlow_constRoof_orbitIntegral' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.livsic_suspensionFlow_constRoof_orbitIntegral
+
+-- The cat-map constant-roof suspension-flow Livšic landing (both the equivalence and its
+-- orbit-integral form) and the concrete `sin`-fibre coboundary witness.
+
+/-- info: 'ErgodicTheory.CatMapToral.livsic_catSuspensionFlow' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.CatMapToral.livsic_catSuspensionFlow
+
+/-- info: 'ErgodicTheory.CatMapToral.livsic_catSuspensionFlow_orbitIntegral' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.CatMapToral.livsic_catSuspensionFlow_orbitIntegral
+
+/-- info: 'ErgodicTheory.CatMapToral.isFlowCoboundary_sinFibreObservable' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.CatMapToral.isFlowCoboundary_sinFibreObservable
+
+-- The cat-map toral strong-mixing keystone and its eigenfunction-rigidity corollary (a measurable
+-- eigenfunction of the cat map with a unimodular-`≠1` eigenvalue vanishes almost everywhere).
+
+-- The `L²` correlation-decay keystone underlying the strong-mixing statement.
+/-- info: 'ErgodicTheory.CatMapToral.tendsto_catCorr' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.CatMapToral.tendsto_catCorr
+
+/-- info: 'ErgodicTheory.CatMapToral.catTorus_mixing' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.CatMapToral.catTorus_mixing
+
+/-- info: 'ErgodicTheory.CatMapToral.catTorus_eigenfunction_ae_zero_of_mixing' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.CatMapToral.catTorus_eigenfunction_ae_zero_of_mixing
