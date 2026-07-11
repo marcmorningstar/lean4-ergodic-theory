@@ -12,7 +12,7 @@ suspension-flow Lyapunov/entropy theory, a coarse-grained **multifractal formali
 finite-dimensional **quantum-information layer** (Lieb's joint convexity, the data-processing
 inequality, Petz's equality theorem).
 
-**370 modules · ~98,000 lines · ~2,700 theorems — sorry-free, linter-enforced, and with 646
+**378 modules · ~99,000 lines · ~2,700 theorems — sorry-free, linter-enforced, and with 655
 declarations continuously axiom-audited down to `[propext, Classical.choice, Quot.sound]`.**
 
 📖 **[Project site](https://marcmorningstar.github.io/lean4-ergodic-theory/)** ·
@@ -46,11 +46,14 @@ All declarations live in the `ErgodicTheory` namespace (omitted below).
 | `not_isFlowCoboundary_of_periodicOrbitIntegral_ne_zero` | The **flow-Livšic obstruction**: a continuous roof with a nonzero closed-orbit integral is not a flow coboundary (instantiated on the cat-map suspension) |
 | `ae_flowExponentAt_eq_base_div_roof` | The **representative-free suspension-flow Lyapunov exponent** `flowExponentAt = λ_base / ∫τ` a.e. — a genuine `Quotient.lift` value on orbit classes, not just a chosen representative |
 | `ergodic_suspensionFlowMap_one_const_roof` | **Time-1 ergodicity** of the constant-**irrational**-roof suspension flow of an ergodic base with unimodular-eigenvalue rigidity |
-| `ksEntropy_bernConstSuspension_time_one` | **Suspension entropy descent**: for a rational roof `r`, `h(ζ⁽ʳ⁾₁) = h_base / r`, built on the discrete entropy power rule `Entropy.ksEntropy_iterate` (`h(Tⁿ) = n·h(T)`) |
+| `ksEntropy_flow_eq_mul` | **Abstract Abramov flow-entropy homogeneity** `h(φ_t) = t·h(φ_1)` (in `EReal`, `t > 0`) for any measure-continuous measure-preserving flow on a standard Borel probability space (Ito's elementary generator-free proof) |
+| `ksEntropy_bernConstSuspension_time_one_irrational` | **Suspension entropy descent, all roofs**: `h(ζ⁽ʳ⁾₁) = h_base / r` for **every** roof `r > 0` (irrational included), via `ksEntropy_flow_eq_mul` — retiring the former rational-only restriction |
+| `CatMapToral.catTorus_eigenfunction_ae_zero` | **Cat-map eigenfunction rigidity**: a measurable `g : 𝕋² → ℂ` with `g(catTorus x) = l·g(x)`, `‖l‖ = 1`, `l ≠ 1`, vanishes a.e. (Fourier transport along infinite orbits + Parseval; Einsiedler–Ward §2.4) |
+| `CatMapToral.ergodic_catSuspension_timeOne_const_irrational` | **Time-1 ergodicity of the cat suspension**: the constant-irrational-roof cat-map suspension flow has an ergodic time-1 map (cat-side twin of the Bernoulli result; `ergodic_catSuspension_timeOne_sqrtTwo` at `r = √2`) |
 | `OperatorEntropy.CNT.ksEntropy_eq_cntDynamicalEntropy` | The **CNT collapse**: classical KS entropy equals the *full* CNT dynamical entropy on the abelian corner (a disclosed `0 = 0`; the genuine obstruction to a Fekete rate is `OperatorEntropy.CNT.not_subadditive_cnt_entropySeq`) |
 | `measurable_orthProjMatrix_lambdaSublevel` | The **everywhere-Borel singular filtration** (issue #11): the orthogonal projector onto a sublevel set of the forward Lyapunov filtration is Borel measurable, via the Novikov projection theorem |
 
-Every theorem above (and ~630 further results) is guarded in `test/AxiomAudit.lean` by
+Every theorem above (and ~640 further results) is guarded in `test/AxiomAudit.lean` by
 `#guard_msgs in #print axioms`: the build **fails** if any of them ever acquires an axiom beyond
 `propext`, `Classical.choice`, `Quot.sound` — so in particular none depends on `sorryAx`.
 
@@ -122,13 +125,24 @@ of a base map under a roof function and analyzes its Lyapunov and entropy data. 
 exponent is constructed **representative-free** as a `Quotient.lift` over orbit classes and computed
 to `ae_flowExponentAt_eq_base_div_roof` — `flowExponentAt = λ_base / ∫τ` a.e. — with the cat-map
 suspension as a fully worked positive-exponent instance
-(`CatMapToral.catSuspension_flowExponentAt_eq_base_div_roof`). On the entropy side, the discrete
-**entropy power rule** `Entropy.ksEntropy_iterate` (`h(Tⁿ) = n·h(T)`) descends through the constant-roof
-time-change to give the time-1 entropy `h(ζ⁽ʳ⁾₁) = h_base / r` for every **rational** roof `r`
-(`ksEntropy_bernConstSuspension_time_one`; the irrational-`r` case needs the deep half of Abramov's
-homogeneity theorem and is disclosed as out of scope). Complementarily, the constant-roof time-1 map
-of an ergodic Bernoulli base is **ergodic exactly when the roof is irrational**
-(`ergodic_suspensionFlowMap_one_const_roof`).
+(`CatMapToral.catSuspension_flowExponentAt_eq_base_div_roof`). On the entropy side, the full
+**Abramov flow-entropy homogeneity** `h(φ_t) = t·h(φ_1)` (`t > 0`) is proved abstractly for any
+measure-continuous measure-preserving flow on a standard Borel probability space
+(`ksEntropy_flow_eq_mul`), following Ito's elementary generator-free argument (Nagoya Math. J. 41
+(1971), 1–5): measure-continuity forces `H(φ_τP | P) → 0`, a two-family Shannon comparison
+(`Entropy.entropy_finJoin_le_add_sum_condEntropy`) and an ε–δ alignment proposition
+(`exists_isLUB_ksEntropyPartition_flow_ratio`, stated honestly in `EReal` — the ℝ form fails for
+infinite-entropy flows) then pin the ratio. Applied to the measure-continuous Bernoulli suspension
+flow (`measureContinuous_bernSuspensionFlow`, keystone
+`tendsto_measureReal_symmDiff_suspensionFlowMap`), it gives the time-1 entropy
+`h(ζ⁽ʳ⁾₁) = h_base / r` for **every** roof `r > 0`
+(`ksEntropy_bernConstSuspension_time_one_irrational`), retiring the former rational-roof restriction.
+Complementarily, the constant-roof time-1 map of an ergodic Bernoulli base is **ergodic exactly when
+the roof is irrational** (`ergodic_suspensionFlowMap_one_const_roof`), with a cat-map twin
+(`CatMapToral.ergodic_catSuspension_timeOne_const_irrational`, witnessed at `r = √2`). Cat-side, the
+eigenfunction-rigidity theorem `CatMapToral.catTorus_eigenfunction_ae_zero` — any measurable
+`g : 𝕋² → ℂ` with `g(catTorus x) = l·g(x)`, `‖l‖ = 1`, `l ≠ 1`, vanishes a.e. — supplies the Fourier
+rigidity behind the cat suspension's ergodic time-1 map.
 
 ### Descriptive-set-theoretic residuals (`MeasureTheory/`, `Singular/`)
 
@@ -165,9 +179,8 @@ The GitHub issue tracker is at **zero open issues** — every formalization targ
 sorry-free. A handful of mathematical frontiers are *disclosed in place* rather than silently
 elided, and they are recorded honestly in the module docstrings: the descriptive-set layer proves
 the compact-section (Novikov) projection theorem but not the full Π¹₁-boundedness / general
-Arsenin–Kunugui uniformization; the suspension time-1 entropy `h(ζ⁽ʳ⁾₁) = h_base / r` is proved for
-rational roofs, the irrational case needing the deep half of Abramov's flow-entropy homogeneity;
-and the flow-Livšic story establishes the periodic-integral obstruction but not a full converse
+Arsenin–Kunugui uniformization; and the flow-Livšic story establishes the periodic-integral
+obstruction but not a full converse
 (flow coboundary from vanishing closed-orbit integrals). Each such boundary is stated as a
 hypothesis or a scoped instance, never hidden.
 
@@ -178,7 +191,7 @@ hypothesis or a scoped instance, never hidden.
   on the `frontier` branch and reaches `main` only through clean, sorry-free PRs.
 - **Linter-enforced**: the whole `ErgodicTheory` library builds under Mathlib's
   `linter.mathlibStandardSet` with warnings-as-errors, so CI fails on any style-lint regression.
-- **Axiom-audited**: `test/AxiomAudit.lean` guards 646 declarations with
+- **Axiom-audited**: `test/AxiomAudit.lean` guards 655 declarations with
   `#guard_msgs in #print axioms` on every build. (This certifies axiom-cleanliness; theorems with
   hypotheses are, as always, exactly as strong as their hypotheses — the blueprint states them in
   full.)
@@ -198,7 +211,7 @@ ErgodicTheory/
   MultiplicativeErgodic.lean  -- the one-sided MET (filtration form)
   TwoSided/           -- the two-sided splitting
   Continuous/         -- the continuous-flow MET + suspension flows (flow exponent, entropy descent,
-                      --   time-1 ergodicity)
+                      --   time-1 ergodicity, abstract Abramov flow-entropy homogeneity)
   Livsic/             -- Livšic cohomological rigidity (abstract iff, full-shift/two-sided/SFT/
                       --   cat-map/doubling instances, full measurable rigidity, flow obstruction)
   Singular/           -- everywhere-Borel projector of the singular forward filtration
@@ -208,7 +221,8 @@ ErgodicTheory/
   Multifractal/       -- Z_q, τ(q), Rényi dimensions D_q, local/Hausdorff dimension,
                       --   Bernoulli-suspension witness
   Smooth/             -- derivative cocycle, Rokhlin inequality, volume-case Pesin formula
-  Examples/           -- Arnold cat map, doubling map, Pesin/Rokhlin-equality witnesses
+  Examples/           -- Arnold cat map (eigenfunction rigidity, ergodic time-1 suspension),
+                      --   doubling map, Pesin/Rokhlin-equality witnesses
   OperatorEntropy/    -- quantum information: relative entropy, Klein/Lieb, data processing,
                       --   CNT dynamical entropy, Petz recovery + equality
   MeasureTheory/      -- descriptive-set residuals (Lusin, Novikov first separation, Kunugui–Novikov,
