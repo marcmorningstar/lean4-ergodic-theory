@@ -782,9 +782,123 @@ automorphism \(T\) under a roof \(\tau\), via the cross-section \(x\mapsto[x,0]\
   non-vacuous.
 \end{proof}
 
-\paragraph{The remaining wall.} Only the \emph{trivial} (obstruction) direction of the flow Livšic
-theorem is delivered. The converse --- vanishing of all closed-orbit integrals implies \(F\) is a
-\emph{Hölder} flow coboundary --- is \textbf{not} proved: its genuine obstacle is the Hölder gluing
-of the reconstructed transfer function across the fundamental-domain seam \(s = \tau\), which lies
-beyond this regularity-free layer. It is recorded here as a disclosed open front, the flow analogue
-of the fully proved discrete equivalence \Cref{thm:livsic-iff}.
+\subsection{The tier-III converse for constant-roof suspension flows}
+
+The obstruction direction above is only half the flow Livšic story. The converse --- vanishing of
+all closed-orbit integrals \emph{implies} \(F\) is a flow coboundary --- is delivered here for
+\emph{constant-roof} suspension flows (\(\tau\equiv c\)), and delivered \emph{exactly}: because
+\texttt{IsFlowCoboundary} is a regularity-free cohomological predicate (\Cref{def:livsic-flowcob}, no
+metric on the suspension), the fundamental-domain seam is glued by an \emph{identity}, not a Hölder
+estimate. The one input required is that the \emph{base} map discharge its own discrete Livšic
+converse for the induced base observable; that is exactly the interface every concrete base in
+\Cref{thm:livsic-iff} already supplies.
+
+\begin{lemma}[Seam-glue generator identity]\label{uCover_gen}
+  \lean{ErgodicTheory.uCover_gen}\leanok
+  \uses{def:livsic-induced}
+  Fix a constant roof \(\tau\equiv c\), a base transfer function \(u_0\) cobounding the induced base
+  observable, and build the fundamental-domain transfer candidate
+  \(\texttt{uCover}(x,s) = u_0(x) + \int_0^{s} F([x,\sigma])\,d\sigma\)
+  (\lean{ErgodicTheory.uCover}) lap by lap on the strip. Across one fundamental-domain seam --- the
+  identification \([T x, s] = [x, s + c]\) --- the candidate is unchanged, because the base jump
+  \(u_0(T x) - u_0(x)\) is \emph{precisely} the lap integral \(\int_0^{c} F([x,\sigma])\,d\sigma\)
+  that the fibre integral accumulates over one roof height.
+\end{lemma}
+\begin{proof}\leanok
+  \uses{def:livsic-induced}
+  The base cohomological equation \(\texttt{inducedBaseCocycle}\,F\,x = u_0(T x) - u_0(x)\) supplies
+  the value of the seam jump; with a constant roof the one-lap integral \(\int_0^{\tau x}F([x,\sigma])
+  \,d\sigma = \int_0^{c}F([x,\sigma])\,d\sigma\) is exactly this jump, so the two descriptions of
+  \(\texttt{uCover}\) across the seam agree by interval-integral additivity. No estimate; a pure
+  identity. Its upgrade to full \(\Z\)-invariance under the suspension action is
+  \lean{ErgodicTheory.uCover\_act}.
+\end{proof}
+
+\begin{theorem}[Tier-III equivalence for constant-roof suspension flows]\label{livsic_suspensionFlow_constRoof}
+  \lean{ErgodicTheory.livsic_suspensionFlow_constRoof}\leanok
+  \uses{def:livsic-flowcob, def:livsic-induced, thm:livsic-induced-cob, uCover_gen}
+  Let \(\Phi = \zeta\) be the suspension flow of \(T\) under a \emph{constant} roof \(\tau\equiv c\),
+  let \(F\) be a flow observable with per-fibre interval-integrable restrictions, and suppose the base
+  map \(T\) discharges the discrete Livšic converse for the induced base observable --- vanishing
+  periodic Birkhoff sums of \(\texttt{inducedBaseCocycle}\,F\) imply it is a discrete coboundary.
+  Then
+  \[
+    F \text{ is a flow coboundary of } \zeta
+      \iff \texttt{inducedBaseCocycle}\,F \text{ has vanishing periodic sums.}
+  \]
+\end{theorem}
+\begin{proof}\leanok
+  \uses{thm:livsic-induced-cob, uCover_gen}
+  Forward is the general obstruction: a flow coboundary induces a base coboundary
+  (\Cref{thm:livsic-induced-cob}), which has vanishing periodic sums (\Cref{thm:livsic-trivial}).
+  Backward: vanishing periodic sums feed the base converse to produce a base transfer \(u_0\);
+  \Cref{uCover_gen} then makes the fundamental-domain candidate seam-invariant, so it descends
+  through the suspension quotient (\lean{ErgodicTheory.suspTransfer}, a \(\texttt{Quotient.lift}\))
+  to a genuine flow transfer function verifying the continuous-time coboundary equation
+  (\lean{ErgodicTheory.suspTransfer\_flow}).
+\end{proof}
+
+\begin{theorem}[Flow-native form]\label{livsic_suspensionFlow_constRoof_orbitIntegral}
+  \lean{ErgodicTheory.livsic_suspensionFlow_constRoof_orbitIntegral}\leanok
+  \uses{livsic_suspensionFlow_constRoof, thm:livsic-lap-bridge}
+  Under the same hypotheses, the obstruction may be phrased directly in flow-native terms: \(F\) is a
+  flow coboundary iff every \emph{closed-orbit integral} of \(F\) vanishes --- for every base
+  \(n\)-periodic point \(p\), the integral of \(F\) around the corresponding closed flow orbit (of
+  period \(S_n\tau\,p\)) is zero.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{livsic_suspensionFlow_constRoof, thm:livsic-lap-bridge}
+  Chain \Cref{livsic_suspensionFlow_constRoof} through the lap-decomposition bridge
+  (\Cref{thm:livsic-lap-bridge}), which identifies each closed-orbit flow integral with the base
+  Birkhoff sum of the induced observable.
+\end{proof}
+
+This equivalence lands on the Arnold cat-map suspension flow, where the discrete base converse is the
+already-proved Hölder Livšic theorem for the cat map (\Cref{thm:livsic-cat}).
+
+\begin{theorem}[Flow-Livšic for the cat-map suspension flow]\label{livsic_catSuspensionFlow}
+  \lean{ErgodicTheory.CatMapToral.livsic_catSuspensionFlow}\leanok
+  \uses{livsic_suspensionFlow_constRoof, thm:livsic-cat}
+  For the suspension flow of \(\operatorname{catTorus}\) under the unit roof \(\tau\equiv 1\), a flow
+  observable \(F\) whose induced base observable is Hölder (exponent \(0 < r\le 1\)) and whose fibre
+  restrictions are interval-integrable is a flow coboundary \emph{iff} every periodic Birkhoff sum of
+  its induced base observable vanishes; equivalently (flow-native form
+  \lean{ErgodicTheory.CatMapToral.livsic\_catSuspensionFlow\_orbitIntegral}) iff every closed-orbit
+  integral of \(F\) vanishes.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{livsic_suspensionFlow_constRoof, thm:livsic-cat}
+  Instantiate \Cref{livsic_suspensionFlow_constRoof} at \(c = 1\), discharging the base converse with
+  the Hölder Livšic theorem for the cat map (\Cref{thm:livsic-cat}, \(\texttt{livsic\_catTorus}\)).
+\end{proof}
+
+The equivalence has content on \emph{both} sides. The obstruction side is
+\Cref{thm:livsic-cat-suspension}: the constant observable \(1\) is not a flow coboundary. The
+coboundary side is a concrete zero-mean fibre profile.
+
+\begin{theorem}[Non-vacuity of the coboundary side]\label{isFlowCoboundary_sinFibreObservable}
+  \lean{ErgodicTheory.CatMapToral.isFlowCoboundary_sinFibreObservable}\leanok
+  \uses{livsic_catSuspensionFlow}
+  A \(1\)-periodic fibre profile \(h\) descends to a flow observable \(F[x,s] = h(s)\) on the cat
+  suspension (\lean{ErgodicTheory.CatMapToral.fibreObservable}, a \(\texttt{Quotient.lift}\) whose
+  well-definedness is the profile's periodicity). For the concrete choice \(h(s) = \sin(2\pi s)\)
+  (\lean{ErgodicTheory.CatMapToral.sinFibreObservable}), the induced base observable vanishes
+  identically --- its one-lap integral is \(\int_0^{1}\sin(2\pi s)\,ds = 0\) --- so all periodic
+  sums vanish and \(\texttt{sinFibreObservable}\) \emph{is} a flow coboundary of the cat-map
+  suspension flow.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{livsic_catSuspensionFlow}
+  The one-lap integral \(\int_0^{1}\sin(2\pi s)\,ds = 0\) makes \(\texttt{inducedBaseCocycle}\,F\)
+  identically zero, so its periodic Birkhoff sums vanish trivially; the backward direction of
+  \Cref{livsic_catSuspensionFlow} supplies the flow transfer function. Together with the obstruction
+  witness \(F = 1\) (\Cref{thm:livsic-cat-suspension}), this certifies the tier-III equivalence is
+  non-vacuous on both sides --- some observables cobound, others do not.
+\end{proof}
+
+\paragraph{The remaining wall.} The constant-roof converse above is exact; what is \emph{not}
+delivered is the \emph{variable-roof} flow Livšic theorem, where the fundamental-domain seam
+\(s = \tau(x)\) moves with the base point and the one-lap identity of \Cref{uCover_gen} no longer
+glues the transfer function by a bare cohomological equation --- a genuine Hölder-regularity gluing
+would be required. It is recorded here as the disclosed open front remaining after the constant-roof
+equivalence \Cref{livsic_suspensionFlow_constRoof}.
