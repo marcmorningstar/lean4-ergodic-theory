@@ -95,6 +95,7 @@ import ErgodicTheory.Continuous.Equivariance
 import ErgodicTheory.Continuous.MultiplicativeErgodicFlow
 import ErgodicTheory.Continuous.Suspension
 import ErgodicTheory.Continuous.SuspensionMeasure
+import ErgodicTheory.Continuous.SuspensionMeasureContinuity
 import ErgodicTheory.Continuous.SuspensionSpace
 import ErgodicTheory.Continuous.SuspensionFlow
 import ErgodicTheory.Continuous.SuspensionFlowMP
