@@ -578,14 +578,14 @@ decorrelation on characters, promoted to arbitrary \(L^2\) observables by densit
 \begin{proof}\leanok
   \uses{ergodic_catTorus}
   The Koopman operator sends the character \(\texttt{mFourier}\,n\) to
-  \(\texttt{mFourier}(M^{k}n)\) (\lean{ErgodicTheory.CatMapToral.mFourier\_iterate\_catTorus}). By
+  \(\texttt{mFourier}(M^{k}n)\) (\lean{ErgodicTheory.CatMapToral.mFourier_iterate_catTorus}). By
   hyperbolicity the index \(M^{k}b\) eventually escapes any fixed value for \(b\ne 0\)
-  (\lean{ErgodicTheory.CatMapToral.eventually\_pow\_mulVec\_ne}), so orthonormality of the characters
-  (\lean{ErgodicTheory.CatMapToral.integral\_conj\_mFourier\_mul}) makes the character correlation
+  (\lean{ErgodicTheory.CatMapToral.eventually_pow_mulVec_ne}), so orthonormality of the characters
+  (\lean{ErgodicTheory.CatMapToral.integral_conj_mFourier_mul}) makes the character correlation
   \(\Phi_k(\texttt{mFourier}\,a,\texttt{mFourier}\,b)\) \emph{eventually zero} whenever \(b\ne 0\),
   matching the product of the means (which also vanishes there). A finite-span approximation of
   arbitrary \(u,v\in L^2\) (density of the character span,
-  \lean{ErgodicTheory.CatMapToral.exists\_span\_approx}) together with the Cauchy--Schwarz bound
+  \lean{ErgodicTheory.CatMapToral.exists_span_approx}) together with the Cauchy--Schwarz bound
   \(\abs{\Phi_k(u,v)}\le\norm u\,\norm v\) promotes the exact character result to the limit for all
   \(L^2\) pairs.
 \end{proof}
