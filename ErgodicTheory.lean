@@ -208,10 +208,12 @@ import ErgodicTheory.Continuous.SuspensionPartialSumExponent
 import ErgodicTheory.Examples.RuelleDoubling
 import ErgodicTheory.Examples.CatMapOrbit
 import ErgodicTheory.Examples.CatMapToral
+import ErgodicTheory.Examples.CatMapEigenfunction
 import ErgodicTheory.Examples.CatMapDerivativeCocycle
 import ErgodicTheory.Examples.CatMapPerPartition
 import ErgodicTheory.Examples.CatMapSuspensionFlow
 import ErgodicTheory.Examples.CatMapSuspensionFlowQuotient
+import ErgodicTheory.Examples.CatMapSuspensionTimeOneErgodic
 import ErgodicTheory.Examples.CatMapCover
 import ErgodicTheory.Examples.CatMapEigenShadow
 import ErgodicTheory.Examples.CatMapClosing
