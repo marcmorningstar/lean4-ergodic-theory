@@ -89,12 +89,15 @@ import ErgodicTheory.TwoSided.RestrictedExponent
 import ErgodicTheory.TwoSided.Transversality
 import ErgodicTheory.TwoSided.SplittingAssembly
 import ErgodicTheory.Continuous.Flow
+import ErgodicTheory.Continuous.FlowCondEntropyShift
+import ErgodicTheory.Continuous.FlowEntropyContinuity
 import ErgodicTheory.Continuous.Reduction
 import ErgodicTheory.Continuous.BetweenTimes
 import ErgodicTheory.Continuous.Equivariance
 import ErgodicTheory.Continuous.MultiplicativeErgodicFlow
 import ErgodicTheory.Continuous.Suspension
 import ErgodicTheory.Continuous.SuspensionMeasure
+import ErgodicTheory.Continuous.SuspensionMeasureContinuity
 import ErgodicTheory.Continuous.SuspensionSpace
 import ErgodicTheory.Continuous.SuspensionFlow
 import ErgodicTheory.Continuous.SuspensionFlowMP
@@ -131,6 +134,7 @@ import ErgodicTheory.Continuous.SuspensionTimeOneParseval
 import ErgodicTheory.Continuous.SuspensionTimeOneErgodic
 import ErgodicTheory.Continuous.SuspensionRescale
 import ErgodicTheory.Continuous.SuspensionEntropyDescent
+import ErgodicTheory.Continuous.FlowAbramov
 import ErgodicTheory.Smooth.DerivativeCocycle
 import ErgodicTheory.Smooth.Expanding
 import ErgodicTheory.Smooth.RokhlinExpanding
@@ -140,6 +144,7 @@ import ErgodicTheory.Smooth.Pesin.PesinFormula
 import ErgodicTheory.Examples.Elementary
 import ErgodicTheory.Entropy.Partition
 import ErgodicTheory.Entropy.Join
+import ErgodicTheory.Entropy.JoinEntropyCompare
 import ErgodicTheory.Entropy.Subadditive
 import ErgodicTheory.Entropy.Subadditive2
 import ErgodicTheory.Entropy.Fekete
@@ -166,6 +171,7 @@ import ErgodicTheory.Entropy.FactorMap
 import ErgodicTheory.Entropy.Generator
 import ErgodicTheory.Entropy.FactorEntropy
 import ErgodicTheory.Entropy.FactorGeneratorSaturate
+import ErgodicTheory.Entropy.FinJoin
 import ErgodicTheory.Entropy.CondGivenPartitionBridge
 import ErgodicTheory.Entropy.AbramovRokhlinPartition
 import ErgodicTheory.Entropy.AbramovRokhlin

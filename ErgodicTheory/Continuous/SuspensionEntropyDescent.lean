@@ -37,16 +37,23 @@ equivalently `h(ζ^{(r)}_1) · r = h_base` (`ksEntropy_bernConstSuspension_time_
    (`ereal_eq_of_nsmul_eq_coe`); all `EReal` values are finite reals so the arithmetic descends to
    `ℝ`, avoiding `EReal` division/multiplication pitfalls.
 
-## The irrational-roof wall (documented)
+## The irrational-roof wall (now closed downstream)
 
-For an **irrational** roof `r`, the identity `h(ζ^{(r)}_1) = Hnu ν / r` is still true, but its proof
-requires the full **Abramov flow-entropy homogeneity** `h(φ_t) = |t| · h(φ_1)` for *every* real
-time `t` — the deep half of Abramov's theorem, which needs flow generators / Rokhlin towers (the
-Ambrose–Kakutani special-flow structure). Only the rational skeleton `h(φ_{n·t}) = n · h(φ_t)`
-along `ℕ`-multiples is available from the discrete power rule, and the multiplicative group
-`{a/b : a, b ∈ ℕ, b ≠ 0}` generated from a single positive time does not reach irrational scalings.
-The value is thus known (`= h_base / r`) but the proof technique for irrational `r` is out of scope
-here.
+For an **irrational** roof `r`, the identity `h(ζ^{(r)}_1) = Hnu ν / r` needs the full **Abramov
+flow-entropy homogeneity** `h(φ_t) = t · h(φ_1)` for *every* real time `t`, not just the rational
+skeleton `h(φ_{n·t}) = n · h(φ_t)` along `ℕ`-multiples available here from the discrete power rule
+(the multiplicative group `{a/b : a, b ∈ ℕ, b ≠ 0}` generated from a single positive time does not
+reach irrational scalings, so the argument in *this* file is restricted to rational `r`).
+
+**Status: this wall is now closed** — not by flow generators / Rokhlin towers, but by Ito's
+*elementary* proof of Abramov's homogeneity theorem (Ito, *Nagoya Math. J.* **41** (1971)),
+formalized in `ErgodicTheory.Continuous.FlowAbramov`
+(`ErgodicTheory.ksEntropy_flow_eq_mul`: `h(φ_t) = t · h(φ_1)` for every measure-continuous flow).
+Its keystone measure-continuity input for the suspension flow is
+`ErgodicTheory.tendsto_measureReal_symmDiff_suspensionFlowMap`. The unconditional (every `r > 0`,
+irrational allowed) time-`1` value is
+`ErgodicTheory.ksEntropy_bernConstSuspension_time_one_irrational`. The rational-roof route below is
+retained as the elementary special case that needs only the discrete power rule.
 
 **Contrast with time-`1` ergodicity (issue #35).** The same constant-roof Bernoulli suspension
 carries the *opposite* arithmetic restriction on the ergodicity side: the time-`1` map is ergodic
