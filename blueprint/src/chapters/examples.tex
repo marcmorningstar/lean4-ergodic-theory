@@ -555,6 +555,88 @@ constant cocycle), then formalize the genuine toral dynamics, and finally combin
   rate \(R = \log\bigl((3+\sqrt5)/2\bigr)\).
 \end{proof}
 
+\subsection{Strong mixing}
+
+Ergodicity (\Cref{ergodic_catTorus}) says the Fourier coefficients of an invariant indicator are
+constant along the infinite index orbits; \emph{strong mixing} is the sharper spectral statement
+that \emph{all} correlations decay to the product of the means. The cat map is the library's first
+smooth mixing example, and the proof is the same character machinery pushed one step further: exact
+decorrelation on characters, promoted to arbitrary \(L^2\) observables by density of their span.
+
+\begin{theorem}[\(L^2\) correlation decay]\label{tendsto_catCorr}
+  \lean{ErgodicTheory.CatMapToral.tendsto_catCorr}\leanok
+  \uses{ergodic_catTorus}
+  Let \(U_k v = v\circ\operatorname{catTorus}^{[k]}\) be the Koopman operator (an \(L^2\)-isometry,
+  \lean{ErgodicTheory.CatMapToral.catComp}) and \(\Phi_k(u,v) = \langle u, U_k v\rangle\) the
+  correlation (\lean{ErgodicTheory.CatMapToral.catCorr}). For every \(u,v\in L^2(\mathbb{T}^2)\),
+  \[
+    \Phi_k(u,v) \;\xrightarrow[k\to\infty]{}\;
+      \Bigl(\int_{\mathbb{T}^2}\overline{u}\Bigr)\Bigl(\int_{\mathbb{T}^2} v\Bigr),
+  \]
+  the orthogonal projection onto the constants.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{ergodic_catTorus}
+  The Koopman operator sends the character \(\texttt{mFourier}\,n\) to
+  \(\texttt{mFourier}(M^{k}n)\) (\lean{ErgodicTheory.CatMapToral.mFourier_iterate_catTorus}). By
+  hyperbolicity the index \(M^{k}b\) eventually escapes any fixed value for \(b\ne 0\)
+  (\lean{ErgodicTheory.CatMapToral.eventually_pow_mulVec_ne}), so orthonormality of the characters
+  (\lean{ErgodicTheory.CatMapToral.integral_conj_mFourier_mul}) makes the character correlation
+  \(\Phi_k(\texttt{mFourier}\,a,\texttt{mFourier}\,b)\) \emph{eventually zero} whenever \(b\ne 0\),
+  matching the product of the means (which also vanishes there). A finite-span approximation of
+  arbitrary \(u,v\in L^2\) (density of the character span,
+  \lean{ErgodicTheory.CatMapToral.exists_span_approx}) together with the Cauchy--Schwarz bound
+  \(\abs{\Phi_k(u,v)}\le\norm u\,\norm v\) promotes the exact character result to the limit for all
+  \(L^2\) pairs.
+\end{proof}
+
+\begin{theorem}[Strong mixing of the Arnold cat map]\label{catTorus_mixing}
+  \lean{ErgodicTheory.CatMapToral.catTorus_mixing}\leanok
+  \uses{tendsto_catCorr, measurePreserving_catTorus}
+  For arbitrary measurable sets \(A,B\subseteq\mathbb{T}^2\),
+  \[
+    \operatorname{vol}\bigl(A\cap\operatorname{catTorus}^{[k]\,-1}B\bigr)
+      \;\xrightarrow[k\to\infty]{}\;
+      \operatorname{vol}(A)\cdot\operatorname{vol}(B),
+  \]
+  i.e.\ \(\operatorname{catTorus}\) is strongly mixing for the Haar probability measure.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{tendsto_catCorr}
+  Feed the indicator functions \(u = \mathbf 1_A\) and \(v = \mathbf 1_B\) to
+  \Cref{tendsto_catCorr}: the means are \(\int\overline{\mathbf 1_A} = \operatorname{vol}(A)\) and
+  \(\int\mathbf 1_B = \operatorname{vol}(B)\), and the correlation \(\Phi_k(\mathbf 1_A,\mathbf 1_B)\)
+  is exactly \(\operatorname{vol}(A\cap\operatorname{catTorus}^{[k]\,-1}B)\) by measure preservation
+  (\Cref{measurePreserving_catTorus}). Taking real parts of the complex limit gives the set-level
+  statement.
+\end{proof}
+
+\begin{lemma}[Mixing kills unimodular eigenvalues]\label{eigenfunction_ae_zero_of_mixing}
+  \lean{ErgodicTheory.eigenfunction_ae_zero_of_mixing}\leanok
+  A reusable spectral interface: for a strongly mixing measure-preserving map on a probability
+  space, any measurable eigenfunction \(g\) with \(g\circ f = l\cdot g\), \(\abs l = 1\),
+  \(l\ne 1\), vanishes a.e.
+\end{lemma}
+\begin{proof}\leanok
+  If \(g\) were not a.e.\ zero, the eigen-equation \(g\circ f^{[n]} = l^{n} g\) forces the correlation
+  of a positive-measure sublevel set \(A = g^{-1}(\text{small ball})\) with itself to oscillate --- a
+  frequently far-from-\(1\) power \(l^{n}\) keeps \(\operatorname{vol}(A\cap f^{[n]\,-1}A)\) bounded
+  away from \(\operatorname{vol}(A)^2\), contradicting mixing.
+\end{proof}
+
+\begin{corollary}[Eigenfunction rigidity from mixing]\label{catTorus_eigenfunction_ae_zero_of_mixing}
+  \lean{ErgodicTheory.CatMapToral.catTorus_eigenfunction_ae_zero_of_mixing}\leanok
+  \uses{catTorus_mixing, eigenfunction_ae_zero_of_mixing}
+  A measurable \(g:\mathbb{T}^2\to\mathbb C\) with \(g(\operatorname{catTorus} x) = l\cdot g(x)\),
+  \(\abs l = 1\), \(l\ne 1\), vanishes a.e.\ --- re-deriving \Cref{thm:catTorus-eigZero} through the
+  mixing interface rather than the direct Fourier argument.
+\end{corollary}
+\begin{proof}\leanok
+  \uses{catTorus_mixing, eigenfunction_ae_zero_of_mixing}
+  Discharge \Cref{eigenfunction_ae_zero_of_mixing} with the strong mixing of the cat map
+  (\Cref{catTorus_mixing}) as the correlation-decay hypothesis.
+\end{proof}
+
 \subsection{Eigenfunction rigidity and the ergodic time-one cat suspension}
 
 The cat map has no nontrivial measurable eigenfunctions with unimodular eigenvalue \(\ne 1\); this

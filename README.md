@@ -12,7 +12,7 @@ suspension-flow Lyapunov/entropy theory, a coarse-grained **multifractal formali
 finite-dimensional **quantum-information layer** (Lieb's joint convexity, the data-processing
 inequality, Petz's equality theorem).
 
-**378 modules · ~99,000 lines · ~2,700 theorems — sorry-free, linter-enforced, and with 655
+**381 modules · ~101,000 lines · ~2,700 theorems — sorry-free, linter-enforced, and with 662
 declarations continuously axiom-audited down to `[propext, Classical.choice, Quot.sound]`.**
 
 📖 **[Project site](https://marcmorningstar.github.io/lean4-ergodic-theory/)** ·
@@ -44,11 +44,13 @@ All declarations live in the `ErgodicTheory` namespace (omitted below).
 | `isHolderCoboundary_iff` | The **abstract Livšic theorem**: over a system with the exponential-closing property and a dense orbit, a Hölder function is a Hölder coboundary iff all its periodic-orbit sums vanish |
 | `Livsic.livsic_measurable_rigidity` | **Full measurable Livšic rigidity** (Katok–Hasselblatt 19.2.4): over the two-sided full shift a merely measurable a.e.-solution of a Hölder cohomological equation agrees a.e. with a genuine Hölder coboundary |
 | `not_isFlowCoboundary_of_periodicOrbitIntegral_ne_zero` | The **flow-Livšic obstruction**: a continuous roof with a nonzero closed-orbit integral is not a flow coboundary (instantiated on the cat-map suspension) |
+| `livsic_suspensionFlow_constRoof` | The **flow-Livšic tier-III equivalence** for constant-roof suspension flows: a flow observable is a flow coboundary iff every closed-orbit integral of its induced base observable vanishes (flow-native form `..._orbitIntegral`) — transfer function glued **exactly** across the fundamental-domain seam by the base cohomological equation; cat instance `CatMapToral.livsic_catSuspensionFlow` closes the former flow-converse frontier for constant roofs |
 | `ae_flowExponentAt_eq_base_div_roof` | The **representative-free suspension-flow Lyapunov exponent** `flowExponentAt = λ_base / ∫τ` a.e. — a genuine `Quotient.lift` value on orbit classes, not just a chosen representative |
 | `ergodic_suspensionFlowMap_one_const_roof` | **Time-1 ergodicity** of the constant-**irrational**-roof suspension flow of an ergodic base with unimodular-eigenvalue rigidity |
 | `ksEntropy_flow_eq_mul` | **Abstract Abramov flow-entropy homogeneity** `h(φ_t) = t·h(φ_1)` (in `EReal`, `t > 0`) for any measure-continuous measure-preserving flow on a standard Borel probability space (Ito's elementary generator-free proof) |
 | `ksEntropy_bernConstSuspension_time_one_irrational` | **Suspension entropy descent, all roofs**: `h(ζ⁽ʳ⁾₁) = h_base / r` for **every** roof `r > 0` (irrational included), via `ksEntropy_flow_eq_mul` — retiring the former rational-only restriction |
 | `CatMapToral.catTorus_eigenfunction_ae_zero` | **Cat-map eigenfunction rigidity**: a measurable `g : 𝕋² → ℂ` with `g(catTorus x) = l·g(x)`, `‖l‖ = 1`, `l ≠ 1`, vanishes a.e. (Fourier transport along infinite orbits + Parseval; Einsiedler–Ward §2.4) |
+| `CatMapToral.catTorus_mixing` | **Strong mixing of the Arnold cat map** for Haar measure — the library's first smooth mixing example — via character decorrelation and an L²-density argument over the Fourier basis (keystone `tendsto_catCorr`, Koopman isometry); re-derives eigenfunction rigidity through the reusable mixing interface `eigenfunction_ae_zero_of_mixing` (corollary `catTorus_eigenfunction_ae_zero_of_mixing`) |
 | `CatMapToral.ergodic_catSuspension_timeOne_const_irrational` | **Time-1 ergodicity of the cat suspension**: the constant-irrational-roof cat-map suspension flow has an ergodic time-1 map (cat-side twin of the Bernoulli result; `ergodic_catSuspension_timeOne_sqrtTwo` at `r = √2`) |
 | `OperatorEntropy.CNT.ksEntropy_eq_cntDynamicalEntropy` | The **CNT collapse**: classical KS entropy equals the *full* CNT dynamical entropy on the abelian corner (a disclosed `0 = 0`; the genuine obstruction to a Fekete rate is `OperatorEntropy.CNT.not_subadditive_cnt_entropySeq`) |
 | `measurable_orthProjMatrix_lambdaSublevel` | The **everywhere-Borel singular filtration** (issue #11): the orthogonal projector onto a sublevel set of the forward Lyapunov filtration is Borel measurable, via the Novikov projection theorem |
@@ -98,8 +100,10 @@ expanding-case **Pesin = Rokhlin identity** `∑λ⁺ = ∫ log|det DₓT| dμ`.
 SRB inequality `∑λ⁺ ≤ h_μ(T)` follows from the standalone, generator-free **Rokhlin inequality**
 `∫ log|det DₓT| dμ ≤ h_μ(T)`, combined with Margulis–Ruelle for the forward direction. Concrete
 systems instantiate the abstract theory end to end: the **Arnold cat map** as a genuine hyperbolic
-automorphism of 𝕋² (measure-preserving, ergodic, positive top exponent, entropy bounds) and the
-**doubling map**, which now carries the first non-vacuous full-system Pesin instance in the
+automorphism of 𝕋² (measure-preserving, ergodic, **strongly mixing** — `catTorus_mixing`, the
+library's first smooth mixing example, proved by Fourier character decorrelation over an L² Hilbert
+basis — positive top exponent, entropy bounds) and the **doubling map**, which now carries the first
+non-vacuous full-system Pesin instance in the
 library — `h = ∑λ⁺ = log 2` (Lyapunov spectrum, Ruelle bound, binary-expansion generator).
 
 ### Livšic cohomological rigidity (`Livsic/`)
@@ -115,8 +119,16 @@ a merely measurable a.e.-solution of the cohomological equation is a.e. equal to
 coboundary. On the continuous-time side, the **flow-Livšic obstruction**
 (`not_isFlowCoboundary_of_periodicOrbitIntegral_ne_zero`, witnessed by
 `CatMapToral.const_one_not_isFlowCoboundary_catSuspension`) shows a roof with a nonzero closed-orbit
-integral cannot be a flow coboundary — the converse (a full flow-Livšic theorem) is a documented
-frontier.
+integral cannot be a flow coboundary; the **converse now closes at tier III** for constant-roof
+suspension flows (`livsic_suspensionFlow_constRoof`, with the flow-native closed-orbit-integral form
+`livsic_suspensionFlow_constRoof_orbitIntegral`): a flow observable is a flow coboundary iff all its
+closed-orbit integrals vanish, the transfer function being glued **exactly** across the
+fundamental-domain seam `s = τ` by the base cohomological equation — no metric estimate, since
+`IsFlowCoboundary` is a regularity-free notion. The Arnold cat map is the worked instance
+(`CatMapToral.livsic_catSuspensionFlow` + `_orbitIntegral`, discharging the base direction with
+`livsic_catTorus`), certified non-vacuous on both sides: the constant observable `1` is not a flow
+coboundary, while `CatMapToral.sinFibreObservable` (the `sin(2π·)` fibre profile, zero-mean over one
+lap) is (`isFlowCoboundary_sinFibreObservable`).
 
 ### Suspension flows (`Continuous/`)
 
@@ -179,10 +191,11 @@ The GitHub issue tracker is at **zero open issues** — every formalization targ
 sorry-free. A handful of mathematical frontiers are *disclosed in place* rather than silently
 elided, and they are recorded honestly in the module docstrings: the descriptive-set layer proves
 the compact-section (Novikov) projection theorem but not the full Π¹₁-boundedness / general
-Arsenin–Kunugui uniformization; and the flow-Livšic story establishes the periodic-integral
-obstruction but not a full converse
-(flow coboundary from vanishing closed-orbit integrals). Each such boundary is stated as a
-hypothesis or a scoped instance, never hidden.
+Arsenin–Kunugui uniformization; and the flow-Livšic story now closes the tier-III converse for
+**constant-roof** suspension flows (`livsic_suspensionFlow_constRoof`, seam glued by an exact
+identity), leaving the variable-roof / Hölder-regularity flow coboundary — where the fundamental-
+domain gluing is no longer a bare cohomological identity — as the remaining disclosed front. Each
+such boundary is stated as a hypothesis or a scoped instance, never hidden.
 
 ## Trust story
 
@@ -191,7 +204,7 @@ hypothesis or a scoped instance, never hidden.
   on the `frontier` branch and reaches `main` only through clean, sorry-free PRs.
 - **Linter-enforced**: the whole `ErgodicTheory` library builds under Mathlib's
   `linter.mathlibStandardSet` with warnings-as-errors, so CI fails on any style-lint regression.
-- **Axiom-audited**: `test/AxiomAudit.lean` guards 655 declarations with
+- **Axiom-audited**: `test/AxiomAudit.lean` guards 662 declarations with
   `#guard_msgs in #print axioms` on every build. (This certifies axiom-cleanliness; theorems with
   hypotheses are, as always, exactly as strong as their hypotheses — the blueprint states them in
   full.)
@@ -211,7 +224,8 @@ ErgodicTheory/
   MultiplicativeErgodic.lean  -- the one-sided MET (filtration form)
   TwoSided/           -- the two-sided splitting
   Continuous/         -- the continuous-flow MET + suspension flows (flow exponent, entropy descent,
-                      --   time-1 ergodicity, abstract Abramov flow-entropy homogeneity)
+                      --   time-1 ergodicity, abstract Abramov flow-entropy homogeneity,
+                      --   constant-roof flow-Livšic tier-III equivalence)
   Livsic/             -- Livšic cohomological rigidity (abstract iff, full-shift/two-sided/SFT/
                       --   cat-map/doubling instances, full measurable rigidity, flow obstruction)
   Singular/           -- everywhere-Borel projector of the singular forward filtration
@@ -221,8 +235,8 @@ ErgodicTheory/
   Multifractal/       -- Z_q, τ(q), Rényi dimensions D_q, local/Hausdorff dimension,
                       --   Bernoulli-suspension witness
   Smooth/             -- derivative cocycle, Rokhlin inequality, volume-case Pesin formula
-  Examples/           -- Arnold cat map (eigenfunction rigidity, ergodic time-1 suspension),
-                      --   doubling map, Pesin/Rokhlin-equality witnesses
+  Examples/           -- Arnold cat map (strong mixing, eigenfunction rigidity, ergodic time-1
+                      --   suspension, flow-Livšic instance), doubling map, Pesin/Rokhlin witnesses
   OperatorEntropy/    -- quantum information: relative entropy, Klein/Lieb, data processing,
                       --   CNT dynamical entropy, Petz recovery + equality
   MeasureTheory/      -- descriptive-set residuals (Lusin, Novikov first separation, Kunugui–Novikov,
