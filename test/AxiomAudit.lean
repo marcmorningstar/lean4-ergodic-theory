@@ -277,6 +277,10 @@ import ErgodicTheory.Continuous.SuspensionTimeOneCoeff
 import ErgodicTheory.Continuous.SuspensionTimeOneParseval
 import ErgodicTheory.Continuous.SuspensionTimeOneErgodic
 import ErgodicTheory.Multifractal.BernoulliSuspensionTimeOneErgodic
+-- Direct imports of the issue #47 cat-map spectral-rigidity modules whose declarations are guarded
+-- below (the eigenfunction-vanishing headline and the constant-irrational-roof time-`1` ergodicity).
+import ErgodicTheory.Examples.CatMapEigenfunction
+import ErgodicTheory.Examples.CatMapSuspensionTimeOneErgodic
 import ErgodicTheory.Entropy.KSEntropyPow
 import ErgodicTheory.Continuous.SuspensionRescale
 import ErgodicTheory.Continuous.SuspensionEntropyDescent
@@ -3515,6 +3519,25 @@ counterexample to subadditivity of the CNT entropy sequence (#26). -/
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms ErgodicTheory.Multifractal.ergodic_suspensionFlow_timeOne_sqrtTwo
+
+-- Issue #47 (cat-map spectral rigidity): a measurable eigenfunction of the Arnold cat map with a
+-- unimodular eigenvalue `≠ 1` vanishes a.e., and the time-`1` map of the constant-irrational-roof
+-- cat-map suspension flow is ergodic (with the `r = √2` non-vacuity witness).
+
+/-- info: 'ErgodicTheory.CatMapToral.catTorus_eigenfunction_ae_zero' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.CatMapToral.catTorus_eigenfunction_ae_zero
+
+/-- info: 'ErgodicTheory.CatMapToral.ergodic_catSuspension_timeOne_const_irrational' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.CatMapToral.ergodic_catSuspension_timeOne_const_irrational
+
+/-- info: 'ErgodicTheory.CatMapToral.ergodic_catSuspension_timeOne_sqrtTwo' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.CatMapToral.ergodic_catSuspension_timeOne_sqrtTwo
 
 -- Issue #38 (suspension entropy descent): the entropy power rule `h(Tⁿ) = n·h(T)`, the time-`r`
 -- rescaling conjugacy of the constant-roof suspension (its measurable equivalence, invariant-measure
