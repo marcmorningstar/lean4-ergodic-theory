@@ -26,7 +26,7 @@ feeding the analytic heart of the elementary Abramov homogeneity proof.
 
 * `ErgodicTheory.condEntropyGivenPartition_flow_tendsto_zero`: `H(φ_t P | P) → 0` (L1).
 * `ErgodicTheory.condEntropyGivenPartition_flow_tendsto_zero'`: `H(P | φ_t P) → 0` (L1, swapped
-  conditioning; the direction consumed by the Proposition's grid comparison).
+  conditioning; the symmetric companion of the previous lemma).
 
 ## References
 
@@ -127,10 +127,12 @@ lemma condEntropyGivenPartition_flow_tendsto_zero (φ : MeasurePreservingFlow μ
   simpa only [MeasurePartition.pulledBack_cells] using main
 
 /-- **L1, swapped conditioning.** For a measure-continuous flow, `H(P | φ_t P) → 0` as `t → 0`.
-The conditioning partition is the pullback `φ_t P`; the subject is `P`. This is the direction the
-Proposition's grid comparison consumes. The leading factors `μ(φ_t⁻¹ Pᵢ) = μ(Pᵢ)` are constant by
-measure-preservation, and the paired cell measures `μ(φ_t⁻¹ Pᵢ ∩ Pⱼ) → μ(Pᵢ ∩ Pⱼ)` by the same
-squeeze as L1 (with the moving factor commuted to the right). -/
+The conditioning partition is the pullback `φ_t P`; the subject is `P`. This is the swapped-
+conditioning companion of `condEntropyGivenPartition_flow_tendsto_zero` (symmetric API; the
+Proposition itself consumes the unprimed form and derives swapped variants via the flow-shift
+identity). The leading factors `μ(φ_t⁻¹ Pᵢ) = μ(Pᵢ)` are constant by measure-preservation, and the
+paired cell measures `μ(φ_t⁻¹ Pᵢ ∩ Pⱼ) → μ(Pᵢ ∩ Pⱼ)` by the same squeeze as L1 (with the moving
+factor commuted to the right). -/
 lemma condEntropyGivenPartition_flow_tendsto_zero' (φ : MeasurePreservingFlow μ)
     (hφ : φ.MeasureContinuous) {ι : Type*} [Fintype ι] (P : MeasurePartition μ ι) :
     Tendsto (fun t : ℝ => condEntropyGivenPartition μ

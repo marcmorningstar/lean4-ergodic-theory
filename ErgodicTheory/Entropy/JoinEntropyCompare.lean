@@ -8,6 +8,7 @@ import ErgodicTheory.Entropy.CondPullback
 import ErgodicTheory.Entropy.CondMono
 import ErgodicTheory.Entropy.KSEntropyMono
 import ErgodicTheory.Entropy.KSEntropyCondBound
+import ErgodicTheory.Entropy.FinJoin
 
 /-!
 # A two-family join-entropy comparison (Ito's Lemma)
@@ -31,10 +32,9 @@ partition is pulled back at an arbitrary finite set of flow times (all sharing t
 
 ## Main definitions
 
-* `ErgodicTheory.Entropy.finJoinCells`: the cell family `f ↦ ⋂_k β_k (f k)` of the join of a finite
-  family `β : Fin N → ι → Set X`.
-* `ErgodicTheory.Entropy.famJoin`: the same join packaged as a `MeasurePartition μ (Fin N → ι)`,
-  when each `β_k` is a partition.
+* `ErgodicTheory.Entropy.famJoin`: the join of a finite family, packaged as a
+  `MeasurePartition μ (Fin N → ι)`, when each `β_k` is a partition. Its cell family is the
+  `finJoinCells` primitive of `ErgodicTheory.Entropy.FinJoin`.
 
 ## Main results
 
@@ -47,8 +47,8 @@ partition is pulled back at an arbitrary finite set of flow times (all sharing t
 
 ## References
 
-* Shunji Ito, *A construction of transversal flows for maximal Markov automorphisms*,
-  Nagoya Math. J. **41** (1971).
+* Yuji Ito, *An elementary proof of Abramov's result on the entropy of a flow*,
+  Nagoya Math. J. **41** (1971), 1–5.
 * François Le Maître, *Notes on the Kolmogorov–Sinai theorem* (2017), §1.
 -/
 
@@ -60,39 +60,18 @@ namespace ErgodicTheory.Entropy
 variable {X : Type*} {𝒜 : MeasurableSpace X} [mX : MeasurableSpace X]
   {ι : Type*} [Fintype ι] {μ : Measure X} {N : ℕ}
 
-/-! ## The finite-family join primitive -/
+/-! ## The finite-family join primitive
 
-/-- The cell family of the join of a finite family `β : Fin N → (ι → Set X)` of cell families:
-`f ↦ ⋂ k, β k (f k)`, indexed by `Fin N → ι`. The finite-family generalization of `ksJoinCells`
-(the case `β k = T^{-k} P`). -/
-def finJoinCells {ι : Type*} {N : ℕ} (β : Fin N → ι → Set X) : (Fin N → ι) → Set X :=
-  fun f => ⋂ k, β k (f k)
-
-omit mX in
-@[simp]
-lemma finJoinCells_apply {ι : Type*} {N : ℕ} (β : Fin N → ι → Set X) (f : Fin N → ι) :
-    finJoinCells β f = ⋂ k, β k (f k) := rfl
+The cell family `finJoinCells` and its `@[simp]` cell-description lemma `finJoinCells_apply` are
+provided by `ErgodicTheory.Entropy.FinJoin` (imported above); here we package the same join as a
+`MeasurePartition`. -/
 
 /-- The **join** `⋁_{k < N} B_k` of a `Fin N`-family of finite measurable partitions all indexed by
-the same cell type `ι`, packaged as a `MeasurePartition μ (Fin N → ι)`. Its cell family is
+the same cell type `ι`, packaged as a `MeasurePartition μ (Fin N → ι)`. A thin alias of
+`ErgodicTheory.Entropy.finJoin` (`Entropy.FinJoin`); its cell family is
 `finJoinCells (fun k => (B k).cells)`. -/
-noncomputable def famJoin (B : Fin N → MeasurePartition μ ι) : MeasurePartition μ (Fin N → ι) where
-  cells := finJoinCells (fun k => (B k).cells)
-  measurable := fun f => MeasurableSet.iInter fun k => (B k).measurable (f k)
-  aedisjoint := by
-    intro f g hfg
-    simp only [onFun, finJoinCells_apply]
-    obtain ⟨k, hk⟩ : ∃ k, f k ≠ g k := Function.ne_iff.mp hfg
-    have hsub₁ : (⋂ i, (B i).cells (f i)) ⊆ (B k).cells (f k) := Set.iInter_subset _ k
-    have hsub₂ : (⋂ i, (B i).cells (g i)) ⊆ (B k).cells (g k) := Set.iInter_subset _ k
-    exact AEDisjoint.mono ((B k).aedisjoint hk) hsub₁ hsub₂
-  cover := by
-    rw [Set.eq_univ_iff_forall]
-    intro x
-    have hx : ∀ i, ∃ j, x ∈ (B i).cells j := fun i =>
-      Set.mem_iUnion.mp ((B i).cover ▸ Set.mem_univ x)
-    choose g hg using hx
-    exact Set.mem_iUnion.mpr ⟨g, Set.mem_iInter.mpr fun i => hg i⟩
+noncomputable abbrev famJoin (B : Fin N → MeasurePartition μ ι) : MeasurePartition μ (Fin N → ι) :=
+  finJoin B
 
 @[simp]
 lemma famJoin_cells (B : Fin N → MeasurePartition μ ι) :

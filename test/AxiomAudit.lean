@@ -307,6 +307,12 @@ import ErgodicTheory.MeasureTheory.CoanalyticReduction
 import ErgodicTheory.MeasureTheory.KunuguiNovikov
 import ErgodicTheory.MeasureTheory.CompactSectionProjection
 import ErgodicTheory.Singular.SingularFiltrationBorel
+import ErgodicTheory.Entropy.FinJoin
+import ErgodicTheory.Entropy.JoinEntropyCompare
+import ErgodicTheory.Continuous.FlowCondEntropyShift
+import ErgodicTheory.Continuous.FlowEntropyContinuity
+import ErgodicTheory.Continuous.SuspensionMeasureContinuity
+import ErgodicTheory.Continuous.FlowAbramov
 
 /-!
 # Axiom audit
@@ -3783,3 +3789,37 @@ axioms: [propext, Classical.choice, Quot.sound] -/
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms ErgodicTheory.measurable_orthProjMatrix_lambdaSublevel
+
+-- Issue #48: Ito's elementary proof of Abramov flow-entropy homogeneity, the finite-family join
+-- comparison (Ito's Lemma, L2), the keystone suspension-flow measure-continuity, the per-partition
+-- LUB Proposition, and the unconditional (irrational-roof allowed) Bernoulli time-1 entropy value.
+
+/-- info: 'ErgodicTheory.Entropy.entropy_finJoin_le_add_sum_condEntropy' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.Entropy.entropy_finJoin_le_add_sum_condEntropy
+
+/-- info: 'ErgodicTheory.tendsto_measureReal_symmDiff_suspensionFlowMap' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.tendsto_measureReal_symmDiff_suspensionFlowMap
+
+/-- info: 'ErgodicTheory.exists_isLUB_ksEntropyPartition_flow_ratio' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.exists_isLUB_ksEntropyPartition_flow_ratio
+
+/-- info: 'ErgodicTheory.ksEntropy_flow_eq_mul' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.ksEntropy_flow_eq_mul
+
+/-- info: 'ErgodicTheory.ksEntropy_bernSuspensionFlow_time_s_eq' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.ksEntropy_bernSuspensionFlow_time_s_eq
+
+/-- info: 'ErgodicTheory.ksEntropy_bernConstSuspension_time_one_irrational' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.ksEntropy_bernConstSuspension_time_one_irrational
