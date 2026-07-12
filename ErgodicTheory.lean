@@ -242,6 +242,14 @@ import ErgodicTheory.Examples.CatMapGridPartition
 import ErgodicTheory.Examples.CatMapEntropyLower
 import ErgodicTheory.Examples.CatMapAdlerWeissCount
 import ErgodicTheory.Examples.CatMapEntropy
+import ErgodicTheory.Examples.CatMapCorrExpansion
+import ErgodicTheory.Examples.CatMapDecay
+import ErgodicTheory.Examples.CatMapExponentRate
+import ErgodicTheory.Examples.CatMapFourierDecay
+import ErgodicTheory.Examples.CatMapGreenKubo
+import ErgodicTheory.Examples.CatMapNormForm
+import ErgodicTheory.Examples.CatMapStatistics
+import ErgodicTheory.Examples.CatMapSuspensionDecay
 import ErgodicTheory.Examples.Rokhlin.AbstractEqui
 import ErgodicTheory.Examples.Rokhlin.DoublingCrux
 import ErgodicTheory.Examples.Rokhlin.DoublingEquality

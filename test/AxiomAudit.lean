@@ -325,6 +325,10 @@ import ErgodicTheory.Examples.CatMapEntropyLower
 import ErgodicTheory.Examples.CatMapAdlerWeissGenerator
 import ErgodicTheory.Examples.CatMapAdlerWeissCount
 import ErgodicTheory.Examples.CatMapQuotientFlowCocycle
+import ErgodicTheory.Examples.CatMapDecay
+import ErgodicTheory.Examples.CatMapNormForm
+import ErgodicTheory.Examples.CatMapExponentRate
+import ErgodicTheory.Examples.CatMapStatistics
 import ErgodicTheory.Continuous.QuotientFlowCocycle
 import ErgodicTheory.Krieger.GeneratingOfSeparating
 
@@ -3947,3 +3951,41 @@ axioms: [propext, Classical.choice, Quot.sound] -/
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms ErgodicTheory.CatMapToral.catQuotientFlowCocycle_exponent
+
+/-! ### Issue #62 — statistical laws for the cat map (correlation decay + limit theorems) -/
+
+-- The tier-1 exponential correlation-decay headline for the Fourier-decay observable class, and
+-- the Diophantine growth bound (`lemma_beta`) underlying the frequency-orbit escape estimate.
+
+/-- info: 'ErgodicTheory.CatMapToral.catCorr_decay' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.CatMapToral.catCorr_decay
+
+/-- info: 'ErgodicTheory.CatMapToral.lemma_beta' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.CatMapToral.lemma_beta
+
+-- The statistical-limit-law landings: Green–Kubo variance rate, finite-sample Chebyshev
+-- concentration, and the suspension-flow correlation-decay transport.
+
+/-- info: 'ErgodicTheory.CatMapToral.catGreenKubo_fourierDecay' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.CatMapToral.catGreenKubo_fourierDecay
+
+/-- info: 'ErgodicTheory.CatMapToral.catConcentration_fourierDecay' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.CatMapToral.catConcentration_fourierDecay
+
+/-- info: 'ErgodicTheory.CatMapToral.catSuspensionDecay_fourierDecay' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.CatMapToral.catSuspensionDecay_fourierDecay
+
+/-- info: 'ErgodicTheory.CatMapToral.catExponent_rate' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.CatMapToral.catExponent_rate

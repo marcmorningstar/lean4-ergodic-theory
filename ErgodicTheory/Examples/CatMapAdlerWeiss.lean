@@ -76,10 +76,9 @@ lemma lam_eq : lam = phiAW + 1 := by unfold phiAW; ring
 /-- `μ = 2 − φ` (`= φ⁻²`). -/
 lemma mu_eq : mu = 2 - phiAW := by unfold phiAW lam mu; ring
 
-/-- `0 < λ`. -/
-lemma lam_pos : 0 < lam := by rw [lam_eq]; linarith [phiAW_pos]
+/-! ## The unstable/stable eigen-coordinates
 
-/-! ## The unstable/stable eigen-coordinates -/
+(`lam_pos : 0 < lam` is proved once in `ErgodicTheory.Examples.CatMapOrbit`.) -/
 
 /-- The **unstable (expanding) coordinate** `pC v = φ·v₀ + v₁`. -/
 def pC (v : Fin 2 → ℝ) : ℝ := phiAW * v 0 + v 1
