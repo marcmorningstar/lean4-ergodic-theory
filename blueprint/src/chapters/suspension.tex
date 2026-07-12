@@ -796,3 +796,91 @@ is $H_\nu/r$ for all $r > 0$ (\Cref{thm:flow-timeOneAll}), so on the irrational 
 carries both an ergodic time-$1$ map and pinned positive entropy $H_\nu/r$. The ergodicity turns on
 the deck twist $e^{2\pi i n r}$ being nontrivial (irrational $r$); the entropy, on the flow
 homogeneity, which no longer sees the arithmetic of $r$.
+
+\section{The quotient-level suspension flow cocycle}\label{sec:susp-quotientCocycle}
+
+The representative-free exponent above lives on orbit classes but is built from a chosen
+representative. Issue \#53 asks for the strictly finer object: the flow's \emph{own} matrix
+derivative data, packaged as a genuine \Cref{FlowCocycle} on the quotient (mapping-torus) space, the
+very interface consumed by the continuous-flow MET \Cref{oseledets_flow}. This is achievable for the
+\textbf{constant unit roof} $\tau \equiv 1$, where the fundamental domain is the box $X \times [0,1)$
+and the quotient projection restricted to it is a \emph{measurable bijection} --- the measurable
+trivialization of the suspension bundle over a standard Borel base.
+
+\begin{definition}[The two-sided $\Z$-indexed matrix cocycle]\label{cocycleZ}
+  \lean{ErgodicTheory.cocycleZ}\leanok
+  \uses{FlowCocycle}
+  Over an invertible measure-preserving base $T : X \simeq X$, the one-sided iterated cocycle
+  (indexed by $\N$) extends to a two-sided $\Z$-indexed cocycle $\operatorname{cocycleZ} A\,T\,n$: for
+  $n \ge 0$ the forward cocycle, and for $n < 0$ the backward cocycle of the inverse dynamics with
+  generator $x \mapsto (A(T^{-1}x))^{-1}$.
+\end{definition}
+
+\begin{theorem}[The two-sided cocycle identity]\label{cocycleZ_add}
+  \lean{ErgodicTheory.cocycleZ_add}\leanok
+  \uses{cocycleZ}
+  $\operatorname{cocycleZ}(m + n)\,x = \operatorname{cocycleZ} m\,(\operatorname{baseIter} n\,x)
+  \cdot \operatorname{cocycleZ} n\,x$, where $\operatorname{baseIter}$ is the $\Z$-iterate of the
+  base. This is the keystone that lets the discrete object assemble into a continuous-time cocycle.
+\end{theorem}
+
+\begin{definition}[The genuine quotient flow cocycle]\label{quotientFlowCocycle}
+  \lean{ErgodicTheory.quotientFlowCocycle}\leanok
+  \uses{cocycleZ, FlowCocycle}
+  For the constant unit roof, reading off a measurable canonical representative
+  $\operatorname{unitFwd} q = (\operatorname{baseIter}\lfloor s\rfloor x, \{s\})$ of each orbit class
+  $q = [x,s]$, the assignment $t \mapsto \operatorname{cocycleZ} A\,T\,\lfloor \{s\} + t\rfloor\,
+  (\operatorname{unitFwd} q)_1$ is a genuine \Cref{FlowCocycle} on the mapping torus. The four cocycle
+  fields follow from \Cref{cocycleZ_add} transported through the floor split
+  $\lfloor a + t\rfloor = \lfloor a\rfloor + \lfloor \{a\} + t\rfloor$.
+\end{definition}
+
+\begin{theorem}[Cohomology to the cover cocycle]\label{exists_flowCocycle_cohomologous_to_cover}
+  \lean{ErgodicTheory.exists_flowCocycle_cohomologous_to_cover}\leanok
+  \uses{quotientFlowCocycle, thm:susp-coverCocycle}
+  Over the quotient, \Cref{quotientFlowCocycle} is cohomologous to the cover cocycle
+  (\Cref{thm:susp-coverCocycle}): at a general representative $(x,s)$ with $0 \le s$ the two differ
+  by the measurable \emph{rep-level frame} $C(x,s) = \operatorname{cocycleZ} A\,T\,\lfloor s\rfloor
+  x$. Because different representatives of one class carry different $\lfloor s\rfloor$, the issue's
+  schematic \emph{class}-level conjugacy is provably impossible; the honest general statement is this
+  rep-level frame, collapsing to the conjugation-free canonical identity at $\operatorname{unitFwd}$.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{quotientFlowCocycle, cocycleZ_add}
+  Take $B = \operatorname{quotientFlowCocycle}$ and $C(p) = \operatorname{cocycleZ} A\,T
+  \lfloor p_2\rfloor p_1$; measurability of $C$ is the composition of $\lfloor \cdot\rfloor$ with the
+  measurable-in-index cocycle, and the frame identity is the floor split of \Cref{cocycleZ_add}.
+\end{proof}
+
+\begin{theorem}[Exponent transport]\label{flowExponentAt_quotientFlowCocycle}
+  \lean{ErgodicTheory.flowExponentAt_quotientFlowCocycle}\leanok
+  \uses{quotientFlowCocycle, thm:susp-flowExpAt}
+  Along the $\operatorname{atTop}$ half-line $0 \le t$, the growth rate of \Cref{quotientFlowCocycle}
+  equals the descended flow exponent $\operatorname{flowExponentAt}$ (\Cref{thm:susp-flowExpAt}).
+\end{theorem}
+
+The general non-constant roof is \textbf{out of scope} and disclosed: the orbit quotient has no
+measurable canonical representative there, so only the exponent, not the matrix cocycle, descends.
+
+\subsection{The cat-map instance}
+
+\begin{definition}[The cat map's quotient flow cocycle]\label{catQuotientFlowCocycle}
+  \lean{ErgodicTheory.CatMapToral.catQuotientFlowCocycle}\leanok
+  \uses{quotientFlowCocycle, catTorus}
+  Instantiating \Cref{quotientFlowCocycle} at the Arnold cat map \Cref{catTorus} under the constant
+  unit roof, with base generator the cat map's own derivative cocycle (the constant hyperbolic
+  matrix $\operatorname{cat}_{\R}$), yields a genuine \Cref{FlowCocycle} on the cat suspension.
+\end{definition}
+
+\begin{theorem}[The cat quotient flow-cocycle Lyapunov exponent]\label{catQuotientFlowCocycle_exponent}
+  \lean{ErgodicTheory.CatMapToral.catQuotientFlowCocycle_exponent}\leanok
+  \uses{catQuotientFlowCocycle, flowExponentAt_quotientFlowCocycle, thm:susp-catFlowExpEq}
+  For $\hat\mu$-a.e.\ orbit class $q$, the growth rate of \Cref{catQuotientFlowCocycle} converges to
+  the flow Lyapunov exponent $\log\!\big((3+\sqrt5)/2\big)$ --- the log of the cat matrix's top
+  eigenvalue.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{flowExponentAt_quotientFlowCocycle, thm:susp-catFlowExpEq}
+  Chain the descended cat-suspension exponent (\Cref{thm:susp-catFlowExpEq}) through the
+  exponent-transport \Cref{flowExponentAt_quotientFlowCocycle}.
+\end{proof}

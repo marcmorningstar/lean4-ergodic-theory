@@ -12,7 +12,7 @@ suspension-flow Lyapunov/entropy theory, a coarse-grained **multifractal formali
 finite-dimensional **quantum-information layer** (Lieb's joint convexity, the data-processing
 inequality, Petz's equality theorem).
 
-**381 modules · ~101,000 lines · ~2,700 theorems — sorry-free, linter-enforced, and with 662
+**397 modules · ~105,000 lines · ~2,800 theorems — sorry-free, linter-enforced, and with 671
 declarations continuously axiom-audited down to `[propext, Classical.choice, Quot.sound]`.**
 
 📖 **[Project site](https://marcmorningstar.github.io/lean4-ergodic-theory/)** ·
@@ -38,6 +38,7 @@ All declarations live in the `ErgodicTheory` namespace (omitted below).
 | `sumPosExp_le_ksEntropy_of_SRB` | The SRB reverse Pesin inequality `∑ λᵢ⁺ ≤ h_μ(T)`, discharging the hard leaf of issue #10 |
 | `pesin_entropy_formula_spectral` | The **volume-case Pesin entropy formula** `h_μ(T) = ∑ λᵢ⁺` (both inequalities combined) |
 | `Examples.Rokhlin.pesin_formula_doublingMap` | The first non-vacuous full-system Pesin instance: `h = ∑ λ⁺ = log 2` for the doubling map |
+| `CatMapToral.catTorus_ksEntropy_eq` | **The cat-map entropy theorem** (Adler–Weiss 1967 / Sinai): `h(catTorus) = log((3+√5)/2) = log λ₊` — the **first formalized exact Kolmogorov–Sinai entropy of a hyperbolic system**. Lower bound via a `5×5` grid partition + eigencoordinate telescoping slab; upper bound via the golden two-box Adler–Weiss Markov partition (exact cover with *empty* junk cell), shown a literal two-sided generator, and a golden transfer-matrix path count |
 | `OperatorEntropy.Lieb.relEntropyMat_jointly_convex` | **Lieb's theorem**: joint convexity of the Umegaki relative entropy |
 | `OperatorEntropy.Lieb.relEntropyMonotone_partialTrace` | The partial-trace data-processing inequality `S(Tr_E ρ ‖ Tr_E σ) ≤ S(ρ‖σ)` (arbitrary ρ, faithful σ) |
 | `OperatorEntropy.Lieb.petz_equality_recovery_general` | Petz's equality theorem, fully general: DPI saturation ⟹ Petz recovery, for every faithful-state Kraus channel |
@@ -52,10 +53,11 @@ All declarations live in the `ErgodicTheory` namespace (omitted below).
 | `CatMapToral.catTorus_eigenfunction_ae_zero` | **Cat-map eigenfunction rigidity**: a measurable `g : 𝕋² → ℂ` with `g(catTorus x) = l·g(x)`, `‖l‖ = 1`, `l ≠ 1`, vanishes a.e. (Fourier transport along infinite orbits + Parseval; Einsiedler–Ward §2.4) |
 | `CatMapToral.catTorus_mixing` | **Strong mixing of the Arnold cat map** for Haar measure — the library's first smooth mixing example — via character decorrelation and an L²-density argument over the Fourier basis (keystone `tendsto_catCorr`, Koopman isometry); re-derives eigenfunction rigidity through the reusable mixing interface `eigenfunction_ae_zero_of_mixing` (corollary `catTorus_eigenfunction_ae_zero_of_mixing`) |
 | `CatMapToral.ergodic_catSuspension_timeOne_const_irrational` | **Time-1 ergodicity of the cat suspension**: the constant-irrational-roof cat-map suspension flow has an ergodic time-1 map (cat-side twin of the Bernoulli result; `ergodic_catSuspension_timeOne_sqrtTwo` at `r = √2`) |
+| `quotientFlowCocycle` / `exists_flowCocycle_cohomologous_to_cover` | **The quotient-level suspension `FlowCocycle`**: over the constant-unit-roof suspension of an invertible base, a genuine continuous-time `FlowCocycle` built from the two-sided matrix cocycle `cocycleZ` and the measurable canonical representative — the flow's own derivative data now lives on the same `FlowCocycle` interface `oseledets_flow` consumes. Cohomologous to the cover cocycle via a rep-level frame; cat instance `CatMapToral.catQuotientFlowCocycle` has a.e. exponent `log((3+√5)/2)` |
 | `OperatorEntropy.CNT.ksEntropy_eq_cntDynamicalEntropy` | The **CNT collapse**: classical KS entropy equals the *full* CNT dynamical entropy on the abelian corner (a disclosed `0 = 0`; the genuine obstruction to a Fekete rate is `OperatorEntropy.CNT.not_subadditive_cnt_entropySeq`) |
 | `measurable_orthProjMatrix_lambdaSublevel` | The **everywhere-Borel singular filtration** (issue #11): the orthogonal projector onto a sublevel set of the forward Lyapunov filtration is Borel measurable, via the Novikov projection theorem |
 
-Every theorem above (and ~640 further results) is guarded in `test/AxiomAudit.lean` by
+Every theorem above (and ~650 further results) is guarded in `test/AxiomAudit.lean` by
 `#guard_msgs in #print axioms`: the build **fails** if any of them ever acquires an axiom beyond
 `propext`, `Classical.choice`, `Quot.sound` — so in particular none depends on `sorryAx`.
 
@@ -102,9 +104,29 @@ SRB inequality `∑λ⁺ ≤ h_μ(T)` follows from the standalone, generator-fre
 systems instantiate the abstract theory end to end: the **Arnold cat map** as a genuine hyperbolic
 automorphism of 𝕋² (measure-preserving, ergodic, **strongly mixing** — `catTorus_mixing`, the
 library's first smooth mixing example, proved by Fourier character decorrelation over an L² Hilbert
-basis — positive top exponent, entropy bounds) and the **doubling map**, which now carries the first
-non-vacuous full-system Pesin instance in the
+basis — positive top exponent) whose **exact Kolmogorov–Sinai entropy is now computed** —
+`catTorus_ksEntropy_eq : h(catTorus) = log((3+√5)/2) = log λ₊`, the entropy statement of the
+**Adler–Weiss** classification (PNAS 57, 1967) and Sinai's sum-of-positive-exponents formula, and
+the first formalized exact entropy of a hyperbolic system (details below) — and the **doubling map**,
+which now carries the first non-vacuous full-system Pesin instance in the
 library — `h = ∑λ⁺ = log 2` (Lyapunov spectrum, Ruelle bound, binary-expansion generator).
+
+The cat-map entropy equality `catTorus_ksEntropy_eq` (issue #52) is `le_antisymm` of two
+structurally distinct geometric mechanisms. The **lower bound** `log λ₊ ≤ h(catTorus)`
+(`catTorus_ksEntropy_ge`, with strict positivity `catTorus_ksEntropy_pos` as its Tier 1) uses a
+`5×5` grid partition: a nearest-lift telescoping argument (`CatMapTelescope.lean`) confines every
+atom of the forward grid join to a `√5·(9/25)·λ·μⁿ`-measure eigencoordinate slab (the **wall lemma**
+`catTorus_gridJoinAtom_volume_le`), forcing the atom count — and hence the entropy — to grow like
+`λ₊ⁿ`, glued through the positive-measure atom-count backbone `Entropy.posAtomCount`. The **upper
+bound** `h(catTorus) ≤ log λ₊` (`catTorus_ksEntropy_le`) exhibits the golden **two-box Adler–Weiss
+Markov partition** `catAWPartition`: its cover is *exact* — the junk cell is literally empty
+(`awCell_zero_eq_empty`) via a four-case skew-lattice reduction, with genuine disjointness and cell
+measures summing to 1 — and by cat-map expansiveness it is a **literal two-sided generator**
+(`isGeneratingTwoSided_catAWPartition`), through a new generic Blackwell bridge
+`Krieger.isGeneratingTwoSided_of_separating` (separating family ⇒ `IsGeneratingTwoSided` on a
+standard Borel space). The two-sided generator theorem then reduces `h(catTorus)` to the
+partition-relative entropy, which a golden transfer-matrix count of admissible itineraries
+(`catAW_ksEntropyPartition_le`, weight recurrence `W(n+1) = λ·W(n)`) bounds by `log λ₊`.
 
 ### Livšic cohomological rigidity (`Livsic/`)
 
@@ -137,7 +159,23 @@ of a base map under a roof function and analyzes its Lyapunov and entropy data. 
 exponent is constructed **representative-free** as a `Quotient.lift` over orbit classes and computed
 to `ae_flowExponentAt_eq_base_div_roof` — `flowExponentAt = λ_base / ∫τ` a.e. — with the cat-map
 suspension as a fully worked positive-exponent instance
-(`CatMapToral.catSuspension_flowExponentAt_eq_base_div_roof`). On the entropy side, the full
+(`CatMapToral.catSuspension_flowExponentAt_eq_base_div_roof`). The flow's **own derivative data**
+now lives on the same `FlowCocycle` interface that `oseledets_flow` consumes: over an invertible base
+under the constant unit roof, the two-sided ℤ-indexed matrix cocycle `cocycleZ` (`TwoSided/`) plus a
+**measurable canonical representative** `unitFwd q = (baseIter ⌊s⌋ x, Int.fract s)` of each orbit
+class assemble into a genuine `quotientFlowCocycle` on the mapping torus (`Continuous/`), the four
+`FlowCocycle` fields following from `cocycleZ`'s two-sided cocycle law through the floor split
+`⌊a+t⌋ = ⌊a⌋ + ⌊Int.fract a + t⌋`. This is the **measurable-trivialization escape route** past the
+non-descent obstruction: the issue's *class*-function conjugacy is provably impossible (different
+representatives of a class carry different `⌊s⌋`), so the honest statement
+`exists_flowCocycle_cohomologous_to_cover` is a **rep-level frame** `C(x,s) = cocycleZ ⌊s⌋ x`
+relating the quotient cocycle to the cover cocycle `coverCocycle`, collapsing to the
+conjugation-free canonical identity at the canonical representative. The exponent transports along
+the `atTop` half-line to `flowExponentAt`, and the cat instance `CatMapToral.catQuotientFlowCocycle`
+realizes a genuine flow cocycle with a.e. growth rate `log((3+√5)/2)`
+(`catQuotientFlowCocycle_exponent`). The **general non-constant roof is out of scope** and disclosed:
+the orbit quotient has no measurable canonical representative for a non-constant roof, so only the
+exponent (not the matrix cocycle) descends there. On the entropy side, the full
 **Abramov flow-entropy homogeneity** `h(φ_t) = t·h(φ_1)` (`t > 0`) is proved abstractly for any
 measure-continuous measure-preserving flow on a standard Borel probability space
 (`ksEntropy_flow_eq_mul`), following Ito's elementary generator-free argument (Nagoya Math. J. 41
@@ -194,8 +232,12 @@ the compact-section (Novikov) projection theorem but not the full Π¹₁-bounde
 Arsenin–Kunugui uniformization; and the flow-Livšic story now closes the tier-III converse for
 **constant-roof** suspension flows (`livsic_suspensionFlow_constRoof`, seam glued by an exact
 identity), leaving the variable-roof / Hölder-regularity flow coboundary — where the fundamental-
-domain gluing is no longer a bare cohomological identity — as the remaining disclosed front. Each
-such boundary is stated as a hypothesis or a scoped instance, never hidden.
+domain gluing is no longer a bare cohomological identity — as the remaining disclosed front;
+likewise the quotient suspension `FlowCocycle` is built for the **constant unit roof** only, since a
+non-constant roof has no measurable canonical orbit-representative in the library (only the flow
+exponent, not the matrix cocycle, descends there), and the issue's *class*-level cocycle conjugacy
+is provably impossible so the honest export is the rep-level frame. Each such boundary is stated as
+a hypothesis or a scoped instance, never hidden.
 
 ## Trust story
 
@@ -204,7 +246,7 @@ such boundary is stated as a hypothesis or a scoped instance, never hidden.
   on the `frontier` branch and reaches `main` only through clean, sorry-free PRs.
 - **Linter-enforced**: the whole `ErgodicTheory` library builds under Mathlib's
   `linter.mathlibStandardSet` with warnings-as-errors, so CI fails on any style-lint regression.
-- **Axiom-audited**: `test/AxiomAudit.lean` guards 662 declarations with
+- **Axiom-audited**: `test/AxiomAudit.lean` guards 671 declarations with
   `#guard_msgs in #print axioms` on every build. (This certifies axiom-cleanliness; theorems with
   hypotheses are, as always, exactly as strong as their hypotheses — the blueprint states them in
   full.)
@@ -222,21 +264,26 @@ ErgodicTheory/
     Extensions/       -- post-theorem corollaries (spectrum, exponent sums, det identity, exterior
                       --   growth, inverse, restriction, non-ergodic, regularity, singular)
   MultiplicativeErgodic.lean  -- the one-sided MET (filtration form)
-  TwoSided/           -- the two-sided splitting
+  TwoSided/           -- the two-sided splitting; the two-sided ℤ-indexed cocycle cocycleZ
   Continuous/         -- the continuous-flow MET + suspension flows (flow exponent, entropy descent,
                       --   time-1 ergodicity, abstract Abramov flow-entropy homogeneity,
-                      --   constant-roof flow-Livšic tier-III equivalence)
+                      --   constant-roof flow-Livšic tier-III equivalence, the quotient-level
+                      --   suspension FlowCocycle from cocycleZ + measurable canonical rep)
   Livsic/             -- Livšic cohomological rigidity (abstract iff, full-shift/two-sided/SFT/
                       --   cat-map/doubling instances, full measurable rigidity, flow obstruction)
   Singular/           -- everywhere-Borel projector of the singular forward filtration
   Entropy/            -- Kolmogorov–Sinai entropy theory: partitions, conditional entropy,
-                      --   generator theorem, Abramov–Rokhlin, Margulis–Ruelle
-  Krieger/            -- Krieger's finite generator theorem, SMB, Rokhlin towers, coding
+                      --   generator theorem, Abramov–Rokhlin, Margulis–Ruelle, Ruelle atom-count
+                      --   backbone (incl. the positive-measure atom count posAtomCount)
+  Krieger/            -- Krieger's finite generator theorem, SMB, Rokhlin towers, coding,
+                      --   the Blackwell separating ⇒ two-sided-generating bridge
   Multifractal/       -- Z_q, τ(q), Rényi dimensions D_q, local/Hausdorff dimension,
                       --   Bernoulli-suspension witness
   Smooth/             -- derivative cocycle, Rokhlin inequality, volume-case Pesin formula
   Examples/           -- Arnold cat map (strong mixing, eigenfunction rigidity, ergodic time-1
-                      --   suspension, flow-Livšic instance), doubling map, Pesin/Rokhlin witnesses
+                      --   suspension, flow-Livšic instance, the sharp entropy h = log((3+√5)/2) via
+                      --   grid-telescope lower bound + Adler–Weiss generator upper bound, quotient
+                      --   flow cocycle), doubling map, Pesin/Rokhlin witnesses
   OperatorEntropy/    -- quantum information: relative entropy, Klein/Lieb, data processing,
                       --   CNT dynamical entropy, Petz recovery + equality
   MeasureTheory/      -- descriptive-set residuals (Lusin, Novikov first separation, Kunugui–Novikov,

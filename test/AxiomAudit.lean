@@ -318,6 +318,15 @@ import ErgodicTheory.Continuous.FlowAbramov
 import ErgodicTheory.Continuous.SuspensionLivsic
 import ErgodicTheory.Examples.CatMapSuspensionLivsic
 import ErgodicTheory.Examples.CatMapMixing
+-- Direct imports of the issue #52/#53 cat-map entropy (Adler–Weiss) and quotient-level
+-- suspension FlowCocycle modules whose declarations are guarded below.
+import ErgodicTheory.Examples.CatMapEntropy
+import ErgodicTheory.Examples.CatMapEntropyLower
+import ErgodicTheory.Examples.CatMapAdlerWeissGenerator
+import ErgodicTheory.Examples.CatMapAdlerWeissCount
+import ErgodicTheory.Examples.CatMapQuotientFlowCocycle
+import ErgodicTheory.Continuous.QuotientFlowCocycle
+import ErgodicTheory.Krieger.GeneratingOfSeparating
 
 /-!
 # Axiom audit
@@ -3881,3 +3890,60 @@ axioms: [propext, Classical.choice, Quot.sound] -/
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms ErgodicTheory.CatMapToral.catTorus_eigenfunction_ae_zero_of_mixing
+
+/-! ### Issues #52/#53 — cat-map entropy (Adler–Weiss) + quotient-level suspension FlowCocycle -/
+
+-- Issue #52: the sharp Kolmogorov–Sinai entropy of the Arnold cat map,
+-- `h(catTorus) = log((3 + √5)/2) = log λ₊`, together with its strict positivity, the sharp
+-- lower bound, the Adler–Weiss generator upper bound, the two-sided generating property of the
+-- golden Markov partition, and the transfer-matrix admissible-path count.
+
+/-- info: 'ErgodicTheory.CatMapToral.catTorus_ksEntropy_pos' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.CatMapToral.catTorus_ksEntropy_pos
+
+/-- info: 'ErgodicTheory.CatMapToral.catTorus_ksEntropy_ge' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.CatMapToral.catTorus_ksEntropy_ge
+
+/-- info: 'ErgodicTheory.CatMapToral.catTorus_ksEntropy_le' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.CatMapToral.catTorus_ksEntropy_le
+
+/-- info: 'ErgodicTheory.CatMapToral.catTorus_ksEntropy_eq' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.CatMapToral.catTorus_ksEntropy_eq
+
+/-- info: 'ErgodicTheory.CatMapToral.catAW_ksEntropyPartition_le' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.CatMapToral.catAW_ksEntropyPartition_le
+
+/-- info: 'ErgodicTheory.CatMapToral.isGeneratingTwoSided_catAWPartition' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.CatMapToral.isGeneratingTwoSided_catAWPartition
+
+-- The abstract separating ⇒ two-sided-generating bridge used to prove the partition generates.
+/-- info: 'ErgodicTheory.Krieger.isGeneratingTwoSided_of_separating' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.Krieger.isGeneratingTwoSided_of_separating
+
+-- Issue #53: the quotient-level suspension `FlowCocycle`.  The existential cohomology headline
+-- (a measurable frame cocycle on the base cover is cohomologous to the pulled-back cover cocycle)
+-- and the resulting a.e. quotient-orbit Lyapunov-exponent identity.
+
+/-- info: 'ErgodicTheory.exists_flowCocycle_cohomologous_to_cover' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.exists_flowCocycle_cohomologous_to_cover
+
+/-- info: 'ErgodicTheory.CatMapToral.catQuotientFlowCocycle_exponent' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.CatMapToral.catQuotientFlowCocycle_exponent
