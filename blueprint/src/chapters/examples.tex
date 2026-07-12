@@ -683,3 +683,139 @@ the same way the Bernoulli shift does (\Cref{thm:susp-bernTimeOne}).
   \uses{thm:catSusp-timeOne}
   Instantiate \Cref{thm:catSusp-timeOne} at \(r = \sqrt2\), positive and irrational.
 \end{proof}
+
+\section{The sharp Kolmogorov--Sinai entropy of the cat map}\label{sec:catEntropy}
+
+The per-partition Ruelle bound \Cref{catTorus_ksEntropyPartition_le_logLambda} gave only
+\(h(\alpha, \operatorname{catTorus}) \le \log\lambda_+\) for one partition. Issue \#52 closes the
+full \emph{system} entropy to the exact value
+\[
+  h(\operatorname{catTorus}) = \log\lambda_+ = \log\!\frac{3+\sqrt5}{2},
+  \qquad \lambda_+ = \varphi^2 = \frac{3+\sqrt5}{2},
+\]
+the entropy statement of the Adler--Weiss classification of ergodic toral automorphisms (R.~L.\
+Adler and B.~Weiss, \emph{Entropy, a complete metric invariant for automorphisms of the torus},
+Proc.\ Nat.\ Acad.\ Sci.\ USA \textbf{57} (1967) 1573--1576) together with Sinai's identification of
+the metric entropy of a hyperbolic automorphism with its sum of positive Lyapunov exponents. The two
+inequalities are proved by structurally distinct geometric mechanisms and glued by
+\texttt{le\_antisymm}.
+
+\subsection{The lower bound: grid partition and eigencoordinate telescoping}
+
+\begin{definition}[Positive-measure atom count]\label{posAtomCount}
+  \lean{ErgodicTheory.Entropy.posAtomCount}\leanok
+  \uses{ksJoin}
+  The number of index families \(f : \operatorname{Fin} n \to \iota\) whose atom of the flat
+  \(n\)-fold join \(\bigvee_{k<n} T^{-k}P\) (\Cref{ksJoin}) has nonzero \(\mu\)-mass. It is at most
+  the set-nonempty atom count, yet still bounds the entropy from above (a null junk cell is not
+  counted), giving a sharper crude Ruelle backbone.
+\end{definition}
+
+\begin{theorem}[The wall lemma]\label{catTorus_gridJoinAtom_volume_le}
+  \lean{ErgodicTheory.CatMapToral.catTorus_gridJoinAtom_volume_le}\leanok
+  \uses{catTorus, measurePreserving_catTorus}
+  Every atom of the \(n\)-fold forward join of the \(5 \times 5\) grid partition under
+  \(\operatorname{catTorus}\) has \(\operatorname{volume}\) at most \((9\sqrt5/25)\cdot\lambda\cdot
+  \mu^n\). Two points sharing every grid cell for \(n\) steps stay \(1/5\)-close along the orbit, so
+  a nearest-integer lift of their difference telescopes into an eigencoordinate slab
+  \(\abs{\operatorname{eigCoordU}} \le (3/10)\mu^{n-1}\), \(\abs{\operatorname{eigCoordS}} \le 3/10\);
+  translation invariance and the projection contraction give the measure bound.
+\end{theorem}
+
+\begin{theorem}[Entropy lower bound]\label{catTorus_ksEntropy_ge}
+  \lean{ErgodicTheory.CatMapToral.catTorus_ksEntropy_ge}\leanok
+  \uses{catTorus_gridJoinAtom_volume_le, posAtomCount, ksEntropy}
+  \(\log\!\big((3+\sqrt5)/2\big) \le h(\operatorname{catTorus})\).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{catTorus_gridJoinAtom_volume_le, posAtomCount}
+  The wall lemma \Cref{catTorus_gridJoinAtom_volume_le} caps each atom's measure by
+  \(c\lambda\mu^n\), so the positive-measure atom count \Cref{posAtomCount} of the grid join is at
+  least \(\lambda_+^{\,n}\) up to a constant; its exponential growth rate is a lower bound for the
+  entropy.
+\end{proof}
+
+\begin{corollary}[Strict positivity of the cat-map entropy (Tier 1, \#52)]\label{catTorus_ksEntropy_pos}
+  \lean{ErgodicTheory.CatMapToral.catTorus_ksEntropy_pos}\leanok
+  \uses{catTorus_gridJoinAtom_volume_le}
+  \(0 < h(\operatorname{catTorus})\).
+\end{corollary}
+
+\subsection{The upper bound: the Adler--Weiss two-box generator}
+
+\begin{definition}[The Adler--Weiss Markov partition]\label{catAWPartition}
+  \lean{ErgodicTheory.CatMapToral.catAWPartition}\leanok
+  \uses{catTorus}
+  The golden two-box partition of \(\mathbb{T}^2\) into the projected branches of the two golden
+  rectangles \(R_1 = [0,\varphi)\times[0,\varphi)\) and \(R_2 = [\varphi,\varphi^2)\times[0,1)\) (in
+  the eigen-coordinates), a six-cell \(\operatorname{MeasurePartition}\) (five branch cells plus a
+  junk cell).
+\end{definition}
+
+\begin{lemma}[Exact cover: the junk cell is empty]\label{awCell_zero_eq_empty}
+  \lean{ErgodicTheory.CatMapToral.awCell_zero_eq_empty}\leanok
+  \uses{catAWPartition}
+  The junk cell of \Cref{catAWPartition} is \emph{literally empty}, not merely null: a four-case
+  skew-lattice reduction shows every torus point, lifted to the unit square, lands in
+  \(R_1 \cup R_2\) after subtracting one of the four lattice vectors \((0,0),(0,1),(-1,0),(-1,1)\).
+  Hence the two golden rectangles tile the torus exactly.
+\end{lemma}
+
+\begin{theorem}[Blackwell bridge: separating itineraries generate]\label{isGeneratingTwoSided_of_separating}
+  \lean{ErgodicTheory.Krieger.isGeneratingTwoSided_of_separating}\leanok
+  \uses{IsGeneratingTwoSided}
+  For a measurable automorphism of a \emph{standard Borel} space and a finite measurable partition
+  \(P\), if the two-sided family of cell-preimages separates points then \(P\) is two-sided
+  generating (\Cref{IsGeneratingTwoSided}). The identity map from the ambient Borel structure to the
+  coarser saturated \(\sigma\)-algebra is an injective measurable map into a countably separated
+  space, hence a measurable embedding by Blackwell's theorem.
+\end{theorem}
+
+\begin{theorem}[The Adler--Weiss partition is a two-sided generator]\label{isGeneratingTwoSided_catAWPartition}
+  \lean{ErgodicTheory.CatMapToral.isGeneratingTwoSided_catAWPartition}\leanok
+  \uses{catAWPartition, isGeneratingTwoSided_of_separating, awCell_zero_eq_empty, catTorus}
+  \(\operatorname{catAWPartition}\) is two-sided generating for \(\operatorname{catTorus}\). Each
+  point has a unique admissible two-sided itinerary (consecutive symbols satisfy
+  \(\operatorname{tgt} = \operatorname{src}\), by the geometric branch-step keystone and injectivity
+  of the covering projection on \(R_1 \cup R_2\)); two points with the same itinerary have
+  difference propagating linearly, so the contraction estimate forces them equal. Separation then
+  yields generation through \Cref{isGeneratingTwoSided_of_separating}.
+\end{theorem}
+
+\begin{theorem}[Golden transfer-matrix entropy bound]\label{catAW_ksEntropyPartition_le}
+  \lean{ErgodicTheory.CatMapToral.catAW_ksEntropyPartition_le}\leanok
+  \uses{catAWPartition, posAtomCount, ksEntropyPartition}
+  \(h(\operatorname{catTorus}, \operatorname{catAWPartition}) \le \log\!\big((3+\sqrt5)/2\big)\). The
+  positive-measure atoms of the join inject into admissible golden itineraries, whose weighted count
+  satisfies the exact recurrence \(W(n+1) = \lambda\cdot W(n)\) via the golden weight identity
+  \(\sum_{\operatorname{src} e' = b} w(e') = \lambda_+\,w(b)\); the atom-count backbone converts this
+  growth rate into the entropy bound.
+\end{theorem}
+
+\begin{theorem}[Entropy upper bound]\label{catTorus_ksEntropy_le}
+  \lean{ErgodicTheory.CatMapToral.catTorus_ksEntropy_le}\leanok
+  \uses{isGeneratingTwoSided_catAWPartition, catAW_ksEntropyPartition_le, ksEntropy_eq_ksEntropyPartition_of_isGeneratingTwoSided, ksEntropy}
+  \(h(\operatorname{catTorus}) \le \log\!\big((3+\sqrt5)/2\big)\).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{isGeneratingTwoSided_catAWPartition, catAW_ksEntropyPartition_le, ksEntropy_eq_ksEntropyPartition_of_isGeneratingTwoSided}
+  Since \(\operatorname{catAWPartition}\) is a two-sided generator
+  (\Cref{isGeneratingTwoSided_catAWPartition}), the two-sided generator theorem
+  (\Cref{ksEntropy_eq_ksEntropyPartition_of_isGeneratingTwoSided}) reduces \(h(\operatorname{catTorus})\)
+  to \(h(\operatorname{catTorus}, \operatorname{catAWPartition})\), bounded by
+  \Cref{catAW_ksEntropyPartition_le}.
+\end{proof}
+
+\subsection{The crown equality}
+
+\begin{theorem}[The sharp cat-map Kolmogorov--Sinai entropy]\label{catTorus_ksEntropy_eq}
+  \lean{ErgodicTheory.CatMapToral.catTorus_ksEntropy_eq}\leanok
+  \uses{catTorus_ksEntropy_ge, catTorus_ksEntropy_le}
+  \(h(\operatorname{catTorus}) = \log\!\big((3+\sqrt5)/2\big) = \log\lambda_+\). This is the first
+  formalized exact Kolmogorov--Sinai entropy of a hyperbolic system.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{catTorus_ksEntropy_ge, catTorus_ksEntropy_le}
+  \texttt{le\_antisymm} of the Adler--Weiss generator upper bound \Cref{catTorus_ksEntropy_le} and
+  the grid-slab lower bound \Cref{catTorus_ksEntropy_ge}.
+\end{proof}
