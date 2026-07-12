@@ -40,20 +40,10 @@ namespace ErgodicTheory.CatMapToral
 
 noncomputable section
 
-/-! ## Small eigenvalue facts -/
+/-! ## The coordinate constant
 
-/-- `μ` is positive: `μ = (3-√5)/2 > 0` since `√5 < 3`. -/
-lemma mu_pos : 0 < mu := by unfold mu; have := sqrt5_lt_three; linarith
-
-/-- `μ < 1` since `√5 > 2 > 1`. -/
-lemma mu_lt_one : mu < 1 := by unfold mu; have := two_lt_sqrt5; linarith
-
-/-- The two eigenvalues are reciprocal: `λ · μ = 1` (as `(3+√5)(3-√5) = 4`). -/
-lemma lam_mul_mu : lam * mu = 1 := by
-  unfold lam mu
-  linear_combination (-1 / 4 : ℝ) * sqrt5_sq
-
-/-! ## The coordinate constant -/
+The eigenvalue facts `mu_pos`, `mu_lt_one`, `lam_mul_mu` used below are proved once in
+`ErgodicTheory.Examples.CatMapOrbit`. -/
 
 /-- The explicit sup-norm bound on the eigenbasis coordinates. -/
 def Ccoord : ℝ := 3 / 2

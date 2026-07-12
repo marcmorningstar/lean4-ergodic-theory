@@ -92,6 +92,39 @@ lemma mu_sq : mu ^ 2 = 3 * mu - 1 := by
 lemma lam_sub_mu : lam - mu = Real.sqrt 5 := by
   unfold lam mu; ring
 
+/-! ## Shared scalar facts about the two eigenvalues `λ`, `μ`
+
+These elementary identities and bounds (`λ + μ = 3`, `λ · μ = 1`, positivity/size of `λ`, `μ`,
+`√5`) are consumed by every downstream cat-map module, so they are proved **once** here rather than
+duplicated per file. -/
+
+/-- `λ + μ = 3` (the trace of `catℝ`). -/
+lemma lam_add_mu : lam + mu = 3 := by unfold lam mu; ring
+
+/-- `λ · μ = 1` (the determinant of `catℝ`). -/
+lemma lam_mul_mu : lam * mu = 1 := by
+  unfold lam mu
+  have h : Real.sqrt 5 ^ 2 = 5 := sqrt5_sq
+  nlinarith [h]
+
+/-- `0 < λ`. -/
+lemma lam_pos : 0 < lam := lt_trans zero_lt_one one_lt_lam
+
+/-- `0 < μ`. -/
+lemma mu_pos : 0 < mu := by unfold mu; have := sqrt5_lt_three; linarith
+
+/-- `μ < 1`. -/
+lemma mu_lt_one : mu < 1 := by unfold mu; have := two_lt_sqrt5; linarith
+
+/-- `μ ≤ λ`. -/
+lemma mu_le_lam : mu ≤ lam := le_trans mu_lt_one.le one_lt_lam.le
+
+/-- `0 < √5`. -/
+lemma sqrt5_pos : 0 < Real.sqrt 5 := by have := two_lt_sqrt5; linarith
+
+/-- `√5 ≠ 0`. -/
+lemma sqrt5_ne_zero : Real.sqrt 5 ≠ 0 := sqrt5_pos.ne'
+
 /-! ## The growth functionals coming from the two eigen-covectors
 
 Because `catℝ` is symmetric, an eigenvector is simultaneously an eigen-covector.  Pairing with
