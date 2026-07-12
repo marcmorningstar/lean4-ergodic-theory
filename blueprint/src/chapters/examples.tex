@@ -819,3 +819,242 @@ inequalities are proved by structurally distinct geometric mechanisms and glued 
   \texttt{le\_antisymm} of the Adler--Weiss generator upper bound \Cref{catTorus_ksEntropy_le} and
   the grid-slab lower bound \Cref{catTorus_ksEntropy_ge}.
 \end{proof}
+
+\section{Statistical laws for the cat map}\label{sec:catStatistics}
+
+The ergodicity (\Cref{ergodic_catTorus}) and strong mixing (\Cref{catTorus_mixing}) of the cat map
+are \emph{qualitative}. Issue \#62 upgrades them to the \emph{quantitative} statistical package of a
+hyperbolic system: an explicit exponential \emph{rate} of decay of correlations, and the
+second-moment limit laws --- Green--Kubo variance asymptotics and finite-sample concentration --- that
+summable correlations entail. The observable regularity is measured not by a Hölder modulus (a
+purely metric \(2\)-torus Hölder coefficient decays too slowly to feed the lattice sums) but by the
+\emph{Fourier coefficient-decay class} \(\mathcal C_s\), following the Fourier proof of exponential
+mixing for hyperbolic toral automorphisms (Einsiedler--Ward, \emph{Ergodic Theory with a View
+towards Number Theory}, Ch.~2; Katok--Hasselblatt \S17--18 for the Anosov decay context). Throughout
+\(\lambda_+ = (3+\sqrt5)/2\) is the expanding eigenvalue and \(\theta = \lambda_+^{-(s-2)/4} < 1\)
+the geometric rate.
+
+\subsection{The Fourier-decay class and the Diophantine norm form}
+
+\begin{definition}[The Fourier-decay class \(\mathcal C_s\)]\label{FourierDecay}
+  \lean{ErgodicTheory.CatMapToral.FourierDecay}\leanok
+  Writing \(\langle n\rangle = \max\{1, \abs{n_0}, \abs{n_1}\}\) for the Japanese bracket of a
+  frequency \(n\in\Z^2\) (\lean{ErgodicTheory.CatMapToral.bracket}), a function \(f:\mathbb{T}^2\to\C\)
+  lies in \(\mathcal C_s = \operatorname{FourierDecay} s\) when its multivariate Fourier coefficients
+  decay at least like \(\langle n\rangle^{-s}\): \(\ \norm{\hat f(n)} \le K\,\langle n\rangle^{-s}\)
+  for some constant \(K\). Every character \(\texttt{mFourier}\,m\) lies in every class
+  (\lean{ErgodicTheory.CatMapToral.fourierDecay_mFourier}, its coefficients a Kronecker delta), and
+  the class is closed under integrable sums and scalar multiples
+  (\lean{ErgodicTheory.CatMapToral.fourierDecay_finsetSum}), so every trigonometric polynomial
+  belongs to it.
+\end{definition}
+
+\begin{lemma}[Lattice-sum tail estimate]\label{summable_bracket_rpow}
+  \lean{ErgodicTheory.CatMapToral.summable_bracket_rpow}\leanok
+  For \(2 < s\) the family \(n\mapsto\langle n\rangle^{-s}\) is summable over \(\Z^2\), and the sum
+  over any set of frequencies with \(\langle n\rangle\ge R\) is at most \(C_s\,R^{-(s-2)/2}\)
+  (\lean{ErgodicTheory.CatMapToral.tsum_bracket_rpow_tail_le}), with \(C_s\) the total sum of the
+  faster-decaying family \(\langle n\rangle^{-(s+2)/2}\). This is exactly the shape the mixing
+  argument consumes to bound a geometric tail \(\sum_{\langle b\rangle>\lambda_+^{k/2}} K\langle
+  b\rangle^{-s} \le C\,\theta^{k}\).
+\end{lemma}
+\begin{proof}\leanok
+  Split the exponent and dominate the sup norm by a product of one-dimensional factors, reducing to a
+  one-dimensional \(p\)-series comparison (\(p = s/2 > 1\)); the tail bound isolates the radius-\(R\)
+  cut of the same comparison.
+\end{proof}
+
+\begin{definition}[The invariant integer norm form]\label{Qform}
+  \lean{ErgodicTheory.CatMapToral.Qform}\leanok
+  \uses{catTorus}
+  The \emph{norm form} \(Q(p,q) = p^2 - p q - q^2\) of the cat-map matrix \(A = \bigl(\begin{smallmatrix}2&1\\1&1\end{smallmatrix}\bigr)\)
+  is the norm form of the ring \(\Z[\varphi]\) (discriminant \(5\)). It is exactly \(A\)-invariant,
+  \(Q(A^k n) = Q(n)\) (\lean{ErgodicTheory.CatMapToral.Qform_pow_mulVec}), and --- being the norm of
+  a nonzero element of \(\Z[\varphi]\) --- never vanishes on a nonzero lattice vector
+  (\lean{ErgodicTheory.CatMapToral.Qform_ne_zero}), hence \(\abs{Q(n)}\ge 1\) there.
+\end{definition}
+
+\begin{theorem}[The Diophantine growth bound]\label{lemma_beta}
+  \lean{ErgodicTheory.CatMapToral.lemma_beta}\leanok
+  \uses{Qform}
+  Factoring \(Q\) over the eigen-line coordinates \(a_{\pm}\), with \(a_+\) scaling by
+  \(\lambda_+^k\) under \(A^k\) (\lean{ErgodicTheory.CatMapToral.aplus_pow}) and
+  \(a_+\cdot a_- = Q\), the lower bound \(\abs{Q}\ge 1\) combines with the elementary sup-norm bounds
+  \(\abs{a_-}\le\lambda_+\norm{\cdot}\), \(\abs{a_+}\le(\lambda_+-1)\norm{\cdot}\) into the
+  quantitative expansion estimate: for every nonzero \(n\in\Z^2\) and every \(k\),
+  \[
+    (\sqrt5 - 2)\,\frac{\lambda_+^{\,k}}{\norm{n}} \;\le\; \norm{A^k n}.
+  \]
+\end{theorem}
+\begin{proof}\leanok
+  \uses{Qform}
+  Write \(\abs{Q(n)} = \abs{a_+(A^k n)}\cdot\abs{a_-(A^k n)}/\lambda_+^{k}\); bounding
+  \(\abs{a_-(A^k n)}\le\lambda_+\norm{A^k n}\) and using \(\abs{Q(n)}\ge 1\) with
+  \(\abs{a_+(n)}\le(\lambda_+-1)\norm n\) rearranges to the stated lower bound, the constant
+  \(\sqrt5 - 2\) coming from \(1/(\lambda_+(\lambda_+-1))\).
+\end{proof}
+
+\subsection{Exponential decay of correlations}
+
+\begin{theorem}[Parseval character expansion of the correlation]\label{hasSum_correlation_fourier_ne_zero}
+  \lean{ErgodicTheory.CatMapToral.hasSum_correlation_fourier_ne_zero}\leanok
+  \uses{catTorus}
+  For continuous \(f, g:\mathbb{T}^2\to\C\), Parseval turns the time-\(k\) correlation into a bilinear
+  character sum, and the Koopman action \(\texttt{mFourier}\,n\circ\operatorname{catTorus}^{[k]} =
+  \texttt{mFourier}(A^k n)\) shifts the index on one factor: the sum over \(b\ne 0\) of
+  \(\overline{\hat f(A^k b)}\,\hat g(b)\) converges to the \emph{centred} correlation
+  \(\int\overline f\,(g\circ\operatorname{catTorus}^{[k]}) - (\int\overline f)(\int g)\).
+\end{theorem}
+\begin{proof}\leanok
+  Parseval's identity for the multivariate Fourier basis expands the \(L^2\) inner product as the
+  bilinear coefficient sum; the Koopman coefficient shift
+  (\lean{ErgodicTheory.CatMapToral.mFourierCoeff_comp_iterate}) reindexes one factor by \(A^k\), and
+  removing the \(b = 0\) term (\lean{ErgodicTheory.CatMapToral.mFourierCoeff_zero_eq_integral},
+  \(\hat g(0) = \int g\)) subtracts exactly the product of the means.
+\end{proof}
+
+\begin{theorem}[Exponential decay of correlations]\label{catCorr_decay}
+  \lean{ErgodicTheory.CatMapToral.catCorr_decay}\leanok
+  \uses{FourierDecay, lemma_beta, summable_bracket_rpow, hasSum_correlation_fourier_ne_zero}
+  For \(f, g\in\mathcal C_s\) (\(s > 2\)) there is a constant \(C\ge 0\) with, for every \(k\),
+  \[
+    \Bigl\lVert \int_{\mathbb{T}^2}\!\overline f\,(g\circ\operatorname{catTorus}^{[k]})
+      - \Bigl(\int_{\mathbb{T}^2}\!\overline f\Bigr)\Bigl(\int_{\mathbb{T}^2}\! g\Bigr) \Bigr\rVert
+    \;\le\; C\,\theta^{k}, \qquad \theta = \lambda_+^{-(s-2)/4} < 1.
+  \]
+  A real-observable corollary records \(\abs{\int f\,(f\circ\operatorname{catTorus}^{[k]}) -
+  (\int f)^2}\le C\theta^{k}\) (\lean{ErgodicTheory.CatMapToral.catCorr_decay_real}), the Green--Kubo
+  input downstream. This is the repository's first quantitative-rate mixing statement.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{lemma_beta, summable_bracket_rpow, hasSum_correlation_fourier_ne_zero}
+  Split the centred character sum \Cref{hasSum_correlation_fourier_ne_zero} at radius
+  \(\langle b\rangle = \lambda_+^{k/2}\). On the near part the norm-form expansion \Cref{lemma_beta}
+  forces \(\langle A^k b\rangle\ge(\sqrt5 - 2)\lambda_+^{k/2}\), so the decay class caps
+  \(\norm{\hat f(A^k b)}\) by a \(\lambda_+^{-ks/4}\)-multiple; on the far part the lattice tail
+  \Cref{summable_bracket_rpow} contributes \(\lambda_+^{-k(s-2)/4}\). Both parts are dominated by
+  \(C\theta^{k}\) with \(\theta = \lambda_+^{-(s-2)/4}\).
+\end{proof}
+
+\subsection{Green--Kubo variance and concentration}
+
+The centred autocorrelation of a bounded real observable \(f\) is
+\(\rho(k) = \operatorname{cov}[f, f\circ\operatorname{catTorus}^{[k]}]\)
+(\lean{ErgodicTheory.CatMapToral.catAutoCorr}); \Cref{catCorr_decay} makes it geometrically summable
+for \(f\in\mathcal C_s\).
+
+\begin{theorem}[Autocovariance decay]\label{catAutoCorr_decay}
+  \lean{ErgodicTheory.CatMapToral.catAutoCorr_decay}\leanok
+  \uses{catCorr_decay}
+  For \(f\in C(\mathbb{T}^2,\R)\) with \(\mathcal C_s\)-complexification (\(s > 2\)),
+  \(\abs{\rho(k)}\le C\theta^{k}\) with the same rate \(\theta = \lambda_+^{-(s-2)/4}\); this is the
+  bridge identifying the probabilistic autocovariance with the centred correlation of
+  \Cref{catCorr_decay}.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{catCorr_decay}
+  The autocovariance \(\operatorname{cov}[f, f\circ\operatorname{catTorus}^{[k]}]\) equals the centred
+  correlation \(\int f\,(f\circ\operatorname{catTorus}^{[k]}) - (\int f)^2\) by measure preservation;
+  apply the real-observable corollary of \Cref{catCorr_decay}.
+\end{proof}
+
+\begin{theorem}[Green--Kubo variance asymptotics]\label{catGreenKubo_fourierDecay}
+  \lean{ErgodicTheory.CatMapToral.catGreenKubo_fourierDecay}\leanok
+  \uses{catAutoCorr_decay}
+  For \(f\in\mathcal C_s\) the rescaled Birkhoff variance converges to the Green--Kubo variance,
+  \[
+    \frac1n\operatorname{Var}\Bigl(\sum_{k<n} f\circ\operatorname{catTorus}^{[k]}\Bigr)
+      \;\longrightarrow\; \sigma^2 = \rho(0) + 2\sum_{k\ge 0}\rho(k+1) \;\ge\; 0,
+  \]
+  together with a linear variance bound \(\operatorname{Var}(S_n)\le B\,n\)
+  (\lean{ErgodicTheory.CatMapToral.catVariance_linear_fourierDecay}).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{catAutoCorr_decay}
+  A Toeplitz/Ces\`aro collapse expresses \(\operatorname{Var}(S_n) = 2\sum_{d<n}(n-d)\rho(d) -
+  n\rho(0)\); geometric summability of \(\rho\) (\Cref{catAutoCorr_decay}) makes the averaged
+  double sum converge to \(\sigma^2\) and bounds it linearly.
+\end{proof}
+
+\begin{theorem}[Finite-sample concentration]\label{catConcentration_fourierDecay}
+  \lean{ErgodicTheory.CatMapToral.catConcentration_fourierDecay}\leanok
+  \uses{catGreenKubo_fourierDecay}
+  For \(f\in\mathcal C_s\) there is a constant \(B\ge 0\) with, for every sample size \(n\ge 1\) and
+  threshold \(\varepsilon > 0\),
+  \[
+    \mu\Bigl\{x : \Bigl\lvert \tfrac1n S_n f(x) - \int_{\mathbb{T}^2}\! f \Bigr\rvert \ge \varepsilon\Bigr\}
+      \;\le\; \frac{B}{n\,\varepsilon^2},
+  \]
+  the tier-3 headline law: the empirical average concentrates around the space mean at the Chebyshev
+  rate.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{catGreenKubo_fourierDecay}
+  Chebyshev's inequality against the linear variance bound of \Cref{catGreenKubo_fourierDecay}.
+\end{proof}
+
+\emph{Honest scope.} A full dynamical \emph{central limit theorem} is \emph{not} claimed: Mathlib
+carries no martingale/Gordin CLT, so only these second-moment laws follow from summable correlations.
+Likewise entropy-from-orbit estimation is out of scope --- it would need a Shannon--McMillan--Breiman
+theorem \emph{with rates}. The \(\mathcal C_s\) certificates given at compile time (trigonometric
+polynomials) have autocorrelations that vanish \emph{exactly} for large \(k\) (the dual index orbit
+escapes any finite frequency support); the geometric rate \(\theta^{k}\) is proved for the full class,
+which does contain infinite-frequency members with genuinely \(\theta^{k}\)-tight decay.
+
+\subsection{A finite-sample rate for the exponent estimator}
+
+\begin{theorem}[Exponent-estimator rate]\label{catExponent_rate}
+  \lean{ErgodicTheory.CatMapToral.catExponent_rate}\leanok
+  \uses{catLift_derivativeCocycle_topExponent_pos}
+  Because the derivative cocycle of the cat map is the \emph{constant} hyperbolic matrix
+  \(\texttt{cat}_{\R} = \bigl(\begin{smallmatrix}2&1\\1&1\end{smallmatrix}\bigr)\), the length-\(n\)
+  top-exponent estimator \((1/n)\log\norm{\texttt{cat}_{\R}^{\,n}}\) is deterministic and converges to
+  \(\log\lambda_+\) at the explicit rate
+  \[
+    \Bigl\lvert \frac1n\log\norm{\texttt{cat}_{\R}^{\,n}} - \log\lambda_+ \Bigr\rvert
+      \;\le\; \frac{C_0}{n}, \qquad n\ge 1,
+  \]
+  with \(C_0 = \abs{\log C}\), \(C = (\norm{\texttt{cat}_{\R}} + \lambda_+ + 1)/\sqrt5\).
+\end{theorem}
+\begin{proof}\leanok
+  Cayley--Hamilton gives \(\texttt{cat}_{\R}^{\,n} = a_n\,\texttt{cat}_{\R} + b_n\,\mathbf 1\) with
+  coefficients \((\lambda_+^n - \mu^n)/\sqrt5\), \(\mu = (3-\sqrt5)/2\in(0,1)\), whence the two-sided
+  Gelfand bound \(\lambda_+^n \le \norm{\texttt{cat}_{\R}^{\,n}} \le C\lambda_+^n\) (lower by applying
+  to the \(\lambda_+\)-eigenvector, upper by the triangle inequality). Taking logarithms and dividing
+  by \(n\) yields the \(C_0/n\) rate; letting \(n\to\infty\) re-derives the limit
+  (\lean{ErgodicTheory.CatMapToral.tendsto_catExponent_rate}).
+\end{proof}
+
+\subsection{Transport to the suspension flow}
+
+The base decay of \Cref{catCorr_decay} transports to the constant-roof cat suspension flow, subject
+to the fibre-rotation obstruction of a constant roof.
+
+\begin{theorem}[Suspension-flow correlation decay]\label{catSuspensionDecay_fourierDecay}
+  \lean{ErgodicTheory.CatMapToral.catSuspensionDecay_fourierDecay}\leanok
+  \uses{catCorr_decay, thm:susp-space}
+  For base observables \(f, g\in\mathcal C_s\) with \(g\) \emph{centred} (\(\int g = 0\)) and bounded
+  measurable fibre profiles \(\psi, \chi\), the centred flow correlation of the fibre-product
+  observables \(F[x,s] = f(x)\psi(s)\), \(G[x,s] = g(x)\chi(s)\) on the constant-unit-roof cat
+  suspension decays as
+  \[
+    \Bigl\lvert \int F\,(G\circ\zeta_t) \Bigr\rvert
+      \;\le\; \norm\psi_\infty\norm\chi_\infty\, C\,\theta^{\lfloor t\rfloor}, \qquad t\ge 0.
+  \]
+\end{theorem}
+\begin{proof}\leanok
+  \uses{catCorr_decay}
+  On the fundamental domain the fibre product factors by Fubini; the flow \(\zeta_t[x,s] = [x, s+t]\)
+  moves the floor \(\lfloor s+t\rfloor\) through only the two values \(\lfloor t\rfloor,
+  \lfloor t\rfloor + 1\), so the inner base integral is a base correlation at time \(\lfloor t\rfloor\)
+  or \(\lfloor t\rfloor + 1\), bounded by the real form of \Cref{catCorr_decay}. Centring \(g\) kills
+  the surviving product-of-means term.
+\end{proof}
+
+\emph{The fibre-rotation obstruction.} A constant-roof suspension is \emph{never mixing as a flow}:
+on the trivial fibre product \(f = g = 1\) the correlation is the circle-rotation correlation
+\(\int_0^1\psi(s)\chi(\{t+s\})\,ds\), which does not decay in \(t\) (for \(\psi = \chi = \cos(2\pi\cdot)\)
+it equals \(\tfrac12\cos(2\pi t)\), of modulus \(\tfrac12\) at every integer time). Decay therefore
+\emph{requires} centring the base part (\(\int g = 0\)); the estimate above is the full centred flow
+correlation. (Cornfeld--Fomin--Sinai, \emph{Ergodic Theory}, Ch.~11, on the reduction of special-flow
+correlations to base correlations.)

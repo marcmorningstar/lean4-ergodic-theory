@@ -12,7 +12,7 @@ suspension-flow Lyapunov/entropy theory, a coarse-grained **multifractal formali
 finite-dimensional **quantum-information layer** (Lieb's joint convexity, the data-processing
 inequality, Petz's equality theorem).
 
-**397 modules · ~105,000 lines · ~2,800 theorems — sorry-free, linter-enforced, and with 671
+**410 modules · ~112,000 lines · ~3,000 theorems — sorry-free, linter-enforced, and with 692
 declarations continuously axiom-audited down to `[propext, Classical.choice, Quot.sound]`.**
 
 📖 **[Project site](https://marcmorningstar.github.io/lean4-ergodic-theory/)** ·
@@ -46,12 +46,14 @@ All declarations live in the `ErgodicTheory` namespace (omitted below).
 | `Livsic.livsic_measurable_rigidity` | **Full measurable Livšic rigidity** (Katok–Hasselblatt 19.2.4): over the two-sided full shift a merely measurable a.e.-solution of a Hölder cohomological equation agrees a.e. with a genuine Hölder coboundary |
 | `not_isFlowCoboundary_of_periodicOrbitIntegral_ne_zero` | The **flow-Livšic obstruction**: a continuous roof with a nonzero closed-orbit integral is not a flow coboundary (instantiated on the cat-map suspension) |
 | `livsic_suspensionFlow_constRoof` | The **flow-Livšic tier-III equivalence** for constant-roof suspension flows: a flow observable is a flow coboundary iff every closed-orbit integral of its induced base observable vanishes (flow-native form `..._orbitIntegral`) — transfer function glued **exactly** across the fundamental-domain seam by the base cohomological equation; cat instance `CatMapToral.livsic_catSuspensionFlow` closes the former flow-converse frontier for constant roofs |
+| `CatMapToral.livsic_catSuspensionHolderFlow` | The **classical-strength (Hölder) flow-Livšic theorem** on the Arnold cat-map suspension flow: a Hölder flow observable admits a Hölder flow transfer function iff its induced base observable has vanishing periodic sums — the library's first Hölder-regularity flow-Livšic result, measured against the Bowen–Walters embedding metric `embDist`. Abstract engine `livsic_holderFlow_constRoof` (constant roof, both tier 2 and the issue's tier-4 Anosov-presentation statement) and `livsic_holderFlow_varRoof` (variable Lipschitz roof); roof-Lipschitz is essential (a merely Hölder roof degrades the exponent to `r²`) |
 | `ae_flowExponentAt_eq_base_div_roof` | The **representative-free suspension-flow Lyapunov exponent** `flowExponentAt = λ_base / ∫τ` a.e. — a genuine `Quotient.lift` value on orbit classes, not just a chosen representative |
 | `ergodic_suspensionFlowMap_one_const_roof` | **Time-1 ergodicity** of the constant-**irrational**-roof suspension flow of an ergodic base with unimodular-eigenvalue rigidity |
 | `ksEntropy_flow_eq_mul` | **Abstract Abramov flow-entropy homogeneity** `h(φ_t) = t·h(φ_1)` (in `EReal`, `t > 0`) for any measure-continuous measure-preserving flow on a standard Borel probability space (Ito's elementary generator-free proof) |
 | `ksEntropy_bernConstSuspension_time_one_irrational` | **Suspension entropy descent, all roofs**: `h(ζ⁽ʳ⁾₁) = h_base / r` for **every** roof `r > 0` (irrational included), via `ksEntropy_flow_eq_mul` — retiring the former rational-only restriction |
 | `CatMapToral.catTorus_eigenfunction_ae_zero` | **Cat-map eigenfunction rigidity**: a measurable `g : 𝕋² → ℂ` with `g(catTorus x) = l·g(x)`, `‖l‖ = 1`, `l ≠ 1`, vanishes a.e. (Fourier transport along infinite orbits + Parseval; Einsiedler–Ward §2.4) |
 | `CatMapToral.catTorus_mixing` | **Strong mixing of the Arnold cat map** for Haar measure — the library's first smooth mixing example — via character decorrelation and an L²-density argument over the Fourier basis (keystone `tendsto_catCorr`, Koopman isometry); re-derives eigenfunction rigidity through the reusable mixing interface `eigenfunction_ae_zero_of_mixing` (corollary `catTorus_eigenfunction_ae_zero_of_mixing`) |
+| `CatMapToral.catCorr_decay` | **Exponential decay of correlations for the cat map** (the library's first quantitative-rate mixing statement): for the Fourier coefficient-decay class `𝒞_s` (`s > 2`) the centred correlation decays like `C·θᵏ`, `θ = λ₊^(−(s−2)/4)`, via the Diophantine norm-form growth bound `lemma_beta` (`Q(p,q) = p²−pq−q²`) and a Parseval character split. Consequences: Green–Kubo variance `catGreenKubo_fourierDecay` (`Var(Sₙ)/n → σ²`), Chebyshev concentration `catConcentration_fourierDecay` (`≤ B/(nε²)`), the deterministic exponent-estimator rate `catExponent_rate` (`\|log‖Aⁿ‖/n − log λ₊\| ≤ C₀/n`), and suspension-flow transport `catSuspensionDecay_fourierDecay` (`θ^⌊t⌋`, base-centred). Full CLT deferred (no martingale CLT in Mathlib) |
 | `CatMapToral.ergodic_catSuspension_timeOne_const_irrational` | **Time-1 ergodicity of the cat suspension**: the constant-irrational-roof cat-map suspension flow has an ergodic time-1 map (cat-side twin of the Bernoulli result; `ergodic_catSuspension_timeOne_sqrtTwo` at `r = √2`) |
 | `quotientFlowCocycle` / `exists_flowCocycle_cohomologous_to_cover` | **The quotient-level suspension `FlowCocycle`**: over the constant-unit-roof suspension of an invertible base, a genuine continuous-time `FlowCocycle` built from the two-sided matrix cocycle `cocycleZ` and the measurable canonical representative — the flow's own derivative data now lives on the same `FlowCocycle` interface `oseledets_flow` consumes. Cohomologous to the cover cocycle via a rep-level frame; cat instance `CatMapToral.catQuotientFlowCocycle` has a.e. exponent `log((3+√5)/2)` |
 | `OperatorEntropy.CNT.ksEntropy_eq_cntDynamicalEntropy` | The **CNT collapse**: classical KS entropy equals the *full* CNT dynamical entropy on the abelian corner (a disclosed `0 = 0`; the genuine obstruction to a Fekete rate is `OperatorEntropy.CNT.not_subadditive_cnt_entropySeq`) |
@@ -128,6 +130,28 @@ standard Borel space). The two-sided generator theorem then reduces `h(catTorus)
 partition-relative entropy, which a golden transfer-matrix count of admissible itineraries
 (`catAW_ksEntropyPartition_le`, weight recurrence `W(n+1) = λ·W(n)`) bounds by `log λ₊`.
 
+On top of the qualitative mixing, the cat map now carries a full **statistical-laws layer** (issue
+#62): the exponential decay of correlations `catCorr_decay` — `|∫f·(g∘Tᵏ) − ∫f∫g| ≤ C·θᵏ`,
+`θ = λ₊^(−(s−2)/4)`, for the Fourier coefficient-decay class `𝒞_s` (`s > 2`) — proved by the
+Einsiedler–Ward Fourier mechanism: a Parseval character split
+(`hasSum_correlation_fourier_ne_zero`) whose shifted index is expanded by the invariant integer norm
+form `Q(p,q) = p²−pq−q²` (discriminant 5), giving the Diophantine growth bound `lemma_beta`
+`(√5−2)λ₊ᵏ/‖n‖ ≤ ‖Aᵏn‖`, with the far-frequency tail summed by `tsum_bracket_rpow_tail_le`. The
+class `𝒞_s` replaces Hölder honestly: a 2D Hölder modulus decays too slowly to feed the lattice
+sums. Summable correlations then yield the second-moment limit laws — Green–Kubo variance
+`catGreenKubo_fourierDecay` (`Var(Sₙ)/n → σ² = ρ(0) + 2∑ρ(k+1)`), the linear variance bound
+`catVariance_linear_fourierDecay`, and finite-sample Chebyshev concentration
+`catConcentration_fourierDecay` (`μ{|Sₙf/n − ∫f| ≥ ε} ≤ B/(nε²)`) — plus the deterministic
+finite-sample **exponent-estimator rate** `catExponent_rate` (`|log‖catℝⁿ‖/n − log λ₊| ≤ C₀/n`, from
+a Cayley–Hamilton two-sided Gelfand bound) and the constant-roof suspension-flow transport
+`catSuspensionDecay_fourierDecay` (decay `θ^⌊t⌋` of fibre-product observables). Three honest
+deferrals are disclosed in place: a full dynamical **CLT** is out of reach (Mathlib has no
+martingale/Gordin CLT, so only second-moment laws are proved), **entropy-from-orbit** estimation
+would need an SMB theorem *with rates*, and the suspension-flow decay **requires base-centred**
+observables (`∫g = 0`) — a constant-roof suspension is never mixing as a flow, the fibre rotation
+carrying no mixing. Sources: Einsiedler–Ward Ch. 2; Katok–Hasselblatt §17–18; Coudène;
+Cornfeld–Fomin–Sinai Ch. 11.
+
 ### Livšic cohomological rigidity (`Livsic/`)
 
 The Livšic theory of when a Hölder observable is a coboundary. The abstract engine
@@ -150,7 +174,20 @@ fundamental-domain seam `s = τ` by the base cohomological equation — no metri
 (`CatMapToral.livsic_catSuspensionFlow` + `_orbitIntegral`, discharging the base direction with
 `livsic_catTorus`), certified non-vacuous on both sides: the constant observable `1` is not a flow
 coboundary, while `CatMapToral.sinFibreObservable` (the `sin(2π·)` fibre profile, zero-mean over one
-lap) is (`isFlowCoboundary_sinFibreObservable`).
+lap) is (`isFlowCoboundary_sinFibreObservable`). The regularity-free tier-III converse is now
+**upgraded to the classical-strength Hölder-regularity theorem** (issue #63): over the Bowen–Walters
+embedding metric `embDist` a *Hölder* flow observable admits a *Hölder* flow transfer function iff
+its induced base observable has vanishing periodic sums — abstractly `livsic_holderFlow_constRoof`
+(+`_orbitIntegral`) for any base with the exponential-closing property and a dense orbit (both tier 2
+and the issue's tier-4 Anosov-presentation statement), and `livsic_holderFlow_varRoof` for a variable
+Lipschitz roof (bounded below/above). The cat suspension is the worked instance
+`CatMapToral.livsic_catSuspensionHolderFlow` — the library's first Hölder-regularity flow-Livšic
+result — non-vacuous on both sides (`isHolderFlowCoboundary_sinFibreObservable` cobounds,
+`const_one_not_isHolderFlowCoboundary_catSuspension` does not). The keystone is the cross-seam Hölder
+gluing `holderWith_suspTransfer`; roof-Lipschitz (not merely Hölder) is essential to preserve the
+exponent — a Hölder roof degrades it to `r²` (disclosed, not delivered). Sources: Livšic 1972;
+Katok–Hasselblatt §19.2; Bowen–Walters 1972; Barreira–Saussol CMP 214 (2000); Barreira–Radu–Wolf
+Dyn. Syst. 19 (2004) §2.1.
 
 ### Suspension flows (`Continuous/`)
 
@@ -192,7 +229,19 @@ the roof is irrational** (`ergodic_suspensionFlowMap_one_const_roof`), with a ca
 (`CatMapToral.ergodic_catSuspension_timeOne_const_irrational`, witnessed at `r = √2`). Cat-side, the
 eigenfunction-rigidity theorem `CatMapToral.catTorus_eigenfunction_ae_zero` — any measurable
 `g : 𝕋² → ℂ` with `g(catTorus x) = l·g(x)`, `‖l‖ = 1`, `l ≠ 1`, vanishes a.e. — supplies the Fourier
-rigidity behind the cat suspension's ergodic time-1 map.
+rigidity behind the cat suspension's ergodic time-1 map. The suspension space also carries a genuine
+**Bowen–Walters metric** (issue #63): rather than the naive finite-route gauge `routeDist` — provably
+*not* a metric (the low/high routes are essential; documented counterexamples to the triangle
+inequality) — the honest metric `embDist` is realized by a Kuratowski-type embedding into
+`X →ᵇ ℝ` (two height-weighted test bundles `muFun`/`nuFun` plus a circle-height gauge), proved a
+metric (`embDist_triangle`, `embDist_eq_zero`), inducing the quotient topology
+(`suspensionMetricSpace`), Polish for a compact base (`suspensionPolish`), with the flow 5-Lipschitz
+in time (`embDist_flow_le`). The variable-roof version `embDistVar` (roof bounded below by `ρmin`)
+normalizes fibre heights to the unit circle — making the seam gluing roof-independent — with the flow
+`(5/ρmin)`-Lipschitz (`embDistVar_flow_le`); rescaling a variable roof to a constant one is a wall
+(bi-Lipschitz only when the roof is cohomologous to a constant), so the metric is built directly on
+the normalized coordinate. This metric is the substrate for the Hölder-regularity flow-Livšic theory
+above.
 
 ### Descriptive-set-theoretic residuals (`MeasureTheory/`, `Singular/`)
 
@@ -231,8 +280,11 @@ elided, and they are recorded honestly in the module docstrings: the descriptive
 the compact-section (Novikov) projection theorem but not the full Π¹₁-boundedness / general
 Arsenin–Kunugui uniformization; and the flow-Livšic story now closes the tier-III converse for
 **constant-roof** suspension flows (`livsic_suspensionFlow_constRoof`, seam glued by an exact
-identity), leaving the variable-roof / Hölder-regularity flow coboundary — where the fundamental-
-domain gluing is no longer a bare cohomological identity — as the remaining disclosed front;
+identity) and its **Hölder-regularity** upgrade for both constant and variable *Lipschitz* roofs
+(`livsic_holderFlow_constRoof`, `livsic_holderFlow_varRoof`, on the Bowen–Walters embedding metric),
+leaving only the flow-Livšic theorem for a roof that is *merely Hölder* (not Lipschitz) — where the
+fibre-comparison change of variables degrades the transfer exponent from `r` to `r²` — as the
+remaining disclosed front;
 likewise the quotient suspension `FlowCocycle` is built for the **constant unit roof** only, since a
 non-constant roof has no measurable canonical orbit-representative in the library (only the flow
 exponent, not the matrix cocycle, descends there), and the issue's *class*-level cocycle conjugacy
@@ -246,7 +298,7 @@ a hypothesis or a scoped instance, never hidden.
   on the `frontier` branch and reaches `main` only through clean, sorry-free PRs.
 - **Linter-enforced**: the whole `ErgodicTheory` library builds under Mathlib's
   `linter.mathlibStandardSet` with warnings-as-errors, so CI fails on any style-lint regression.
-- **Axiom-audited**: `test/AxiomAudit.lean` guards 671 declarations with
+- **Axiom-audited**: `test/AxiomAudit.lean` guards 692 declarations with
   `#guard_msgs in #print axioms` on every build. (This certifies axiom-cleanliness; theorems with
   hypotheses are, as always, exactly as strong as their hypotheses — the blueprint states them in
   full.)
@@ -268,9 +320,11 @@ ErgodicTheory/
   Continuous/         -- the continuous-flow MET + suspension flows (flow exponent, entropy descent,
                       --   time-1 ergodicity, abstract Abramov flow-entropy homogeneity,
                       --   constant-roof flow-Livšic tier-III equivalence, the quotient-level
-                      --   suspension FlowCocycle from cocycleZ + measurable canonical rep)
+                      --   suspension FlowCocycle from cocycleZ + measurable canonical rep, the
+                      --   Bowen–Walters embedding metric embDist/embDistVar + Polishness)
   Livsic/             -- Livšic cohomological rigidity (abstract iff, full-shift/two-sided/SFT/
-                      --   cat-map/doubling instances, full measurable rigidity, flow obstruction)
+                      --   cat-map/doubling instances, full measurable rigidity, flow obstruction,
+                      --   Hölder-regularity flow-Livšic for constant + variable Lipschitz roofs)
   Singular/           -- everywhere-Borel projector of the singular forward filtration
   Entropy/            -- Kolmogorov–Sinai entropy theory: partitions, conditional entropy,
                       --   generator theorem, Abramov–Rokhlin, Margulis–Ruelle, Ruelle atom-count
@@ -281,9 +335,11 @@ ErgodicTheory/
                       --   Bernoulli-suspension witness
   Smooth/             -- derivative cocycle, Rokhlin inequality, volume-case Pesin formula
   Examples/           -- Arnold cat map (strong mixing, eigenfunction rigidity, ergodic time-1
-                      --   suspension, flow-Livšic instance, the sharp entropy h = log((3+√5)/2) via
-                      --   grid-telescope lower bound + Adler–Weiss generator upper bound, quotient
-                      --   flow cocycle), doubling map, Pesin/Rokhlin witnesses
+                      --   suspension, flow-Livšic + Hölder flow-Livšic instances, the sharp entropy
+                      --   h = log((3+√5)/2) via grid-telescope lower bound + Adler–Weiss generator
+                      --   upper bound, quotient flow cocycle, statistical laws: exponential decay of
+                      --   correlations, Green–Kubo, concentration, exponent rate), doubling map,
+                      --   Pesin/Rokhlin witnesses
   OperatorEntropy/    -- quantum information: relative entropy, Klein/Lieb, data processing,
                       --   CNT dynamical entropy, Petz recovery + equality
   MeasureTheory/      -- descriptive-set residuals (Lusin, Novikov first separation, Kunugui–Novikov,

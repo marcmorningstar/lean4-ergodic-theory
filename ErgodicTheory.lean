@@ -137,6 +137,8 @@ import ErgodicTheory.Continuous.SuspensionRescale
 import ErgodicTheory.Continuous.SuspensionEntropyDescent
 import ErgodicTheory.Continuous.FlowAbramov
 import ErgodicTheory.Continuous.SuspensionLivsic
+import ErgodicTheory.Continuous.SuspensionMetric
+import ErgodicTheory.Continuous.SuspensionMetricVar
 import ErgodicTheory.Continuous.QuotientFlowCocycle
 import ErgodicTheory.Smooth.DerivativeCocycle
 import ErgodicTheory.Smooth.Expanding
@@ -230,6 +232,8 @@ import ErgodicTheory.Examples.CatMapEigenShadow
 import ErgodicTheory.Examples.CatMapClosing
 import ErgodicTheory.Examples.CatMapFlowCoboundary
 import ErgodicTheory.Examples.CatMapSuspensionLivsic
+import ErgodicTheory.Examples.CatMapSuspensionHolderLivsic
+import ErgodicTheory.Examples.CatMapVarRoofHolderLivsic
 import ErgodicTheory.Examples.CatMapMixing
 import ErgodicTheory.Examples.CatMapQuotientFlowCocycle
 import ErgodicTheory.Examples.CatMapAdlerWeiss
