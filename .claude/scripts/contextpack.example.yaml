@@ -1,0 +1,31 @@
+# Example contextpack manifest for lean4-oseledets.
+#
+# Run from the repo root:
+#   .claude/scripts/contextpack.py build   .claude/scripts/contextpack.example.yaml -o /tmp/ctx.txt
+#   .claude/scripts/contextpack.py tokens  .claude/scripts/contextpack.example.yaml --by-file --offline
+#   .claude/scripts/contextpack.py ask     .claude/scripts/contextpack.example.yaml \
+#       -q "Does the Lean MET statement prove exactly what the blueprint chapter claims?"
+#
+# Paths are resolved relative to THIS file's directory by default, so this
+# manifest points one level up (../) into the repo. Pass --root . to resolve
+# from the current working directory instead.
+
+title: Oseledets MET — blueprint vs. Lean statement review
+
+system: |
+  You are reviewing the lean4-oseledets formalization (the Oseledets
+  multiplicative ergodic theorem). Check whether the blueprint prose and the Lean
+  statements agree: does the Lean theorem prove what the blueprint claims — same
+  hypotheses, same conclusion — and are any gaps, extra assumptions, or `sorry`s
+  honestly reflected? Flag every place the prose promises more than the Lean
+  proves (or vice versa). Answer only from the files below and cite them by name.
+
+files:
+  - path: ../README.md
+    summary: Project overview — the scope and current status of the MET formalization.
+
+  - path: ../blueprint/src/chapters/met.tex
+    summary: The blueprint's prose statement of the multiplicative ergodic theorem.
+
+  - path: ../Oseledets/MultiplicativeErgodic.lean
+    summary: The Lean 4 statement(s) of the MET — the machine-checked target to compare against.
