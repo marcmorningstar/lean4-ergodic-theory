@@ -38,7 +38,7 @@ All declarations live in the `ErgodicTheory` namespace (omitted below).
 | `sumPosExp_le_ksEntropy_of_SRB` | The SRB reverse Pesin inequality `∑ λᵢ⁺ ≤ h_μ(T)`, discharging the hard leaf of issue #10 |
 | `pesin_entropy_formula_spectral` | The **volume-case Pesin entropy formula** `h_μ(T) = ∑ λᵢ⁺` (both inequalities combined) |
 | `Examples.Rokhlin.pesin_formula_doublingMap` | The first non-vacuous full-system Pesin instance: `h = ∑ λ⁺ = log 2` for the doubling map |
-| `CatMapToral.catTorus_ksEntropy_eq` | **The cat-map entropy theorem** (Adler–Weiss 1967 / Sinai): `h(catTorus) = log((3+√5)/2) = log λ₊` — the **first formalized exact Kolmogorov–Sinai entropy of a hyperbolic system**. Lower bound via a `5×5` grid partition + eigencoordinate telescoping slab; upper bound via the golden two-box Adler–Weiss Markov partition (exact cover with *empty* junk cell), shown a literal two-sided generator, and a golden transfer-matrix path count |
+| `CatMapToral.catTorus_ksEntropy_eq` | **The cat-map entropy theorem** (Adler–Weiss 1967 / Sinai): `h(catTorus) = log((3+√5)/2) = log λ₊` — the **exact Kolmogorov–Sinai entropy of a hyperbolic system, formalized end-to-end** (we have not located a prior formalization). Lower bound via a `5×5` grid partition + eigencoordinate telescoping slab; upper bound via the golden two-box Adler–Weiss Markov partition (exact cover with *empty* junk cell), shown a literal two-sided generator, and a golden transfer-matrix path count |
 | `OperatorEntropy.Lieb.relEntropyMat_jointly_convex` | **Lieb's theorem**: joint convexity of the Umegaki relative entropy |
 | `OperatorEntropy.Lieb.relEntropyMonotone_partialTrace` | The partial-trace data-processing inequality `S(Tr_E ρ ‖ Tr_E σ) ≤ S(ρ‖σ)` (arbitrary ρ, faithful σ) |
 | `OperatorEntropy.Lieb.petz_equality_recovery_general` | Petz's equality theorem, fully general: DPI saturation ⟹ Petz recovery, for every faithful-state Kraus channel |
@@ -124,7 +124,7 @@ library's first smooth mixing example, proved by Fourier character decorrelation
 basis — positive top exponent) whose **exact Kolmogorov–Sinai entropy is now computed** —
 `catTorus_ksEntropy_eq : h(catTorus) = log((3+√5)/2) = log λ₊`, the entropy statement of the
 **Adler–Weiss** classification (PNAS 57, 1967) and Sinai's sum-of-positive-exponents formula, and
-the first formalized exact entropy of a hyperbolic system (details below) — and the **doubling map**,
+the exact entropy of a hyperbolic system formalized end-to-end (we have not located a prior formalization; details below) — and the **doubling map**,
 which now carries the first non-vacuous full-system Pesin instance in the
 library — `h = ∑λ⁺ = log 2` (Lyapunov spectrum, Ruelle bound, binary-expansion generator).
 
@@ -388,6 +388,14 @@ a hypothesis or a scoped instance, never hidden.
   full.)
 - **Blueprint-checked**: `lake exe checkdecls` (run by CI) verifies every `\lean{...}` name in the
   blueprint against the built library, so the blueprint cannot drift from the source.
+
+### Attribution and novelty
+
+This README and the blueprint document what is formalized and cite the classical sources each proof
+follows. Phrases like "the library's first …" are internal navigation, not priority claims. In a few
+places where we could not locate a statement or construction in the literature (noted in the relevant
+module docstrings), we say so explicitly — such notes are invitations for correction, not assertions
+of novelty; whether anything here is mathematically new is for the community to judge.
 
 ## Layout
 

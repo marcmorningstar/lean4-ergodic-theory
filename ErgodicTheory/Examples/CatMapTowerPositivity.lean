@@ -17,8 +17,8 @@ Two sibling modules describe the *same* two-cell coarse Adler–Weiss factor of 
   `i ↦ catProj '' awBox i`.  The cover is exact because the fine branch tiling has an empty junk
   cell; this is the partition the flow tower (`CatMapSymbolicTower`) identifies with the merged
   two-symbol subshift.
-* `ErgodicTheory.Examples.CatMapCoarsePositivity` proves the first *positive* Kolmogorov–Sinai
-  lower bound `log λ − log 2 ≤ h(catTorus, ·)` for a **junk-absorbing** partition
+* `ErgodicTheory.Examples.CatMapCoarsePositivity` proves the library's first *positive*
+  Kolmogorov–Sinai lower bound `log λ − log 2 ≤ h(catTorus, ·)` for a **junk-absorbing** partition
   `coarseAWPartitionJunk` (cell `1 = catProj '' awBox 1`, cell `0 = (catProj '' awBox 1)ᶜ`), whose
   complement cell swallows the null junk.
 

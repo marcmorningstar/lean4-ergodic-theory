@@ -13,7 +13,7 @@ import Mathlib.LinearAlgebra.Determinant
 /-!
 # Strict positivity of the coarse Adler–Weiss partition entropy for the cat map
 
-This module proves the first **positive** Kolmogorov–Sinai lower bound for a *coarse*
+This module proves the library's first **positive** Kolmogorov–Sinai lower bound for a *coarse*
 (non-generating) two-cell partition of the Arnold cat map `catTorus`.  The coarse partition merges
 the five Adler–Weiss branch cells by the source rectangle `src`, leaving only the two golden
 rectangles `R₁, R₂` (index `Fin 2`), so it is a genuine *factor* of the Adler–Weiss Markov
@@ -597,8 +597,8 @@ theorem coarseAW_ksEntropyPartition_ge :
   rwa [show -Real.log (2 / lam) = Real.log lam - Real.log 2 from by
     rw [Real.log_div two_ne_zero lam_pos.ne']; ring] at hmain
 
-/-- **Strict positivity of the coarse Adler–Weiss partition entropy.**  The first positive
-Kolmogorov–Sinai lower bound for a coarse (non-generating) partition of the cat map:
+/-- **Strict positivity of the coarse Adler–Weiss partition entropy.**  The library's first
+positive Kolmogorov–Sinai lower bound for a coarse (non-generating) partition of the cat map:
 `0 < ksEntropyPartition catTorus coarseAWPartitionJunk`, since `λ = (3+√5)/2 > 2`. -/
 theorem coarseAW_ksEntropyPartition_pos :
     0 < ksEntropyPartition measurePreserving_catTorus coarseAWPartitionJunk := by

@@ -12,7 +12,7 @@ import Mathlib.MeasureTheory.Integral.Bochner.ContinuousLinearMap
 /-!
 # Exponential decay of correlations for the Arnold cat map
 
-This module proves the **first quantitative-rate mixing statement** for the repository's Arnold
+This module proves the **repository's first quantitative-rate mixing statement** for the Arnold
 cat map `catTorus` on the `2`-torus `𝕋²`, upgrading the qualitative `tendsto_catCorr` to an
 explicit geometric rate.  For observables in the Fourier-decay class `FourierDecay s` (`s > 2`)
 the centred correlation decays exponentially:
@@ -272,8 +272,8 @@ theorem catCorr_tsum_norm_le {s : ℝ} (hs : 2 < s) {f g : T2 → ℂ}
 /-- **Exponential decay of correlations (complex observables).**  For `f g : C(𝕋², ℂ)` in the
 Fourier-decay class `FourierDecay s` with `s > 2`, the centred correlation under the `k`-fold cat
 map decays geometrically with explicit base `θ = λ^(-(s-2)/4) < 1`:
-`‖∫ conj f · (g ∘ Tᵏ) − (∫ conj f)(∫ g)‖ ≤ C · θᵏ`.  This is the first quantitative-rate mixing
-statement for the repository's cat map (an upgrade of `tendsto_catCorr`). -/
+`‖∫ conj f · (g ∘ Tᵏ) − (∫ conj f)(∫ g)‖ ≤ C · θᵏ`.  This is the repository's first
+quantitative-rate mixing statement for the cat map (an upgrade of `tendsto_catCorr`). -/
 theorem catCorr_decay {s : ℝ} (hs : 2 < s) (f g : C(T2, ℂ))
     (hf : FourierDecay s (f : T2 → ℂ)) (hg : FourierDecay s (g : T2 → ℂ)) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ k : ℕ,

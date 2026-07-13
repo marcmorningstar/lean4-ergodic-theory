@@ -32,7 +32,8 @@ raw height. All those lemmas are roof independent (statements about points of `X
 classes), so the embedding metric, its triangle inequality and its point separation descend with the
 same `2 × 2` Kuratowski elimination.
 
-The one genuinely new ingredient is the **canonical fundamental-domain representative**
+The one ingredient not inherited from the constant-roof module is the **canonical
+fundamental-domain representative**
 `suspensionRepVar` for a variable roof: with `τ ≥ ρmin > 0` every orbit meets the box
 `suspensionDomain τ = {(x, s) | 0 ≤ s < τ x}` exactly once (the roof-cocycle `roofSum n x` is
 strictly increasing in `n` with gaps `≥ ρmin`, so it partitions `ℝ`), and the unique meeting index
