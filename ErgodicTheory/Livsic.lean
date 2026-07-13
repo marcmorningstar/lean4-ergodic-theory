@@ -22,6 +22,8 @@ import ErgodicTheory.Livsic.BiShiftClosing
 import ErgodicTheory.Livsic.BiShiftDenseOrbit
 import ErgodicTheory.Livsic.BiShiftFull
 import ErgodicTheory.Livsic.FlowCoboundary
+import ErgodicTheory.Livsic.HolderFlowCoboundary
+import ErgodicTheory.Livsic.HolderFlowCoboundaryVar
 import ErgodicTheory.Livsic.MeasurableRigidity
 import ErgodicTheory.Livsic.BiShiftFactor
 import ErgodicTheory.Livsic.BiShiftProductStructure

@@ -331,6 +331,15 @@ import ErgodicTheory.Examples.CatMapExponentRate
 import ErgodicTheory.Examples.CatMapStatistics
 import ErgodicTheory.Continuous.QuotientFlowCocycle
 import ErgodicTheory.Krieger.GeneratingOfSeparating
+-- Direct imports of the issue #63 Hölder suspension-flow Livšic tier (metric substrate, the
+-- constant- and variable-roof equivalences, and the cat-map landing) whose declarations are
+-- guarded below.
+import ErgodicTheory.Continuous.SuspensionMetric
+import ErgodicTheory.Continuous.SuspensionMetricVar
+import ErgodicTheory.Livsic.HolderFlowCoboundary
+import ErgodicTheory.Livsic.HolderFlowCoboundaryVar
+import ErgodicTheory.Examples.CatMapSuspensionHolderLivsic
+import ErgodicTheory.Examples.CatMapVarRoofHolderLivsic
 
 /-!
 # Axiom audit
@@ -3989,3 +3998,104 @@ axioms: [propext, Classical.choice, Quot.sound] -/
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms ErgodicTheory.CatMapToral.catExponent_rate
+
+/-! ### Issue #63 — Hölder Livšic for suspension flows (regularity) -/
+
+-- The metric substrate on the suspension space: the `MetricSpace` structure whose topology is the
+-- quotient topology, the resulting Polish-space fact, and the `5`-Lipschitz-in-time flow bound.
+
+/-- info: 'ErgodicTheory.suspensionMetricSpace' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.suspensionMetricSpace
+
+/-- info: 'ErgodicTheory.suspensionPolish' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.suspensionPolish
+
+/-- info: 'ErgodicTheory.embDist_flow_le' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.embDist_flow_le
+
+-- The variable-roof metric substrate: `embDistVar` is a genuine metric (triangle inequality and
+-- separation).
+
+/-- info: 'ErgodicTheory.embDistVar_triangle' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.embDistVar_triangle
+
+/-- info: 'ErgodicTheory.embDistVar_eq_zero' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.embDistVar_eq_zero
+
+-- The constant-roof Hölder suspension-flow Livšic equivalence (a Hölder flow observable is a Hölder
+-- flow coboundary iff every periodic Birkhoff sum of its induced base observable vanishes), its
+-- closed-orbit-integral form, and the cross-seam Hölder gluing keystone.
+
+/-- info: 'ErgodicTheory.livsic_holderFlow_constRoof' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.livsic_holderFlow_constRoof
+
+/-- info: 'ErgodicTheory.livsic_holderFlow_constRoof_orbitIntegral' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.livsic_holderFlow_constRoof_orbitIntegral
+
+/-- info: 'ErgodicTheory.holderWith_suspTransfer' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.holderWith_suspTransfer
+
+-- The variable-roof Hölder suspension-flow Livšic equivalence and its closed-orbit-integral form.
+
+/-- info: 'ErgodicTheory.livsic_holderFlow_varRoof' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.livsic_holderFlow_varRoof
+
+/-- info: 'ErgodicTheory.livsic_holderFlow_varRoof_orbitIntegral' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.livsic_holderFlow_varRoof_orbitIntegral
+
+-- The cat-map suspension-flow Hölder Livšic landing (the equivalence and its orbit-integral form)
+-- and the two non-vacuity witnesses: the `sin`-fibre Hölder coboundary and the constant-`1`
+-- obstruction.
+
+/-- info: 'ErgodicTheory.CatMapToral.livsic_catSuspensionHolderFlow' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.CatMapToral.livsic_catSuspensionHolderFlow
+
+/-- info: 'ErgodicTheory.CatMapToral.livsic_catSuspensionHolderFlow_orbitIntegral' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.CatMapToral.livsic_catSuspensionHolderFlow_orbitIntegral
+
+/-- info: 'ErgodicTheory.CatMapToral.isHolderFlowCoboundary_sinFibreObservable' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.CatMapToral.isHolderFlowCoboundary_sinFibreObservable
+
+/-- info: 'ErgodicTheory.CatMapToral.const_one_not_isHolderFlowCoboundary_catSuspension' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.CatMapToral.const_one_not_isHolderFlowCoboundary_catSuspension
+
+-- The variable-roof cat-map suspension-flow Hölder Livšic landing (the equivalence and its
+-- zero-observable witness certifying the non-constant-roof hypothesis bundle is satisfiable).
+
+/-- info: 'ErgodicTheory.CatMapToral.livsic_catVarRoofHolderFlow' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.CatMapToral.livsic_catVarRoofHolderFlow
+
+/-- info: 'ErgodicTheory.CatMapToral.livsic_catVarRoofHolderFlow_witness' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.CatMapToral.livsic_catVarRoofHolderFlow_witness

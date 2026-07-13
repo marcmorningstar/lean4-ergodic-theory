@@ -896,9 +896,157 @@ coboundary side is a concrete zero-mean fibre profile.
   non-vacuous on both sides --- some observables cobound, others do not.
 \end{proof}
 
-\paragraph{The remaining wall.} The constant-roof converse above is exact; what is \emph{not}
-delivered is the \emph{variable-roof} flow Livšic theorem, where the fundamental-domain seam
-\(s = \tau(x)\) moves with the base point and the one-lap identity of \Cref{uCover_gen} no longer
-glues the transfer function by a bare cohomological equation --- a genuine Hölder-regularity gluing
-would be required. It is recorded here as the disclosed open front remaining after the constant-roof
-equivalence \Cref{livsic_suspensionFlow_constRoof}.
+\subsection{Hölder-regularity flow-Livšic}
+
+The tier-III equivalence above is \emph{regularity-free}: \texttt{IsFlowCoboundary}
+(\Cref{def:livsic-flowcob}) asks nothing of the transfer function \(u\), so the seam is glued by a bare
+identity. Issue \#63 upgrades it to the \emph{classical-strength} Livšic theorem, where a
+\emph{Hölder} flow observable is required to admit a \emph{Hölder} flow transfer function. Regularity
+is now a genuine constraint, measured against the Bowen--Walters embedding metric
+\(\operatorname{embDist}\) (\Cref{embDist}, built in Chapter~\ref{ch:suspension}). This closes the
+former Hölder-regularity front.
+
+\begin{definition}[Hölder flow coboundary]\label{IsHolderFlowCoboundary}
+  \lean{ErgodicTheory.IsHolderFlowCoboundary}\leanok
+  \uses{def:livsic-flowcob, embDist}
+  On the Bowen--Walters metric space \(\operatorname{SuspensionSpace} T\,\tau\) (constant roof \(1\)),
+  a flow observable \(F\) is a \emph{Hölder flow coboundary} if it is a flow coboundary
+  (\Cref{def:livsic-flowcob}) whose transfer function \(u\) is \(\operatorname{embDist}\)-Hölder:
+  \(\abs{u\,p - u\,q}\le C\,\operatorname{embDist}(p, q)^{r}\) for some \(0 < r\le 1\), \(C\).
+  Forgetting the modulus (\lean{ErgodicTheory.IsHolderFlowCoboundary.isFlowCoboundary}) shows a
+  Hölder flow coboundary is a flow coboundary.
+\end{definition}
+
+\begin{lemma}[The induced base observable is Hölder]\label{holderWith_inducedBaseCocycle}
+  \lean{ErgodicTheory.holderWith_inducedBaseCocycle}\leanok
+  \uses{def:livsic-induced, IsHolderFlowCoboundary}
+  If \(F\) is \(\operatorname{embDist}\)-\(r\)-Hölder and \(T\) is Lipschitz, the induced base
+  observable \(\operatorname{inducedBaseCocycle} T\,\tau\,F\) is \(r\)-Hölder on the base --- the
+  regularity input the base Livšic converse consumes.
+\end{lemma}
+\begin{proof}\leanok
+  \uses{def:livsic-induced}
+  The one-lap integral \(\int_0^{1} F[x, \sigma]\,d\sigma\) inherits the embedding-Hölder modulus of
+  \(F\); the base distance \(d(x, y)\) is recovered from the embedding metric through the two
+  Kuratowski test bundles \(\operatorname{muFun}/\operatorname{nuFun}\) (a \(2\times 2\) elimination)
+  and, in the seam-wrap regime, through \(\operatorname{dist\_map\_le\_embDist\_wrap}\), while
+  Lipschitz continuity of \(T\) controls the \(d(Tx, Ty)\) term.
+\end{proof}
+
+\begin{theorem}[Cross-seam Hölder gluing]\label{holderWith_suspTransfer}
+  \lean{ErgodicTheory.holderWith_suspTransfer}\leanok
+  \uses{holderWith_inducedBaseCocycle, uCover_gen, embDist}
+  For an \(\operatorname{embDist}\)-\(r\)-Hölder, bounded \(F\) and a base transfer function \(u_0\)
+  cobounding the induced base observable, the fundamental-domain candidate
+  \(\operatorname{uCover}(x, s) = u_0(x) + \int_0^{s} F[x, \sigma]\,d\sigma\) descends to a transfer
+  function that is Hölder for the embedding metric. This cross-seam gluing is the substantive content
+  of the theorem.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{holderWith_inducedBaseCocycle, uCover_gen}
+  Following the exact-seam philosophy of \Cref{uCover_gen}: on the fundamental strip the fibre
+  integral is controlled by the embedding-Hölder modulus of \(F\), the base value by the discrete
+  Hölder transfer \(u_0\), and the seam is bridged by two algebraically equivalent (from-below and
+  from-above) representations of \(\operatorname{uCover}\), matched by the base cohomological identity
+  \(\operatorname{inducedBaseCocycle} F\,x = u_0(Tx) - u_0(x)\). The base-distance recoveries reuse
+  the two Kuratowski bundles and the seam-wrap primitive.
+\end{proof}
+
+\begin{theorem}[Hölder flow-Livšic, constant roof]\label{livsic_holderFlow_constRoof}
+  \lean{ErgodicTheory.livsic_holderFlow_constRoof}\leanok
+  \uses{IsHolderFlowCoboundary, holderWith_suspTransfer, thm:livsic-induced-cob, def:livsic-expclosing}
+  Let \(T\) be a Lipschitz homeomorphism of a compact metric base with \(\operatorname{diam} X\le 1\),
+  the summed exponential closing property and a dense forward orbit, and let \(F\) be an
+  \(\operatorname{embDist}\)-\(r\)-Hölder (\(0 < r\le 1\)), bounded flow observable with per-fibre
+  interval-integrable restrictions. Then
+  \[
+    F \text{ is a Hölder flow coboundary of } \zeta
+      \iff \operatorname{inducedBaseCocycle} T\,\tau\,F \text{ has vanishing periodic sums,}
+  \]
+  the flow-native (closed-orbit) form being
+  \lean{ErgodicTheory.livsic_holderFlow_constRoof_orbitIntegral}. This is simultaneously tier 2 (the
+  Hölder-regularity upgrade) and the issue's tier-4 Anosov statement over the suspension presentation.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{holderWith_suspTransfer, thm:livsic-induced-cob}
+  Forward: a Hölder flow coboundary is a flow coboundary, which induces a base coboundary
+  (\Cref{thm:livsic-induced-cob}) with vanishing periodic sums (\Cref{thm:livsic-trivial}). Backward:
+  vanishing periodic sums feed the base Hölder-Livšic converse (\Cref{thm:livsic-existence}, applied to
+  the Hölder induced observable \Cref{holderWith_inducedBaseCocycle}) to produce a Hölder base transfer
+  \(u_0\); the cross-seam gluing \Cref{holderWith_suspTransfer} makes the fundamental-domain candidate
+  \(\operatorname{embDist}\)-Hölder and seam-invariant, so it descends to a genuine Hölder flow transfer
+  function.
+\end{proof}
+
+\begin{theorem}[Hölder flow-Livšic, variable Lipschitz roof]\label{livsic_holderFlow_varRoof}
+  \lean{ErgodicTheory.livsic_holderFlow_varRoof}\leanok
+  \uses{livsic_holderFlow_constRoof, embDistVar}
+  The equivalence extends to a \emph{variable} roof \(\tau\) that is bounded below by
+  \(\rho_{\min} > 0\), bounded above, and \emph{Lipschitz}, measured against the variable-roof
+  Bowen--Walters metric \(\operatorname{embDistVar}\) of \Cref{embDistVar}: an
+  \(\operatorname{embDistVar}\)-\(r\)-Hölder bounded \(F\) is a Hölder flow coboundary iff its induced
+  base observable has vanishing periodic sums.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{livsic_holderFlow_constRoof}
+  Repeat the constant-roof argument on the normalized fibre coordinate. The metric compares points at
+  normalized heights \(u = s/\tau x\) while the transfer integrates raw heights; the change of variables
+  \(\sigma = \tau x\cdot w\) puts both fibre integrands at a common normalized height and lets the
+  variable-roof horizontal-length bound control the fibre difference. The general-roof seam identity
+  (\lean{ErgodicTheory.uCover_gen_var}, seam at height \(\tau x\)) glues the candidate; \emph{Lipschitz}
+  continuity of \(\tau\) is essential --- the fibre-comparison factor \(\abs{\tau x - \tau y}\) stays at
+  exponent \(1\), so the assembled transfer keeps exponent \(r\); a merely \(r\)-Hölder roof would
+  degrade it to \(r^2\) (disclosed, not delivered).
+\end{proof}
+
+This lands on the Arnold cat-map suspension flow --- the classical-strength Livšic theorem for a
+genuine Anosov flow presentation, the library's first Hölder-regularity flow-Livšic result --- by
+discharging the base hypotheses with the cat map's diameter bound, Lipschitz constant, ergodic dense
+orbit and Anosov closing (\Cref{thm:livsic-cat-closing}).
+
+\begin{theorem}[Hölder flow-Livšic for the cat-map suspension flow]\label{livsic_catSuspensionHolderFlow}
+  \lean{ErgodicTheory.CatMapToral.livsic_catSuspensionHolderFlow}\leanok
+  \uses{livsic_holderFlow_constRoof, thm:livsic-cat}
+  For the suspension flow of \(\operatorname{catTorus}\) under the unit roof \(\tau\equiv 1\), a flow
+  observable \(F\) that is \(\operatorname{embDist}\)-Hölder (\(0 < r\le 1\)) and bounded, with
+  interval-integrable fibre restrictions, is a \emph{Hölder} flow coboundary iff every periodic
+  Birkhoff sum of its induced base observable vanishes --- equivalently
+  (\lean{ErgodicTheory.CatMapToral.livsic_catSuspensionHolderFlow_orbitIntegral}) iff every closed-orbit
+  integral of \(F\) vanishes.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{livsic_holderFlow_constRoof, thm:livsic-cat}
+  Instantiate \Cref{livsic_holderFlow_constRoof} at the cat map: the diameter bound
+  \(\operatorname{diam}\mathbb{T}^2\le 1\) (\lean{ErgodicTheory.CatMapToral.catTorus_dist_le_one}), the
+  \(3\)-Lipschitz constant (\lean{ErgodicTheory.CatMapToral.lipschitzWith_catTorus}), continuity, the
+  Anosov summed closing (\Cref{thm:livsic-cat-closing}) and the ergodic dense orbit
+  (\Cref{thm:livsic-ergodic-dense}) discharge every base hypothesis.
+\end{proof}
+
+\begin{theorem}[Non-vacuity on both sides]\label{isHolderFlowCoboundary_sinFibreObservable}
+  \lean{ErgodicTheory.CatMapToral.isHolderFlowCoboundary_sinFibreObservable}\leanok
+  \uses{livsic_catSuspensionHolderFlow, thm:livsic-cat-suspension}
+  The equivalence has content on both sides. The \(\sin(2\pi\cdot)\) fibre profile
+  \(\operatorname{sinFibreObservable}\) is embedding-Hölder and \emph{is} a Hölder flow coboundary of
+  the cat suspension (its one-lap integral \(\int_0^{1}\sin(2\pi s)\,ds = 0\) makes the induced base
+  observable vanish); by contrast the constant observable \(1\) is embedding-Hölder yet \emph{not} a
+  Hölder flow coboundary
+  (\lean{ErgodicTheory.CatMapToral.const_one_not_isHolderFlowCoboundary_catSuspension}), since a Hölder
+  flow coboundary is in particular a flow coboundary and \(1\) is defeated by the closed-orbit
+  obstruction \Cref{thm:livsic-cat-suspension}.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{livsic_catSuspensionHolderFlow, thm:livsic-cat-suspension}
+  Coboundary side: \(\int_0^1\sin(2\pi s)\,ds = 0\) gives vanishing periodic sums, so the backward
+  direction of \Cref{livsic_catSuspensionHolderFlow} supplies the Hölder flow transfer. Obstruction
+  side: \(\operatorname{IsHolderFlowCoboundary.isFlowCoboundary}\) reduces to
+  \Cref{thm:livsic-cat-suspension}, where the period-\(1\) fixed point charges the single lap integral
+  \(1\ne 0\).
+\end{proof}
+
+\paragraph{The remaining wall.} The Hölder-regularity converse above is delivered for a
+\emph{Lipschitz} roof; what is \emph{not} delivered is the flow-Livšic theorem for a roof that is only
+\(r\)-Hölder, where the fibre-comparison change of variables produces a roof-difference factor
+\(\abs{\tau x - \tau y}\) that a Hölder bound would degrade to exponent \(r^2\) --- a genuine
+exponent-loss obstruction, disclosed rather than elided. The classical Bowen--Walters hypothesis that
+roofs be Lipschitz (Barreira--Radu--Wolf \S2.1) is thus exactly the boundary of the current theory.

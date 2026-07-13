@@ -884,3 +884,135 @@ measurable canonical representative there, so only the exponent, not the matrix 
   Chain the descended cat-suspension exponent (\Cref{thm:susp-catFlowExpEq}) through the
   exponent-transport \Cref{flowExponentAt_quotientFlowCocycle}.
 \end{proof}
+
+\section{The Bowen--Walters metric on the suspension}\label{sec:susp-bowenWalters}
+
+The measure theory above never needed a metric on the quotient $\Sigma$; a genuine
+\emph{Bowen--Walters metric} (R.~Bowen and P.~Walters, \emph{Expansive one-parameter flows},
+J.~Diff.~Eq.\ \textbf{12} (1972) 180--193; Barreira--Saussol, Comm.~Math.~Phys.\ \textbf{214} (2000);
+Barreira--Radu--Wolf, Dyn.~Syst.\ \textbf{19} (2004) \S2.1) is, however, the substrate on which the
+\emph{Hölder}-regularity Livšic theory of the next chapter is measured, and on which the flow acts by
+essentially isometric time translations. Issue \#63 builds it in two stages --- a constant-roof-$1$
+metric, then a variable-roof one --- and, notably, does \emph{not} take the naive finite-route gauge
+as the metric, because that gauge provably fails the triangle inequality.
+
+A \emph{horizontal} segment joining $(x, t)$ and $(y, t)$ at common height $t\in[0,1)$ has the
+height-interpolated length $\operatorname{hlen} t\,x\,y = (1-t)\,d(x, y) + t\,d(Tx, Ty)$
+(\lean{ErgodicTheory.hlen}), matching the seam gluing $(x, 1)\sim(Tx, 0)$; a \emph{vertical} segment
+moves along the flow at unit speed. The classical chain-infimum distance is bi-Lipschitz, on the
+canonical fundamental-domain representatives, to the minimum of \emph{five} explicit routes
+(direct, low, high, up-wrap, down-wrap), packaged as the \emph{route gauge}
+$\operatorname{routeDist}$ (\lean{ErgodicTheory.routeDist}).
+
+\begin{proposition}[The route gauge is not a metric]\label{routeDist_not_metric}
+  \lean{ErgodicTheory.routeDist}\leanok
+  The \emph{low} and \emph{high} routes are essential: a naive minimum of only the direct and two
+  wrap routes provably fails the triangle inequality (when $T$ strongly contracts a pair, the cheap
+  path climbs both fibres to the seam and traverses at cost $d(Tx, Ty)$ without crossing it). Even the
+  full five-route minimum $\operatorname{routeDist}$ is only \emph{bi-Lipschitz} to, not equal to, the
+  chain-infimum distance, so it is a gauge, not a metric --- a documented counterexample rules out
+  the triangle inequality. The genuine metric is built by embedding instead.
+\end{proposition}
+
+\begin{definition}[The Bowen--Walters embedding metric]\label{embDist}
+  \lean{ErgodicTheory.embDist}\leanok
+  \uses{thm:susp-space}
+  Under $\operatorname{diam} X \le 1$ the Kuratowski embedding $\operatorname{kur} a = d(a, \cdot)$
+  (\lean{ErgodicTheory.kur}) isometrically embeds $X$ into the bounded continuous functions
+  $X \to^{b} \R$. Two test bundles $\operatorname{muFun}$, $\operatorname{nuFun}$
+  (\lean{ErgodicTheory.muFun}, \lean{ErgodicTheory.nuFun}) interpolate the Kuratowski images of $x$
+  and $Tx$ with two \emph{distinct} height weightings, and $\operatorname{hgt}$
+  (\lean{ErgodicTheory.hgt}) measures the vertical $\R/\Z$ coordinate. Evaluated at the canonical
+  fundamental-domain representatives, the sum
+  \[
+    \operatorname{embDist}(p, q) = d\bigl(\operatorname{muFun} p, \operatorname{muFun} q\bigr)
+      + d\bigl(\operatorname{nuFun} p, \operatorname{nuFun} q\bigr)
+      + \operatorname{hgt}(p_2, q_2)
+  \]
+  is the \emph{embedding metric} $\operatorname{embDist}$ on the constant-roof-$1$ suspension space.
+\end{definition}
+
+\begin{theorem}[$\operatorname{embDist}$ is a metric]\label{embDist_triangle}
+  \lean{ErgodicTheory.embDist_triangle}\leanok
+  \uses{embDist}
+  $\operatorname{embDist}$ satisfies the triangle inequality and separates points
+  (\lean{ErgodicTheory.embDist_eq_zero}): the two test parts descend from the sup-norm triangle
+  inequality of $X \to^{b} \R$, the height part from the $\R/\Z$ quotient metric, and a $2\times 2$
+  linear solve on the two weightings recovers the base point from a vanishing distance. It is
+  bi-Lipschitz to the route gauge $\operatorname{routeDist}$.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{embDist}
+  The Kuratowski map is an isometry into $X \to^{b} \R$, so both test distances are genuine metrics;
+  the height gauge $\operatorname{hgt}$ is the standard circle metric. Their sum inherits symmetry, the
+  triangle inequality and nonnegativity; zero distance forces equal heights (height part) and, at the
+  common height, equal Kuratowski images through the two weightings (test parts), hence $x = y$.
+\end{proof}
+
+\begin{theorem}[Metric-space topology and Polishness]\label{suspensionPolish}
+  \lean{ErgodicTheory.suspensionPolish}\leanok
+  \uses{embDist_triangle, thm:susp-space}
+  For a compact metric base $X$ with $\operatorname{diam} X\le 1$ and a homeomorphism $T$, the
+  $\operatorname{embDist}$ metric induces exactly the quotient topology
+  (\lean{ErgodicTheory.suspensionMetricSpace}, via $\texttt{MetricSpace.ofDistTopology}$), under which
+  the suspension space is compact, complete and separable --- hence \emph{Polish}.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{embDist_triangle}
+  The metric topology agrees with the quotient topology (an open-ball criterion), so
+  $\texttt{MetricSpace.ofDistTopology}$ packages $\operatorname{embDist}$ into a genuine
+  \texttt{MetricSpace} on $\Sigma$. Compactness of $\Sigma$ (a continuous image of $X\times[0,1]$) plus
+  completeness of a compact metric space and second-countability give Polishness.
+\end{proof}
+
+\begin{theorem}[The flow is Lipschitz in time]\label{embDist_flow_le}
+  \lean{ErgodicTheory.embDist_flow_le}\leanok
+  \uses{embDist}
+  The suspension flow is $5$-Lipschitz in the time parameter along each orbit:
+  $\operatorname{embDist}(\zeta_a q, \zeta_b q)\le 5\,\abs{a - b}$.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{embDist}
+  Both flowed points share the base coordinate of the canonical representative; the height advances by
+  $a - b$, so the height gauge contributes $\le\abs{a-b}$ and each test bundle at most twice that,
+  totalling the $5\abs{a-b}$ bound (with the seam-wrap regime handled by the vertical/step estimates).
+\end{proof}
+
+\subsection{The variable-roof metric}
+
+The construction generalises to a roof $\tau$ bounded below by $\rho_{\min} > 0$ by rescaling each
+fibre to the \emph{unit} circle before comparison: the normalized height $u = s/\tau x\in[0,1)$ runs
+over $[0,1)$ on every fibre regardless of $\tau$, so the seam gluing $(x, \tau x)\sim(Tx, 0)$ becomes
+roof-independent and the constant-roof Kuratowski bundles are reused \emph{verbatim} on the normalized
+coordinate.
+
+\begin{definition}[The variable-roof embedding metric]\label{embDistVar}
+  \lean{ErgodicTheory.embDistVar}\leanok
+  \uses{embDist}
+  For a roof $\tau\ge\rho_{\min} > 0$, the canonical box representative
+  $\operatorname{suspensionRepVar}$ (\lean{ErgodicTheory.suspensionRepVar}) is the unique orbit
+  representative in $\{(x,s) : 0\le s < \tau x\}$ (the roof-cocycle is strictly increasing with gaps
+  $\ge\rho_{\min}$, so it partitions $\R$), and $\operatorname{normHeightVar}$
+  (\lean{ErgodicTheory.normHeightVar}) is its normalized height $s/\tau x$. The metric
+  $\operatorname{embDistVar}$ is the constant-roof sum evaluated at the \emph{normalized}
+  representatives; it is a genuine metric (\lean{ErgodicTheory.embDistVar_triangle}).
+\end{definition}
+
+\begin{theorem}[Variable-roof flow-Lipschitz bound]\label{embDistVar_flow_le}
+  \lean{ErgodicTheory.embDistVar_flow_le}\leanok
+  \uses{embDistVar}
+  The realisation cost of the variable roof appears only in the flow-Lipschitz constant: the flow
+  moves the raw height at unit speed, hence the normalized height at speed $1/\tau\le 1/\rho_{\min}$,
+  giving $\operatorname{embDistVar}(\zeta_a q, \zeta_b q)\le(5/\rho_{\min})\,\abs{a - b}$.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{embDistVar}
+  Repeat the constant-roof estimate \Cref{embDist_flow_le} on the normalized coordinate, where the
+  time increment $a - b$ is scaled by $1/\tau x\le 1/\rho_{\min}$ before entering the height and test
+  gauges.
+\end{proof}
+
+\emph{Route $\beta$ is a wall.} Rescaling a variable roof to a constant roof (a time change) is
+bi-Lipschitz only when $\tau$ is cohomologous to a constant, $\tau = c + \varphi\circ T - \varphi$ ---
+precisely the hypothesis one wants to avoid --- so the metric is built directly on the normalized
+fibre coordinate, never by reduction to the constant-roof case.
