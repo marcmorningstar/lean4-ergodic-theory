@@ -5,6 +5,7 @@ Authors: Marcel Morgenstern
 -/
 import ErgodicTheory.Krieger.UpperSMB
 import ErgodicTheory.Multifractal.HausdorffDimension
+import ErgodicTheory.Multifractal.Defs
 import ErgodicTheory.Entropy.GeneratorTheorem
 import Mathlib.Topology.MetricSpace.PiNat
 
@@ -58,10 +59,6 @@ namespace ErgodicTheory.Multifractal
 open ErgodicTheory.Entropy ErgodicTheory.Krieger
 
 /-! ### A0 — setup -/
-
-/-- The **one-sided full shift space** over the alphabet `α₀`: bi-infinite-to-the-right sequences
-`ℕ → α₀`. We give it the `PiNat` ultrametric as a *local* instance below. -/
-abbrev Shift (α₀ : Type*) : Type _ := ∀ _ : ℕ, α₀
 
 variable {α₀ : Type*} [Fintype α₀] [Nonempty α₀] [TopologicalSpace α₀] [DiscreteTopology α₀]
   [MeasurableSpace α₀] [MeasurableSingletonClass α₀]

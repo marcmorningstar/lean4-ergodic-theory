@@ -203,6 +203,9 @@ import ErgodicTheory.MeasureTheory.NovikovSeparation
 import ErgodicTheory.MeasureTheory.CoanalyticReduction
 import ErgodicTheory.MeasureTheory.KunuguiNovikov
 import ErgodicTheory.MeasureTheory.CompactSectionProjection
+import ErgodicTheory.MeasureTheory.ProbabilityMeasurePolish
+import ErgodicTheory.MeasureTheory.PushforwardContinuous
+import ErgodicTheory.MeasureTheory.SectionExistenceAnalytic
 import ErgodicTheory.Entropy.Ruelle.AtomCount
 import ErgodicTheory.Entropy.Ruelle.VolumeDistortion
 import ErgodicTheory.Entropy.Ruelle.Crude

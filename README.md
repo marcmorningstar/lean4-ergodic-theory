@@ -12,7 +12,7 @@ suspension-flow Lyapunov/entropy theory, a coarse-grained **multifractal formali
 finite-dimensional **quantum-information layer** (Lieb's joint convexity, the data-processing
 inequality, Petz's equality theorem).
 
-**422 modules · ~115,000 lines · ~3,200 theorems — sorry-free, linter-enforced, and with 715
+**428 modules · ~117,000 lines · ~3,300 theorems — sorry-free, linter-enforced, and with 731
 declarations continuously axiom-audited down to `[propext, Classical.choice, Quot.sound]`.**
 
 📖 **[Project site](https://marcmorningstar.github.io/lean4-ergodic-theory/)** ·
@@ -62,6 +62,10 @@ All declarations live in the `ErgodicTheory` namespace (omitted below).
 | `OperatorEntropy.quantum_seal_dephase` / `_faithful` | **The dephasing recovery seal** (issue #59): the dephasing channel exhibits a strict Umegaki relative-entropy drop against a non-uniform diagonal reference (`log 2` for the pure state `\|+⟩⟨+\|`; `log 2 − h₂((1+r)/2)` for the faithful family `ρ_r`, via the binary-entropy strict maximum), hence no faithful-ancilla Stinespring recovery. A QA pass repaired a degenerate `σ = I/2` witness (documented) |
 | `OperatorEntropy.CNT.cex_strictly_above_abelian` | **The per-resolution non-commutativity certificate** (issue #59): on the finite-dimensional witness, every abelian operational partition yields exactly zero correlation entropy at every resolution (rank-one Gram collapse), while the non-commuting partition is strictly positive at resolution 2 — the honest form of "entropy strictly above every abelian restriction", the system-level CNT rate being the disclosed `0 = 0` of `cntDynamicalEntropy_eq_zero` |
 | `measurable_orthProjMatrix_lambdaSublevel` | The **everywhere-Borel singular filtration** (issue #11): the orthogonal projector onto a sublevel set of the forward Lyapunov filtration is Borel measurable, via the Novikov projection theorem |
+| `Multifractal.renyiRateSup_map_blockCode_le` / `renyiEntropy_merge_le` | **The Rényi c-function, tier 1** (issue #60): the static Rényi data-processing inequality `H_q(merge p) ≤ H_q(p)` holds for every order `q ≥ 0` (`renyiEntropy_merge_le`, elementary per-fibre sign-compensation of `x ↦ x^q`), and the **dynamical** `q`-Rényi rate (limsup/liminf of the normalized length-`n` cylinder Rényi entropies) is monotone under one-block factor codes **unconditionally** — no stationarity, no rate-existence — via the per-`n` inequality (`renyiRateSup_map_blockCode_le`, `renyiRateInf_map_blockCode_le`; the suspected hidden-Markov wall concerned closed *forms*, not the inequality). Honest boundary: general-measurable-factor monotonicity for `q ≠ 1` is FALSE (Takens–Verbitskiy 2002 — the invariant dynamical Rényi entropy degenerates to `+∞` for `q < 1` and to `h_KS` for `q ≥ 1`), so `q = 1` is the unique seal-grade monotone at full generality |
+| `Multifractal.renyiRateSup_bern` / `renyiRate_strict_drop_uniformFin3` | **Exact Bernoulli Rényi rates + strict-drop witness** (issue #60): for the i.i.d. measure `bern ν` the rate is exactly the static single-symbol Rényi entropy `h_q = H_q(ν)`, realized as an honest `limsup = liminf` (`renyiRateSup_bern`, `renyiRateInf_bern`), and the one-block pushforward stays Bernoulli (`map_blockCode_bern`). A genuine merge gluing two `ν`-atoms strictly lowers the rate for every `q ∈ (0,1) ∪ (1,∞)` (`renyiRateSup_map_blockCode_bern_lt`), certified non-vacuously by a compile-time uniform `Fin 3 → Fin 2` witness at `q = 2` (`renyiRate_strict_drop_uniformFin3`) |
+| `sectionExists_analyticSet` / `isSealed_coanalyticSet` | **Descriptive complexity of the seal** (issue #61): over the Polish parameter space `Params X = C(X,X)³ × P(X)²` of continuous-dynamics systems on a compact metric carrier, section-existence `{p \| ∃ continuous equivariant measure-preserving section}` is **analytic** (`Σ¹₁`) — the continuous image `Prod.fst` of the closed section relation (`isClosed_sectionRel`) — and sealedness is dually **coanalytic** (`Π¹₁`); the identity parameter certifies non-vacuity (`sectionExists_nonempty`). Disclosed frontiers (not delivered): the `L⁰`/MALG measurable-section parametrization (Foreman–Rudolph–Weiss) needs `L⁰`-as-Polish, and tier-3 `Σ¹₁`-completeness needs Borel-reduction machinery — both absent from Mathlib |
+| `MeasureTheory.polishSpace_probabilityMeasure` / `continuous_probabilityMeasure_map_compact` | **Two Mathlib-gap fills for the DST layer** (issue #61): the space `P(X)` of Borel probability measures on a compact metric `X` is **Polish** (compact + metrizable ⇒ completely metrizable, upgrading the Prokhorov/Lévy–Prokhorov package), and the pushforward `(f, ν) ↦ f_* ν : C(X,Y) × P(X) → P(Y)` is **jointly continuous** in the pair (Billingsley mapping-theorem-adjacent; filter form `tendsto_probabilityMeasure_map_of_tendsto`) — both natural upstream candidates |
 
 Every theorem above (and ~650 further results) is guarded in `test/AxiomAudit.lean` by
 `#guard_msgs in #print axioms`: the build **fails** if any of them ever acquires an axiom beyond
@@ -98,7 +102,14 @@ The coarse-grained multifractal formalism of an invariant measure: partition fun
 exponent `τ(q)` (proved concave — the Legendre-transform heart), Rényi/generalized dimensions
 `D_q` (proved monotone, with the `q = 1` information-dimension branch), local and Hausdorff
 dimension (`dimH μ = h_μ/log 2` for Bernoulli measures), and a fully constructed Bernoulli
-suspension flow realizing a genuinely `q`-dependent spectrum.
+suspension flow realizing a genuinely `q`-dependent spectrum. On top of this the **Rényi entropy
+rate** layer (issue #60) proves the `c`-function tier-1 monotonicity: the static Rényi
+data-processing inequality `H_q(merge p) ≤ H_q(p)` for every `q ≥ 0`, its lift to the dynamical
+Rényi rate `renyiRateSup`/`renyiRateInf` (limsup/liminf of the normalized length-`n` cylinder Rényi
+entropies), which is monotone under one-block factor codes unconditionally (per-`n`, no
+stationarity), the exact Bernoulli closed form `h_q(bern ν) = H_q(ν)` with strict drops under
+genuine merges, and the honest boundary that general-factor monotonicity for `q ≠ 1` is false
+(Takens–Verbitskiy degeneracy), leaving `q = 1` as the unique seal-grade monotone.
 
 ### Smooth maps and worked examples (`Smooth/`, `Examples/`)
 
@@ -282,6 +293,23 @@ Borel set with compact vertical sections has Borel projection
 (`measurableSet_image_fst_of_isCompact_sections`). Together they discharge the everywhere-Borel
 singular filtration `measurable_orthProjMatrix_lambdaSublevel` (issue #11).
 
+The same analytic/coanalytic vocabulary settles a **complexity** question about
+measurable-conjugacy invariants (issue #61). Over the Polish parameter space
+`Params X = C(X,X)³ × P(X)²` of continuous-dynamics systems `(T, S, π, μ, ν)` on a compact metric
+carrier `X`, the **section relation** (a continuous, measure-preserving, equivariant right inverse
+of the factor map `π`) cuts out a closed subset of `Params X × C(X,X)` (`isClosed_sectionRel`), so
+section-existence `{p | ∃ s, SectionRel p s}` is **analytic** (`Σ¹₁`, a continuous projection of a
+closed set — `sectionExists_analyticSet`) and the sealed set is dually **coanalytic** (`Π¹₁`,
+`isSealed_coanalyticSet`), with the identity parameter certifying non-vacuity
+(`sectionExists_nonempty`). Two Polish-space facts that Mathlib lacked make the hierarchy apply and
+are proved here as upstream candidates: `P(X)` is Polish for compact metric `X`
+(`polishSpace_probabilityMeasure`, via compact + metrizable ⇒ completely metrizable) and the
+pushforward `(f, ν) ↦ f_* ν` is jointly continuous (`continuous_probabilityMeasure_map_compact`).
+Disclosed, not delivered: the classical `L⁰`/MALG measurable-section parametrization
+(Foreman–Rudolph–Weiss) needs `L⁰`-as-Polish, and the tier-3 `Σ¹₁`-completeness (non-Borelness of
+the seal) needs Borel-reduction machinery — both absent from Mathlib — and a concrete sealed witness
+is left to its own follow-up.
+
 ### Quantum information (`OperatorEntropy/`)
 
 A finite-dimensional quantum-information layer on the same matrix/CFC infrastructure: the von
@@ -354,7 +382,7 @@ a hypothesis or a scoped instance, never hidden.
   on the `frontier` branch and reaches `main` only through clean, sorry-free PRs.
 - **Linter-enforced**: the whole `ErgodicTheory` library builds under Mathlib's
   `linter.mathlibStandardSet` with warnings-as-errors, so CI fails on any style-lint regression.
-- **Axiom-audited**: `test/AxiomAudit.lean` guards 715 declarations with
+- **Axiom-audited**: `test/AxiomAudit.lean` guards 731 declarations with
   `#guard_msgs in #print axioms` on every build. (This certifies axiom-cleanliness; theorems with
   hypotheses are, as always, exactly as strong as their hypotheses — the blueprint states them in
   full.)
@@ -389,7 +417,8 @@ ErgodicTheory/
   Krieger/            -- Krieger's finite generator theorem, SMB, Rokhlin towers, coding,
                       --   the Blackwell separating ⇒ two-sided-generating bridge
   Multifractal/       -- Z_q, τ(q), Rényi dimensions D_q, local/Hausdorff dimension,
-                      --   Bernoulli-suspension witness
+                      --   Bernoulli-suspension witness, the Rényi entropy rate + factor-code
+                      --   data-processing inequality (c-function tier 1)
   Smooth/             -- derivative cocycle, Rokhlin inequality, volume-case Pesin formula
   Examples/           -- Arnold cat map (strong mixing, eigenfunction rigidity, ergodic time-1
                       --   suspension, flow-Livšic + Hölder flow-Livšic instances, the sharp entropy
@@ -403,7 +432,8 @@ ErgodicTheory/
                       --   CNT dynamical entropy, Petz recovery + equality, the dephasing recovery
                       --   seals + per-resolution non-commutativity + canonical-MASA certificates
   MeasureTheory/      -- descriptive-set residuals (Lusin, Novikov first separation, Kunugui–Novikov,
-                      --   the Novikov compact-section projection theorem, covering numbers)
+                      --   the Novikov compact-section projection theorem, covering numbers; P(X)
+                      --   Polish + joint pushforward continuity; analyticity of section-existence)
 test/
   AxiomAudit.lean     -- guarded #print-axioms regression (separate lib; not upstreamable source)
 blueprint/            -- leanblueprint LaTeX source (web + PDF; \lean-linked to declarations)
