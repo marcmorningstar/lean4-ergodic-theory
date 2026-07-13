@@ -46,7 +46,7 @@ variable {X : Type*} [MeasurableSpace X] {μ : Measure X} [IsProbabilityMeasure 
 /-! ## The keystone predicate: measure-continuity of a flow (Ito's (D.4)) -/
 
 /-- **Flow measure-continuity** (Ito's (D.4)): for every measurable `A`,
-`μ(φ_t A △ A) → 0` as `t → 0`. The single genuinely new analytic hypothesis of the route. -/
+`μ(φ_t A △ A) → 0` as `t → 0`. The one analytic hypothesis specific to this route. -/
 def MeasurePreservingFlow.MeasureContinuous (φ : MeasurePreservingFlow μ) : Prop :=
   ∀ (A : Set X), MeasurableSet A →
     Tendsto (fun t : ℝ => (μ (symmDiff (φ t ⁻¹' A) A)).toReal) (𝓝 0) (𝓝 0)

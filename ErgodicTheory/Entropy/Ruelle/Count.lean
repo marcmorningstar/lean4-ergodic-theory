@@ -35,7 +35,8 @@ the finite-`n` incarnation of `∑ λᵢ⁺`.
 ## The two layers
 
 1. **The orbit growth rate (`tendsto_log_volProd`, sorry-free).**  For `μ`-a.e. `x`,
-   `(1/n) · log (volProd T n x) → sumPosExp`.  This is the genuinely new orbit-iteration content:
+   `(1/n) · log (volProd T n x) → sumPosExp`.  This is the orbit-iteration content beyond the
+   per-exponent singular-value limits:
    each per-singular-value term `(1/n) log⁺ σᵢ = max 0 ((1/n) log σᵢ)` converges to
    `max 0 (exponents i)` (continuity of `max 0 ·` composed with the per-exponent limit
    `ErgodicTheory.exponents_tendsto_log_singularValue`), and the finite sum of these limits
