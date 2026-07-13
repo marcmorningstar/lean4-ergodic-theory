@@ -46,6 +46,11 @@ open Real
 
 namespace ErgodicTheory.Multifractal
 
+/-- The **one-sided full shift space** over the alphabet `α₀`: sequences `ℕ → α₀`. This lightweight
+abbreviation is shared across the multifractal modules (the symbolic-dimension file additionally
+registers the `PiNat` ultrametric on it as a *local* instance). -/
+abbrev Shift (α₀ : Type*) : Type _ := ∀ _ : ℕ, α₀
+
 variable {ι : Type*} [Fintype ι]
 
 /-- The generalized **partition function** `Z_q = ∑_{i : p i > 0} (p i) ^ q` of a finite weight

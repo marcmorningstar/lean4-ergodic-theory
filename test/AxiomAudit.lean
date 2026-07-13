@@ -348,6 +348,12 @@ import ErgodicTheory.OperatorEntropy.EntropyPure
 import ErgodicTheory.OperatorEntropy.QuantumSeal
 import ErgodicTheory.OperatorEntropy.CNT.AbelianRestriction
 import ErgodicTheory.OperatorEntropy.CNT.NonCommutativeCertificate
+import ErgodicTheory.Multifractal.RenyiEntropy
+import ErgodicTheory.Multifractal.RenyiRate
+import ErgodicTheory.Multifractal.RenyiBernoulli
+import ErgodicTheory.MeasureTheory.ProbabilityMeasurePolish
+import ErgodicTheory.MeasureTheory.PushforwardContinuous
+import ErgodicTheory.MeasureTheory.SectionExistenceAnalytic
 
 /-!
 # Axiom audit
@@ -4233,3 +4239,88 @@ certificate -/
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms ErgodicTheory.OperatorEntropy.CNT.not_preservesDiag_qDynamics
+
+/-! ### Issue #60 — coarse-grained Rényi entropy: block-coding rate drop on Bernoulli measures -/
+
+/-- info: 'ErgodicTheory.Multifractal.renyiEntropy_merge_le' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.Multifractal.renyiEntropy_merge_le
+
+/-- info: 'ErgodicTheory.Multifractal.renyiEntropy_merge_lt' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.Multifractal.renyiEntropy_merge_lt
+
+/-- info: 'ErgodicTheory.Multifractal.cylinderMass_map_blockCode' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.Multifractal.cylinderMass_map_blockCode
+
+/-- info: 'ErgodicTheory.Multifractal.renyiRateSup_map_blockCode_le' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.Multifractal.renyiRateSup_map_blockCode_le
+
+/-- info: 'ErgodicTheory.Multifractal.renyiRateInf_map_blockCode_le' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.Multifractal.renyiRateInf_map_blockCode_le
+
+/-- info: 'ErgodicTheory.Multifractal.renyiRateSup_bern' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.Multifractal.renyiRateSup_bern
+
+/-- info: 'ErgodicTheory.Multifractal.map_blockCode_bern' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.Multifractal.map_blockCode_bern
+
+/-- info: 'ErgodicTheory.Multifractal.renyiRateSup_map_blockCode_bern_lt' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.Multifractal.renyiRateSup_map_blockCode_bern_lt
+
+/-- info: 'ErgodicTheory.Multifractal.renyiRate_strict_drop_uniformFin3' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.Multifractal.renyiRate_strict_drop_uniformFin3
+
+/-! ### Issue #61 — analytic-section existence: Polish `P(X)`, continuous pushforward, and the
+Jankov–von Neumann / coanalytic seal -/
+
+/-- info: 'ErgodicTheory.MeasureTheory.isCompletelyMetrizableSpace_of_compactSpace' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.MeasureTheory.isCompletelyMetrizableSpace_of_compactSpace
+
+/-- info: 'ErgodicTheory.MeasureTheory.polishSpace_probabilityMeasure' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.MeasureTheory.polishSpace_probabilityMeasure
+
+/-- info: 'MeasureTheory.continuous_probabilityMeasure_map_compact' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms MeasureTheory.continuous_probabilityMeasure_map_compact
+
+/-- info: 'MeasureTheory.tendsto_probabilityMeasure_map_of_tendsto' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms MeasureTheory.tendsto_probabilityMeasure_map_of_tendsto
+
+/-- info: 'ErgodicTheory.sectionExists_analyticSet' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.sectionExists_analyticSet
+
+/-- info: 'ErgodicTheory.isSealed_coanalyticSet' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.isSealed_coanalyticSet
+
+/-- info: 'ErgodicTheory.sectionExists_nonempty' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.sectionExists_nonempty

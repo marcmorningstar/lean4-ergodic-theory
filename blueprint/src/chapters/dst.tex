@@ -21,9 +21,11 @@ reduction principle for coanalytic sets \(\Rightarrow\) the Saint Raymond and Ku
 section theorems \(\Rightarrow\) the compact-section projection theorem. Notably \emph{no coanalytic
 pointclass need be developed}: the whole reduction ladder is run on analytic sets and their Borel
 separators. The chapter opens with the classical Lusin theorem in its continuous-on-a-compact form
-(a companion descriptive-set-theoretic result, consumed by the measurable Livšic tier) and closes
-with an honest statement of the general \(\sigma\)-compact-section theorem (Arsenin--Kunugui) as a
-documented research frontier.
+(a companion descriptive-set-theoretic result, consumed by the measurable Livšic tier), turns the
+same analytic / coanalytic vocabulary on a \emph{complexity} question --- the descriptive complexity
+of continuous-section existence over a Polish space of continuous-dynamics systems (issue \#61) ---
+and closes with an honest statement of the general \(\sigma\)-compact-section theorem
+(Arsenin--Kunugui) as a documented research frontier.
 
 Throughout, spaces are Polish (separable completely metrizable) carrying their Borel
 \(\sigma\)-algebra, ``analytic'' means a continuous image of Baire space \(\N\to\N\) (Mathlib's
@@ -430,6 +432,108 @@ For contrast we record the a.e.\ tier, which the everywhere converter strictly s
   (\Cref{thm:dst-headline}) is strictly stronger: it drops every dynamical hypothesis in exchange
   for the pointwise gate.
 \end{proof}
+
+\section{Descriptive complexity of the continuous-section seal (issue \#61)}
+
+The projection machinery above answers a \emph{measurability} question; the same analytic /
+coanalytic pointclass vocabulary answers a \emph{complexity} question about ergodic-theoretic
+invariants. Fix a compact metric (Borel) carrier \(X\) and the Polish parameter space
+\[
+  \mathrm{Params}\,X \;=\; C(X,X)^3 \times P(X)^2,
+\]
+whose points are tuples \((T,S,\pi,\mu,\nu)\): a base map, a factor map, a factor projection, and the
+two probability measures. A candidate \emph{continuous} section \(s \in C(X,X)\) is admissible when
+\(\pi\circ T = S\circ\pi\), \(\pi_*\mu = \nu\), \(\pi\circ s = \mathrm{id}\), \(s\circ S = T\circ s\),
+and \(s_*\nu = \mu\). Whether a system \emph{admits} such a section is the continuous,
+compact-metric-parametrised reading of the Foreman--Rudolph--Weiss section-existence problem; we
+place it in the projective hierarchy over the Polish space \(\mathrm{Params}\,X\).
+
+Two Polish-space infrastructure facts, both genuine gaps in Mathlib's weak-convergence API, make the
+hierarchy apply and are natural upstream candidates.
+
+\begin{theorem}[The space of probability measures on a compact metric space is Polish]\label{thm:dst-pspace-polish}
+  \lean{MeasureTheory.polishSpace_probabilityMeasure}\leanok
+  For a compact metric Borel space \(X\), the space \(P(X) = \mathrm{ProbabilityMeasure}\,X\) with the
+  topology of convergence in distribution is Polish (Kechris \S17.E).
+\end{theorem}
+\begin{proof}\leanok
+  Prokhorov's theorem makes \(P(X)\) compact and the L\'evy--Prokhorov metric makes it metrizable and
+  second countable. A compact metrizable space is completely metrizable
+  (\texttt{isCompletelyMetrizableSpace\_of\_compactSpace}: a compatible metric on a compact --- hence
+  complete --- uniform space is complete), which upgrades the package to Polishness. A companion
+  \texttt{polishSpace\_prod} assembles the finite products.
+\end{proof}
+
+\begin{theorem}[Joint continuity of the pushforward]\label{thm:dst-pushforward-cont}
+  \lean{MeasureTheory.continuous_probabilityMeasure_map_compact}\leanok
+  For a compact metric \(X\) and a metric \(Y\), the pushforward
+  \((f,\nu) \mapsto f_*\nu : C(X,Y) \times P(X) \to P(Y)\) is jointly continuous, with
+  \(C(X,Y)\) carrying the uniform metric and \(P(X)\) the topology of convergence in distribution.
+\end{theorem}
+\begin{proof}\leanok
+  The Billingsley mapping-theorem argument. Test against a bounded continuous \(g : Y \to \R\) via
+  \(\int g\,\mathrm d(f_*\nu) = \int (g\circ f)\,\mathrm d\nu\) and split the difference into a
+  weak-convergence term (\(\nu_i \to \nu\) tested against \(g\circ\sigma\)) and a uniform term bounded
+  by \(\|g\circ\sigma_i - g\circ\sigma\|_\infty\), which vanishes because postcomposition
+  \(\tau \mapsto g\circ\tau : C(X,Y) \to (X \to^b \R)\) is continuous. The filter form is
+  \texttt{tendsto\_probabilityMeasure\_map\_of\_tendsto}. Mathlib previously had only the fixed-map
+  continuity \texttt{ProbabilityMeasure.continuous\_map}.
+\end{proof}
+
+\begin{definition}[The section relation]\label{thm:dst-sectionrel}
+  \lean{ErgodicTheory.SectionRel}\leanok
+  For \(p = (T,S,\pi,\mu,\nu) \in \mathrm{Params}\,X\) and \(s \in C(X,X)\), the predicate
+  \(\mathrm{SectionRel}\,p\,s\) is the conjunction of the five equalizer conditions
+  \(\pi\circ T = S\circ\pi\), \(\pi_*\mu = \nu\), \(\pi\circ s = \mathrm{id}\), \(s\circ S = T\circ
+  s\), \(s_*\nu = \mu\) making \(s\) a continuous, measure-preserving, equivariant section of \(\pi\).
+  A parameter is \emph{sealed} (\texttt{ErgodicTheory.IsSealed}) when no such \(s\) exists.
+\end{definition}
+
+\begin{theorem}[The section relation is closed]\label{thm:dst-sectionrel-closed}
+  \lean{ErgodicTheory.isClosed_sectionRel}\leanok
+  \uses{thm:dst-sectionrel, thm:dst-pushforward-cont}
+  \(\{(p,s) \mid \mathrm{SectionRel}\,p\,s\}\) is a closed subset of
+  \(\mathrm{Params}\,X \times C(X,X)\).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{thm:dst-pushforward-cont}
+  Each of the five conjuncts is an equalizer of jointly continuous maps into a Hausdorff space:
+  composition is jointly continuous (\texttt{ContinuousMap.continuous\_comp'}), and the pushforward
+  is jointly continuous (\Cref{thm:dst-pushforward-cont}); a finite intersection of closed sets is
+  closed.
+\end{proof}
+
+\begin{theorem}[Section-existence is analytic; sealedness coanalytic]\label{thm:dst-section-analytic}
+  \lean{ErgodicTheory.sectionExists_analyticSet}\leanok
+  \uses{thm:dst-sectionrel-closed, thm:dst-pspace-polish}
+  The set \(\{p \mid \exists s,\ \mathrm{SectionRel}\,p\,s\}\) of parameters admitting some continuous
+  section is \emph{analytic} (\(\Sigma^1_1\)): it is the continuous image, under the coordinate
+  projection \(\mathrm{Prod.fst}\), of the closed relation of \Cref{thm:dst-sectionrel-closed} inside
+  the Polish space \(\mathrm{Params}\,X\). Dually the sealed set \(\{p \mid \mathrm{IsSealed}\,p\}\) is
+  \emph{coanalytic} (\(\Pi^1_1\), \texttt{ErgodicTheory.isSealed\_coanalyticSet}). The identity
+  parameter certifies non-vacuity (\texttt{ErgodicTheory.sectionExists\_nonempty}).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{thm:dst-sectionrel-closed, thm:dst-pspace-polish}
+  A closed subset of a Polish space is analytic and analyticity is preserved by continuous images
+  (here the coordinate projection \(\mathrm{Prod.fst}\)), giving the \(\Sigma^1_1\) bound; that
+  \(\mathrm{Params}\,X\) and \(C(X,X)\) are Polish is \Cref{thm:dst-pspace-polish} and the uniform
+  metric on \(C(X,X)\). The sealed set is by definition the complement, hence \(\Pi^1_1\); the
+  identity tuple satisfies \(\mathrm{SectionRel}\) with \(s = \mathrm{id}\).
+\end{proof}
+
+\begin{remark}[Honest scope]\label{thm:dst-section-scope}
+  This is the issue's sanctioned ``restricted class first'' reading: \emph{continuous} sections over
+  \emph{compact-metric-parametrised} systems, for which \(C(X,X)\), \(P(X)\), and their products are
+  all Polish, so the descriptive hierarchy applies verbatim. Two frontiers are disclosed, not
+  delivered. The \emph{classical} Foreman--Rudolph--Weiss section-existence problem (Ann.\ of Math.\
+  \textbf{173}, 2011) is stated for \emph{arbitrary measurable} sections over the \(L^0\)/MALG
+  parametrisation, which needs \(L^0\) (measurable maps mod null sets) as a Polish space ---
+  infrastructure Mathlib lacks. The \emph{tier-3} hardness statement (that the sealed set is
+  \(\Sigma^1_1\)-complete, hence non-Borel) needs the Borel-reduction and \(\Sigma^1_1\)-completeness
+  machinery of Kechris \S14, \S27, also absent from Mathlib. A concrete sealed witness is left to its
+  own follow-up.
+\end{remark}
 
 \section{An honest frontier: the general \texorpdfstring{\(\sigma\)}{sigma}-compact-section theorem}
 

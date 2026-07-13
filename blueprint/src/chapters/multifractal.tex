@@ -2,7 +2,7 @@
 \label{chap:multifractal}
 
 This chapter documents the \emph{coarse-grained (finite-resolution) multifractal analysis} of an
-invariant probability measure, formalized in \texttt{ErgodicTheory/Multifractal/} (26 modules under
+invariant probability measure, formalized in \texttt{ErgodicTheory/Multifractal/} (29 modules under
 the \texttt{ErgodicTheory.Multifractal} aggregator). The theory quantifies how unevenly a measure
 \(\mu\) distributes mass over the cells of a finite partition at scale \(\varepsilon\): the
 partition function \(Z_q\), the mass exponent \(\tau(q)\), the R\'enyi (generalized) dimensions
@@ -23,7 +23,12 @@ from pointwise dimension to \emph{Hausdorff} dimension, and the symbolic
 entropy\,=\,dimension identity \(\dim_H = h_\mu(\sigma)/\log 2\) on the full shift, made
 unconditional for Bernoulli measures. Fourth, a genuinely \emph{multifractal witness}: the
 constant-roof suspension flow of a biased two-sided Bernoulli shift, an ergodic flow of positive
-entropy whose R\'enyi spectrum is provably \(q\)-dependent.
+entropy whose R\'enyi spectrum is provably \(q\)-dependent. Fifth, the \emph{dynamical R\'enyi
+entropy rate} and its factor-map monotonicity (the ``\(c\)-function'' tier~1, issue~\#60): a static
+data-processing inequality for the R\'enyi entropy \(H_q\) under coarse-graining, its unconditional
+lift to the R\'enyi rate along the cylinders of a shift under one-block factor codes, an exact
+Bernoulli closed form with strict drops on genuine merges, and the honest degeneracy boundary that
+seals \(q = 1\) as the unique order monotone under \emph{arbitrary} factors.
 
 Everything below is formalized sorry-free and verified by the guarded axiom audit to rest only on
 \(\{\texttt{propext}, \texttt{Classical.choice}, \texttt{Quot.sound}\}\). Throughout, \(\iota\) is
@@ -486,3 +491,190 @@ Bernoulli shift \(T = \texttt{biShiftEquiv}\) over the i.i.d.\ product measure
   dimension \(H(\nu)/(-\log\varepsilon)\) (Theorem~\ref{renyiDimMeasure_one_eq}); the strict
   two-point entropy bound \(H(\nu) < \log 2\) for a biased law separates them.
 \end{proof}
+
+\section{The dynamical R\'enyi entropy rate and its factor monotonicity}
+
+The R\'enyi \emph{dimensions} of the preceding sections are one face of order-\(q\) information; the
+other is the R\'enyi \emph{entropy} itself and its dynamical rate along the cylinders of a shift.
+This section (issue~\#60, the three modules \texttt{RenyiEntropy}, \texttt{RenyiRate},
+\texttt{RenyiBernoulli}) proves the ``\(c\)-function'' tier~1 monotonicity: coarse-graining decreases
+R\'enyi entropy \emph{statically}, passing a measure through a one-block factor code decreases its
+R\'enyi entropy \emph{rate} unconditionally, and the invariant dynamical R\'enyi entropy
+\emph{degenerates} for \(q \ne 1\) --- the honest boundary that pins \(q = 1\) as the unique order
+monotone under arbitrary factors.
+
+\subsection*{The static data-processing inequality}
+
+\begin{definition}[Merged weights]\label{mergedWeights}
+  \lean{ErgodicTheory.Multifractal.mergedWeights}\leanok
+  For a finite weight family \(p : \iota \to \R\) and a \emph{merge} map \(f : \iota \to \kappa\),
+  the \emph{merged weights} \(\mathrm{mergedWeights}\,f\,p : \kappa \to \R\) push \(p\) forward along
+  \(f\) by summing each fibre: \((\mathrm{mergedWeights}\,f\,p)(b) = \sum_{a \,:\, f a = b} p_a\).
+\end{definition}
+
+\begin{definition}[R\'enyi entropy]\label{renyiEntropy}
+  \lean{ErgodicTheory.Multifractal.renyiEntropy}\leanok
+  \uses{partitionFunction}
+  The \emph{R\'enyi entropy of order \(q\)} of a family \(p : \iota \to \R\) is
+  \[
+    H_q(p) \;=\; (1 - q)^{-1} \, \log Z_q(p),
+  \]
+  reusing the generalized partition function \(Z_q\) (Definition~\ref{partitionFunction}) verbatim as
+  the power sum \(\sum_{p_i > 0} p_i^{\,q}\).
+\end{definition}
+
+\begin{lemma}[Power-sum super/subadditivity under merge]\label{partitionFunction_merge}
+  \lean{ErgodicTheory.Multifractal.partitionFunction_merge_ge}\leanok
+  \uses{partitionFunction, mergedWeights}
+  Let \(p : \iota \to \R\) with \(p_a \ge 0\). For \(q \ge 1\) the partition function \emph{grows}
+  under merge, \(Z_q(p) \le Z_q(\mathrm{mergedWeights}\,f\,p)\)
+  (\texttt{partitionFunction\_merge\_ge}, per-fibre superadditivity of \(x \mapsto x^q\)), while for
+  \(0 \le q \le 1\) it \emph{shrinks}, \(Z_q(\mathrm{mergedWeights}\,f\,p) \le Z_q(p)\)
+  (\texttt{partitionFunction\_merge\_le}, subadditivity).
+\end{lemma}
+\begin{proof}\leanok
+  \uses{partitionFunction, mergedWeights}
+  The two-element bounds \(x^q + y^q \le (x+y)^q\) (for \(q \ge 1\),
+  \texttt{Real.add\_rpow\_le\_rpow\_add}) and \((x+y)^q \le x^q + y^q\) (for \(0 \le q \le 1\),
+  \texttt{Real.rpow\_add\_le\_add\_rpow}) are promoted to arbitrary fibres by
+  \(\mathrm{Finset.induction}\), then summed over the fibre partition of \(\iota\) indexed by
+  \(\kappa\).
+\end{proof}
+
+\begin{theorem}[Static R\'enyi DPI]\label{renyiEntropy_merge_le}
+  \lean{ErgodicTheory.Multifractal.renyiEntropy_merge_le}\leanok
+  \uses{renyiEntropy, partitionFunction_merge}
+  For every \(f : \iota \to \kappa\), family \(p \ge 0\), and order \(0 \le q\), \(q \ne 1\),
+  coarse-graining does not increase R\'enyi entropy:
+  \[
+    H_q(\mathrm{mergedWeights}\,f\,p) \;\le\; H_q(p).
+  \]
+  Moreover (\texttt{renyiEntropy\_merge\_lt}) the inequality is \emph{strict} whenever the merge glues
+  two atoms of the support, for \(q \in (0,1) \cup (1,\infty)\).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{partitionFunction_merge, renyiEntropy}
+  For \(q \ge 1\) the partition function grows (\Cref{partitionFunction_merge}) and the prefactor
+  \((1-q)^{-1} < 0\) flips the growth to a \emph{drop} in \(H_q\); for \(0 \le q < 1\) the partition
+  function shrinks and the positive prefactor \((1-q)^{-1} > 0\) again gives a drop. The strict form
+  runs the same sign bookkeeping on the strict two-point inequality (strict monotonicity of
+  \(\mathrm{rpow}\) in the base, both atoms of positive mass).
+\end{proof}
+
+\subsection*{The dynamical rate and one-block factor codes}
+
+Fix a finite alphabet \(A\) and the one-sided full shift \(\mathrm{Shift}\,A = \N \to A\).
+
+\begin{definition}[Cylinder masses and the R\'enyi rate]\label{renyiRateSup}
+  \lean{ErgodicTheory.Multifractal.renyiRateSup}\leanok
+  \uses{renyiEntropy}
+  For a probability measure \(\mu\) on \(\mathrm{Shift}\,A\), the \emph{length-\(n\) cylinder mass}
+  of a word \(w : \Fin n \to A\) is \(\mathrm{cylinderMass}\,\mu\,n\,w = \mu(\text{cylinder}\,w)\),
+  the \emph{length-\(n\) R\'enyi entropy} is \(H_q^{(n)}(\mu) = \mathrm{renyiEntropySeq}\,\mu\,q\,n\)
+  --- the R\'enyi entropy (Definition~\ref{renyiEntropy}) of the family of cylinder masses --- and
+  the \emph{upper} and \emph{lower R\'enyi rates} are its normalized limit superior and inferior,
+  \(\mathrm{renyiRateSup}\,\mu\,q = \limsup_n H_q^{(n)}(\mu)/n\) and
+  \(\mathrm{renyiRateInf}\,\mu\,q = \liminf_n H_q^{(n)}(\mu)/n\).
+\end{definition}
+
+\begin{definition}[One-block code]\label{blockCode}
+  \lean{ErgodicTheory.Multifractal.blockCode}\leanok
+  A symbol map \(\varphi : A \to B\) lifts coordinatewise to the \emph{one-block code}
+  \(\mathrm{blockCode}\,\varphi : \mathrm{Shift}\,A \to \mathrm{Shift}\,B\),
+  \((\mathrm{blockCode}\,\varphi\,x)(k) = \varphi(x_k)\), with induced word map
+  \(\mathrm{wordMap}\,\varphi\,n : (\Fin n \to A) \to (\Fin n \to B)\).
+\end{definition}
+
+\begin{theorem}[Per-length pushforward identity and DPI]\label{renyiEntropySeq_map_blockCode_le}
+  \lean{ErgodicTheory.Multifractal.renyiEntropySeq_map_blockCode_le}\leanok
+  \uses{blockCode, renyiEntropy_merge_le, renyiRateSup}
+  The preimage of a length-\(n\) cylinder of \(\mathrm{Shift}\,B\) under \(\mathrm{blockCode}\,\varphi\)
+  is the finite disjoint union of the length-\(n\) cylinders over the fibre of
+  \(\mathrm{wordMap}\,\varphi\,n\), so by additivity the pushed cylinder masses are exactly the
+  \emph{merged} weights of the originals (\texttt{cylinderMass\_map\_blockCode}). The static DPI
+  (\Cref{renyiEntropy_merge_le}) then gives the per-length bound
+  \(H_q^{(n)}(\mathrm{blockCode}\,\varphi_*\mu) \le H_q^{(n)}(\mu)\) for every \(0 \le q\), \(q \ne 1\).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{renyiEntropy_merge_le, blockCode}
+  The mechanism is entirely per length \(n\), so \emph{no} stationarity or shift-invariance of
+  \(\mu\) is used: measure additivity over the word fibre identifies the pushed masses with
+  \(\mathrm{mergedWeights}\,(\mathrm{wordMap}\,\varphi\,n)\) of the cylinder masses, and
+  \Cref{renyiEntropy_merge_le} applies to that merge.
+\end{proof}
+
+\begin{theorem}[Rate monotonicity under one-block codes]\label{renyiRateSup_map_blockCode_le}
+  \lean{ErgodicTheory.Multifractal.renyiRateSup_map_blockCode_le}\leanok
+  \uses{renyiEntropySeq_map_blockCode_le, renyiRateSup}
+  For every probability measure \(\mu\) on \(\mathrm{Shift}\,A\), symbol map \(\varphi : A \to B\),
+  and order \(0 \le q\), \(q \ne 1\), the R\'enyi rate does not increase under the pushforward along
+  \(\mathrm{blockCode}\,\varphi\):
+  \[
+    \mathrm{renyiRateSup}\,(\mathrm{blockCode}\,\varphi_*\mu)\,q \;\le\; \mathrm{renyiRateSup}\,\mu\,q,
+  \]
+  and likewise for \(\mathrm{renyiRateInf}\) (\texttt{renyiRateInf\_map\_blockCode\_le}).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{renyiEntropySeq_map_blockCode_le}
+  Divide the per-length DPI (\Cref{renyiEntropySeq_map_blockCode_le}) by \(n\) and pass to
+  \(\limsup\)/\(\liminf\); the uniform bounds \(0 \le H_q^{(n)}(\mu)/n \le C_q\) make the normalized
+  sequences order-bounded, so the limit operations preserve the inequality. No existence of the rate
+  limit is required.
+\end{proof}
+
+\subsection*{The Bernoulli closed form and the strict witness}
+
+\begin{theorem}[Exact Bernoulli R\'enyi rate]\label{renyiRateSup_bern}
+  \lean{ErgodicTheory.Multifractal.renyiRateSup_bern}\leanok
+  \uses{renyiRateSup, renyiEntropy}
+  For the i.i.d.\ (Bernoulli) measure \(\mathrm{bern}\,\nu\) on \(\mathrm{Shift}\,A\) with
+  single-symbol law \(\nu\), and any \(q \ne 1\), both rates equal the static single-symbol R\'enyi
+  entropy of \(\nu\):
+  \[
+    \mathrm{renyiRateSup}\,(\mathrm{bern}\,\nu)\,q
+      \;=\; \mathrm{renyiRateInf}\,(\mathrm{bern}\,\nu)\,q
+      \;=\; H_q(\nu),
+  \]
+  realized as an honest \(\limsup = \liminf\) limit (\texttt{renyiRateInf\_bern}).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{renyiRateSup, renyiEntropy}
+  Everything factorizes over coordinates. The length-\(n\) cylinder mass of a word is the product
+  \(\prod_k (\nu\{w_k\})\) (\texttt{cylinderMass\_bern}, by the product-measure evaluation), so the
+  length-\(n\) partition function factors as \(Z_q^{(n)} = (Z_q)^n\)
+  (\texttt{partitionFunction\_cylinderMass\_bern}, a sum-over-words / product-over-coordinates swap).
+  Hence \(H_q^{(n)}(\mathrm{bern}\,\nu) = n\,H_q(\nu)\) (\texttt{renyiEntropySeq\_bern}, via
+  \(\log(Z_q^n) = n\log Z_q\)), the normalized sequence is eventually constant \(H_q(\nu)\), and both
+  rates return that value.
+\end{proof}
+
+\begin{theorem}[Strict rate drop under a genuine merge]\label{renyiRate_strict_drop_uniformFin3}
+  \lean{ErgodicTheory.Multifractal.renyiRate_strict_drop_uniformFin3}\leanok
+  \uses{renyiRateSup_bern, renyiEntropy_merge_le, blockCode}
+  Pushing a Bernoulli measure forward along a one-block code is again Bernoulli, with the mapped
+  single-symbol law \(\mathrm{Measure.map}\,\varphi\,\nu\) (\texttt{map\_blockCode\_bern}). Combining
+  the exact rate (\Cref{renyiRateSup_bern}) with the \emph{strict} static DPI, a one-block code that
+  glues two atoms of positive \(\nu\)-mass strictly lowers the R\'enyi rate for every
+  \(q \in (0,1) \cup (1,\infty)\) (\texttt{renyiRateSup\_map\_blockCode\_bern\_lt},
+  \texttt{renyiRateInf\_map\_blockCode\_bern\_lt}). A concrete \(A = \Fin 3 \to B = \Fin 2\) with the
+  uniform law and an atom-gluing symbol map certifies the strict drop non-vacuously at \(q = 2\).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{renyiRateSup_bern, renyiEntropy_merge_le}
+  \texttt{map\_blockCode\_bern} is the coordinatewise pushforward of a product measure, checked on
+  measurable boxes; its mapped marginals are the merged weights. The strict two-atom form of the
+  static DPI then separates the rates. For the uniform \(\Fin 3 \to \Fin 2\) witness the two rates are
+  concrete logarithms and \(q = 2\) is a compile-time inequality.
+\end{proof}
+
+\subsection*{The \texorpdfstring{\(q = 1\)}{q = 1} anchor: an honest degeneracy boundary}
+
+The one-block-code monotonicity above is the honest, non-degenerate statement, and it is sharp. The
+fully isomorphism-invariant \emph{dynamical} R\'enyi entropy degenerates for \(q \ne 1\) (Takens and
+Verbitskiy, \emph{Israel J. Math.}\ \textbf{127} (2002): it collapses to \(+\infty\) for \(q < 1\)
+and to the Kolmogorov--Sinai entropy for \(q \ge 1\)), so monotonicity under \emph{general}
+measurable factors is \emph{false} for \(q \ne 1\) --- a Markov chain Ornstein-isomorphic to a
+Bernoulli shift has a different order-\(2\) R\'enyi entropy. Thus \(q = 1\) (the Kolmogorov--Sinai
+case, treated in Chapter~\ref{chap:ksentropy}) is the unique order at which the rate is monotone
+under arbitrary factors, exactly the anticipated dichotomy; both of the issue's expected outcomes ---
+the one-block inequality and the general-factor obstruction --- are delivered together.
