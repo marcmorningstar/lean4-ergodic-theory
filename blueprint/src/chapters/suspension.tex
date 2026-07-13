@@ -1016,3 +1016,40 @@ coordinate.
 bi-Lipschitz only when $\tau$ is cohomologous to a constant, $\tau = c + \varphi\circ T - \varphi$ ---
 precisely the hypothesis one wants to avoid --- so the metric is built directly on the normalized
 fibre coordinate, never by reduction to the constant-roof case.
+
+\section{Functoriality of the suspension on factor maps}\label{sec:susp-factor}
+
+The unit-roof suspension is not only a construction but a \emph{functor}: a factor map between two
+base automorphisms lifts to a factor map of their suspension flows. This is the constant-roof
+(\(\tau\equiv\sigma\equiv 1\)) case of the Ambrose--Kakutani functoriality (W.~Ambrose and
+S.~Kakutani, \emph{Structure and continuity of measurable flows}, Duke Math.\ J.\ \textbf{9} (1942),
+25--42), and it is the engine of the symbolic flow tower of issue \#58 (\Cref{sec:catSymbolicTower}).
+
+\begin{definition}[The descended suspension factor map]\label{suspensionFactorMap}
+  \lean{ErgodicTheory.suspensionFactorMap}\leanok
+  \uses{thm:susp-space}
+  For measurable automorphisms \(T : X\simeq X\), \(S : Y\simeq Y\) with unit roofs and a base factor
+  map \(\pi : X\to Y\) (measurable, \(\pi\circ T = S\circ\pi\)), the fibrewise raw map
+  \((x,s)\mapsto(\pi x, s)\) on \(X\times\R\) descends through the two orbit quotients to
+  \(\operatorname{suspensionFactorMap} : \widehat X\to\widehat Y\), \([x,s]\mapsto[\pi x, s]\).
+\end{definition}
+
+\begin{theorem}[The suspension factor package]\label{isFactorMap_suspensionFactorMap}
+  \lean{ErgodicTheory.isFactorMap_suspensionFactorMap}\leanok
+  \uses{suspensionFactorMap}
+  \(\operatorname{suspensionFactorMap}\) intertwines the two suspension flows
+  (\lean{ErgodicTheory.suspensionFactorMap_comp_flow}) and pushes the invariant measure of the source
+  suspension to that of the target (\lean{ErgodicTheory.map_suspensionFactorMap_suspensionMeasure}),
+  so it is measure preserving; packaged at time \(1\) it is an
+  \(\operatorname{Entropy.IsFactorMap}\) of the time-\(1\) flow maps. When the base map \(\pi\) is
+  injective, so is the lift (\lean{ErgodicTheory.injective_suspensionFactorMap}), giving a
+  \emph{conjugacy} stage of the tower.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{suspensionFactorMap}
+  The base semiconjugacy \(\pi\circ T = S\circ\pi\) makes the raw fibre map intertwine the two orbit
+  generators, so it descends; the unit-roof equalities \(\tau x = 1 = \sigma(\pi x)\) keep the time
+  coordinate fixed, giving the flow intertwining. Measure transport follows from the product measure
+  \(\mu\times\text{(Lebesgue)}\) on the fundamental domain, and injectivity transports fibrewise from
+  \(\pi\).
+\end{proof}

@@ -1058,3 +1058,146 @@ it equals \(\tfrac12\cos(2\pi t)\), of modulus \(\tfrac12\) at every integer tim
 \emph{requires} centring the base part (\(\int g = 0\)); the estimate above is the full centred flow
 correlation. (Cornfeld--Fomin--Sinai, \emph{Ergodic Theory}, Ch.~11, on the reduction of special-flow
 correlations to base correlations.)
+
+\section{The Adler--Weiss coding as a factor and the symbolic flow tower}\label{sec:catSymbolicTower}
+
+The sharp entropy computation of \Cref{sec:catEntropy} extracts a \emph{number} from the Adler--Weiss
+Markov partition; issue \#58 extracts the \emph{coding map} itself and stacks two of them into a
+flow tower. The two-box generator \Cref{catAWPartition} is upgraded from a generating partition to a
+genuine measure-theoretic factor map onto the golden subshift of finite type, and --- because the
+half-open golden tiling has an \emph{empty} (not merely null) junk cell (\Cref{awCell_zero_eq_empty})
+--- the coding is exactly (everywhere) equivariant and injective on the nose, with no boundary null
+sets discarded. Instantiating the suspension functor (\Cref{isFactorMap_suspensionFactorMap}) twice
+lifts the picture to the two mapping-torus flows. (R.~L.\ Adler and B.~Weiss, \emph{Similarity of
+automorphisms of the torus}, Memoirs AMS \textbf{98} (1970); R.~L.\ Adler, \emph{Symbolic dynamics
+and Markov partitions}, Bull.\ AMS \textbf{35} (1998), 1--56; D.~Lind and B.~Marcus, \emph{An
+Introduction to Symbolic Dynamics and Coding}, CUP (1995), Ch.~6; J.~G.\ Kemeny and J.~L.\ Snell,
+\emph{Finite Markov Chains}, Springer (1976), on lumpability.)
+
+\subsection{The coding as a factor and a conjugacy onto its range}
+
+\begin{definition}[The two-sided Adler--Weiss itinerary]\label{awSymbFull}
+  \lean{ErgodicTheory.CatMapToral.awSymbFull}\leanok
+  \uses{catTorus, catAWPartition}
+  \(\operatorname{awSymbFull} : \mathbb{T}^2\to(\operatorname{Fin} 5)^{\Z}\),
+  \(\operatorname{awSymbFull} x\,k = \operatorname{awSymb} x\,k\), records the branch symbol of the
+  forward orbit of \(x\) at every integer time \(k\), landing in the two-sided full shift on the five
+  golden branches.
+\end{definition}
+
+\begin{theorem}[The Adler--Weiss coding is an exact factor map]\label{isFactorMap_awSymbFull}
+  \lean{ErgodicTheory.CatMapToral.isFactorMap_awSymbFull}\leanok
+  \uses{awSymbFull, catTorus}
+  \(\operatorname{awSymbFull}\) is a measure-theoretic factor map from
+  \((\mathbb{T}^2, \operatorname{catTorus}, \mathrm{vol})\) onto the two-sided full shift, with the
+  intertwining \(\operatorname{awSymbFull}\circ\operatorname{catTorus} = \operatorname{biShiftMap}
+  \circ\operatorname{awSymbFull}\) holding \emph{everywhere} (not merely a.e.): the empty junk cell of
+  \Cref{awCell_zero_eq_empty} gives every point a well-defined symbol at every time. The pushforward
+  concentrates on the golden subshift-of-finite-type carrier, which has full measure \(1\)
+  (\lean{ErgodicTheory.CatMapToral.map_awSymbFull_biSFTCarrier}).
+\end{theorem}
+
+\begin{theorem}[Injectivity and conjugacy onto the range]\label{injective_awSymbFull}
+  \lean{ErgodicTheory.CatMapToral.injective_awSymbFull}\leanok
+  \uses{awSymbFull}
+  Matching two-sided itineraries force equality of points (the Adler--Weiss contraction estimate), so
+  \(\operatorname{awSymbFull}\) is \emph{injective} on the nose --- again no boundary null set is
+  discarded. It is therefore a measurable embedding
+  (\lean{ErgodicTheory.CatMapToral.measurableEmbedding_awSymbFull}, \(\mathbb{T}^2\) standard Borel),
+  and the induced measurable equivalence onto its range is measure preserving
+  (\lean{ErgodicTheory.CatMapToral.measurePreserving_awSymbEquivRange}): a measure conjugacy of the
+  cat map onto the golden SFT.
+\end{theorem}
+
+\emph{A disclosed frontier.} The pushforward \(\operatorname{Measure.map}\,\operatorname{awSymbFull}
+\,\mathrm{vol}\) is the Markov measure of the golden Adler--Weiss data; identifying its cylinder
+values with the explicit golden transition probabilities is a follow-up (the factor map and the
+conjugacy onto the range are complete without it).
+
+\subsection{The coarse two-box partition: a \(\log 2\) ceiling with strict positivity}
+
+Merging the five golden branches by their source rectangle \(\operatorname{src}\) leaves the two
+original Adler--Weiss golden rectangles \(R_1, R_2\), a genuine two-cell partition and a
+\emph{factor} of the fine generator.
+
+\begin{definition}[The coarse Adler--Weiss partition]\label{coarseAWPartition}
+  \lean{ErgodicTheory.CatMapToral.coarseAWPartition}\leanok
+  \uses{catAWPartition, awCell_zero_eq_empty}
+  The two-cell \(\operatorname{MeasurePartition}\) of \(\mathbb{T}^2\) into the two projected golden
+  rectangles \(R_1, R_2\); its symbolic factor is the merged itinerary
+  \(k\mapsto\operatorname{src}(\operatorname{awSymb} x\,k)\).
+\end{definition}
+
+\begin{theorem}[The coarse entropy ceiling]\label{coarseAWPartition_ksEntropy_le}
+  \lean{ErgodicTheory.CatMapToral.coarseAWPartition_ksEntropy_le}\leanok
+  \uses{coarseAWPartition, ksEntropyPartition}
+  \(h(\operatorname{catTorus}, \operatorname{coarseAWPartition})\le\log 2\), strictly below the system
+  entropy \(\log\lambda_+\) (\lean{ErgodicTheory.CatMapToral.log_two_lt_log_lam}): the coarse
+  partition, unlike the fine generator, is far from generating. This is the abstract
+  \(\log(\operatorname{card})\) ceiling for a partition into two cells.
+\end{theorem}
+
+\begin{theorem}[Strict positivity of the coarse entropy]\label{coarseAW_ksEntropyPartition_pos}
+  \lean{ErgodicTheory.CatMapToral.coarseAW_ksEntropyPartition_pos}\leanok
+  \uses{coarseAWPartition}
+  \(0 < h(\operatorname{catTorus}, \operatorname{coarseAWPartition})\); indeed
+  \(\log\lambda_+ - \log 2\le h(\operatorname{catTorus}, \operatorname{coarseAWPartition})\)
+  (\lean{ErgodicTheory.CatMapToral.coarseAW_ksEntropyPartition_ge}), strictly positive because
+  \(\lambda_+ = (3+\sqrt5)/2 > 2\). The merged symbolic factor is thus a two-symbol system whose
+  entropy lies in the nontrivial band \([\log\lambda_+ - \log 2, \log 2]\).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{coarseAWPartition}
+  The substantive estimate is the fine forward-cylinder volume bound: an admissible word of length
+  \(n+1\) cuts out a cylinder of measure \(\le 2(\varphi-1)\varphi/(\varphi+2)\cdot\lambda_+^{-n}\), as
+  its unstable width contracts by \(\lambda_+^{-n}\) while its stable height stays \(\le\varphi\)
+  (the \(\operatorname{bbInv}\) affine toolkit). A coarse \(n\)-join atom is a union of such cylinders,
+  and the transfer-matrix fibre count of compatible admissible words is \(\le 5\cdot 2^n\) (each
+  interior symbol has \(\le 2\) admissible choices). Multiplying gives a coarse-atom bound
+  \(\le C\cdot(2/\lambda_+)^n\), which the entropy lower-bound glue converts into
+  \(\log\lambda_+ - \log 2\le h\).
+\end{proof}
+
+\subsection{Entropy across the two coding stages}
+
+\begin{theorem}[Stage 1 is entropy-preserving]\label{ksEntropy_mapAwSymbFull_eq}
+  \lean{ErgodicTheory.CatMapToral.ksEntropy_mapAwSymbFull_eq}\leanok
+  \uses{isFactorMap_awSymbFull, injective_awSymbFull, catTorus_ksEntropy_eq}
+  The golden-SFT image system \(\operatorname{Measure.map}\,\operatorname{awSymbFull}\,\mathrm{vol}\)
+  under the shift has Kolmogorov--Sinai entropy exactly \(\log\!\big((3+\sqrt5)/2\big)\): being an
+  injective factor, the Adler--Weiss coding is an \emph{entropy-preserving conjugacy}, so the issue's
+  expectation of a strict drop at \emph{every} step is impossible on this stage and is disclosed as
+  such.
+\end{theorem}
+
+\begin{theorem}[Stage 2 is a strict-drop lumping]\label{ksEntropy_mapCoarseSymb_le}
+  \lean{ErgodicTheory.CatMapToral.ksEntropy_mapCoarseSymb_le}\leanok
+  \uses{coarseAWPartition_ksEntropy_le, ksEntropy_mapAwSymbFull_eq}
+  The \(1\)-block source merge
+  \(\operatorname{mergeSrc} : (\operatorname{Fin} 5)^{\Z}\to(\operatorname{Fin} 2)^{\Z}\),
+  \(y\mapsto(k\mapsto\operatorname{src}(y\,k))\), composed with the coding is the coarse itinerary
+  \(\operatorname{coarseSymb}\); its image two-symbol system has entropy
+  \(= h(\operatorname{catTorus}, \operatorname{coarseAWPartition})\le\log 2 < \log\lambda_+\)
+  (\lean{ErgodicTheory.CatMapToral.ksEntropy_mapCoarseSymb_eq} for the exact value): a genuine
+  lumping with a strict entropy drop.
+\end{theorem}
+
+\subsection{The depth-two symbolic flow tower}
+
+\begin{theorem}[The cat symbolic flow tower]\label{catSymbolicFlowTower}
+  \lean{ErgodicTheory.CatMapToral.catSymbolicFlowTower}\leanok
+  \uses{isFactorMap_suspensionFactorMap, isFactorMap_awSymbFull, injective_awSymbFull, ksEntropy_mapCoarseSymb_le, ksEntropy_mapAwSymbFull_eq}
+  Instantiating the suspension functor twice at time \(1\) yields two suspension-flow factor maps: the
+  first (\lean{ErgodicTheory.CatMapToral.flowFactor1}) is \emph{injective} --- the conjugacy stage,
+  cat suspension \(\cong\) SFT\(_5\) suspension --- and the second
+  (\lean{ErgodicTheory.CatMapToral.flowFactor2}) is a genuine non-injective flow factor onto the
+  two-symbol suspension with a \emph{strict} flow-entropy drop
+  \(h(\zeta^{(2)}_1)\le\log 2 < \log\!\big((3+\sqrt5)/2\big) = h(\zeta^{\mathrm{cat}}_1)\). All three
+  levels are alive, with the merged level bracketed in \([\log\lambda_+ - \log 2, \log 2]\) by
+  \Cref{coarseAW_ksEntropyPartition_pos}.
+\end{theorem}
+
+\emph{Honest disclosures.} Stage 1 is a conjugacy, so a strict drop at \emph{each} step is impossible
+on this lineage (the strict drop lives at stage 2); the pushforward
+\(=\) explicit-Markov-measure cylinder identification is deferred; and the issue's \(\sqrt2\)-roof
+tower object does not exist --- the unit roof is used throughout.

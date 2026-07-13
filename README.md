@@ -12,7 +12,7 @@ suspension-flow Lyapunov/entropy theory, a coarse-grained **multifractal formali
 finite-dimensional **quantum-information layer** (Lieb's joint convexity, the data-processing
 inequality, Petz's equality theorem).
 
-**410 modules · ~112,000 lines · ~3,000 theorems — sorry-free, linter-enforced, and with 692
+**422 modules · ~115,000 lines · ~3,200 theorems — sorry-free, linter-enforced, and with 715
 declarations continuously axiom-audited down to `[propext, Classical.choice, Quot.sound]`.**
 
 📖 **[Project site](https://marcmorningstar.github.io/lean4-ergodic-theory/)** ·
@@ -57,6 +57,10 @@ All declarations live in the `ErgodicTheory` namespace (omitted below).
 | `CatMapToral.ergodic_catSuspension_timeOne_const_irrational` | **Time-1 ergodicity of the cat suspension**: the constant-irrational-roof cat-map suspension flow has an ergodic time-1 map (cat-side twin of the Bernoulli result; `ergodic_catSuspension_timeOne_sqrtTwo` at `r = √2`) |
 | `quotientFlowCocycle` / `exists_flowCocycle_cohomologous_to_cover` | **The quotient-level suspension `FlowCocycle`**: over the constant-unit-roof suspension of an invertible base, a genuine continuous-time `FlowCocycle` built from the two-sided matrix cocycle `cocycleZ` and the measurable canonical representative — the flow's own derivative data now lives on the same `FlowCocycle` interface `oseledets_flow` consumes. Cohomologous to the cover cocycle via a rep-level frame; cat instance `CatMapToral.catQuotientFlowCocycle` has a.e. exponent `log((3+√5)/2)` |
 | `OperatorEntropy.CNT.ksEntropy_eq_cntDynamicalEntropy` | The **CNT collapse**: classical KS entropy equals the *full* CNT dynamical entropy on the abelian corner (a disclosed `0 = 0`; the genuine obstruction to a Fekete rate is `OperatorEntropy.CNT.not_subadditive_cnt_entropySeq`) |
+| `CatMapToral.isFactorMap_awSymbFull` / `injective_awSymbFull` | **The Adler–Weiss coding as a factor and a conjugacy** (issue #58): the two-sided golden itinerary `awSymbFull : 𝕋² → (Fin 5)^ℤ` is a measure-theoretic factor onto the golden 5-symbol SFT with the shift intertwining holding **everywhere** (empty junk cell — no discarded null set), and is injective on the nose, hence a measurable embedding and a measure conjugacy onto its range. The SFT₅ image has entropy exactly `log((3+√5)/2)` (`ksEntropy_mapAwSymbFull_eq`) — a coding preserves entropy |
+| `CatMapToral.catSymbolicFlowTower` | **The depth-two symbolic flow tower** (issue #58): instantiating the unit-roof suspension functor (`suspensionFactorMap`, `isFactorMap_suspensionFactorMap`) twice lifts the Adler–Weiss coding and the source-merge lumping to the mapping-torus flows — cat suspension ≅ SFT₅ suspension (injective conjugacy stage) → 2-symbol suspension (a genuine non-injective flow factor with a **strict** entropy drop `h(ζ²₁) ≤ log 2 < log((3+√5)/2)`), the merged level pinned positive in `[log λ₊ − log 2, log 2]` by `CatMapToral.coarseAW_ksEntropyPartition_pos` |
+| `OperatorEntropy.quantum_seal_dephase` / `_faithful` | **The dephasing recovery seal** (issue #59): the dephasing channel exhibits a strict Umegaki relative-entropy drop against a non-uniform diagonal reference (`log 2` for the pure state `\|+⟩⟨+\|`; `log 2 − h₂((1+r)/2)` for the faithful family `ρ_r`, via the binary-entropy strict maximum), hence no faithful-ancilla Stinespring recovery. A QA pass repaired a degenerate `σ = I/2` witness (documented) |
+| `OperatorEntropy.CNT.cex_strictly_above_abelian` | **The per-resolution non-commutativity certificate** (issue #59): on the finite-dimensional witness, every abelian operational partition yields exactly zero correlation entropy at every resolution (rank-one Gram collapse), while the non-commuting partition is strictly positive at resolution 2 — the honest form of "entropy strictly above every abelian restriction", the system-level CNT rate being the disclosed `0 = 0` of `cntDynamicalEntropy_eq_zero` |
 | `measurable_orthProjMatrix_lambdaSublevel` | The **everywhere-Borel singular filtration** (issue #11): the orthogonal projector onto a sublevel set of the forward Lyapunov filtration is Borel measurable, via the Novikov projection theorem |
 
 Every theorem above (and ~650 further results) is guarded in `test/AxiomAudit.lean` by
@@ -151,6 +155,30 @@ would need an SMB theorem *with rates*, and the suspension-flow decay **requires
 observables (`∫g = 0`) — a constant-roof suspension is never mixing as a flow, the fibre rotation
 carrying no mixing. Sources: Einsiedler–Ward Ch. 2; Katok–Hasselblatt §17–18; Coudène;
 Cornfeld–Fomin–Sinai Ch. 11.
+
+The entropy *number* of the Adler–Weiss partition is upgraded to the coding *map* and a symbolic
+flow tower (issue #58). The two-sided golden itinerary `awSymbFull : 𝕋² → (Fin 5)^ℤ` is a genuine
+measure-theoretic factor map onto the golden 5-symbol subshift of finite type
+(`isFactorMap_awSymbFull`), with the shift intertwining holding **everywhere, not merely a.e.** —
+the repo's half-open golden tiling has an *empty* (not just null) junk cell, so no boundary null
+set is discarded — and it is **injective on the nose** (`injective_awSymbFull`), hence a measurable
+embedding and a measure conjugacy onto its range (`measurableEmbedding_awSymbFull`,
+`measurePreserving_awSymbEquivRange`). Because a conjugacy preserves entropy, the SFT₅ image has KS
+entropy **exactly** `log((3+√5)/2)` (`ksEntropy_mapAwSymbFull_eq`) — the issue's hoped-for strict
+drop at *every* stage is impossible on a coding, and is disclosed as such. Merging the five branches
+to the two golden rectangles gives the coarse two-cell partition `coarseAWPartition`, whose entropy
+is bracketed in the nontrivial band `[log λ₊ − log 2, log 2]`: the abstract `log 2` ceiling
+(`coarseAWPartition_ksEntropy_le`) and the **keystone strict positivity**
+`coarseAW_ksEntropyPartition_pos` (via a per-fine-cylinder `λ₊⁻ⁿ` volume decay against a `2ⁿ`
+transfer-matrix fibre count, positive because `λ₊ = (3+√5)/2 > 2`). Instantiating the abstract
+unit-roof **suspension functor** `suspensionFactorMap` (`isFactorMap_suspensionFactorMap`, the
+constant-roof Ambrose–Kakutani functoriality) twice lifts the two codings to a depth-two flow tower
+`catSymbolicFlowTower`: cat suspension ≅ SFT₅ suspension (the injective conjugacy stage) → 2-symbol
+suspension (a genuine non-injective flow factor with a **strict** flow-entropy drop
+`h(ζ²₁) ≤ log 2 < log((3+√5)/2)`), all three levels alive. Disclosed in place: the pushforward =
+explicit-golden-Markov-measure cylinder identification is deferred, and the issue's √2-roof tower
+object does not exist (roof `1` is used throughout). Sources: Adler–Weiss 1970 (Memoirs AMS 98);
+Adler BAMS 1998; Lind–Marcus Ch. 6; Kemeny–Snell (lumpability); Ambrose–Kakutani 1942.
 
 ### Livšic cohomological rigidity (`Livsic/`)
 
@@ -272,6 +300,34 @@ theorem** — recovery ⟹ DPI saturation (`petz_recovery_implies_equality`) and
 saturation ⟹ recovery (`petz_equality_recovery_general`), whose analytic heart is the
 modular-cocycle intertwining `partialTrace_equality_imp_intertwinesIt`.
 
+On top of this the layer now carries **genuinely non-commutative sealed dynamics**, honestly
+rescoped (issue #59). The issue's literal tier-1 goal — a *system-level* strictly positive quantum
+dynamical entropy in finite dimension — is **provably impossible** by the repo's own
+`cntDynamicalEntropy_eq_zero`, and this is disclosed prominently. What survives are two honest
+certificates. First, a **per-resolution correlation-entropy dichotomy** `cex_strictly_above_abelian`:
+on the witness system (identity dynamics, invariant pure state `|0⟩⟨0|`) *every* diagonal/abelian
+operational partition yields exactly **zero** correlation entropy at every resolution (a rank-one
+Gram collapse, `cex_abelian_restriction_entropy_zero`), while the non-commuting partition has
+strictly positive entropy at resolution 2 — issue #59's "entropy strictly above every abelian
+restriction", stated at the per-resolution level where the non-commutativity actually lives. Second,
+the **dephasing recovery seals** `quantum_seal_dephase` (pure-state, a strict relative-entropy drop
+of `log 2`) and `quantum_seal_dephase_faithful` (faithful-state, drop `log 2 − h₂((1+r)/2)` via
+Mathlib's binary-entropy strict maximum): the dephasing channel's strict data-processing drop against
+a **non-uniform** diagonal reference `diagState s` forecloses any faithful-ancilla Stinespring
+recovery — a QA pass caught and repaired a degenerate `σ = I/2` formulation (which makes the
+no-recovery content vacuous), documented in the module docstring; supporting spectral lemmas
+`vonNeumannEntropy_eq_zero_of_sq_eq`, `vonNeumannEntropy_conj`, `relEntropy_maximallyMixed`. Third, a
+**canonical-MASA incompatibility certificate** `qDynamics_seal_no_common_canonical_masa` on a
+Pythagorean `(3,4,5)` unitary (all entries in `ℚ(i)`, so `norm_num` closes each claim): the seal's
+diagonal MASA is not dynamics-invariant and the dynamics' eigenbasis MASA is not seal-invariant. The
+natural Hadamard/rotation choices provably *fail* (the circular MUB basis is simultaneously
+dephasing- and swap-invariant, hence a common MASA); and since every unital `*`-endomorphism of `M_d`
+is inner (Skolem–Noether) it always preserves *some* MASA, so the certificate is necessarily about
+the dynamics/seal **pair**. Disclosed: the Petz-MAP corollary is not shipped (it would need a
+general-`KrausChannel` DPI absent from the repo), and the no-common-MASA-over-all-conjugates statement
+is proved only pairwise on the two canonical candidate MASAs. Sources: Connes–Narnhofer–Thirring
+1987; Alicki–Fannes 2001; Neshveyev–Størmer 2006; Petz 1986/2003; Wilde; the MUB literature.
+
 ### Status and documented frontiers
 
 The GitHub issue tracker is at **zero open issues** — every formalization target has been discharged
@@ -298,7 +354,7 @@ a hypothesis or a scoped instance, never hidden.
   on the `frontier` branch and reaches `main` only through clean, sorry-free PRs.
 - **Linter-enforced**: the whole `ErgodicTheory` library builds under Mathlib's
   `linter.mathlibStandardSet` with warnings-as-errors, so CI fails on any style-lint regression.
-- **Axiom-audited**: `test/AxiomAudit.lean` guards 692 declarations with
+- **Axiom-audited**: `test/AxiomAudit.lean` guards 715 declarations with
   `#guard_msgs in #print axioms` on every build. (This certifies axiom-cleanliness; theorems with
   hypotheses are, as always, exactly as strong as their hypotheses — the blueprint states them in
   full.)
@@ -321,6 +377,7 @@ ErgodicTheory/
                       --   time-1 ergodicity, abstract Abramov flow-entropy homogeneity,
                       --   constant-roof flow-Livšic tier-III equivalence, the quotient-level
                       --   suspension FlowCocycle from cocycleZ + measurable canonical rep, the
+                      --   unit-roof suspension factor functor suspensionFactorMap, the
                       --   Bowen–Walters embedding metric embDist/embDistVar + Polishness)
   Livsic/             -- Livšic cohomological rigidity (abstract iff, full-shift/two-sided/SFT/
                       --   cat-map/doubling instances, full measurable rigidity, flow obstruction,
@@ -337,11 +394,14 @@ ErgodicTheory/
   Examples/           -- Arnold cat map (strong mixing, eigenfunction rigidity, ergodic time-1
                       --   suspension, flow-Livšic + Hölder flow-Livšic instances, the sharp entropy
                       --   h = log((3+√5)/2) via grid-telescope lower bound + Adler–Weiss generator
-                      --   upper bound, quotient flow cocycle, statistical laws: exponential decay of
-                      --   correlations, Green–Kubo, concentration, exponent rate), doubling map,
-                      --   Pesin/Rokhlin witnesses
+                      --   upper bound, the Adler–Weiss coding as a factor/conjugacy onto the golden
+                      --   SFT + coarse two-box partition + depth-two symbolic flow tower, quotient
+                      --   flow cocycle, statistical laws: exponential decay of correlations,
+                      --   Green–Kubo, concentration, exponent rate), doubling map, Pesin/Rokhlin
+                      --   witnesses
   OperatorEntropy/    -- quantum information: relative entropy, Klein/Lieb, data processing,
-                      --   CNT dynamical entropy, Petz recovery + equality
+                      --   CNT dynamical entropy, Petz recovery + equality, the dephasing recovery
+                      --   seals + per-resolution non-commutativity + canonical-MASA certificates
   MeasureTheory/      -- descriptive-set residuals (Lusin, Novikov first separation, Kunugui–Novikov,
                       --   the Novikov compact-section projection theorem, covering numbers)
 test/
