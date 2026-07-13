@@ -340,6 +340,14 @@ import ErgodicTheory.Livsic.HolderFlowCoboundary
 import ErgodicTheory.Livsic.HolderFlowCoboundaryVar
 import ErgodicTheory.Examples.CatMapSuspensionHolderLivsic
 import ErgodicTheory.Examples.CatMapVarRoofHolderLivsic
+import ErgodicTheory.Examples.CatMapAdlerWeissFactor
+import ErgodicTheory.Examples.CatMapCoarsePartition
+import ErgodicTheory.Examples.CatMapSymbolicTower
+import ErgodicTheory.Examples.CatMapTowerPositivity
+import ErgodicTheory.OperatorEntropy.EntropyPure
+import ErgodicTheory.OperatorEntropy.QuantumSeal
+import ErgodicTheory.OperatorEntropy.CNT.AbelianRestriction
+import ErgodicTheory.OperatorEntropy.CNT.NonCommutativeCertificate
 
 /-!
 # Axiom audit
@@ -4099,3 +4107,129 @@ axioms: [propext, Classical.choice, Quot.sound] -/
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms ErgodicTheory.CatMapToral.livsic_catVarRoofHolderFlow_witness
+
+/-! ### Issue #58 — the depth-two symbolic tower on the Arnold cat lineage -/
+
+-- Stage 1 (the Adler–Weiss coding): an exact, injective, measurable-embedding factor map onto
+-- the golden SFT₅ carrier.
+
+/-- info: 'ErgodicTheory.CatMapToral.isFactorMap_awSymbFull' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.CatMapToral.isFactorMap_awSymbFull
+
+/-- info: 'ErgodicTheory.CatMapToral.injective_awSymbFull' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.CatMapToral.injective_awSymbFull
+
+/-- info: 'ErgodicTheory.CatMapToral.measurableEmbedding_awSymbFull' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.CatMapToral.measurableEmbedding_awSymbFull
+
+/-- info: 'ErgodicTheory.CatMapToral.map_awSymbFull_biSFTCarrier' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.CatMapToral.map_awSymbFull_biSFTCarrier
+
+-- The coarse two-cell partition: the `log 2` ceiling and the transported positivity.
+
+/-- info: 'ErgodicTheory.CatMapToral.coarseAWPartition_ksEntropy_le' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.CatMapToral.coarseAWPartition_ksEntropy_le
+
+/-- info: 'ErgodicTheory.CatMapToral.coarseAWPartition_ksEntropyPartition_pos' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.CatMapToral.coarseAWPartition_ksEntropyPartition_pos
+
+-- The base symbolic entropies (conjugacy stage preserves; lumping stage drops).
+
+/-- info: 'ErgodicTheory.CatMapToral.ksEntropy_mapAwSymbFull_eq' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.CatMapToral.ksEntropy_mapAwSymbFull_eq
+
+/-- info: 'ErgodicTheory.CatMapToral.ksEntropy_mapCoarseSymb_eq' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.CatMapToral.ksEntropy_mapCoarseSymb_eq
+
+-- The suspension-flow tower: packaged factor tower and the strict / positive flow-entropy pins.
+
+/-- info: 'ErgodicTheory.CatMapToral.catSymbolicFlowTower' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.CatMapToral.catSymbolicFlowTower
+
+/-- info: 'ErgodicTheory.CatMapToral.ksEntropy_twoSymbolSuspFlow_lt_catSuspFlow' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.CatMapToral.ksEntropy_twoSymbolSuspFlow_lt_catSuspFlow
+
+/-- info: 'ErgodicTheory.CatMapToral.ksEntropy_twoSymbolSuspFlow_pos' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.CatMapToral.ksEntropy_twoSymbolSuspFlow_pos
+
+/-! ### Issue #59 — the quantum seal: von Neumann / relative entropy and the non-commutative
+certificate -/
+
+-- Pure-state and maximally-mixed entropy identities and unitary invariance.
+
+/-- info: 'ErgodicTheory.OperatorEntropy.vonNeumannEntropy_eq_zero_of_sq_eq' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.vonNeumannEntropy_eq_zero_of_sq_eq
+
+/-- info: 'ErgodicTheory.OperatorEntropy.vonNeumannEntropy_conj' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.vonNeumannEntropy_conj
+
+/-- info: 'ErgodicTheory.OperatorEntropy.relEntropy_maximallyMixed' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.relEntropy_maximallyMixed
+
+/-- info: 'ErgodicTheory.OperatorEntropy.relEntropy_diagState' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.relEntropy_diagState
+
+-- The dephasing quantum seal (general and faithful).
+
+/-- info: 'ErgodicTheory.OperatorEntropy.quantum_seal_dephase' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.quantum_seal_dephase
+
+/-- info: 'ErgodicTheory.OperatorEntropy.quantum_seal_dephase_faithful' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.quantum_seal_dephase_faithful
+
+-- The non-commutative certificate: abelian restriction is entropy-zero yet the seal sits strictly
+-- above it, with no common canonical MASA / no diagonal-preserving dynamics.
+
+/-- info: 'ErgodicTheory.OperatorEntropy.CNT.cex_abelian_restriction_entropy_zero' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.CNT.cex_abelian_restriction_entropy_zero
+
+/-- info: 'ErgodicTheory.OperatorEntropy.CNT.cex_strictly_above_abelian' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.CNT.cex_strictly_above_abelian
+
+/-- info: 'ErgodicTheory.OperatorEntropy.CNT.qDynamics_seal_no_common_canonical_masa' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.CNT.qDynamics_seal_no_common_canonical_masa
+
+/-- info: 'ErgodicTheory.OperatorEntropy.CNT.not_preservesDiag_qDynamics' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.CNT.not_preservesDiag_qDynamics

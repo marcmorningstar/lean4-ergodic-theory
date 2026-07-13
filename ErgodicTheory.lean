@@ -140,6 +140,7 @@ import ErgodicTheory.Continuous.SuspensionLivsic
 import ErgodicTheory.Continuous.SuspensionMetric
 import ErgodicTheory.Continuous.SuspensionMetricVar
 import ErgodicTheory.Continuous.QuotientFlowCocycle
+import ErgodicTheory.Continuous.SuspensionFactor
 import ErgodicTheory.Smooth.DerivativeCocycle
 import ErgodicTheory.Smooth.Expanding
 import ErgodicTheory.Smooth.RokhlinExpanding
@@ -254,6 +255,11 @@ import ErgodicTheory.Examples.CatMapGreenKubo
 import ErgodicTheory.Examples.CatMapNormForm
 import ErgodicTheory.Examples.CatMapStatistics
 import ErgodicTheory.Examples.CatMapSuspensionDecay
+import ErgodicTheory.Examples.CatMapAdlerWeissFactor
+import ErgodicTheory.Examples.CatMapCoarsePartition
+import ErgodicTheory.Examples.CatMapCoarsePositivity
+import ErgodicTheory.Examples.CatMapSymbolicTower
+import ErgodicTheory.Examples.CatMapTowerPositivity
 import ErgodicTheory.Examples.Rokhlin.AbstractEqui
 import ErgodicTheory.Examples.Rokhlin.DoublingCrux
 import ErgodicTheory.Examples.Rokhlin.DoublingEquality

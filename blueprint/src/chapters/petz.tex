@@ -934,3 +934,120 @@ dynamics \(\Phi = \mathrm{id}\) on \(\Matrix_2(\mathbb{C})\), the invariant pure
   \(S(\rho[X^{(2)}])\le 2\,S(\rho[X^{(1)}]) = 0\) by Lemma~\ref{entropy_corrMatrix_one_eq_zero},
   contradicting \(S(\rho[X^{(2)}]) > 0\) (Lemma~\ref{entropy_corrMatrix_two_pos}).
 \end{proof}
+
+\section{Genuinely non-commutative sealed dynamics (issue \#59)}\label{sec:quantum-seal}
+
+The finite-dimensional CNT rate vanishes identically (\Cref{cntDynamicalEntropy_eq_zero}), so the
+issue's literal tier-1 goal --- a \emph{system-level} strictly positive quantum dynamical entropy in
+finite dimension --- is \emph{provably impossible}. What survives, and is genuinely non-commutative,
+is a pair of honest certificates: a per-resolution correlation-entropy dichotomy that strictly
+separates the non-commuting operational partition from every abelian one, and a relative-entropy
+\emph{seal} whose strict data-processing drop forecloses any Stinespring recovery. (Connes--Narnhofer
+--Thirring, \emph{Comm.\ Math.\ Phys.}\ \textbf{112} (1987) 691--719; Alicki--Fannes, \emph{Quantum
+Dynamical Systems}, OUP (2001); Neshveyev--St\o rmer, \emph{Dynamical Entropy in Operator Algebras},
+Springer (2006); Petz 1986/2003; Wilde, \emph{Quantum Information Theory}, on recoverability.)
+
+\subsection{Shared spectral lemmas}
+
+\begin{lemma}[Zero entropy of an idempotent state]\label{vonNeumannEntropy_eq_zero_of_sq_eq}
+  \lean{ErgodicTheory.OperatorEntropy.vonNeumannEntropy_eq_zero_of_sq_eq}\leanok
+  \uses{vonNeumannEntropy}
+  If a density matrix is a projection (\(\rho^2 = \rho\)) then \(S(\rho) = 0\): transporting to the
+  eigenbasis forces every eigenvalue into \(\{0,1\}\), on which \(\operatorname{negMulLog}\) vanishes.
+  This is the converse of \(\operatorname{vonNeumannEntropy\_pos\_of\_sq\_ne}\).
+\end{lemma}
+
+\begin{lemma}[Relative entropy against the maximally mixed state]\label{relEntropy_maximallyMixed}
+  \lean{ErgodicTheory.OperatorEntropy.relEntropy_maximallyMixed}\leanok
+  \uses{relEntropy, vonNeumannEntropy}
+  \(D(\rho\,\|\,I/d) = \log d - S(\rho)\); the cross term collapses through the doubly-stochastic row
+  sum to \(-\log d\cdot\operatorname{Tr}\rho = -\log d\). Unitary invariance of the von Neumann
+  entropy (\lean{ErgodicTheory.OperatorEntropy.vonNeumannEntropy_conj}) is proved alongside, via
+  \(\operatorname{charpoly\_mul\_comm}\).
+\end{lemma}
+
+\subsection{The dephasing recovery seal}
+
+The dephasing (pinching) channel \(\Delta\) on a qubit deletes off-diagonal coherences. Fed a
+coherent state it produces a \emph{strict} drop of the Umegaki relative entropy against a faithful
+diagonal fixed point \(\sigma = \operatorname{diagState} s = \operatorname{diag}((1+s)/2, (1-s)/2)\)
+(\(0 < s < 1\)); by Petz's theorem no faithful-ancilla Stinespring section can undo it.
+
+\begin{theorem}[Pure-state seal, T2a]\label{quantum_seal_dephase}
+  \lean{ErgodicTheory.OperatorEntropy.quantum_seal_dephase}\leanok
+  \uses{relEntropy_maximallyMixed, vonNeumannEntropy_eq_zero_of_sq_eq}
+  The maximally coherent pure state \(|{+}\rangle\langle{+}|\) dephases to \(I/2\), a strict
+  relative-entropy drop of \(S(I/2) - S(|{+}\rangle\langle{+}|) = \log 2 > 0\) against
+  \(\operatorname{diagState} s\); consequently no faithful-ancilla Stinespring section recovers it.
+\end{theorem}
+
+\begin{theorem}[Faithful-state seal, T2b]\label{quantum_seal_dephase_faithful}
+  \lean{ErgodicTheory.OperatorEntropy.quantum_seal_dephase_faithful}\leanok
+  \uses{relEntropy_maximallyMixed}
+  The faithful one-parameter family \(\rho_r = \tfrac12\!\left(\begin{smallmatrix}1 & r\\ r &
+  1\end{smallmatrix}\right)\) (\(0 < r < 1\), positive definite) dephases to \(I/2\) with a strict
+  drop \(\log 2 - h_2\!\big((1+r)/2\big) > 0\), where \(h_2\) is Mathlib's binary entropy (whose
+  strict maximum at \(1/2\) supplies the strict inequality); again no faithful-ancilla Stinespring
+  section recovers it.
+\end{theorem}
+
+\emph{QA note --- the reference state must be off the dephasing image.} Taking \(\sigma := I/2\) is
+\emph{degenerate}: then \(\Delta\rho = I/2 = \Delta\sigma\), so the two Stinespring-section
+hypotheses \(R(\Delta\rho) = \rho\) and \(R(\Delta\sigma) = \sigma\) share an identical left-hand
+side and force \(\rho = \sigma\) set-theoretically --- \emph{False} with no entropy input, the
+no-recovery content vacuous. The honest packaging therefore uses a faithful reference whose dephasing
+image differs from \(\Delta\rho\); \(\operatorname{diagState} s\) does this while remaining a faithful
+dephasing fixed point. The \(\sigma = I/2\) strict-DPI drops are still recorded honestly as
+standalone lemmas (\(\operatorname{relEntropy\_drop\_plusState\_mm}\),
+\(\operatorname{relEntropy\_drop\_rhoR\_mm}\)). The Petz-map corollary (that the explicit Petz
+recovery map fails on \(\rho_r\)) would need a general-\(\operatorname{KrausChannel}\) data-processing
+inequality --- absent from the repo, only the faithful-ancilla Stinespring family is available --- so
+it is intentionally omitted.
+
+\subsection{The per-resolution non-commutativity certificate}\label{sec:cnt-noncommutative}
+
+On the same witness as \Cref{sec:cnt-counterexample} --- identity dynamics \(\operatorname{cexEndo}\)
+on \(\Matrix_2(\C)\) and invariant pure state \(|0\rangle\langle 0|\) --- the correlation entropy sees
+non-commutativity at fixed resolution, even though the system-level rate vanishes.
+
+\begin{theorem}[Strictly above every abelian restriction]\label{cex_strictly_above_abelian}
+  \lean{ErgodicTheory.OperatorEntropy.CNT.cex_strictly_above_abelian}\leanok
+  \uses{corrMatrix, vonNeumannEntropy_eq_zero_of_sq_eq, entropy_corrMatrix_two_pos, cntDynamicalEntropy_eq_zero}
+  For \emph{every} abelian (diagonal) operational partition the correlation density matrix is a
+  rank-one idempotent at every resolution \(n\) --- a Gram collapse onto the column-\(0\) diagonal
+  entry --- so its von Neumann entropy is \(0\)
+  (\lean{ErgodicTheory.OperatorEntropy.CNT.cex_abelian_restriction_entropy_zero}); while for the
+  non-commuting partition \(\operatorname{cexPartition}\) the length-\(2\) correlation matrix is not
+  idempotent, so its entropy is strictly positive. This is issue \#59's ``entropy strictly above every
+  abelian restriction'', stated honestly at the per-resolution level: the system-level CNT/ALF rate
+  is the disclosed \(0 = 0\) of \Cref{cntDynamicalEntropy_eq_zero}, so the non-commutativity lives in
+  the per-resolution correlation matrices.
+\end{theorem}
+
+\subsection{The canonical-MASA incompatibility certificate}\label{sec:masa-certificate}
+
+By Skolem--Noether every unital \(*\)-endomorphism of \(\Matrix_d\) is inner, hence conjugation by a
+unitary, and \emph{always} preserves some maximal abelian subalgebra (MASA) --- the eigenbasis of
+that unitary. So no obstruction can be about a single map; the certificate is about the \emph{pair}
+(dynamics, seal). The dynamics \(\operatorname{qDynamics} = \operatorname{Ad}(U)\) is built from a
+Pythagorean \((3,4,5)\) rotation of the eigenbasis composed with the phase \(\operatorname{diag}(1,i)\),
+so every entry lies in \(\mathbb{Q}(i)\) and each claim reduces to \(\operatorname{norm\_num}\).
+
+\begin{theorem}[No common canonical MASA]\label{qDynamics_seal_no_common_canonical_masa}
+  \lean{ErgodicTheory.OperatorEntropy.CNT.qDynamics_seal_no_common_canonical_masa}\leanok
+  The seal's diagonal MASA is not dynamics-invariant --- \(U\cdot\operatorname{diag}(1,0)\cdot U^\dagger\)
+  has a nonzero \((1,0)\) entry (\lean{ErgodicTheory.OperatorEntropy.CNT.not_preservesDiag_qDynamics})
+  --- and the dynamics' MASA (the eigenbasis, \(=\) commutant of the eigenprojection
+  \(\operatorname{eigProj}\)) is not seal-invariant: the dephasing map moves \(\operatorname{eigProj}\)
+  out of that MASA, \(E(\operatorname{eigProj})\) failing to commute with \(\operatorname{eigProj}\)
+  (\lean{ErgodicTheory.OperatorEntropy.CNT.dephase_eigProj_not_commute}).
+\end{theorem}
+
+\emph{A documented landmine and a disclosed frontier.} The natural Hadamard/rotation choices
+\emph{fail} to witness this: the circular (mutually unbiased) basis is simultaneously
+dephasing-invariant and swap-invariant, hence a common MASA. The Pythagorean tilt is chosen precisely
+to dodge that degeneracy (\(|V_{00}|^2 = 16/25\ne 1/2\)). The genuinely strong statement --- that
+there is \emph{no} common invariant MASA over \emph{all} unitary conjugates of the diagonal --- is
+true for this \(U\) but its formalization over the full unitary group is deferred (it is large); what
+is formalized is the concrete pairwise failure on the two canonical candidate MASAs, the honest
+operational core of the obstruction.

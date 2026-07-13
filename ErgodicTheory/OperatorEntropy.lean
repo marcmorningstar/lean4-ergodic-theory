@@ -21,6 +21,10 @@ import ErgodicTheory.OperatorEntropy.CNT.FiniteDimZero
 import ErgodicTheory.OperatorEntropy.CNT.AbelianCornerFull
 import ErgodicTheory.OperatorEntropy.CNT.AbelianFekete
 import ErgodicTheory.OperatorEntropy.CNT.SubadditivityCounterexample
+import ErgodicTheory.OperatorEntropy.CNT.AbelianRestriction
+import ErgodicTheory.OperatorEntropy.CNT.NonCommutativeCertificate
+import ErgodicTheory.OperatorEntropy.EntropyPure
+import ErgodicTheory.OperatorEntropy.QuantumSeal
 import ErgodicTheory.OperatorEntropy.RelativeEntropy
 import ErgodicTheory.OperatorEntropy.RelEntropyAdditivity
 import ErgodicTheory.OperatorEntropy.StinespringReduction
