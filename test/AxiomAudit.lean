@@ -353,6 +353,10 @@ import ErgodicTheory.OperatorEntropy.CNT.NonCommutativeCertificate
 import ErgodicTheory.OperatorEntropy.GrowingTower.Tower
 import ErgodicTheory.OperatorEntropy.GrowingTower.SealLift
 import ErgodicTheory.OperatorEntropy.GrowingTower.World
+import ErgodicTheory.OperatorEntropy.GrowingTower.ChainAlgebra
+import ErgodicTheory.OperatorEntropy.GrowingTower.ChainState
+import ErgodicTheory.OperatorEntropy.GrowingTower.ModularClock
+import ErgodicTheory.OperatorEntropy.GrowingTower.QuantumBernoulli
 import ErgodicTheory.Multifractal.RenyiEntropy
 import ErgodicTheory.Multifractal.RenyiRate
 import ErgodicTheory.Multifractal.RenyiBernoulli
@@ -4346,6 +4350,93 @@ certificate -/
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms ErgodicTheory.OperatorEntropy.GrowingQuantumWorld.blockEntropy_linear
+
+/-! ### Issue #71 — quantum Bernoulli shift and the finite modular clock -/
+
+/-- info: 'ErgodicTheory.OperatorEntropy.appendQubit_injective' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.appendQubit_injective
+
+/-- info: 'ErgodicTheory.OperatorEntropy.shiftAdjoinQubit_appendQubit' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.shiftAdjoinQubit_appendQubit
+
+/-- info: 'ErgodicTheory.OperatorEntropy.partialTrace_appendQubit_maximallyMixed' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.partialTrace_appendQubit_maximallyMixed
+
+/-- info: 'ErgodicTheory.OperatorEntropy.kron_maximallyMixed' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.kron_maximallyMixed
+
+/-- info: 'ErgodicTheory.OperatorEntropy.rhoPow_maximallyMixed' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.rhoPow_maximallyMixed
+
+/-- info: 'ErgodicTheory.OperatorEntropy.rhoPow_shiftAdjoinQubit_pairing' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.rhoPow_shiftAdjoinQubit_pairing
+
+/-- info: 'ErgodicTheory.OperatorEntropy.modAut_add' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.modAut_add
+
+/-- info: 'ErgodicTheory.OperatorEntropy.modAut_mul' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.modAut_mul
+
+/-- info: 'ErgodicTheory.OperatorEntropy.kms_boundary' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.kms_boundary
+
+/-- info: 'ErgodicTheory.OperatorEntropy.modAut_shiftAdjoinQubit' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.modAut_shiftAdjoinQubit
+
+/-- info: 'ErgodicTheory.OperatorEntropy.modAut_maximallyMixed_eq_id' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.modAut_maximallyMixed_eq_id
+
+/-- info: 'ErgodicTheory.OperatorEntropy.modAut_diagState_ne_id' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.modAut_diagState_ne_id
+
+/-- info: 'ErgodicTheory.OperatorEntropy.shiftIter_pairing' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.shiftIter_pairing
+
+/-- info: 'ErgodicTheory.OperatorEntropy.windowEntropy_tracial' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.windowEntropy_tracial
+
+/-- info: 'ErgodicTheory.OperatorEntropy.tendsto_windowEntropy_div_tracial' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.tendsto_windowEntropy_div_tracial
+
+/-- info: 'ErgodicTheory.OperatorEntropy.chain_seal_dephase_faithful' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.chain_seal_dephase_faithful
+
+/-- info: 'ErgodicTheory.OperatorEntropy.quantumBernoulliShift_exists' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.quantumBernoulliShift_exists
 
 /-! ### Issue #60 — coarse-grained Rényi entropy: block-coding rate drop on Bernoulli measures -/
 
