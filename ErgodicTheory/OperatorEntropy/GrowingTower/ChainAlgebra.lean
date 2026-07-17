@@ -4,7 +4,6 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Marcel Morgenstern
 -/
 import ErgodicTheory.OperatorEntropy.GrowingTower.Tower
-import ErgodicTheory.OperatorEntropy.StinespringReduction
 
 /-!
 # The inclusion half of the directed local system of the one-sided qubit chain
@@ -14,18 +13,25 @@ This module supplies the **inclusion** side of the one-sided qubit chain of `Tow
 `Qbits n` (of cardinality `2 ^ n`) already carry the capacity-enlargement embedding
 `shiftAdjoinQubit : A_n ↪ A_{n+1}` that adjoins a fresh qubit *on the left* (`A ↦ 1 ⊗ A`).  Here
 we add the complementary **inclusion** `ι_n : A_n ↪ A_{n+1}` that appends a fresh site *at the far
-end* (`x ↦ x ⊗ 1`), transported along `Equiv.prodComm` because `Qbits (n+1)` places the fresh
-factor on the left:
+(deep) end* (`x ↦ x ⊗ 1`), transported along the recursive `snocQbit` equiv that lands the fresh
+factor in the *innermost* position of the nested product `Qbits (n+1) = Fin 2 × ⋯ × Fin 1`, rather
+than the shallow (leftmost) slot occupied by `shiftAdjoinQubit`.  This distinction is genuine: a
+naïve `Equiv.prodComm` reindex would collapse `appendQubit` back onto `shiftAdjoinQubit`, so the
+recursive snoc equiv is what makes the two embeddings honestly different maps.
 
-* `appendQubit` — the far-end inclusion `x ↦ x ⊗ 1` (reindexed);
+* `snocQbit` — the recursive equiv `Qbits (n+1) ≃ Qbits n × Fin 2` placing the fresh factor at the
+  deep end;
+* `appendQubit` — the far-end inclusion `x ↦ x ⊗ 1` (reindexed along `snocQbit`);
 * it is a unital, multiplicative, `⋆`-preserving injection (`appendQubit_one`,
   `appendQubit_mul`, `appendQubit_star`, `appendQubit_injective`);
-* the shift and the inclusion **commute** (`shiftAdjoinQubit_appendQubit`), so the family
-  `(A_n, ι_n)` is a genuine directed system carrying the shift endomorphism;
+* the shift and the inclusion **commute** (`shiftAdjoinQubit_appendQubit`) — the genuine,
+  non-trivial commutation of the shallow-end shift with the deep-end append (both realise the
+  operator `1 ⊗ M ⊗ 1`), so the family `(A_n, ι_n)` is a genuine directed system carrying the shift
+  endomorphism;
 * the tracial/maximally mixed state is **compatible with the inclusions**: the far-end site is a
   fresh, maximally mixed degree of freedom, so pairing the `(n+1)`-level maximally mixed state
   against `appendQubit x` reproduces the `n`-level pairing against `x`
-  (`partialTrace_appendQubit_maximallyMixed`).
+  (`appendQubit_maximallyMixed_pairing`).
 
 ## Scope
 
@@ -52,18 +58,35 @@ namespace ErgodicTheory.OperatorEntropy
 
 /-! ## The far-end inclusion `A_n ↪ A_{n+1}` -/
 
-/-- The inclusion `A_n ↪ A_{n+1}`: append a fresh qubit at the far end (`x ↦ x ⊗ 1`), reindexed
-along `Equiv.prodComm` because `Qbits (n+1)` places the fresh factor on the left. -/
+/-- The recursive reindexing equiv `Qbits (n+1) ≃ Qbits n × Fin 2` that places the fresh qubit at
+the **deep (innermost) end** of the nested product `Qbits (n+1) = Fin 2 × ⋯ × Fin 1`.  At level `0`
+it is `Equiv.prodComm` (`Fin 2 × Fin 1 ≃ Fin 1 × Fin 2`); the recursive step pushes the fresh factor
+one layer deeper via `Equiv.prodAssoc`.  This deep placement is what distinguishes the far-end
+inclusion `appendQubit` from the shallow-end shift `shiftAdjoinQubit`. -/
+def snocQbit : (n : ℕ) → (Qbits (n + 1) ≃ Qbits n × Fin 2)
+  | 0 => Equiv.prodComm (Fin 2) (Qbits 0)
+  | (n + 1) =>
+      ((Equiv.refl (Fin 2)).prodCongr (snocQbit n)).trans
+        (Equiv.prodAssoc (Fin 2) (Qbits n) (Fin 2)).symm
+
+/-- The recursive step of `snocQbit`: on `Qbits (n+2) = Fin 2 × Qbits (n+1)` it sends `(a, w)` to
+`((a, (snocQbit n w).1), (snocQbit n w).2)`, i.e. the shallow factor `a` stays outermost and the
+fresh factor `(snocQbit n w).2` is pushed to the deep end. -/
+theorem snocQbit_succ_apply {n : ℕ} (a : Fin 2) (w : Qbits (n + 1)) :
+    snocQbit (n + 1) (a, w) = ((a, (snocQbit n w).1), (snocQbit n w).2) := rfl
+
+/-- The inclusion `A_n ↪ A_{n+1}`: append a fresh qubit at the far (deep) end (`x ↦ x ⊗ 1`),
+reindexed along the recursive `snocQbit` equiv so the fresh factor lands innermost — genuinely
+distinct from the shallow-end shift `shiftAdjoinQubit`. -/
 def appendQubit {n : ℕ} (M : Matrix (Qbits n) (Qbits n) ℂ) :
     Matrix (Qbits (n + 1)) (Qbits (n + 1)) ℂ :=
-  (M ⊗ₖ (1 : Matrix (Fin 2) (Fin 2) ℂ)).submatrix
-    (Equiv.prodComm (Fin 2) (Qbits n)) (Equiv.prodComm (Fin 2) (Qbits n))
+  (M ⊗ₖ (1 : Matrix (Fin 2) (Fin 2) ℂ)).submatrix (snocQbit n) (snocQbit n)
 
 /-- The inclusion maps the identity to the identity. -/
 theorem appendQubit_one (n : ℕ) : appendQubit (1 : Matrix (Qbits n) (Qbits n) ℂ) = 1 := by
   unfold appendQubit
   rw [Matrix.one_kronecker_one]
-  exact Matrix.submatrix_one_equiv (Equiv.prodComm (Fin 2) (Qbits n))
+  exact Matrix.submatrix_one_equiv (snocQbit n)
 
 /-- The inclusion is multiplicative. -/
 theorem appendQubit_mul {n : ℕ} (M N : Matrix (Qbits n) (Qbits n) ℂ) :
@@ -72,9 +95,8 @@ theorem appendQubit_mul {n : ℕ} (M N : Matrix (Qbits n) (Qbits n) ℂ) :
       = (M * N) ⊗ₖ (1 : Matrix (Fin 2) (Fin 2) ℂ) := by
     rw [← Matrix.mul_kronecker_mul, Matrix.one_mul]
   have hsm := Matrix.submatrix_mul (M ⊗ₖ (1 : Matrix (Fin 2) (Fin 2) ℂ))
-      (N ⊗ₖ (1 : Matrix (Fin 2) (Fin 2) ℂ)) (Equiv.prodComm (Fin 2) (Qbits n))
-      (Equiv.prodComm (Fin 2) (Qbits n)) (Equiv.prodComm (Fin 2) (Qbits n))
-      (Equiv.prodComm (Fin 2) (Qbits n)).bijective
+      (N ⊗ₖ (1 : Matrix (Fin 2) (Fin 2) ℂ)) (snocQbit n) (snocQbit n) (snocQbit n)
+      (snocQbit n).bijective
   rw [hk] at hsm
   exact hsm
 
@@ -85,24 +107,25 @@ theorem appendQubit_star {n : ℕ} (M : Matrix (Qbits n) (Qbits n) ℂ) :
   rw [Matrix.conjTranspose_submatrix, Matrix.conjTranspose_kronecker, Matrix.conjTranspose_one]
 
 /-- The inclusion is injective: `x ⊗ 1` (reindexed) determines `x` through the entry identity
-`appendQubit x (0, a) (0, b) = x a b`. -/
+`appendQubit x ((snocQbit n).symm (a, 0)) ((snocQbit n).symm (b, 0)) = x a b`. -/
 theorem appendQubit_injective (n : ℕ) :
     Function.Injective (appendQubit (n := n)) := by
   intro M N h
   ext a b
-  have hentry := congrFun (congrFun h ((0 : Fin 2), a)) ((0 : Fin 2), b)
-  simpa only [appendQubit, Matrix.submatrix_apply, Equiv.prodComm_apply, Prod.swap_prod_mk,
-    Matrix.kronecker_apply, Matrix.one_apply_eq, mul_one] using hentry
+  have hentry := congrFun (congrFun h ((snocQbit n).symm (a, 0))) ((snocQbit n).symm (b, 0))
+  simpa only [appendQubit, Matrix.submatrix_apply, Equiv.apply_symm_apply,
+    Matrix.kroneckerMap_apply, Matrix.one_apply_eq, mul_one] using hentry
 
 /-- **Shift–inclusion compatibility.** The capacity-enlargement shift `shiftAdjoinQubit`
-(`A ↦ 1 ⊗ A`) and the far-end inclusion `appendQubit` (`x ↦ x ⊗ 1`) commute: both realise the
-entrywise product `1 ⊗ M ⊗ 1`.  Hence the family of finite levels is a genuine directed system
-carrying the shift as an endomorphism. -/
+(`A ↦ 1 ⊗ A`, shallow end) and the far-end inclusion `appendQubit` (`x ↦ x ⊗ 1`, deep end) commute:
+both realise the entrywise product `1 ⊗ M ⊗ 1`.  With the deep-end (`snocQbit`) placement this is a
+genuine, non-trivial commutation of two distinct embeddings.  Hence the family of finite levels is a
+genuine directed system carrying the shift as an endomorphism. -/
 theorem shiftAdjoinQubit_appendQubit {n : ℕ} (M : Matrix (Qbits n) (Qbits n) ℂ) :
     shiftAdjoinQubit (appendQubit M) = appendQubit (shiftAdjoinQubit M) := by
-  ext ⟨a, b, q⟩ ⟨a', b', q'⟩
-  simp only [shiftAdjoinQubit, appendQubit, Matrix.submatrix_apply, Matrix.kronecker_apply,
-    Equiv.prodComm_apply, Prod.swap_prod_mk, Matrix.one_apply]
+  ext ⟨a, w⟩ ⟨a', w'⟩
+  simp only [shiftAdjoinQubit, appendQubit, Matrix.submatrix_apply, snocQbit_succ_apply,
+    Matrix.kroneckerMap_apply]
   ring
 
 /-! ## Compatibility of the tracial state with the inclusions -/
@@ -110,8 +133,10 @@ theorem shiftAdjoinQubit_appendQubit {n : ℕ} (M : Matrix (Qbits n) (Qbits n) �
 /-- **The maximally mixed state is compatible with the inclusions.** The far-end site adjoined by
 `appendQubit` is a fresh, maximally mixed degree of freedom, so pairing the `(n+1)`-level
 maximally mixed state against `appendQubit x` reproduces the `n`-level pairing against `x`.  This
-is the compatible-marginals condition for the tracial state along the inclusion tower. -/
-theorem partialTrace_appendQubit_maximallyMixed (n : ℕ) :
+is the compatible-marginals condition for the tracial state along the inclusion tower.  (No partial
+trace appears: it is a trace-pairing identity, parallel to `maximallyMixed_shiftAdjoinQubit_pairing`
+of `ChainState.lean`.) -/
+theorem appendQubit_maximallyMixed_pairing (n : ℕ) :
     ∀ x : Matrix (Qbits n) (Qbits n) ℂ,
       ((DensityMatrix.maximallyMixed : DensityMatrix (Qbits (n + 1))).val
           * appendQubit x).trace
@@ -125,14 +150,14 @@ theorem partialTrace_appendQubit_maximallyMixed (n : ℕ) :
           • (1 : Matrix (Qbits (n + 1)) (Qbits (n + 1)) ℂ) := rfl
     have htr : (appendQubit x).trace = x.trace * 2 := by
       have hsub : ((x ⊗ₖ (1 : Matrix (Fin 2) (Fin 2) ℂ)).submatrix
-          (Equiv.prodComm (Fin 2) (Qbits n)) (Equiv.prodComm (Fin 2) (Qbits n))).trace
+          (snocQbit n) (snocQbit n)).trace
           = (x ⊗ₖ (1 : Matrix (Fin 2) (Fin 2) ℂ)).trace := by
         simp only [Matrix.trace, Matrix.diag_apply, Matrix.submatrix_apply]
-        exact Equiv.sum_comp (Equiv.prodComm (Fin 2) (Qbits n))
+        exact Equiv.sum_comp (snocQbit n)
           (fun j => (x ⊗ₖ (1 : Matrix (Fin 2) (Fin 2) ℂ)) j j)
       calc (appendQubit x).trace
           = ((x ⊗ₖ (1 : Matrix (Fin 2) (Fin 2) ℂ)).submatrix
-              (Equiv.prodComm (Fin 2) (Qbits n)) (Equiv.prodComm (Fin 2) (Qbits n))).trace := rfl
+              (snocQbit n) (snocQbit n)).trace := rfl
         _ = (x ⊗ₖ (1 : Matrix (Fin 2) (Fin 2) ℂ)).trace := hsub
         _ = x.trace * 2 := by
             rw [Matrix.trace_kronecker, Matrix.trace_one, Fintype.card_fin]

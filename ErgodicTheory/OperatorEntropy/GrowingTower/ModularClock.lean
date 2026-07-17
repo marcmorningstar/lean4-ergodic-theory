@@ -29,7 +29,9 @@ algebra that is **compatible with the chain embedding** (`modAut_shiftAdjoinQubi
   * `modAut_maximallyMixed_eq_id` (and `modAut_maximallyMixed_Qbits_eq_id`): the tracial
     (maximally mixed) state has **trivial** modular flow at every level of the chain;
   * `modAut_diagState_ne_id`: a non-tracial faithful product state (Powers-type, `diagState s`)
-    has a **provably nontrivial** modular flow.
+    has a **provably nontrivial** modular flow at the base qubit;
+  * `modAut_rhoPow_diagState_ne_id`: that nontriviality holds at **every** level `n ≥ 1` of the
+    tower, via the deep-end companion law `modAut_kron_one_left`.
 
 ## Disclosures (honest scope)
 
@@ -39,8 +41,8 @@ algebra that is **compatible with the chain embedding** (`modAut_shiftAdjoinQubi
 * Not delivered here: the Tomita–Takesaki **uniqueness** of the KMS one-parameter group, and the
   genuine type-III modular theory of the completed C*-chain (GNS is Mathlib-absent).  This module
   is the finite matrix-algebra shadow of that theory.
-* Nontriviality is transported up the tower by combining `modAut_diagState_ne_id` with the
-  tower-compatibility law `modAut_shiftAdjoinQubit`.
+* Nontriviality at level `n ≥ 1` is proved in `modAut_rhoPow_diagState_ne_id`, exposing the
+  base-factor flow on the deep-end block `a ⊗ 1` via `modAut_kron_one_left`.
 
 ## Sources
 
@@ -141,6 +143,24 @@ private theorem modAut_kron_one {p q : Type*} [Fintype p] [DecidableEq p] [Finty
   congr 1
   · rw [one_mul, upow_mul_upow_neg]
   · rw [← mul_assoc]
+
+set_option maxHeartbeats 1000000 in
+-- Kronecker-product defeq unification of the factor `Fintype`/`DecidableEq` instances is costly.
+/-- On a factorized carrier `p × q`, the modular flow of a Kronecker product state acts on the
+embedded block `a ⊗ 1` by the first factor's modular flow: `σ_t(a ⊗ 1) = σ_t(a) ⊗ 1`, because the
+second factor `B^{it}` cancels against `B^{-it}` (via `upow_kron`).  This is the deep-end companion
+of `modAut_kron_one`; it exposes the base-factor flow, which is where the Powers-state
+nontriviality lives. -/
+private theorem modAut_kron_one_left {p q : Type*} [Fintype p] [DecidableEq p] [Fintype q]
+    [DecidableEq q] {A : Matrix p p ℂ} {B : Matrix q q ℂ} (hA : A.PosDef) (hB : B.PosDef)
+    (hAB : (A ⊗ₖ B).PosDef) (t : ℝ) (a : Matrix p p ℂ) :
+    modAut hAB t (a ⊗ₖ 1) = modAut hA t a ⊗ₖ 1 := by
+  simp only [modAut]
+  rw [upow_kron hA hB hAB t, upow_kron hA hB hAB (-t), mul_assoc,
+    ← Matrix.mul_kronecker_mul, ← Matrix.mul_kronecker_mul]
+  congr 1
+  · rw [← mul_assoc]
+  · rw [one_mul, upow_mul_upow_neg]
 
 set_option maxHeartbeats 1000000 in
 -- Closing by defeq forces reduction of `Qbits (n+1)` to `Fin 2 × Qbits n` and its instances.
@@ -270,6 +290,33 @@ theorem modAut_diagState_ne_id (s : ℝ) (hs0 : 0 < s) (hs1 : s < 1) :
   have h01 := congrFun (congrFun hne 0) 1
   rw [Matrix.smul_apply, smul_eq_mul, Matrix.single_apply_same] at h01
   norm_num at h01
+
+/-- **The non-tracial clock is nontrivial at every level of the tower.** The `n`-fold product state
+`(diagState s)^{⊗ n}` (`0 < s < 1`, `n ≥ 1`) has a **nontrivial** modular flow at the length-`n`
+block: the base-factor nontriviality (`modAut_diagState_ne_id`) is exposed on the deep-end block
+`a ⊗ 1` via `modAut_kron_one_left`.  Descending the fresh (`rhoPow ρ (n-1)`) factor by injectivity
+of `· ⊗ 1` reduces triviality at level `n` to triviality at the base qubit, which is impossible. -/
+theorem modAut_rhoPow_diagState_ne_id (s : ℝ) (hs0 : 0 < s) (hs1 : s < 1) {n : ℕ} (hn : 1 ≤ n) :
+    ¬ ∀ (t : ℝ) (a : Matrix (Qbits n) (Qbits n) ℂ),
+      modAut (rhoPow_posDef (diagState s hs0 hs1) (diagState_posDef s hs0 hs1) n) t a = a := by
+  obtain ⟨m, rfl⟩ : ∃ m, n = m + 1 := ⟨n - 1, by omega⟩
+  intro H
+  refine modAut_diagState_ne_id s hs0 hs1 (fun t a => ?_)
+  have hinj : ∀ {X Y : Matrix (Fin 2) (Fin 2) ℂ},
+      X ⊗ₖ (1 : Matrix (Qbits m) (Qbits m) ℂ) = Y ⊗ₖ 1 → X = Y := by
+    intro X Y hXY
+    ext i j
+    have hij := congrFun (congrFun hXY (i, Classical.arbitrary (Qbits m)))
+      (j, Classical.arbitrary (Qbits m))
+    simpa only [Matrix.kroneckerMap_apply, Matrix.one_apply_eq, mul_one] using hij
+  have hHval := H t (a ⊗ₖ (1 : Matrix (Qbits m) (Qbits m) ℂ))
+  have hcomb : modAut (diagState_posDef s hs0 hs1) t a ⊗ₖ (1 : Matrix (Qbits m) (Qbits m) ℂ)
+      = a ⊗ₖ 1 := by
+    rw [← modAut_kron_one_left (diagState_posDef s hs0 hs1)
+      (rhoPow_posDef (diagState s hs0 hs1) (diagState_posDef s hs0 hs1) m)
+      (rhoPow_posDef (diagState s hs0 hs1) (diagState_posDef s hs0 hs1) (m + 1)) t a]
+    exact hHval
+  exact hinj hcomb
 
 end ErgodicTheory.OperatorEntropy
 

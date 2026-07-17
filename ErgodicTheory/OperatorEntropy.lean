@@ -148,6 +148,7 @@ dilation, and both directions of Petz's equality theorem.
   fixed directed system with a shift-invariant tracial state, a temporal-window entropy rate
   `log 2`, and a per-stage strict relative-entropy seal under dephasing (issue #71).
 * `ErgodicTheory.OperatorEntropy.modAut_maximallyMixed_eq_id` / `modAut_diagState_ne_id` — the
-  finite modular clock: the modular automorphism is trivial exactly at the maximally mixed state
-  and moves a non-flat diagonal state, an intrinsic-clock dichotomy (issue #71).
+  finite modular clock dichotomy: the modular automorphism group is trivial at the tracial
+  (maximally mixed) state and provably nontrivial for a non-flat faithful diagonal product state
+  (issue #71).
 -/

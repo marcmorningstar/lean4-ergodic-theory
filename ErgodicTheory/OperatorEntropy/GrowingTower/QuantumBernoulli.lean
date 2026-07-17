@@ -227,9 +227,10 @@ theorem chain_seal_dephase_faithful (r : ℝ) (hr0 : 0 < r) (hr1 : r < 1)
 the fixed hierarchy of finite marginals of the one-sided qubit chain: the directed system with
 commuting inclusion (`appendQubit`) and shift (`shiftAdjoinQubit`), the tracial (maximally mixed)
 state that is both inclusion- and shift-compatible, the temporal entropy rate `log 2` along the
-shift-window filtration, the per-stage dephasing seal at the tracial blocks, and the trivial tracial
-modular clock.  The maps are definitionally the fixed `appendQubit` / `shiftAdjoinQubit`, so only
-their laws (propositions) are recorded.  See the module docstring for scope and provenance. -/
+shift-window filtration, the per-stage dephasing seal at the tracial blocks, and the modular-clock
+dichotomy (trivial at the tracial state, provably nontrivial at a non-tracial diagonal state).  The
+maps are definitionally the fixed `appendQubit` / `shiftAdjoinQubit`, so only their laws
+(propositions) are recorded.  See the module docstring for scope and provenance. -/
 structure QuantumBernoulliShift where
   /-- **Directed system.** The inclusion `appendQubit` and the shift `shiftAdjoinQubit` commute, so
   the finite levels form a genuine directed system carrying the shift endomorphism. -/
@@ -260,10 +261,16 @@ structure QuantumBernoulliShift where
   the clock is provably nontrivial at a non-tracial product state, `modAut_diagState_ne_id`). -/
   trivial_tracial_clock : ∀ (n : ℕ) (t : ℝ) (a : Matrix (Qbits n) (Qbits n) ℂ),
     modAut (DensityMatrix.maximallyMixed_posDef (n := Qbits n)) t a = a
+  /-- **Nontrivial modular clock at a non-tracial state.**  For some faithful non-flat diagonal
+  single-site (Powers-type) state `diagState s` (`0 < s < 1`) the modular automorphism group is
+  provably **not** the trivial action — the finite shadow of the type-III character, witnessing that
+  the tracial triviality above is genuine content and not a vacuity (see `ModularClock.lean`). -/
+  nontrivial_clock : ∃ (s : ℝ) (hs0 : 0 < s) (hs1 : s < 1),
+    ¬ ∀ (t : ℝ) (a : Matrix (Fin 2) (Fin 2) ℂ), modAut (diagState_posDef s hs0 hs1) t a = a
 
 /-- **A quantum Bernoulli shift exists.** The witness assembles the already-proved theorems: the
 inclusion/shift commutation (`shiftAdjoinQubit_appendQubit`), the tracial inclusion- and
-shift-compatibility (`partialTrace_appendQubit_maximallyMixed`,
+shift-compatibility (`appendQubit_maximallyMixed_pairing`,
 `maximallyMixed_shiftAdjoinQubit_pairing`), the temporal rate `log 2`
 (`tendsto_windowEntropy_div_tracial`), the per-stage seal at the balanced parameters
 `r = s = 1/2` (`chain_seal_dephase_faithful`), and the trivial tracial clock
@@ -273,12 +280,13 @@ theorem quantumBernoulliShift_exists : Nonempty QuantumBernoulliShift := by
   have h1 : (1 : ℝ) / 2 < 1 := by norm_num
   exact ⟨{
     incl_shift_comm := fun _ M => shiftAdjoinQubit_appendQubit M
-    state_incl_compat := fun n x => partialTrace_appendQubit_maximallyMixed n x
+    state_incl_compat := fun n x => appendQubit_maximallyMixed_pairing n x
     state_shift_invariant := fun n x => maximallyMixed_shiftAdjoinQubit_pairing n x
     temporal_rate := tendsto_windowEntropy_div_tracial
     sealed := ⟨1 / 2, h0, h1, 1 / 2, h0, h1,
       chain_seal_dephase_faithful (1 / 2) h0 h1 (1 / 2) h0 h1⟩
-    trivial_tracial_clock := fun n t a => modAut_maximallyMixed_Qbits_eq_id n t a }⟩
+    trivial_tracial_clock := fun n t a => modAut_maximallyMixed_Qbits_eq_id n t a
+    nontrivial_clock := ⟨1 / 2, h0, h1, modAut_diagState_ne_id (1 / 2) h0 h1⟩ }⟩
 
 end ErgodicTheory.OperatorEntropy
 

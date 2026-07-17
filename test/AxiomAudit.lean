@@ -4363,10 +4363,10 @@ certificate -/
 #guard_msgs (whitespace := lax) in
 #print axioms ErgodicTheory.OperatorEntropy.shiftAdjoinQubit_appendQubit
 
-/-- info: 'ErgodicTheory.OperatorEntropy.partialTrace_appendQubit_maximallyMixed' depends on axioms:
+/-- info: 'ErgodicTheory.OperatorEntropy.appendQubit_maximallyMixed_pairing' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
-#print axioms ErgodicTheory.OperatorEntropy.partialTrace_appendQubit_maximallyMixed
+#print axioms ErgodicTheory.OperatorEntropy.appendQubit_maximallyMixed_pairing
 
 /-- info: 'ErgodicTheory.OperatorEntropy.kron_maximallyMixed' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/
@@ -4437,6 +4437,36 @@ certificate -/
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms ErgodicTheory.OperatorEntropy.quantumBernoulliShift_exists
+
+/-- info: 'ErgodicTheory.OperatorEntropy.shiftIter_injective' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.shiftIter_injective
+
+/-- info: 'ErgodicTheory.OperatorEntropy.modAut_zero' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.modAut_zero
+
+/-- info: 'ErgodicTheory.OperatorEntropy.modAut_one' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.modAut_one
+
+/-- info: 'ErgodicTheory.OperatorEntropy.modAut_star' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.modAut_star
+
+/-- info: 'ErgodicTheory.OperatorEntropy.maximallyMixed_shiftAdjoinQubit_pairing' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.maximallyMixed_shiftAdjoinQubit_pairing
+
+/-- info: 'ErgodicTheory.OperatorEntropy.modAut_rhoPow_diagState_ne_id' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.modAut_rhoPow_diagState_ne_id
 
 /-! ### Issue #60 — coarse-grained Rényi entropy: block-coding rate drop on Bernoulli measures -/
 

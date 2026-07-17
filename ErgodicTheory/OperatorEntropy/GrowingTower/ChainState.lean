@@ -27,6 +27,13 @@ Among these product states the **tracial** one is the maximally mixed family
 addition **inclusion-compatible** — the same normalized trace at every level — and the pairing
 specializes to `maximallyMixed_shiftAdjoinQubit_pairing`.
 
+## Scope
+
+Mirroring `ChainAlgebra.lean`: the completed chain algebra `⊗_{ℕ} M₂` and its limit (GNS) state are
+**not** constructed — Mathlib has no noncommutative inductive limit.  What is formed is the fixed
+hierarchy of finite marginals together with the level-wise shift-invariance pairing identities; that
+is all the entropy-rate statements of this cluster require.
+
 ## Provenance
 
 The shift-invariant states of a quantum spin chain and the tracial (maximally mixed) reference
