@@ -217,7 +217,9 @@ import ErgodicTheory.OperatorEntropy.CNT.Refinement
 import ErgodicTheory.OperatorEntropy.CNT.Construction
 import ErgodicTheory.OperatorEntropy.CNT.AbelianCorner
 import ErgodicTheory.OperatorEntropy.CNT.GramFactorization
+import ErgodicTheory.OperatorEntropy.CNT.RateEngine
 import ErgodicTheory.OperatorEntropy.CNT.FiniteDimZero
+import ErgodicTheory.OperatorEntropy.CNT.ReservoirSaturation
 import ErgodicTheory.OperatorEntropy.CNT.AbelianCornerFull
 import ErgodicTheory.OperatorEntropy.CNT.AbelianFekete
 import ErgodicTheory.OperatorEntropy.CNT.SubadditivityCounterexample
@@ -348,6 +350,9 @@ import ErgodicTheory.OperatorEntropy.EntropyPure
 import ErgodicTheory.OperatorEntropy.QuantumSeal
 import ErgodicTheory.OperatorEntropy.CNT.AbelianRestriction
 import ErgodicTheory.OperatorEntropy.CNT.NonCommutativeCertificate
+import ErgodicTheory.OperatorEntropy.GrowingTower.Tower
+import ErgodicTheory.OperatorEntropy.GrowingTower.SealLift
+import ErgodicTheory.OperatorEntropy.GrowingTower.World
 import ErgodicTheory.Multifractal.RenyiEntropy
 import ErgodicTheory.Multifractal.RenyiRate
 import ErgodicTheory.Multifractal.RenyiBernoulli
@@ -4239,6 +4244,98 @@ certificate -/
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms ErgodicTheory.OperatorEntropy.CNT.not_preservesDiag_qDynamics
+
+/-! ### Issues #69/#70 — CNT rate engine, reservoir saturation, and the growing quantum world -/
+
+/-- info: 'ErgodicTheory.rate_to_zero_of_cumulative_bounded' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.rate_to_zero_of_cumulative_bounded
+
+/-- info: 'ErgodicTheory.OperatorEntropy.CNT.cntCumulativeEntropy_le_reservoir' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.CNT.cntCumulativeEntropy_le_reservoir
+
+/-- info: 'ErgodicTheory.OperatorEntropy.CNT.cntEntropySeq_bddAbove' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.CNT.cntEntropySeq_bddAbove
+
+/-- info: 'ErgodicTheory.OperatorEntropy.CNT.corrMatrix_pauliPartition_one' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.CNT.corrMatrix_pauliPartition_one
+
+/-- info: 'ErgodicTheory.OperatorEntropy.CNT.vonNeumannEntropy_corrMatrix_pauliPartition_eq' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.CNT.vonNeumannEntropy_corrMatrix_pauliPartition_eq
+
+/-- info: 'ErgodicTheory.OperatorEntropy.blockEntropy_eq' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.blockEntropy_eq
+
+/-- info: 'ErgodicTheory.OperatorEntropy.card_Qbits' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.card_Qbits
+
+/-- info: 'ErgodicTheory.OperatorEntropy.rhoPow_partialTraceLeft' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.rhoPow_partialTraceLeft
+
+/-- info: 'ErgodicTheory.OperatorEntropy.blockEntropy_maximallyMixed' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.blockEntropy_maximallyMixed
+
+/-- info: 'ErgodicTheory.OperatorEntropy.tendsto_blockEntropy_div' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.tendsto_blockEntropy_div
+
+/-- info: 'ErgodicTheory.OperatorEntropy.blockEntropy_rhoR_pos' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.blockEntropy_rhoR_pos
+
+/-- info: 'ErgodicTheory.OperatorEntropy.dephaseKronId_toDM_kron' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.dephaseKronId_toDM_kron
+
+/-- info: 'ErgodicTheory.OperatorEntropy.relEntropy_strict_drop_dephasing_kron' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.relEntropy_strict_drop_dephasing_kron
+
+/-- info: 'ErgodicTheory.OperatorEntropy.quantum_seal_dephase_kron_faithful' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.quantum_seal_dephase_kron_faithful
+
+/-- info: 'ErgodicTheory.OperatorEntropy.quantum_seal_dephase_kron' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.quantum_seal_dephase_kron
+
+/-- info: 'ErgodicTheory.OperatorEntropy.rhoPow_posDef' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.rhoPow_posDef
+
+/-- info: 'ErgodicTheory.OperatorEntropy.growingQuantumWorld_exists' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.growingQuantumWorld_exists
+
+/-- info: 'ErgodicTheory.OperatorEntropy.GrowingQuantumWorld.blockEntropy_linear' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.GrowingQuantumWorld.blockEntropy_linear
 
 /-! ### Issue #60 — coarse-grained Rényi entropy: block-coding rate drop on Bernoulli measures -/
 
