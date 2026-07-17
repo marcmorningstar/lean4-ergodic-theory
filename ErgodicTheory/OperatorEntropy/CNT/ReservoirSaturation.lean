@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 Marcel Morgenstern. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Marcel Morgenstern
+-/
 import ErgodicTheory.OperatorEntropy.CNT.Construction
 import ErgodicTheory.OperatorEntropy.EntropyPure
 
@@ -59,12 +64,6 @@ theorem pauliPartition_op_herm (i : Fin 4) :
         simp [pauliPartition, Matrix.conjTranspose_apply, Matrix.cons_val_zero,
           Matrix.cons_val_one, Matrix.head_cons, Matrix.cons_val_two, Matrix.cons_val_three,
           Matrix.tail_cons, Complex.conj_I]
-
-/-- The `n = 1` time-ordered refinement of any partition is just its selected operator:
-`refine Φ X 1 f = X.op (f 0)`, since `refine Φ X 0 _ = 1` and `Φ 1 = 1`. -/
-theorem refine_one {d k : ℕ} (Φ : UnitalStarEndo d) (X : OperationalPartition d k)
-    (f : Fin 1 → Fin k) : refine Φ X 1 f = X.op (f 0) := by
-  rw [refine_succ, refine_zero, Φ.map_one, mul_one]
 
 /-- **Pauli trace-orthogonality against the maximally mixed state.**  For the Pauli partition,
 `Tr(I/2 · (op a)ᴴ · (op b)) = (1/4)·δ_{ab}`.  This is `Tr(Pᵢᴴ Pⱼ) = 2 δᵢⱼ` scaled by the state

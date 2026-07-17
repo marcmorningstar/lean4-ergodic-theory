@@ -17,7 +17,6 @@ import ErgodicTheory.OperatorEntropy.CNT.Refinement
 import ErgodicTheory.OperatorEntropy.CNT.Construction
 import ErgodicTheory.OperatorEntropy.CNT.AbelianCorner
 import ErgodicTheory.OperatorEntropy.CNT.GramFactorization
-import ErgodicTheory.OperatorEntropy.CNT.RateEngine
 import ErgodicTheory.OperatorEntropy.CNT.FiniteDimZero
 import ErgodicTheory.OperatorEntropy.CNT.ReservoirSaturation
 import ErgodicTheory.OperatorEntropy.CNT.AbelianCornerFull
@@ -132,11 +131,13 @@ dilation, and both directions of Petz's equality theorem.
   Petz's equality theorem (Petz recovery ⟺ saturation of the data-processing inequality).
 * `ErgodicTheory.OperatorEntropy.CNT.vonNeumannEntropy_corrMatrix_pauliPartition_eq` — the reservoir
   saturation: for the four-element Pauli partition the one-step CNT correlation entropy hits its
-  `log(d²)` cap exactly, so the cumulative-entropy bound is tight by saturation, not zero.
+  `log(d²)` cap exactly, so the cumulative-entropy cap `cntCumulativeEntropy_le_reservoir`
+  (`S(corrMatrix n) ≤ 2·log d`, with `cntEntropySeq_bddAbove` the bounded sequence) is tight by
+  saturation, not zero (issue #69).
 * `ErgodicTheory.OperatorEntropy.blockEntropy_eq` / `tendsto_blockEntropy_div` — the growing tower:
   the `n`-block von Neumann entropy is `n · S(ρ)`, so block entropy grows linearly with a positive
-  per-site spatial rate `S(ρ) > 0` for any mixed single-site state `ρ`.
+  per-site spatial rate `S(ρ) > 0` for any mixed single-site state `ρ` (issue #70).
 * `ErgodicTheory.OperatorEntropy.growingQuantumWorld_exists` — the bundled world: one growing object
   that is simultaneously alive (positive block-entropy rate), sealed (strict relative-entropy drop),
-  and non-commutative at its base.
+  and non-commutative at its base (issue #70).
 -/

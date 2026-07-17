@@ -1,6 +1,11 @@
+/-
+Copyright (c) 2026 Marcel Morgenstern. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Marcel Morgenstern
+-/
 import ErgodicTheory.OperatorEntropy.CNT.Construction
 import ErgodicTheory.OperatorEntropy.CNT.GramFactorization
-import ErgodicTheory.OperatorEntropy.CNT.RateEngine
+import ErgodicTheory.Entropy.RateEngine
 import ErgodicTheory.OperatorEntropy.EntropyRank
 import Mathlib.Analysis.SpecificLimits.Basic
 
@@ -24,6 +29,11 @@ Operator Algebras* (Springer 2006), record that the CNT entropy of a finite-dime
   chaining the maximum-entropy bound `vonNeumannEntropy_le_log_rank` (`EntropyRank`) with the
   Gram-factorisation rank bound `rank_corrVal_le` (`CNT.GramFactorization`); both the concavity /
   Jensen entropy bound and the rank-`≤ d²` factorisation live in those imported modules.
+* `cntCumulativeEntropy_le_reservoir`: the uniform reservoir cap `S(corrMatrix n) ≤ 2·log d` for
+  every `n`, tight at `d = 2` (saturated by the Pauli partition, see `ReservoirSaturation`) (issue
+  #69).
+* `cntEntropySeq_bddAbove`: the cumulative sequence `n ↦ S(corrMatrix n)` is bounded above by the
+  fixed reservoir `log(d²)`; monotonicity in `n` is deliberately not claimed.
 * `cntEntropyPartition_eq_zero` and `tendsto_cntEntropySeq_div`: the entropy rate is a genuine
   limit and equals `0` for **every** operational partition.
 * `cntDynamicalEntropy_eq_zero`: the full CNT/ALF dynamical entropy is `0`.
@@ -72,10 +82,11 @@ reservoir ceiling for the *iterated-refinement* cumulative entropy of a single o
 
 The reservoir is `log(d²) = 2·log d`, **not** the naive single-copy ceiling `log d`: the
 correlation-matrix construction lives on a `d²`-dimensional Gram factorization, so the honest cap is
-`log(d²)`.  This bound is TIGHT — it is saturated by the Pauli/Weyl operational partition at the
-maximally mixed state (see the sibling module `ReservoirSaturation`).  Restated from
-`vonNeumannEntropy_corrMatrix_le_log` via `Real.log_pow` (`log (d²) = 2·log d`, valid also at
-`d = 0` since `log 0 = 0`). -/
+`log(d²)`.  This bound is tight at `d = 2`: it is saturated by the Pauli operational partition at
+the maximally mixed state (`vonNeumannEntropy_corrMatrix_pauliPartition_eq`, `ReservoirSaturation`).
+The analogous Weyl-partition saturation for general `d` is standard but not formalized here.
+Restated from `vonNeumannEntropy_corrMatrix_le_log` via `Real.log_pow` (`log (d²) = 2·log d`, valid
+also at `d = 0` since `log 0 = 0`). -/
 theorem cntCumulativeEntropy_le_reservoir (Φ : UnitalStarEndo d) (ρ : DensityMatrix (Fin d))
     {k : ℕ} (X : OperationalPartition d k) (n : ℕ) :
     vonNeumannEntropy (corrMatrix Φ ρ X n) ≤ 2 * Real.log (d : ℝ) := by

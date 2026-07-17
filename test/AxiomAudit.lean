@@ -217,7 +217,7 @@ import ErgodicTheory.OperatorEntropy.CNT.Refinement
 import ErgodicTheory.OperatorEntropy.CNT.Construction
 import ErgodicTheory.OperatorEntropy.CNT.AbelianCorner
 import ErgodicTheory.OperatorEntropy.CNT.GramFactorization
-import ErgodicTheory.OperatorEntropy.CNT.RateEngine
+import ErgodicTheory.Entropy.RateEngine
 import ErgodicTheory.OperatorEntropy.CNT.FiniteDimZero
 import ErgodicTheory.OperatorEntropy.CNT.ReservoirSaturation
 import ErgodicTheory.OperatorEntropy.CNT.AbelianCornerFull
@@ -4301,6 +4301,16 @@ certificate -/
 [propext, Classical.choice, Quot.sound] -/
 #guard_msgs (whitespace := lax) in
 #print axioms ErgodicTheory.OperatorEntropy.blockEntropy_rhoR_pos
+
+/-- info: 'ErgodicTheory.OperatorEntropy.blockEntropy_pos' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.blockEntropy_pos
+
+/-- info: 'ErgodicTheory.OperatorEntropy.blockEntropy_rate_pos' depends on axioms:
+[propext, Classical.choice, Quot.sound] -/
+#guard_msgs (whitespace := lax) in
+#print axioms ErgodicTheory.OperatorEntropy.blockEntropy_rate_pos
 
 /-- info: 'ErgodicTheory.OperatorEntropy.dephaseKronId_toDM_kron' depends on axioms:
 [propext, Classical.choice, Quot.sound] -/

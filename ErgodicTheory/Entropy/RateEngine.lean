@@ -1,4 +1,11 @@
+/-
+Copyright (c) 2026 Marcel Morgenstern. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Marcel Morgenstern
+-/
 import Mathlib.Analysis.SpecificLimits.Basic
+import Mathlib.Topology.Algebra.Order.Field
+import Mathlib.Order.Filter.AtTopBot.Archimedean
 
 /-!
 # A generic cumulative-bounded ⟹ per-step-rate-zero engine
@@ -21,14 +28,14 @@ open Filter
 
 namespace ErgodicTheory
 
-/-- **Cumulative-bounded ⟹ per-step rate → 0.**  If `a` is nonnegative and uniformly bounded above
-by `C`, then `a n / n → 0`.  Squeeze between `0 ≤ a n / n` and `a n / n ≤ C / n → 0`. -/
+/-- **Cumulative-bounded ⟹ per-step rate → 0.**  A named specialization of Mathlib's
+`tendsto_bdd_div_atTop_nhds_zero` to nonnegative, uniformly bounded ℕ-indexed sequences — the
+"cumulative bounded ⟹ per-step rate → 0" engine shared by the finite-dimensional CNT collapse
+(`FiniteDimZero`).  If `a` is nonnegative and uniformly bounded above by `C`, then `a n / n → 0`. -/
 theorem rate_to_zero_of_cumulative_bounded {a : ℕ → ℝ} {C : ℝ}
     (hnn : ∀ n, 0 ≤ a n) (hb : ∀ n, a n ≤ C) :
-    Filter.Tendsto (fun n => a n / (n : ℝ)) Filter.atTop (nhds 0) := by
-  refine squeeze_zero (fun n => div_nonneg (hnn n) n.cast_nonneg) (fun n => ?_)
-    (tendsto_const_div_atTop_nhds_zero_nat C)
-  gcongr
-  exact hb n
+    Filter.Tendsto (fun n => a n / (n : ℝ)) Filter.atTop (nhds 0) :=
+  tendsto_bdd_div_atTop_nhds_zero (Filter.Eventually.of_forall hnn)
+    (Filter.Eventually.of_forall hb) tendsto_natCast_atTop_atTop
 
 end ErgodicTheory

@@ -62,10 +62,8 @@ namespace ErgodicTheory.OperatorEntropy
 `∑ i, (Mᵢ ⊗ N) = (∑ i, Mᵢ) ⊗ N`. -/
 lemma sum_kronecker_right {ι' κ μ : Type*} [Fintype ι']
     (M : ι' → Matrix κ κ ℂ) (N : Matrix μ μ ℂ) :
-    (∑ i, M i ⊗ₖ N) = (∑ i, M i) ⊗ₖ N := by
-  ext ⟨a, b⟩ ⟨c, d⟩
-  simp only [Matrix.sum_apply, Matrix.kronecker_apply]
-  rw [Finset.sum_mul]
+    (∑ i, M i ⊗ₖ N) = (∑ i, M i) ⊗ₖ N :=
+  (map_sum ((Matrix.kroneckerBilinear (R := ℂ) (α := ℂ)).flip N) M Finset.univ).symm
 
 /-! ## The partial-dephasing channel `Δ ⊗ id` -/
 
@@ -112,8 +110,9 @@ theorem dephaseKronId_toDM_kron {blk : Type*} [Fintype blk] [DecidableEq blk]
 
 /-- **Strict data-processing drop for the faithful `ρ_r` against the fixed point `diagState s`.**
 This is the qubit-level strict drop that `quantum_seal_dephase_faithful` feeds to the Petz engine,
-factored out as a standalone lemma.  Both `ρ_r` and `diagState s` share the computational-basis
-diagonal `(½, ½)`, so the cross term cancels and the drop is `log 2 − h₂((1+r)/2) > 0`.  The
+factored out as a standalone lemma.  `ρ_r` and its dephasing image `I/2` share the
+computational-basis diagonal `(½, ½)`, so the cross terms against `diagState s` coincide and cancel
+in the difference; the drop is `log 2 − h₂((1+r)/2) > 0`.  The
 dephasing images are distinct (`Δρ_r = I/2 ≠ diagState s = Δ(diagState s)`), so the pair is
 non-degenerate. -/
 theorem relEntropy_drop_rhoR_diagState (r : ℝ) (hr0 : 0 < r) (hr1 : r < 1)
@@ -207,7 +206,12 @@ theorem quantum_seal_dephase_kron_faithful {blk : Type} [Fintype blk] [Decidable
 
 /-- **Q0 (pure variant): no Stinespring recovery of a partially dephased pure state, uniform in the
 block.**  Mirrors `quantum_seal_dephase` with the maximally coherent qubit `|+⟩⟨+|` tensored with an
-arbitrary faithful block `β`. -/
+arbitrary faithful block `β`.
+
+Note (honesty): for a pure input the section hypothesis `hsecρ` is already unsatisfiable on rank
+grounds alone — a faithful-ancilla Stinespring channel maps the faithful dephased input to a
+full-rank state, never the rank-deficient `plusState ⊗ β` — so the faithful variant
+`quantum_seal_dephase_kron_faithful` is the evidentially honest no-recovery headline. -/
 theorem quantum_seal_dephase_kron {blk : Type} [Fintype blk] [DecidableEq blk]
     {e : Type} [Fintype e] [DecidableEq e]
     (s : ℝ) (hs0 : 0 < s) (hs1 : s < 1)

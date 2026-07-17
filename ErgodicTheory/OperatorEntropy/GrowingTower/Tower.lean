@@ -1,8 +1,14 @@
+/-
+Copyright (c) 2026 Marcel Morgenstern. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Marcel Morgenstern
+-/
 import ErgodicTheory.OperatorEntropy.Additivity
 import ErgodicTheory.OperatorEntropy.EntropyPure
 import ErgodicTheory.OperatorEntropy.EntropyStrictPos
 import ErgodicTheory.OperatorEntropy.QuantumSeal
 import ErgodicTheory.OperatorEntropy.Subadditivity
+import ErgodicTheory.OperatorEntropy.StinespringReduction
 import Mathlib.Analysis.SpecialFunctions.BinaryEntropy
 
 /-!
@@ -157,17 +163,6 @@ theorem shiftAdjoinQubit_injective (n : ℕ) :
     using hentry
 
 /-! ## Marginal consistency (finite marginals form a consistent family) -/
-
-/-- Tracing out the left factor of a Kronecker product recovers the right factor:
-`Tr_A (ρ ⊗ σ) = σ`, since `ρ` has unit trace. -/
-theorem partialTraceLeft_kron {nA nB : Type*} [Fintype nA] [DecidableEq nA]
-    [Fintype nB] [DecidableEq nB] (ρ : DensityMatrix nA) (σ : DensityMatrix nB) :
-    (ρ.kron σ).partialTraceLeft = σ := by
-  apply DensityMatrix.ext
-  ext j j'
-  have htr : ∑ i : nA, ρ.val i i = 1 := ρ.trace_one
-  simp only [DensityMatrix.partialTraceLeft, DensityMatrix.kron,
-    partialTraceLeft_apply, Matrix.kronecker_apply, ← Finset.sum_mul, htr, one_mul]
 
 /-- **Marginal compatibility of the tower.** Tracing out the fresh qubit of the length-`(n+1)`
 block recovers the length-`n` block, so the `rhoPow ρ` family is an honest consistent family of

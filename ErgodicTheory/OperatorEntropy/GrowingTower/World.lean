@@ -31,7 +31,8 @@ The world combines:
   diagonal reference `diagState s ⊗ ρ_r^{⊗n}` (`quantum_seal_dephase_kron_faithful`).  The block
   here is the world's **own** length-`n` block `ρ_r^{⊗n}` (positive definite by
   `rhoPow_posDef`), so this is the honest "seal at every level of the tower" reading; the recovery
-  is quantified over *all* Stinespring dilations on the enlarged system, and the reference pair has
+  is quantified over all faithful-ancilla Stinespring dilations on the enlarged system, and the
+  reference pair has
   distinct dephasing images, so the obstruction is genuine (not the degenerate `Λρ = Λσ` collapse).
 
 * **A non-commutativity certificate on the base factor.**  The single-qubit dynamics `qDynamics`
@@ -113,9 +114,9 @@ def BaseNonCommutative : Prop :=
 /-- **The alive-and-sealed growing quantum world.**  A single object bundling the three faces of
 the growing-finite qubit tower for one concrete faithful local state `ρ_r` and one diagonal
 reference `diagState s`: positive spatial entropy production (aliveness), a per-stage dephasing
-seal at the world's own block states (uniform over the level and over all Stinespring recovery
-dilations), and a base-factor non-commutativity certificate.  See the module docstring for scope
-and provenance. -/
+seal at the world's own block states (uniform over the level and over all faithful-ancilla
+Stinespring recovery dilations), and a base-factor non-commutativity certificate.  See the
+module docstring for scope and provenance. -/
 structure GrowingQuantumWorld where
   /-- Coherence parameter of the faithful local state `ρ_r = ½!![1, r; r, 1]`. -/
   r : ℝ
