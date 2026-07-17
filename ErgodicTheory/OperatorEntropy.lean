@@ -18,6 +18,7 @@ import ErgodicTheory.OperatorEntropy.CNT.Construction
 import ErgodicTheory.OperatorEntropy.CNT.AbelianCorner
 import ErgodicTheory.OperatorEntropy.CNT.GramFactorization
 import ErgodicTheory.OperatorEntropy.CNT.FiniteDimZero
+import ErgodicTheory.OperatorEntropy.CNT.ReservoirSaturation
 import ErgodicTheory.OperatorEntropy.CNT.AbelianCornerFull
 import ErgodicTheory.OperatorEntropy.CNT.AbelianFekete
 import ErgodicTheory.OperatorEntropy.CNT.SubadditivityCounterexample
@@ -55,6 +56,9 @@ import ErgodicTheory.OperatorEntropy.Lieb.PetzEqualityIntertwine
 import ErgodicTheory.OperatorEntropy.Lieb.PetzEqualityRecovery28
 import ErgodicTheory.OperatorEntropy.Lieb.PetzEqualitySufficiency
 import ErgodicTheory.OperatorEntropy.Lieb.PetzEqualityGeneral
+import ErgodicTheory.OperatorEntropy.GrowingTower.Tower
+import ErgodicTheory.OperatorEntropy.GrowingTower.SealLift
+import ErgodicTheory.OperatorEntropy.GrowingTower.World
 
 /-!
 # Finite-dimensional operator entropy
@@ -125,4 +129,15 @@ dilation, and both directions of Petz's equality theorem.
 * `ErgodicTheory.OperatorEntropy.petz_recovery` and
   `ErgodicTheory.OperatorEntropy.Lieb.petz_equality_recovery_general` — the two directions of
   Petz's equality theorem (Petz recovery ⟺ saturation of the data-processing inequality).
+* `ErgodicTheory.OperatorEntropy.CNT.vonNeumannEntropy_corrMatrix_pauliPartition_eq` — the reservoir
+  saturation: for the four-element Pauli partition the one-step CNT correlation entropy hits its
+  `log(d²)` cap exactly, so the cumulative-entropy cap `cntCumulativeEntropy_le_reservoir`
+  (`S(corrMatrix n) ≤ 2·log d`, with `cntEntropySeq_bddAbove` the bounded sequence) is tight by
+  saturation, not zero (issue #69).
+* `ErgodicTheory.OperatorEntropy.blockEntropy_eq` / `tendsto_blockEntropy_div` — the growing tower:
+  the `n`-block von Neumann entropy is `n · S(ρ)`, so block entropy grows linearly with a positive
+  per-site spatial rate `S(ρ) > 0` for any mixed single-site state `ρ` (issue #70).
+* `ErgodicTheory.OperatorEntropy.growingQuantumWorld_exists` — the bundled world: one growing object
+  that is simultaneously alive (positive block-entropy rate), sealed (strict relative-entropy drop),
+  and non-commutative at its base (issue #70).
 -/

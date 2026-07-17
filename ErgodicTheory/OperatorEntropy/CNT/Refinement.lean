@@ -85,6 +85,12 @@ theorem refine_succ (Φ : UnitalStarEndo d) {k n : ℕ} (X : OperationalPartitio
     (f : Fin (n + 1) → Fin k) :
     refine Φ X (n + 1) f = X.op (f 0) * Φ.toFun (refine Φ X n (Fin.tail f)) := rfl
 
+/-- The `n = 1` time-ordered refinement of any partition is just its selected operator:
+`refine Φ X 1 f = X.op (f 0)`, since `refine Φ X 0 _ = 1` and `Φ 1 = 1`. -/
+theorem refine_one {d k : ℕ} (Φ : UnitalStarEndo d) (X : OperationalPartition d k)
+    (f : Fin 1 → Fin k) : refine Φ X 1 f = X.op (f 0) := by
+  rw [refine_succ, refine_zero, Φ.map_one, mul_one]
+
 /-- Application of the `Fin.cons` equivalence is `Fin.cons`. -/
 theorem consEquiv_apply {k n : ℕ} (i : Fin k) (g : Fin n → Fin k) :
     (Fin.consEquiv (fun _ : Fin (n + 1) => Fin k)) (i, g) = Fin.cons i g := rfl

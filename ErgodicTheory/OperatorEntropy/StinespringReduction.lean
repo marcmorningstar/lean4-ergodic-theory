@@ -86,6 +86,16 @@ theorem partialTraceRight_kron (ρ : DensityMatrix nA) (α : DensityMatrix nB) :
     simpa only [Matrix.trace, Matrix.diag_apply] using α.trace_one
   rw [htr, mul_one]
 
+/-- Tracing out the left factor of a Kronecker product recovers the right factor:
+`Tr_A (ρ ⊗ σ) = σ`, since `ρ` has unit trace. -/
+theorem partialTraceLeft_kron (ρ : DensityMatrix nA) (σ : DensityMatrix nB) :
+    (ρ.kron σ).partialTraceLeft = σ := by
+  apply DensityMatrix.ext
+  ext j j'
+  have htr : ∑ i : nA, ρ.val i i = 1 := ρ.trace_one
+  simp only [DensityMatrix.partialTraceLeft, DensityMatrix.kron,
+    partialTraceLeft_apply, Matrix.kronecker_apply, ← Finset.sum_mul, htr, one_mul]
+
 end Reduction
 
 /-! ## Isometric-embedding invariance and the Stinespring reduction -/

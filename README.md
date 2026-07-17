@@ -61,6 +61,9 @@ All declarations live in the `ErgodicTheory` namespace (omitted below).
 | `CatMapToral.catSymbolicFlowTower` | **The depth-two symbolic flow tower** (issue #58): instantiating the unit-roof suspension functor (`suspensionFactorMap`, `isFactorMap_suspensionFactorMap`) twice lifts the Adler–Weiss coding and the source-merge lumping to the mapping-torus flows — cat suspension ≅ SFT₅ suspension (injective conjugacy stage) → 2-symbol suspension (a genuine non-injective flow factor with a **strict** entropy drop `h(ζ²₁) ≤ log 2 < log((3+√5)/2)`), the merged level pinned positive in `[log λ₊ − log 2, log 2]` by `CatMapToral.coarseAW_ksEntropyPartition_pos` |
 | `OperatorEntropy.quantum_seal_dephase` / `_faithful` | **The dephasing recovery seal** (issue #59): the dephasing channel exhibits a strict Umegaki relative-entropy drop against a non-uniform diagonal reference (`log 2` for the pure state `\|+⟩⟨+\|`; `log 2 − h₂((1+r)/2)` for the faithful family `ρ_r`, via the binary-entropy strict maximum), hence no faithful-ancilla Stinespring recovery. A QA pass repaired a degenerate `σ = I/2` witness (documented) |
 | `OperatorEntropy.CNT.cex_strictly_above_abelian` | **The per-resolution non-commutativity certificate** (issue #59): on the finite-dimensional witness, every abelian operational partition yields exactly zero correlation entropy at every resolution (rank-one Gram collapse), while the non-commuting partition is strictly positive at resolution 2 — the honest form of "entropy strictly above every abelian restriction", the system-level CNT rate being the disclosed `0 = 0` of `cntDynamicalEntropy_eq_zero` |
+| `OperatorEntropy.CNT.cntCumulativeEntropy_le_reservoir` / `vonNeumannEntropy_corrMatrix_pauliPartition_eq` | **The CNT reservoir cap, and its tightness** (issue #69): the iterated-refinement cumulative CNT entropy is capped by the finite reservoir `2·log d` uniformly in the resolution `n` (`cntEntropySeq_bddAbove` is the bounded-saturation form), so the per-step rate is squeezed to `0` via the generic engine `rate_to_zero_of_cumulative_bounded`. The cap is **tight** at `d = 2`: the Pauli operational partition (`pauliPartition`) at the maximally mixed state fills `log(d²) = log 4` at a single step for every unital `*`-endomorphism (`corrMatrix_pauliPartition_one`), so the finite-dim rate-zero theorem is saturation of a finite reservoir, not an identically-zero artifact — and the naive `log d` cap is false for this correlation-matrix API. Standard ingredient: Connes–Narnhofer–Thirring 1987 |
+| `OperatorEntropy.blockEntropy_eq` / `tendsto_blockEntropy_div` | **The growing-tower spatial rate** (issue #70): the growing-finite qubit tower (`Qbits n`, `card = 2ⁿ`; capacity-enlargement embedding `shiftAdjoinQubit : A ↦ 1 ⊗ A`; marginal-consistent state family `rhoPow ρ n = ρ^{⊗n}`) has block entropy exactly `n·S(ρ)` (`blockEntropy_eq`, iterated von Neumann additivity), so the per-step spatial rate converges to `S(ρ)` (`tendsto_blockEntropy_div`), positive off the pure states (`blockEntropy_rhoR_pos`) and `= n·log 2` at the maximally mixed state (`blockEntropy_maximallyMixed`). This is a **growing-finite** tower, not the completed `⊗_ℤ M₂` chain; the spatial rate is complementary to — no tension with — the fixed-`d` temporal `cntDynamicalEntropy_eq_zero`. Standard ingredient: Nielsen–Chuang §11.3; Ohya–Petz |
+| `OperatorEntropy.growingQuantumWorld_exists` | **The bundled sealed-and-alive growing world** (issue #70): the witness `GrowingQuantumWorld` packages, on one growing-finite object, positive spatial per-step entropy production, a **channel-level** per-stage dephasing seal at the world's own block states (`quantum_seal_dephase_kron_faithful`, the `dephaseKronId` channel lifted over an arbitrary ancilla block, reference pair with distinct dephased images), and a base-factor non-commutativity certificate. The bundling is the repo's contribution; its ingredients (von Neumann additivity, the Petz-recovery seal, CNT non-commutativity) are standard. Connes–Narnhofer–Thirring 1987; Petz 1986/2003; Nielsen–Chuang §11.3 |
 | `measurable_orthProjMatrix_lambdaSublevel` | The **everywhere-Borel singular filtration** (issue #11): the orthogonal projector onto a sublevel set of the forward Lyapunov filtration is Borel measurable, via the Novikov projection theorem |
 | `Multifractal.renyiRateSup_map_blockCode_le` / `renyiEntropy_merge_le` | **The Rényi c-function, tier 1** (issue #60): the static Rényi data-processing inequality `H_q(merge p) ≤ H_q(p)` holds for every order `q ≥ 0` (`renyiEntropy_merge_le`, elementary per-fibre sign-compensation of `x ↦ x^q`), and the **dynamical** `q`-Rényi rate (limsup/liminf of the normalized length-`n` cylinder Rényi entropies) is monotone under one-block factor codes **unconditionally** — no stationarity, no rate-existence — via the per-`n` inequality (`renyiRateSup_map_blockCode_le`, `renyiRateInf_map_blockCode_le`; the suspected hidden-Markov wall concerned closed *forms*, not the inequality). Honest boundary: general-measurable-factor monotonicity for `q ≠ 1` is FALSE (Takens–Verbitskiy 2002 — the invariant dynamical Rényi entropy degenerates to `+∞` for `q < 1` and to `h_KS` for `q ≥ 1`), so `q = 1` is the unique seal-grade monotone at full generality |
 | `Multifractal.renyiRateSup_bern` / `renyiRate_strict_drop_uniformFin3` | **Exact Bernoulli Rényi rates + strict-drop witness** (issue #60): for the i.i.d. measure `bern ν` the rate is exactly the static single-symbol Rényi entropy `h_q = H_q(ν)`, realized as an honest `limsup = liminf` (`renyiRateSup_bern`, `renyiRateInf_bern`), and the one-block pushforward stays Bernoulli (`map_blockCode_bern`). A genuine merge gluing two `ν`-atoms strictly lowers the rate for every `q ∈ (0,1) ∪ (1,∞)` (`renyiRateSup_map_blockCode_bern_lt`), certified non-vacuously by a compile-time uniform `Fin 3 → Fin 2` witness at `q = 2` (`renyiRate_strict_drop_uniformFin3`) |
@@ -356,6 +359,40 @@ general-`KrausChannel` DPI absent from the repo), and the no-common-MASA-over-al
 is proved only pairwise on the two canonical candidate MASAs. Sources: Connes–Narnhofer–Thirring
 1987; Alicki–Fannes 2001; Neshveyev–Størmer 2006; Petz 1986/2003; Wilde; the MUB literature.
 
+The finite-dimensional degeneracy `cntDynamicalEntropy_eq_zero` is recast as **saturation of a
+finite reservoir** rather than an identically-zero artifact (issue #69), and its complementary
+**growing-tower** companion is constructed (issue #70). On the reservoir side, the iterated-refinement
+cumulative CNT/ALF entropy is capped by `2·log d = log(d²)` uniformly in the resolution `n`
+(`CNT.cntCumulativeEntropy_le_reservoir`, with the bounded-saturation form `CNT.cntEntropySeq_bddAbove`),
+so the per-step rate is squeezed to `0` through a generic domain-neutral engine
+`rate_to_zero_of_cumulative_bounded` (nonnegative bounded sequence ⟹ `a n / n → 0`) — the quantum
+pigeonhole in the same shape as the classical count-vs-cardinality face. This cap is **tight** at
+`d = 2`: the Pauli operational partition `CNT.pauliPartition` at the maximally mixed state `I/2` makes
+the correlation matrix at `n = 1` itself maximally mixed on the four-element index set, filling
+`log(d²) = log 4` at a single step for every unital `*`-endomorphism
+(`CNT.corrMatrix_pauliPartition_one`, `CNT.vonNeumannEntropy_corrMatrix_pauliPartition_eq`), which also
+shows the naive `log d` cap is false for the correlation-matrix construction. On the growing side, the
+**growing-finite qubit tower** `blockEntropy_eq` bundles the finite blocks `M₂ ↪ M₄ ↪ M₈ ↪ ⋯` — carrier
+`Qbits n` of cardinality `2ⁿ`, capacity-enlargement embedding `shiftAdjoinQubit : A ↦ 1 ⊗ A` adjoining
+one fresh qubit per step, and the marginal-consistent product state `rhoPow ρ n = ρ^{⊗n}` — with block
+entropy exactly `n·S(ρ)` (iterated von Neumann additivity `vonNeumannEntropy_additive_kronecker`), hence
+a per-step **spatial** rate converging to `S(ρ)` (`tendsto_blockEntropy_div`), positive off the pure
+states (`blockEntropy_rhoR_pos`) and equal to `n·log 2` at the maximally mixed state
+(`blockEntropy_maximallyMixed`). The dephasing seal is lifted uniformly over an arbitrary ancilla block —
+the `dephaseKronId` partial-dephasing channel on `M₂ ⊗ M_blk` still admits no faithful-ancilla
+Stinespring recovery, with a reference pair `(ρ_r, diagState s)` whose dephased images are distinct
+(`quantum_seal_dephase_kron_faithful`, pure-input variant `quantum_seal_dephase_kron`). The bundled
+witness `GrowingQuantumWorld` (`growingQuantumWorld_exists`) carries all three on one growing object:
+positive spatial entropy production, the per-stage seal at the world's own block states `ρ_r^{⊗n}`, and
+a base-factor non-commutativity certificate. Honest scope, stated in the module docstrings: this is the
+**growing-finite** tower, not the completed `⊗_ℤ M₂` chain (that idealization is open issue #71); the
+step is capacity enlargement, not forgetting; the seal is a **channel-level (single-step) seal per
+stage**, not a flow seal; and the spatial per-step rate is complementary to — with no tension against —
+the fixed-`d` temporal `cntDynamicalEntropy_eq_zero`. The CNT/QIT ingredients are standard
+(Connes–Narnhofer–Thirring, *Comm. Math. Phys.* **112** (1987) 691–719; Ohya–Petz, *Quantum Entropy and
+Its Use*; Nielsen–Chuang §11.3; Petz 1986/2003); the reservoir-tightness and the bundling of rate + seal
++ non-commutativity on one growing object are this repository's contribution.
+
 ### Status and documented frontiers
 
 The GitHub issue tracker is at **zero open issues** — every formalization target has been discharged
@@ -437,8 +474,11 @@ ErgodicTheory/
                       --   Green–Kubo, concentration, exponent rate), doubling map, Pesin/Rokhlin
                       --   witnesses
   OperatorEntropy/    -- quantum information: relative entropy, Klein/Lieb, data processing,
-                      --   CNT dynamical entropy, Petz recovery + equality, the dephasing recovery
-                      --   seals + per-resolution non-commutativity + canonical-MASA certificates
+                      --   CNT dynamical entropy (the finite reservoir cap + its d=2 Pauli-partition
+                      --   tightness), Petz recovery + equality, the dephasing recovery seals +
+                      --   per-resolution non-commutativity + canonical-MASA certificates, and the
+                      --   growing-finite qubit tower (GrowingTower/: linear block entropy n·S(ρ),
+                      --   Kronecker-lifted dephasing seal, the bundled sealed-and-alive world)
   MeasureTheory/      -- descriptive-set residuals (Lusin, Novikov first separation, Kunugui–Novikov,
                       --   the Novikov compact-section projection theorem, covering numbers; P(X)
                       --   Polish + joint pushforward continuity; analyticity of section-existence)

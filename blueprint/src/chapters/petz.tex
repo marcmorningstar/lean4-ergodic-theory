@@ -1051,3 +1051,376 @@ there is \emph{no} common invariant MASA over \emph{all} unitary conjugates of t
 true for this \(U\) but its formalization over the full unitary group is deferred (it is large); what
 is formalized is the concrete pairwise failure on the two canonical candidate MASAs, the honest
 operational core of the obstruction.
+
+\section{The finite reservoir: cap, generic rate engine, and Pauli saturation (issue \#69)}
+\label{sec:reservoir-saturation}
+
+The finite-dimensional vanishing \(h_\Phi(\rho) = 0\) (\Cref{cntDynamicalEntropy_eq_zero}) is driven
+by a single uniform cap on the correlation entropy --- the correlation matrix lives on a
+\(d^{2}\)-dimensional Gram factorization, so its von Neumann entropy never exceeds \(\log(d^{2})\)
+regardless of the resolution \(n\). This section records three complementary refinements. First, the
+cap read in the \(2\log d\) reservoir form, together with the boundedness of the correlation-entropy
+sequence it produces. Second, the \emph{generic} pigeonhole engine behind the collapse, isolated as a
+domain-neutral lemma: any nonnegative sequence under a fixed ceiling has vanishing per-step rate.
+Third, and the substantive point of issue \#69, the cap is a genuine \emph{saturation} rather than an
+identically-zero degeneracy: at \(d = 2\) the Pauli operational partition fills the reservoir
+completely at a single step, so the per-step rate dies only because the finite reservoir is uniform
+in \(n\), not because individual steps carry no information. Weyl/Pauli-operator saturation of the CNT
+reservoir is folklore in this framework (Connes--Narnhofer--Thirring, \emph{Comm.\ Math.\ Phys.}\
+\textbf{112} (1987) 691--719; Ohya--Petz, \emph{Quantum Entropy and Its Use}, Springer).
+
+\subsection{The reservoir cap and the boundedness of the entropy sequence}
+
+\begin{theorem}[Reservoir cap in \(2\log d\) form]\label{cntCumulativeEntropy_le_reservoir}
+  \lean{ErgodicTheory.OperatorEntropy.CNT.cntCumulativeEntropy_le_reservoir}\leanok
+  \uses{vonNeumannEntropy_corrMatrix_le_log, corrMatrix}
+  For every unital \(*\)-endomorphism \(\Phi\), state \(\rho\), operational partition \(X\), and
+  resolution \(n\), the correlation entropy obeys the uniform-in-\(n\) reservoir ceiling
+  \[
+    S\bigl(\mathrm{corrMatrix}\,\Phi\,\rho\,X\,n\bigr) \;\le\; 2\,\log d .
+  \]
+  The reservoir is \(\log(d^{2}) = 2\log d\), \emph{not} the naive single-copy ceiling \(\log d\): the
+  correlation-matrix construction lives on a \(d^{2}\)-dimensional Gram factorization, so the honest
+  cap is \(\log(d^{2})\).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{vonNeumannEntropy_corrMatrix_le_log}
+  Restate the uniform bound \(S \le \log(d^{2})\)
+  (Theorem~\ref{vonNeumannEntropy_corrMatrix_le_log}) through \(\log(d^{2}) = 2\log d\)
+  (\(\texttt{Real.log\_pow}\), valid also at \(d = 0\) since \(\log 0 = 0\)).
+\end{proof}
+
+\begin{theorem}[The correlation-entropy sequence is bounded]\label{cntEntropySeq_bddAbove}
+  \lean{ErgodicTheory.OperatorEntropy.CNT.cntEntropySeq_bddAbove}\leanok
+  \uses{cntCumulativeEntropy_le_reservoir, corrMatrix}
+  For every partition the sequence
+  \(n\mapsto S\bigl(\mathrm{corrMatrix}\,\Phi\,\rho\,X\,n\bigr)\) is bounded above by the fixed
+  reservoir \(\log(d^{2})\), uniformly in the step count \(n\). Monotonicity in \(n\) is deliberately
+  \emph{not} claimed --- it is unproven in general and forced flat in the saturated regime; only the
+  uniform reservoir cap is asserted.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{vonNeumannEntropy_corrMatrix_le_log}
+  The constant \(\log(d^{2})\) is an upper bound of the range by the per-resolution cap
+  (Theorem~\ref{vonNeumannEntropy_corrMatrix_le_log}).
+\end{proof}
+
+\subsection{The generic cumulative-bounded rate engine}
+
+\begin{theorem}[Cumulative-bounded \(\Rightarrow\) per-step rate \(\to 0\)]\label{rate_to_zero_of_cumulative_bounded}
+  \lean{ErgodicTheory.rate_to_zero_of_cumulative_bounded}\leanok
+  Let \(a:\mathbb{N}\to\R\) be nonnegative and uniformly bounded above by a fixed constant \(C\)
+  (a \emph{reservoir}). Then the per-step rate vanishes,
+  \[
+    \frac{a(n)}{n} \;\longrightarrow\; 0 .
+  \]
+\end{theorem}
+\begin{proof}\leanok
+  Squeeze between \(0 \le a(n)/n\) and \(a(n)/n \le C/n \to 0\).
+\end{proof}
+
+This tiny lemma is the pigeonhole face of the whole finiteness doctrine, kept domain-neutral
+(namespace \(\texttt{ErgodicTheory}\), not \(\texttt{CNT}\)) so classical instantiations can reuse it.
+Instantiated at \(a(n) = S(\mathrm{corrMatrix}\,\Phi\,\rho\,X\,n)\) and \(C = \log(d^{2})\) it
+re-derives the finite-dimensional CNT collapse: the correlation rate is squeezed to \(0\), which is
+exactly \(h_\Phi(\rho,X) = 0\) (Theorem~\ref{cntEntropyPartition_eq_zero}) and hence
+\(h_\Phi(\rho) = 0\) (Theorem~\ref{cntDynamicalEntropy_eq_zero}). The reservoir cap
+(Theorem~\ref{cntCumulativeEntropy_le_reservoir}) supplies the hypothesis; the engine supplies the
+squeeze.
+
+\subsection{Pauli saturation at \(d = 2\): the cap is attained}
+
+\begin{definition}[Pauli operational partition]\label{pauliPartition}
+  \lean{ErgodicTheory.OperatorEntropy.CNT.pauliPartition}\leanok
+  \uses{OperationalPartition}
+  The \emph{Pauli operational partition} of \(\Matrix_2(\C)\) is the family of four operators
+  \((\tfrac12 P_i)_{i<4}\), where \(P_0 = 1\), \(P_1 = X\), \(P_2 = Y\), \(P_3 = Z\) are the Pauli
+  matrices. Each \(P_i\) is Hermitian and unitary, so
+  \(\sum_i (\tfrac12 P_i)^{\dagger}(\tfrac12 P_i) = \sum_i \tfrac14 P_i^{2} = 4\cdot\tfrac14\cdot 1 = 1\),
+  an operational partition of unity of size \(4 = 2^{2}\).
+\end{definition}
+
+\begin{theorem}[Pauli saturation of the correlation matrix at one step]\label{corrMatrix_pauliPartition_one}
+  \lean{ErgodicTheory.OperatorEntropy.CNT.corrMatrix_pauliPartition_one}\leanok
+  \uses{pauliPartition, corrMatrix}
+  For \emph{every} unital \(*\)-endomorphism \(\Phi\) of \(\Matrix_2(\C)\), the depth-\(1\)
+  correlation matrix of the Pauli partition in the maximally mixed state \(I/2\) is itself the
+  maximally mixed state on the \(4\)-element classical index set \((\Fin 4)^{\Fin 1}\):
+  \[
+    \mathrm{corrMatrix}\,\Phi\,(I/2)\,\mathrm{pauliPartition}\,1 \;=\; I/4 .
+  \]
+\end{theorem}
+\begin{proof}\leanok
+  \uses{pauliPartition, corrMatrix}
+  The depth-\(1\) refinement along a word \(f\) is just the selected operator
+  \((\tfrac12 P_{f_0})\). Pauli trace-orthogonality \(\tr(P_i^{\dagger}P_j) = 2\,\delta_{ij}\), scaled
+  by the state \(I/2\) and the \((\tfrac12)^{2}\) normalisation, makes the correlation entry
+  \(\tr\bigl((I/2)\,(\tfrac12 P_g)^{\dagger}(\tfrac12 P_f)\bigr)\) equal \(\tfrac14\,\delta_{gf}\);
+  reading this off on the classical index gives the diagonal \((\tfrac14)\cdot 1\) density matrix.
+\end{proof}
+
+\begin{theorem}[The reservoir cap is tight at \(d = 2\)]\label{vonNeumannEntropy_corrMatrix_pauliPartition_eq}
+  \lean{ErgodicTheory.OperatorEntropy.CNT.vonNeumannEntropy_corrMatrix_pauliPartition_eq}\leanok
+  \uses{corrMatrix_pauliPartition_one, cntCumulativeEntropy_le_reservoir}
+  For every unital \(*\)-endomorphism \(\Phi\) of \(\Matrix_2(\C)\), the Pauli partition in the
+  maximally mixed state attains the uniform cap at a single step:
+  \[
+    S\bigl(\mathrm{corrMatrix}\,\Phi\,(I/2)\,\mathrm{pauliPartition}\,1\bigr)
+      \;=\; \log(2^{2}) \;=\; 2\,\log 2 .
+  \]
+\end{theorem}
+\begin{proof}\leanok
+  \uses{corrMatrix_pauliPartition_one}
+  By Theorem~\ref{corrMatrix_pauliPartition_one} the correlation matrix is maximally mixed on \(4\)
+  points, whose von Neumann entropy is \(\log 4 = \log(2^{2})\).
+\end{proof}
+
+\emph{Saturation, not identically zero.} Theorem~\ref{vonNeumannEntropy_corrMatrix_pauliPartition_eq}
+realises issue \#69's distinction: the mechanism behind \(h_\Phi(\rho) = 0\) is a \emph{finite
+reservoir} \(\log(d^{2})\) that single steps can fill completely, not an absence of information at
+each step. The per-step \emph{rate} still dies (Theorem~\ref{rate_to_zero_of_cumulative_bounded})
+purely because the cap is uniform in \(n\). The witness also exhibits, honestly, that the naive
+single-copy ceiling \(\log d\) is \emph{false} for the correlation-matrix construction: a genuinely
+\(d^{2}\)-dimensional density matrix occurs, so \(\log(d^{2})\) --- and not \(\log d\) --- is the
+correct reservoir.
+
+\section{The growing-finite quantum world (issue \#70)}
+\label{sec:growing-tower}
+
+The finite-dimensional CNT rate vanishes identically at a \emph{fixed} algebra
+(\Cref{cntDynamicalEntropy_eq_zero}), so any strictly positive entropy production must come from a
+system whose algebra \emph{grows}. This section documents the growing-finite qubit tower
+\(\Matrix_2 \hookrightarrow \Matrix_4 \hookrightarrow \Matrix_8 \hookrightarrow \cdots\): at step
+\(n\) the carrier is the \(n\)-fold qubit block of dimension \(2^{n}\), the distinguished state is the
+\(n\)-fold product \(\rho^{\otimes n}\) of a fixed single-qubit state \(\rho\), and each step enlarges
+the capacity by adjoining one fresh qubit. The tower carries a \emph{spatial} (per-step) entropy rate
+equal to the single-qubit entropy \(S(\rho)\), a Kronecker-lifted dephasing seal that survives
+uniformly in the block, and a base-factor non-commutativity certificate; these three faces are then
+bundled into a single witnessed object. The underlying additivity of the von Neumann entropy under
+tensor products, \(S(\rho^{\otimes n}) = n\,S(\rho)\), is textbook (Nielsen--Chuang, \emph{Quantum
+Computation and Quantum Information}, \S11.3; Ohya--Petz, \emph{Quantum Entropy and Its Use}), as is
+the data-processing / Petz-recovery seal (Petz 1986, 2003; Ohya--Petz) and the Connes--Narnhofer--
+Thirring non-commutativity against a canonical MASA (Connes--Narnhofer--Thirring, \emph{Comm.\ Math.\
+Phys.}\ \textbf{112} (1987) 691--719). The new content is the growing carrier, the
+capacity-enlargement embedding, the marginal-consistency of the finite blocks, the packaged rate, and
+the bundling.
+
+\subsection{The growing carrier, the product state, and the linear entropy law}
+
+\begin{definition}[Growing qubit carrier]\label{Qbits}
+  \lean{ErgodicTheory.OperatorEntropy.Qbits}\leanok
+  The length-\(n\) qubit block index \(\mathrm{Qbits}\,n\) is defined by recursion,
+  \(\mathrm{Qbits}\,0 = \Fin 1\) and \(\mathrm{Qbits}\,(n+1) = \Fin 2\times\mathrm{Qbits}\,n\); it has
+  cardinality \(2^{n}\), so the block algebra is \(\Matrix_{2^{n}}(\C)\).
+\end{definition}
+
+\begin{definition}[The \(n\)-fold product state]\label{rhoPow}
+  \lean{ErgodicTheory.OperatorEntropy.rhoPow}\leanok
+  \uses{Qbits}
+  For a single-qubit state \(\rho\), the product state \(\rho^{\otimes n}\) on the length-\(n\) block
+  is defined by \(\rho^{\otimes 0} = I/1\) (the unique state on \(\Fin 1\), of zero entropy) and
+  \(\rho^{\otimes(n+1)} = \rho\otimes\rho^{\otimes n}\).
+\end{definition}
+
+\begin{definition}[Block entropy]\label{blockEntropy}
+  \lean{ErgodicTheory.OperatorEntropy.blockEntropy}\leanok
+  \uses{rhoPow}
+  The \emph{block entropy} of the tower at level \(n\) is the von Neumann entropy of the product
+  state, \(\mathrm{blockEntropy}\,\rho\,n = S(\rho^{\otimes n})\).
+\end{definition}
+
+\begin{theorem}[The linear block-entropy law]\label{blockEntropy_eq}
+  \lean{ErgodicTheory.OperatorEntropy.blockEntropy_eq}\leanok
+  \uses{blockEntropy, rhoPow}
+  The block entropy grows exactly linearly in the level:
+  \[
+    \mathrm{blockEntropy}\,\rho\,n \;=\; n\cdot S(\rho).
+  \]
+\end{theorem}
+\begin{proof}\leanok
+  \uses{blockEntropy, rhoPow}
+  Induct on \(n\): the von Neumann entropy is additive under the Kronecker product,
+  \(S(\rho\otimes\rho^{\otimes n}) = S(\rho) + S(\rho^{\otimes n})\), and the base block on \(\Fin 1\)
+  has zero entropy. Summing the single-qubit contribution \(n\) times gives \(n\cdot S(\rho)\).
+\end{proof}
+
+\subsection{Capacity enlargement and marginal consistency}
+
+\begin{definition}[Capacity-enlargement embedding]\label{shiftAdjoinQubit}
+  \lean{ErgodicTheory.OperatorEntropy.shiftAdjoinQubit}\leanok
+  \uses{Qbits}
+  The capacity-enlargement step is the embedding
+  \(\Matrix_{2^{n}}(\C)\hookrightarrow\Matrix_{2^{n+1}}(\C)\) adjoining one fresh qubit on the left,
+  \(A\mapsto 1\otimes A\). It is unital, multiplicative, and \(*\)-preserving --- a unital
+  \(*\)-homomorphism realising the tower inclusion --- and it is injective, since \(1\otimes A\)
+  determines \(A\) through the entry identity \((1\otimes A)_{(i,a),(i,b)} = A_{a,b}\).
+\end{definition}
+
+The finite blocks form an honest consistent family of marginals: tracing out the fresh qubit of the
+length-\((n+1)\) block recovers the length-\(n\) block,
+\(\operatorname{Tr}_A(\rho^{\otimes(n+1)}) = \rho^{\otimes n}\) (Lean:
+\(\texttt{rhoPow\_partialTraceLeft}\)), because \(\rho\) has unit trace. So \(\rho^{\otimes\bullet}\)
+is a marginal-consistent product-state family along the capacity-enlargement embedding.
+
+\subsection{The spatial entropy rate and its positivity}
+
+\begin{theorem}[Maximally mixed corollary]\label{blockEntropy_maximallyMixed}
+  \lean{ErgodicTheory.OperatorEntropy.blockEntropy_maximallyMixed}\leanok
+  \uses{blockEntropy_eq}
+  At the maximally mixed single-qubit state \(I/2\) the linear law reads
+  \(\mathrm{blockEntropy}\,(I/2)\,n = n\cdot\log 2\), recovering issue \#70's \(n\cdot\log 2\) claim as
+  an equality --- the maximal case, where \(S(\rho) = \log 2\) is largest; for a general \(\rho\) the
+  honest law is \(n\cdot S(\rho)\le n\cdot\log 2\).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{blockEntropy_eq}
+  Specialise Theorem~\ref{blockEntropy_eq} at \(\rho = I/2\), where \(S(I/2) = \log 2\).
+\end{proof}
+
+\begin{theorem}[The spatial (per-step) entropy rate]\label{tendsto_blockEntropy_div}
+  \lean{ErgodicTheory.OperatorEntropy.tendsto_blockEntropy_div}\leanok
+  \uses{blockEntropy_eq}
+  The per-step entropy rate converges to the single-qubit entropy,
+  \[
+    \frac{\mathrm{blockEntropy}\,\rho\,n}{n} \;\longrightarrow\; S(\rho),
+  \]
+  as an eventually-constant sequence (equal to \(S(\rho)\) for every \(n\ge 1\)).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{blockEntropy_eq}
+  By the linear law (Theorem~\ref{blockEntropy_eq}), for \(n\ge 1\) the ratio is
+  \(n\,S(\rho)/n = S(\rho)\); a constant sequence converges to its value.
+\end{proof}
+
+\begin{theorem}[Positive rate on a concrete faithful family]\label{blockEntropy_rhoR_pos}
+  \lean{ErgodicTheory.OperatorEntropy.blockEntropy_rhoR_pos}\leanok
+  \uses{blockEntropy_eq}
+  For the concrete faithful family
+  \(\rho_r = \tfrac12\!\left(\begin{smallmatrix}1 & r\\ r & 1\end{smallmatrix}\right)\)
+  (\(0 < r < 1\)) every nonempty block carries strictly positive entropy,
+  \(\mathrm{blockEntropy}\,\rho_r\,n > 0\) for \(n\ge 1\); its single-qubit entropy is the binary
+  entropy \(h_2\!\big((1+r)/2\big) > 0\), so the spatial rate is a \emph{positive} constant --- the
+  tower is genuinely alive.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{blockEntropy_eq}
+  By the linear law the block entropy is \(n\cdot S(\rho_r)\); the single-qubit entropy equals the
+  binary entropy \(h_2\!\big((1+r)/2\big)\), strictly positive for \(0 < r < 1\), so each nonempty
+  block entropy is positive.
+\end{proof}
+
+\subsection{The Kronecker-lifted dephasing seal, uniform in the block}
+
+The single-qubit dephasing (pinching) seal of \S\ref{sec:quantum-seal}
+(Theorem~\ref{quantum_seal_dephase_faithful}) is lifted from \(\Matrix_2(\C)\) to
+\(\Matrix_2(\C)\otimes\Matrix_{\mathrm{blk}}(\C)\) for an \emph{arbitrary} block algebra: dephase the
+first qubit, leave the block untouched. The strict relative-entropy drop, hence the no-recovery
+obstruction, survives the tensoring uniformly in the block --- in particular at every level
+\(\Matrix_{2^{n}}(\C)\) of the tower.
+
+\begin{definition}[Partial-dephasing channel]\label{dephaseKronId}
+  \lean{ErgodicTheory.OperatorEntropy.dephaseKronId}\leanok
+  For a block index \(\mathrm{blk}\), the \emph{partial-dephasing channel}
+  \(\Delta\otimes\mathrm{id}_{\mathrm{blk}}\) on \(\Matrix_2(\C)\otimes\Matrix_{\mathrm{blk}}(\C)\)
+  dephases the first qubit (killing its coherences) and leaves the block untouched; its Kraus
+  operators are \(K_i\otimes 1\) for the qubit-dephasing Kraus operators \(K_i\) (the diagonal
+  projections). It factorises on product states, \((\Delta\otimes\mathrm{id})(x\otimes\beta)
+  = (\Delta x)\otimes\beta\).
+\end{definition}
+
+\begin{theorem}[The strict drop survives the block tensoring]\label{relEntropy_strict_drop_dephasing_kron}
+  \lean{ErgodicTheory.OperatorEntropy.relEntropy_strict_drop_dephasing_kron}\leanok
+  \uses{dephaseKronId, relEntropy_maximallyMixed}
+  For a faithful block state \(\beta\) and the reference \(\sigma = \operatorname{diagState} s\)
+  (\(0 < s < 1\)), partial dephasing of \(\rho_r\otimes\beta\) against
+  \(\operatorname{diagState} s\otimes\beta\) strictly lowers the Umegaki relative entropy:
+  \[
+    S\bigl((\Delta\otimes\mathrm{id})(\rho_r\otimes\beta)\,\big\|\,(\Delta\otimes\mathrm{id})(\sigma\otimes\beta)\bigr)
+      \;<\; S\bigl(\rho_r\otimes\beta\,\big\|\,\sigma\otimes\beta\bigr).
+  \]
+\end{theorem}
+\begin{proof}\leanok
+  \uses{dephaseKronId}
+  The block \(\beta\) is a common faithful ancilla, so the relative entropy is unchanged by it
+  (ancilla invariance); the channel factorises on product states, reducing the claim to the
+  qubit-level strict drop \(\log 2 - h_2\!\big((1+r)/2\big) > 0\) (the strict maximum of the binary
+  entropy at \(1/2\)), which carries through. The reference pair has \emph{distinct} dephasing images
+  (\((I/2)\otimes\beta \ne \operatorname{diagState} s\otimes\beta\)), so the pair is non-degenerate.
+\end{proof}
+
+\begin{theorem}[No Stinespring recovery, uniform in the block]\label{quantum_seal_dephase_kron_faithful}
+  \lean{ErgodicTheory.OperatorEntropy.quantum_seal_dephase_kron_faithful}\leanok
+  \uses{relEntropy_strict_drop_dephasing_kron, quantum_seal_dephase_faithful}
+  For an \emph{arbitrary} block \(\mathrm{blk}\) (in particular every tower level
+  \(\Matrix_{2^{n}}(\C)\)) and a faithful block state \(\beta\), no faithful-ancilla Stinespring
+  channel on the enlarged system \(\Matrix_2(\C)\otimes\Matrix_{\mathrm{blk}}(\C)\) inverts the
+  partial dephasing on \(\rho_r\otimes\beta\) and \(\operatorname{diagState} s\otimes\beta\)
+  simultaneously.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{relEntropy_strict_drop_dephasing_kron}
+  The strict relative-entropy drop (Theorem~\ref{relEntropy_strict_drop_dephasing_kron}) is uniform in
+  the block; a Stinespring section simultaneously recovering both states would saturate the
+  data-processing inequality, contradicting the strict drop (Petz's equality theorem). ``Uniform in
+  \(n\)'' means the block \(\mathrm{blk}\) is arbitrary, and the recovery is quantified over
+  \emph{all} faithful-ancilla Stinespring dilations on the enlarged system.
+\end{proof}
+
+\subsection{The bundled growing quantum world}
+
+\begin{definition}[Growing quantum world]\label{GrowingQuantumWorld}
+  \lean{ErgodicTheory.OperatorEntropy.GrowingQuantumWorld}\leanok
+  \uses{blockEntropy_rhoR_pos, tendsto_blockEntropy_div, quantum_seal_dephase_kron_faithful}
+  A \emph{growing quantum world} bundles, for one concrete faithful local state \(\rho_r\) and one
+  diagonal reference \(\operatorname{diagState} s\), the three faces of the growing-finite tower:
+  \begin{enumerate}
+    \item \emph{aliveness} --- the single-qubit entropy \(S(\rho_r) > 0\) is positive and the per-step
+      spatial rate \(\mathrm{blockEntropy}\,\rho_r\,n / n\) converges to it
+      (Theorem~\ref{tendsto_blockEntropy_div});
+    \item the \emph{per-stage dephasing seal at the world's own block states} --- at every level \(n\),
+      no faithful-ancilla Stinespring recovery inverts the partial dephasing on both
+      \(\rho_r\otimes\rho_r^{\otimes n}\) and \(\operatorname{diagState} s\otimes\rho_r^{\otimes n}\),
+      the block being the world's own length-\(n\) block \(\rho_r^{\otimes n}\)
+      (Theorem~\ref{quantum_seal_dephase_kron_faithful});
+    \item a \emph{base-factor non-commutativity certificate} --- the single-qubit dynamics does not
+      preserve the canonical MASA and the seal's eigenprojection is off-diagonal
+      (Theorem~\ref{qDynamics_seal_no_common_canonical_masa}).
+  \end{enumerate}
+\end{definition}
+
+\begin{theorem}[A growing quantum world exists]\label{growingQuantumWorld_exists}
+  \lean{ErgodicTheory.OperatorEntropy.growingQuantumWorld_exists}\leanok
+  \uses{GrowingQuantumWorld, blockEntropy_rhoR_pos, tendsto_blockEntropy_div, quantum_seal_dephase_kron_faithful, qDynamics_seal_no_common_canonical_masa}
+  A concrete alive-and-sealed growing quantum world exists. Take the balanced faithful local state
+  \(\rho_{1/2}\) and the balanced diagonal reference \(\operatorname{diagState}(1/2)\): aliveness holds
+  because \(h_2(3/4) > 0\), the per-stage seal is
+  Theorem~\ref{quantum_seal_dephase_kron_faithful} instantiated at the world's own block state
+  \(\rho_{1/2}^{\otimes n}\) (positive definite), and the base-factor certificate is
+  Theorem~\ref{qDynamics_seal_no_common_canonical_masa}.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{GrowingQuantumWorld, tendsto_blockEntropy_div, quantum_seal_dephase_kron_faithful, qDynamics_seal_no_common_canonical_masa}
+  Assemble the three faces at \(r = s = 1/2\): positivity of the single-qubit entropy from
+  \(h_2(3/4) > 0\); the per-stage seal from Theorem~\ref{quantum_seal_dephase_kron_faithful} with the
+  block taken to be the world's own \(\rho_{1/2}^{\otimes n}\) (positive definite as a Kronecker
+  product of positive-definite factors); and the base-factor non-commutativity certificate directly.
+\end{proof}
+
+\emph{Growing-finite, not the completed chain (issue \#71).} This is deliberately the
+\emph{growing-finite} tower --- one fresh qubit adjoined per step --- and \emph{not} the completed
+thermodynamic-limit spin chain \(\bigotimes_{\mathbb{Z}}\Matrix_2(\C)\); that idealisation is the
+subject of issue \#71 and is not formalised here.
+
+\emph{Spatial versus temporal rate --- no tension with \Cref{cntDynamicalEntropy_eq_zero}.} The rate
+\(S(\rho)\) above is a \emph{spatial} (per-step capacity-growth) rate: the algebra grows by one fresh
+qubit per step. It does not contradict the \emph{temporal} fixed-dimension vanishing
+\(h_\Phi(\rho) = 0\) (\Cref{cntDynamicalEntropy_eq_zero}), which concerns a \emph{fixed} algebra under
+iteration of a fixed dynamics. Fixed algebra with trivial dynamics gives zero temporal rate; growing
+algebra gives positive spatial rate --- two different rates of two different systems.
+
+\emph{The base-factor certificate is transported, not re-proved per level.} The non-commutativity
+certificate (Theorem~\ref{qDynamics_seal_no_common_canonical_masa}) certifies the \emph{base qubit
+factor}. Via the capacity-enlargement embedding \(\mathrm{shiftAdjoinQubit}\) (\(A\mapsto 1\otimes A\),
+Definition~\ref{shiftAdjoinQubit}) it embeds into every level of the tower, but it is \emph{not} a
+re-proved per-level MASA statement --- it is the base-factor certificate transported by the tower
+embedding, the honest reading of the bundled world's third face.
