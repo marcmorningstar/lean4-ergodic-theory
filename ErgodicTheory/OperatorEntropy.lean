@@ -59,6 +59,10 @@ import ErgodicTheory.OperatorEntropy.Lieb.PetzEqualityGeneral
 import ErgodicTheory.OperatorEntropy.GrowingTower.Tower
 import ErgodicTheory.OperatorEntropy.GrowingTower.SealLift
 import ErgodicTheory.OperatorEntropy.GrowingTower.World
+import ErgodicTheory.OperatorEntropy.GrowingTower.ChainAlgebra
+import ErgodicTheory.OperatorEntropy.GrowingTower.ChainState
+import ErgodicTheory.OperatorEntropy.GrowingTower.ModularClock
+import ErgodicTheory.OperatorEntropy.GrowingTower.QuantumBernoulli
 
 /-!
 # Finite-dimensional operator entropy
@@ -140,4 +144,11 @@ dilation, and both directions of Petz's equality theorem.
 * `ErgodicTheory.OperatorEntropy.growingQuantumWorld_exists` — the bundled world: one growing object
   that is simultaneously alive (positive block-entropy rate), sealed (strict relative-entropy drop),
   and non-commutative at its base (issue #70).
+* `ErgodicTheory.OperatorEntropy.quantumBernoulliShift_exists` — the quantum Bernoulli shift: a
+  fixed directed system with a shift-invariant tracial state, a temporal-window entropy rate
+  `log 2`, and a per-stage strict relative-entropy seal under dephasing (issue #71).
+* `ErgodicTheory.OperatorEntropy.modAut_maximallyMixed_eq_id` / `modAut_diagState_ne_id` — the
+  finite modular clock dichotomy: the modular automorphism group is trivial at the tracial
+  (maximally mixed) state and provably nontrivial for a non-flat faithful diagonal product state
+  (issue #71).
 -/

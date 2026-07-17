@@ -1424,3 +1424,406 @@ factor}. Via the capacity-enlargement embedding \(\mathrm{shiftAdjoinQubit}\) (\
 Definition~\ref{shiftAdjoinQubit}) it embeds into every level of the tower, but it is \emph{not} a
 re-proved per-level MASA statement --- it is the base-factor certificate transported by the tower
 embedding, the honest reading of the bundled world's third face.
+
+\section{The quantum Bernoulli shift and the finite modular clock (issue \#71)}
+\label{sec:quantum-bernoulli}
+
+The growing-finite tower of \S\ref{sec:growing-tower} enlarges the algebra one qubit per step; here
+the same fixed hierarchy of finite qubit blocks
+\(\Matrix_2(\C)\hookrightarrow\Matrix_4(\C)\hookrightarrow\Matrix_8(\C)\hookrightarrow\cdots\) is read
+as the carrier of the one-sided \emph{quantum Bernoulli shift} --- the shift endomorphism of the
+qubit chain --- and its \emph{temporal} entropy rate is extracted. The two structural maps on the
+levels \(\mathrm{Qbits}\,n\) (of cardinality \(2^{n}\), local algebra \(\Matrix_{2^{n}}(\C)\)) are the
+\emph{inclusion} \(\iota_n:A_n\hookrightarrow A_{n+1}\), \(x\mapsto x\otimes 1\), adjoining a fresh
+site at the far end, and the capacity-enlargement \emph{shift}
+\(\mathrm{shiftAdjoinQubit}:A_n\hookrightarrow A_{n+1}\), \(A\mapsto 1\otimes A\)
+(Definition~\ref{shiftAdjoinQubit}), adjoining one fresh qubit on the left. These commute, so the
+finite levels form a genuine directed system carrying the shift; the tracial (maximally mixed) state
+is compatible with both maps and shift-invariant; the site-window filtration along the shift has
+temporal rate \(\log 2\); the dephasing seal survives at every level; and the finite modular clock
+\(\sigma_t(a)=\rho^{it}\,a\,\rho^{-it}\) exhibits an intrinsic-clock dichotomy between the tracial and
+non-tracial states. All of this is assembled into one witnessed object. The shift entropy of the
+qubit chain equals the entropy density \(\log 2\) (Connes--Narnhofer--Thirring, \emph{Dynamical
+entropy of \(C^{*}\) algebras and von Neumann algebras}, Comm.\ Math.\ Phys.\ \textbf{112} (1987)
+691--719); the quasi-local (inclusion \(+\) shift) framework of the chain is standard
+(Bratteli--Robinson, \emph{Operator Algebras and Quantum Statistical Mechanics II}, \S5.3, Prop.\
+5.3.7; Ohya--Petz, \emph{Quantum Entropy and Its Use}, \S1.3), the hyperfinite II\(_1\) and the
+Powers-type type-III product-state factors going back to Powers (R.\ T.\ Powers, \emph{Representations
+of uniformly hyperfinite algebras and their associated von Neumann rings}, Ann.\ of Math.\
+\textbf{86} (1967)). The new content is the packaging on the finite growing tower: the commuting
+inclusion/shift, the shift-invariant tracial hierarchy, the site-window rate, the per-level seal, the
+finite modular clock with its dichotomy, and the bundled witness.
+
+\begin{remark}[Directed local, not the completed \(C^{*}\)-chain]\label{qbs-scope-directed}
+  This is the directed \emph{system} of finite levels with compatible tracial marginals and the shift
+  endomorphism, \emph{not} the completed quasi-local \(C^{*}\)-algebra
+  \(\bigotimes_{\mathbb{Z}}\Matrix_2(\C)\) or its GNS representation. Mathlib has no noncommutative
+  inductive limit (\texttt{Ring.DirectLimit} is \texttt{CommRing}-only, and the matrix algebras here
+  are noncommutative), so the completed chain is deliberately not formed; the directed local system
+  is all that the entropy-rate and modular statements below require.
+\end{remark}
+
+\subsection{The directed local system: commuting inclusion and shift}
+
+\begin{definition}[Far-end inclusion]\label{appendQubit}
+  \lean{ErgodicTheory.OperatorEntropy.appendQubit}\leanok
+  The \emph{inclusion} \(A_n\hookrightarrow A_{n+1}\) appends a fresh qubit at the far end,
+  \(x\mapsto x\otimes 1\), reindexed along \(\mathrm{Equiv.prodComm}\) because \(\mathrm{Qbits}\,(n+1)\)
+  places the fresh factor on the left. It is unital, multiplicative and \(*\)-preserving --- a unital
+  \(*\)-homomorphism realising the tower inclusion.
+\end{definition}
+
+\begin{lemma}[The inclusion is injective]\label{appendQubit_injective}
+  \lean{ErgodicTheory.OperatorEntropy.appendQubit_injective}\leanok
+  \uses{appendQubit}
+  The far-end inclusion is injective: \(x\otimes 1\) (reindexed) determines \(x\) through the entry
+  identity \((\mathrm{appendQubit}\,x)_{(0,a),(0,b)} = x_{a,b}\).
+\end{lemma}
+\begin{proof}\leanok
+  \uses{appendQubit}
+  Read off the \((0,a),(0,b)\) entry of \(x\otimes 1\): the identity factor contributes
+  \(1_{0,0}=1\), leaving \(x_{a,b}\). Two inclusions with equal images therefore have equal entries.
+\end{proof}
+
+\begin{theorem}[Shift--inclusion commutation]\label{shiftAdjoinQubit_appendQubit}
+  \lean{ErgodicTheory.OperatorEntropy.shiftAdjoinQubit_appendQubit}\leanok
+  \uses{appendQubit, shiftAdjoinQubit}
+  The capacity-enlargement shift \(\mathrm{shiftAdjoinQubit}\) (\(A\mapsto 1\otimes A\)) and the
+  far-end inclusion \(\mathrm{appendQubit}\) (\(x\mapsto x\otimes 1\)) commute:
+  \[
+    \mathrm{shiftAdjoinQubit}\,(\mathrm{appendQubit}\,M)
+      \;=\; \mathrm{appendQubit}\,(\mathrm{shiftAdjoinQubit}\,M).
+  \]
+  Hence the family of finite levels is a genuine directed system carrying the shift as an
+  endomorphism.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{appendQubit, shiftAdjoinQubit}
+  Both sides realise the same entrywise triple Kronecker product \(1\otimes M\otimes 1\): the shift
+  amplifies on the left and the inclusion on the right, and these two amplifications act on disjoint
+  index factors, so their composites agree slot by slot.
+\end{proof}
+
+\subsection{The shift-invariant product-state hierarchy}
+
+\begin{lemma}[The tracial state is closed under the tensor step]\label{kron_maximallyMixed}
+  \lean{ErgodicTheory.OperatorEntropy.kron_maximallyMixed}\leanok
+  The maximally mixed state is closed under the Kronecker product,
+  \(\mathrm{mm}\otimes\mathrm{mm}=\mathrm{mm}\): concretely
+  \((a^{-1}\cdot 1)\otimes(b^{-1}\cdot 1)=(a\,b)^{-1}\cdot 1\) with \(a,b\) the factor cardinalities.
+\end{lemma}
+\begin{proof}\leanok
+  Expand both maximally mixed factors as normalized identities; the Kronecker product of identities is
+  the identity, and the scalar prefactors multiply to \((a\,b)^{-1}\), which is exactly the normalizing
+  constant of the maximally mixed state on the product carrier.
+\end{proof}
+
+\begin{theorem}[The tracial state is a tower fixed point]\label{rhoPow_maximallyMixed}
+  \lean{ErgodicTheory.OperatorEntropy.rhoPow_maximallyMixed}\leanok
+  \uses{kron_maximallyMixed, rhoPow}
+  The \(n\)-fold product of the maximally mixed single-qubit state is the maximally mixed state on the
+  whole length-\(n\) block, \(\mathrm{rhoPow}\,\mathrm{mm}\,n=\mathrm{mm}\): the tracial state is a
+  fixed point of the tower construction.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{kron_maximallyMixed, rhoPow}
+  Induct on \(n\): the tensor step (Definition~\ref{rhoPow}) tensors a fresh maximally mixed qubit onto
+  the inductive block, and Lemma~\ref{kron_maximallyMixed} collapses \(\mathrm{mm}\otimes\mathrm{mm}\)
+  back to \(\mathrm{mm}\); the base level on \(\Fin 1\) is maximally mixed trivially.
+\end{proof}
+
+\begin{theorem}[Shift-invariance of every product state]\label{rhoPow_shiftAdjoinQubit_pairing}
+  \lean{ErgodicTheory.OperatorEntropy.rhoPow_shiftAdjoinQubit_pairing}\leanok
+  \uses{rhoPow, shiftAdjoinQubit}
+  Writing \(\tau_m(y)=\tr\bigl((\mathrm{rhoPow}\,\rho\,m)\cdot y\bigr)\), pairing the enlarged state
+  against an observable \(\mathrm{shiftAdjoinQubit}\,x=1\otimes x\) that acts trivially on the fresh
+  qubit returns the previous-block pairing:
+  \[
+    \tau_{n+1}\bigl(\mathrm{shiftAdjoinQubit}\,x\bigr) \;=\; \tau_n(x).
+  \]
+  The family \((\tau_n)\) thus fits together into one shift-invariant state of the one-sided qubit
+  chain.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{rhoPow, shiftAdjoinQubit}
+  The product state factors as \(\rho\otimes(\mathrm{rhoPow}\,\rho\,n)\) and the observable as
+  \(1\otimes x\); the Kronecker product multiplies factorwise and the trace factorises, so the fresh
+  qubit contributes \(\tr(\rho\cdot 1)=\tr\rho=1\), leaving \(\tr((\mathrm{rhoPow}\,\rho\,n)\cdot x)\).
+\end{proof}
+
+\begin{theorem}[Inclusion-compatibility of the tracial state]\label{appendQubit_maximallyMixed_pairing}
+  \lean{ErgodicTheory.OperatorEntropy.appendQubit_maximallyMixed_pairing}\leanok
+  \uses{appendQubit}
+  The far-end site adjoined by \(\mathrm{appendQubit}\) is a fresh, maximally mixed degree of freedom,
+  so pairing the \((n+1)\)-level maximally mixed state against \(\mathrm{appendQubit}\,x\) reproduces
+  the \(n\)-level pairing against \(x\):
+  \[
+    \tr\bigl(\mathrm{mm}_{n+1}\cdot\mathrm{appendQubit}\,x\bigr)
+      \;=\; \tr\bigl(\mathrm{mm}_{n}\cdot x\bigr).
+  \]
+  This is the compatible-marginals condition for the tracial state along the inclusion tower.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{appendQubit}
+  The trace of \(x\otimes 1\) is \(2\,\tr x\) (the fresh far-end factor contributes \(\tr 1=2\)), and
+  the maximally mixed normalizations differ by exactly the factor \(2 = 2^{n+1}/2^{n}\); the two
+  cancel, leaving the level-\(n\) tracial pairing.
+\end{proof}
+
+\begin{definition}[The iterated shift]\label{shiftIter}
+  \lean{ErgodicTheory.OperatorEntropy.shiftIter}\leanok
+  \uses{shiftAdjoinQubit}
+  The \emph{\(k\)-fold shift} \(A_n\hookrightarrow A_{n+k}\) iterates the capacity-enlargement
+  embedding \(\mathrm{shiftAdjoinQubit}\) (\(A\mapsto 1\otimes A\)) \(k\) times, by the recursion
+  \(\mathrm{shiftIter}\,0=\mathrm{id}\) and
+  \(\mathrm{shiftIter}\,(k+1)=\mathrm{shiftAdjoinQubit}\circ\mathrm{shiftIter}\,k\). It is a unital
+  \(*\)-homomorphism and is injective.
+\end{definition}
+
+\begin{theorem}[The site-translation certificate]\label{shiftIter_pairing}
+  \lean{ErgodicTheory.OperatorEntropy.shiftIter_pairing}\leanok
+  \uses{shiftIter, rhoPow_shiftAdjoinQubit_pairing}
+  The fixed state \(\mathrm{rhoPow}\,\rho\), read through \(k\) shift-iterates of a level-\(n\)
+  observable \(x\), returns the level-\(n\) marginal:
+  \[
+    \tau_{n+k}\bigl(\mathrm{shiftIter}\,k\,x\bigr) \;=\; \tau_n(x).
+  \]
+  This is the shift-invariance of the whole hierarchy --- the temporal stationarity of the quantum
+  Bernoulli shift (``the past slides out''): a level-\(n\) observable, however far the shift carries
+  its window, is still evaluated by the level-\(n\) state.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{shiftIter, rhoPow_shiftAdjoinQubit_pairing}
+  Induct on \(k\): each shift step peels off one application of
+  Theorem~\ref{rhoPow_shiftAdjoinQubit_pairing}, lowering the level by one at unchanged value, and the
+  inductive hypothesis carries the level-\(n+k\) pairing down to the level-\(n\) marginal.
+\end{proof}
+
+\subsection{The temporal site-window rate}
+
+\begin{definition}[The temporal window entropy]\label{windowEntropy}
+  \lean{ErgodicTheory.OperatorEntropy.windowEntropy}\leanok
+  \uses{blockEntropy}
+  The \emph{window entropy} \(\mathrm{windowEntropy}\,\rho\,k\) is the von Neumann entropy of the
+  length-\(k\) window of the chain, generated by the first \(k\) sites. Numerically it equals the
+  block entropy of \S\ref{sec:growing-tower} (\(\mathrm{windowEntropy}\,\rho\,k=\mathrm{blockEntropy}\,
+  \rho\,k\)); the temporal content is the \emph{reading} --- the window of the shift filtration on the
+  fixed, shift-invariant state hierarchy (Theorem~\ref{shiftIter_pairing}) --- not the value.
+\end{definition}
+
+\begin{theorem}[The tracial window entropy]\label{windowEntropy_tracial}
+  \lean{ErgodicTheory.OperatorEntropy.windowEntropy_tracial}\leanok
+  \uses{windowEntropy, blockEntropy_maximallyMixed}
+  At the tracial (maximally mixed) state the length-\(k\) window carries entropy
+  \(\mathrm{windowEntropy}\,\mathrm{mm}\,k = k\cdot\log 2\).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{windowEntropy, blockEntropy_maximallyMixed}
+  The window entropy is definitionally the block entropy (Definition~\ref{windowEntropy}), which at the
+  maximally mixed single-qubit state equals \(k\cdot\log 2\) by the linear block-entropy law
+  (Theorem~\ref{blockEntropy_maximallyMixed}).
+\end{proof}
+
+\begin{theorem}[The temporal entropy rate is \(\log 2\)]\label{tendsto_windowEntropy_div_tracial}
+  \lean{ErgodicTheory.OperatorEntropy.tendsto_windowEntropy_div_tracial}\leanok
+  \uses{windowEntropy_tracial}
+  The per-window rate \(\mathrm{windowEntropy}\,\mathrm{mm}\,k / k\) is the constant \(\log 2\) for
+  every \(k\ge 1\), hence converges to \(\log 2\):
+  \[
+    \frac{\mathrm{windowEntropy}\,\mathrm{mm}\,k}{k} \;\longrightarrow\; \log 2.
+  \]
+  This is the site-window entropy rate of the quantum Bernoulli shift at the tracial state.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{windowEntropy_tracial}
+  By Theorem~\ref{windowEntropy_tracial} the numerator is \(k\cdot\log 2\), so for \(k\ge 1\) the ratio
+  is the constant \(\log 2\); a constant sequence converges to its value.
+\end{proof}
+
+\begin{remark}[Numerically block entropy; a bespoke rate, not the CNT supremum]\label{qbs-scope-rate}
+  \(\mathrm{windowEntropy}\) is numerically the block entropy of issue \#70
+  (Definition~\ref{windowEntropy}); the temporal content is the fixed state hierarchy, its
+  shift-invariance (Theorem~\ref{shiftIter_pairing}), and the shift-window filtration --- not the
+  numerical value. Correspondingly the rate of Theorem~\ref{tendsto_windowEntropy_div_tracial} is the
+  \emph{site-window filtration rate}, a bespoke CNT-style definition, and \emph{not} the full CNT
+  dynamical entropy (a supremum over \emph{all} finite operational partitions,
+  Definition~\ref{cntDynamicalEntropy}).
+\end{remark}
+
+\subsection{The per-level dephasing seal at the tracial blocks}
+
+\begin{definition}[The chain-seal predicate at the tracial blocks]\label{ChainSealed}
+  \lean{ErgodicTheory.OperatorEntropy.ChainSealed}\leanok
+  \uses{dephaseKronId}
+  For the faithful local state \(\rho_r\) and diagonal reference \(\operatorname{diagState} s\)
+  (\(0<r,s<1\)), the predicate \(\mathrm{ChainSealed}\) asserts that at \emph{every} level \(n\) the
+  partial-dephasing channel on \(\Matrix_2(\C)\otimes\Matrix_{2^{n}}(\C)\) admits no faithful-ancilla
+  Stinespring recovery that simultaneously inverts it on the coherent state
+  \(\rho_r\otimes\mathrm{mm}_n\) and on the reference \(\operatorname{diagState} s\otimes\mathrm{mm}_n\),
+  where the block is the tracial (maximally mixed) block state \(\mathrm{mm}_n\). This is the
+  chain-level, per-stage (channel-level) seal: single-step per stage, not a flow seal, with the
+  recovery quantified over all faithful-ancilla Stinespring dilations.
+\end{definition}
+
+\begin{theorem}[The chain seal holds at every level]\label{chain_seal_dephase_faithful}
+  \lean{ErgodicTheory.OperatorEntropy.chain_seal_dephase_faithful}\leanok
+  \uses{ChainSealed, quantum_seal_dephase_kron_faithful}
+  For all faithful parameters \(0<r,s<1\), the chain-seal predicate holds:
+  \(\mathrm{ChainSealed}\,r\,s\). Dephasing site \(0\) of the chain at the tracial block admits no
+  faithful-ancilla Stinespring recovery, at every level \(n\).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{ChainSealed, quantum_seal_dephase_kron_faithful}
+  Instantiate the uniform-in-the-block seal
+  (Theorem~\ref{quantum_seal_dephase_kron_faithful}) at the tracial (maximally mixed) block state
+  \(\mathrm{mm}_n\) on \(\mathrm{Qbits}\,n\), which is positive definite; the strict relative-entropy
+  drop of the partial dephasing then obstructs any simultaneous Stinespring recovery at that level.
+\end{proof}
+
+\subsection{The finite modular clock}
+
+\begin{definition}[The modular automorphism]\label{modAut}
+  \lean{ErgodicTheory.OperatorEntropy.modAut}\leanok
+  For a faithful (positive-definite) density matrix \(\rho\), the \emph{modular automorphism}
+  \(\sigma_t(a)=\rho^{it}\,a\,\rho^{-it}\) is built from the unitary power \(\rho^{it}\) of the
+  Tomita--Takesaki / Petz-equality infrastructure. It is the finite-dimensional shadow of the
+  type-III modular flow of the qubit chain.
+\end{definition}
+
+\begin{theorem}[The one-parameter group law]\label{modAut_add}
+  \lean{ErgodicTheory.OperatorEntropy.modAut_add}\leanok
+  \uses{modAut}
+  The modular flow is a one-parameter group, \(\sigma_s\circ\sigma_t=\sigma_{s+t}\):
+  \[
+    \sigma_s\bigl(\sigma_t(a)\bigr) \;=\; \sigma_{s+t}(a).
+  \]
+  Together with \(\sigma_0=\mathrm{id}\), multiplicativity \(\sigma_t(a\,b)=\sigma_t(a)\,\sigma_t(b)\)
+  and the adjoint law \(\sigma_t(a^{\dagger})=\sigma_t(a)^{\dagger}\), this makes \((\sigma_t)_t\) a
+  one-parameter \(*\)-automorphism group.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{modAut}
+  Expand \(\sigma_s(\sigma_t(a))=\rho^{is}\rho^{it}\,a\,\rho^{-it}\rho^{-is}\); the unitary powers add,
+  \(\rho^{is}\rho^{it}=\rho^{i(s+t)}\) and \(\rho^{-it}\rho^{-is}=\rho^{-i(s+t)}\), giving
+  \(\sigma_{s+t}(a)\).
+\end{proof}
+
+\begin{theorem}[The \(\beta=1\) KMS boundary identity]\label{kms_boundary}
+  \lean{ErgodicTheory.OperatorEntropy.kms_boundary}\leanok
+  For faithful \(\rho\), with the Bratteli--Robinson II \S5.3 convention
+  \(\sigma_{-i}(y)=\rho\,y\,\rho^{-1}\),
+  \[
+    \tr\bigl(\rho\,x\,\sigma_{-i}(y)\bigr) \;=\; \tr\bigl(\rho\,y\,x\bigr).
+  \]
+\end{theorem}
+\begin{proof}\leanok
+  Substitute \(\sigma_{-i}(y)=\rho\,y\,\rho^{-1}\) and use trace cyclicity together with
+  \(\rho^{-1}\rho=1\): the left side is \(\tr(\rho\,x\,\rho\,y\,\rho^{-1})\), and cycling \(\rho^{-1}\)
+  to the front cancels one \(\rho\), leaving \(\tr(\rho\,y\,x)\).
+\end{proof}
+
+\begin{remark}[KMS boundary as cyclicity; no Tomita--Takesaki uniqueness]\label{qbs-scope-kms}
+  The identity of Theorem~\ref{kms_boundary} is nothing more than trace cyclicity together with
+  \(\rho\,\rho^{-1}=1\), so it holds for \emph{every} invertible \(\rho\); it is the boundary form of
+  the KMS condition, not the substance of modular theory. Not delivered here: the Tomita--Takesaki
+  \emph{uniqueness} of the KMS one-parameter group, and the genuine type-III modular theory of the
+  completed \(C^{*}\)-chain (GNS is Mathlib-absent). The modular-theoretic content of this section
+  lives in the group / tower-compatibility laws and in the intrinsic-clock dichotomy below.
+\end{remark}
+
+\begin{theorem}[Tower compatibility of the intrinsic clock]\label{modAut_shiftAdjoinQubit}
+  \lean{ErgodicTheory.OperatorEntropy.modAut_shiftAdjoinQubit}\leanok
+  \uses{modAut, shiftAdjoinQubit, rhoPow}
+  The intrinsic clock is consistent along the chain: on the embedded block
+  \(\mathrm{shiftAdjoinQubit}\,a=1\otimes a\), the modular flow of the \((n+1)\)-fold product state
+  acts by the modular flow of the \(n\)-fold state on \(a\),
+  \[
+    \sigma_t\bigl(\mathrm{shiftAdjoinQubit}\,a\bigr)
+      \;=\; \mathrm{shiftAdjoinQubit}\,\bigl(\sigma_t(a)\bigr),
+  \]
+  because \(\rho^{it}\) acts trivially on the fresh qubit.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{modAut, shiftAdjoinQubit}
+  The unitary power of a Kronecker product factorises, \((\rho\otimes\rho^{\otimes n})^{it}
+  =\rho^{it}\otimes(\rho^{\otimes n})^{it}\); conjugating \(1\otimes a\) by it, the first-factor
+  \(\rho^{it}\) cancels against \(\rho^{-it}\) around the identity block, leaving
+  \(1\otimes\bigl((\rho^{\otimes n})^{it}\,a\,(\rho^{\otimes n})^{-it}\bigr)\).
+\end{proof}
+
+\begin{theorem}[Intrinsic-clock dichotomy: the tracial half]\label{modAut_maximallyMixed_eq_id}
+  \lean{ErgodicTheory.OperatorEntropy.modAut_maximallyMixed_eq_id}\leanok
+  \uses{modAut}
+  The maximally mixed (tracial) state has \emph{trivial} modular flow, \(\sigma_t=\mathrm{id}\) for all
+  \(t\):
+  \[
+    \sigma_t(a) \;=\; a.
+  \]
+  In particular this holds at every level \(\Matrix_{2^{n}}(\C)\) of the chain --- the type II\(_1\)
+  shadow.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{modAut}
+  The maximally mixed state is a scalar multiple of the identity, \(\rho=c\cdot 1\), so its unitary
+  power \(\rho^{it}\) is again a scalar (a constant diagonal), hence central; it commutes past \(a\),
+  and \(\rho^{it}\rho^{-it}=1\) leaves \(a\).
+\end{proof}
+
+\begin{theorem}[Intrinsic-clock dichotomy: the non-tracial half]\label{modAut_diagState_ne_id}
+  \lean{ErgodicTheory.OperatorEntropy.modAut_diagState_ne_id}\leanok
+  \uses{modAut}
+  A faithful non-tracial (Powers-type) product state \(\operatorname{diagState} s\)
+  (\(0<s<1\), \(\rho=\operatorname{diag}((1+s)/2,(1-s)/2)\)) has a \emph{nontrivial} modular flow: the
+  modular group is not the trivial action. Concretely, at
+  \(t_0=\pi/\log\bigl((1+s)/(1-s)\bigr)\) the flow sends the off-diagonal unit \(E_{01}\) to
+  \(-E_{01}\).
+\end{theorem}
+\begin{proof}\leanok
+  \uses{modAut}
+  On the off-diagonal unit \(E_{01}\) the flow multiplies by the phase
+  \(\exp\!\bigl(it\,\log((1+s)/(1-s))\bigr)\); at \(t_0=\pi/\log((1+s)/(1-s))\) this phase is
+  \(e^{i\pi}=-1\ne 1\), so \(\sigma_{t_0}(E_{01})=-E_{01}\ne E_{01}\). This is the finite shadow of the
+  type-III character of the Powers factors; nontriviality is transported up the tower by combining it
+  with Theorem~\ref{modAut_shiftAdjoinQubit}.
+\end{proof}
+
+\subsection{The bundled quantum Bernoulli shift}
+
+\begin{definition}[The quantum Bernoulli shift, directed-local representation]\label{QuantumBernoulliShift}
+  \lean{ErgodicTheory.OperatorEntropy.QuantumBernoulliShift}\leanok
+  \uses{shiftAdjoinQubit_appendQubit, appendQubit_maximallyMixed_pairing, rhoPow_shiftAdjoinQubit_pairing, tendsto_windowEntropy_div_tracial, chain_seal_dephase_faithful, modAut_maximallyMixed_eq_id}
+  A \emph{quantum Bernoulli shift} bundles the fixed hierarchy of finite marginals of the one-sided
+  qubit chain into one certificate:
+  \begin{enumerate}
+    \item the \emph{directed system} --- the inclusion \(\mathrm{appendQubit}\) and the shift
+      \(\mathrm{shiftAdjoinQubit}\) commute (Theorem~\ref{shiftAdjoinQubit_appendQubit});
+    \item the \emph{inclusion- and shift-compatibility of the tracial state}
+      (Theorems~\ref{appendQubit_maximallyMixed_pairing} and
+      \ref{rhoPow_shiftAdjoinQubit_pairing});
+    \item the \emph{temporal entropy rate} \(\log 2\) along the shift-window filtration
+      (Theorem~\ref{tendsto_windowEntropy_div_tracial});
+    \item the \emph{per-stage dephasing seal at the tracial blocks}, for some faithful parameters
+      \(r,s\) (Definition~\ref{ChainSealed}, Theorem~\ref{chain_seal_dephase_faithful});
+    \item the \emph{trivial tracial modular clock} at every level
+      (Theorem~\ref{modAut_maximallyMixed_eq_id}).
+  \end{enumerate}
+  The maps are definitionally the fixed \(\mathrm{appendQubit}\) / \(\mathrm{shiftAdjoinQubit}\), so
+  only their laws are recorded.
+\end{definition}
+
+\begin{theorem}[A quantum Bernoulli shift exists]\label{quantumBernoulliShift_exists}
+  \lean{ErgodicTheory.OperatorEntropy.quantumBernoulliShift_exists}\leanok
+  \uses{QuantumBernoulliShift, shiftAdjoinQubit_appendQubit, appendQubit_maximallyMixed_pairing, rhoPow_shiftAdjoinQubit_pairing, tendsto_windowEntropy_div_tracial, chain_seal_dephase_faithful, modAut_maximallyMixed_eq_id}
+  A concrete quantum Bernoulli shift exists. The witness assembles the already-proved theorems: the
+  inclusion/shift commutation, the tracial inclusion- and shift-compatibility, the temporal rate
+  \(\log 2\), the per-stage seal at the balanced parameters \(r=s=1/2\), and the trivial tracial
+  clock.
+\end{theorem}
+\begin{proof}\leanok
+  \uses{QuantumBernoulliShift, chain_seal_dephase_faithful, tendsto_windowEntropy_div_tracial, modAut_maximallyMixed_eq_id}
+  Populate the five fields of Definition~\ref{QuantumBernoulliShift} with
+  Theorems~\ref{shiftAdjoinQubit_appendQubit}, \ref{appendQubit_maximallyMixed_pairing},
+  \ref{rhoPow_shiftAdjoinQubit_pairing} (specialised to the tracial state),
+  \ref{tendsto_windowEntropy_div_tracial}, \ref{chain_seal_dephase_faithful} at \(r=s=1/2\), and
+  \ref{modAut_maximallyMixed_eq_id} at the carriers \(\mathrm{Qbits}\,n\).
+\end{proof}

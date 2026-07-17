@@ -64,6 +64,8 @@ All declarations live in the `ErgodicTheory` namespace (omitted below).
 | `OperatorEntropy.CNT.cntCumulativeEntropy_le_reservoir` / `vonNeumannEntropy_corrMatrix_pauliPartition_eq` | **The CNT reservoir cap, and its tightness** (issue #69): the iterated-refinement cumulative CNT entropy is capped by the finite reservoir `2·log d` uniformly in the resolution `n` (`cntEntropySeq_bddAbove` is the bounded-saturation form), so the per-step rate is squeezed to `0` via the generic engine `rate_to_zero_of_cumulative_bounded`. The cap is **tight** at `d = 2`: the Pauli operational partition (`pauliPartition`) at the maximally mixed state fills `log(d²) = log 4` at a single step for every unital `*`-endomorphism (`corrMatrix_pauliPartition_one`), so the finite-dim rate-zero theorem is saturation of a finite reservoir, not an identically-zero artifact — and the naive `log d` cap is false for this correlation-matrix API. Standard ingredient: Connes–Narnhofer–Thirring 1987 |
 | `OperatorEntropy.blockEntropy_eq` / `tendsto_blockEntropy_div` | **The growing-tower spatial rate** (issue #70): the growing-finite qubit tower (`Qbits n`, `card = 2ⁿ`; capacity-enlargement embedding `shiftAdjoinQubit : A ↦ 1 ⊗ A`; marginal-consistent state family `rhoPow ρ n = ρ^{⊗n}`) has block entropy exactly `n·S(ρ)` (`blockEntropy_eq`, iterated von Neumann additivity), so the per-step spatial rate converges to `S(ρ)` (`tendsto_blockEntropy_div`), positive off the pure states (`blockEntropy_rhoR_pos`) and `= n·log 2` at the maximally mixed state (`blockEntropy_maximallyMixed`). This is a **growing-finite** tower, not the completed `⊗_ℤ M₂` chain; the spatial rate is complementary to — no tension with — the fixed-`d` temporal `cntDynamicalEntropy_eq_zero`. Standard ingredient: Nielsen–Chuang §11.3; Ohya–Petz |
 | `OperatorEntropy.growingQuantumWorld_exists` | **The bundled sealed-and-alive growing world** (issue #70): the witness `GrowingQuantumWorld` packages, on one growing-finite object, positive spatial per-step entropy production, a **channel-level** per-stage dephasing seal at the world's own block states (`quantum_seal_dephase_kron_faithful`, the `dephaseKronId` channel lifted over an arbitrary ancilla block, reference pair with distinct dephased images), and a base-factor non-commutativity certificate. The bundling is the repo's contribution; its ingredients (von Neumann additivity, the Petz-recovery seal, CNT non-commutativity) are standard. Connes–Narnhofer–Thirring 1987; Petz 1986/2003; Nielsen–Chuang §11.3 |
+| `OperatorEntropy.quantumBernoulliShift_exists` | **The quantum Bernoulli shift, directed-local form** (issue #71): the witness `QuantumBernoulliShift` bundles the fixed directed system of local algebras `M_{2ⁿ}` with a commuting unital `⋆`-injective inclusion (`appendQubit`) and shift (`shiftAdjoinQubit`), a shift-invariant tracial state built from compatible finite marginals (`rhoPow_shiftAdjoinQubit_pairing`, `appendQubit_maximallyMixed_pairing`), the temporal site-window entropy rate `= log 2` (`windowEntropy_tracial`, `tendsto_windowEntropy_div_tracial`) with a site-translation stationarity certificate (`shiftIter_pairing`), and a per-level dephasing seal at the tracial blocks (`chain_seal_dephase_faithful`). Honest scope: this is the **growing-finite / directed-local** representation, **not** the completed C\*-chain `⊗_ℤ M₂` (Mathlib has no non-commutative inductive limit — `Ring.DirectLimit` is `CommRing`-only), and the rate is a bespoke site-window rate, not the full CNT supremum over all finite subalgebras. Connes–Narnhofer–Thirring 1987; Bratteli–Robinson II §5.3; Ohya–Petz; Powers 1967 |
+| `OperatorEntropy.modAut` / `modAut_diagState_ne_id` | **The finite modular clock and its intrinsic-clock dichotomy** (issue #71): the modular automorphism group `σ_t(a) = ρ^{it} a ρ^{-it}` on the existing Lieb `cpow`/`upow` API, with the automorphism-group laws, the `β = 1` KMS boundary identity `kms_boundary` (disclosed as trace cyclicity, holding for every invertible ρ), and tower compatibility `modAut_shiftAdjoinQubit`. The substantive content is the dichotomy: the tracial (maximally mixed) state has **trivial** flow (`modAut_maximallyMixed_eq_id`), while a non-tracial faithful product state has a **provably nontrivial** flow (`modAut_diagState_ne_id`, witness `E₀₁ ↦ −E₀₁`). Honest scope: a finite matrix-algebra shadow — no GNS, no Tomita–Takesaki uniqueness, no genuine type-III structure of the completed chain. Bratteli–Robinson II §5.3; Ohya–Petz; Powers 1967 |
 | `measurable_orthProjMatrix_lambdaSublevel` | The **everywhere-Borel singular filtration** (issue #11): the orthogonal projector onto a sublevel set of the forward Lyapunov filtration is Borel measurable, via the Novikov projection theorem |
 | `Multifractal.renyiRateSup_map_blockCode_le` / `renyiEntropy_merge_le` | **The Rényi c-function, tier 1** (issue #60): the static Rényi data-processing inequality `H_q(merge p) ≤ H_q(p)` holds for every order `q ≥ 0` (`renyiEntropy_merge_le`, elementary per-fibre sign-compensation of `x ↦ x^q`), and the **dynamical** `q`-Rényi rate (limsup/liminf of the normalized length-`n` cylinder Rényi entropies) is monotone under one-block factor codes **unconditionally** — no stationarity, no rate-existence — via the per-`n` inequality (`renyiRateSup_map_blockCode_le`, `renyiRateInf_map_blockCode_le`; the suspected hidden-Markov wall concerned closed *forms*, not the inequality). Honest boundary: general-measurable-factor monotonicity for `q ≠ 1` is FALSE (Takens–Verbitskiy 2002 — the invariant dynamical Rényi entropy degenerates to `+∞` for `q < 1` and to `h_KS` for `q ≥ 1`), so `q = 1` is the unique seal-grade monotone at full generality |
 | `Multifractal.renyiRateSup_bern` / `renyiRate_strict_drop_uniformFin3` | **Exact Bernoulli Rényi rates + strict-drop witness** (issue #60): for the i.i.d. measure `bern ν` the rate is exactly the static single-symbol Rényi entropy `h_q = H_q(ν)`, realized as an honest `limsup = liminf` (`renyiRateSup_bern`, `renyiRateInf_bern`), and the one-block pushforward stays Bernoulli (`map_blockCode_bern`). A genuine merge gluing two `ν`-atoms strictly lowers the rate for every `q ∈ (0,1) ∪ (1,∞)` (`renyiRateSup_map_blockCode_bern_lt`), certified non-vacuously by a compile-time uniform `Fin 3 → Fin 2` witness at `q = 2` (`renyiRate_strict_drop_uniformFin3`) |
@@ -385,13 +387,41 @@ Stinespring recovery, with a reference pair `(ρ_r, diagState s)` whose dephased
 witness `GrowingQuantumWorld` (`growingQuantumWorld_exists`) carries all three on one growing object:
 positive spatial entropy production, the per-stage seal at the world's own block states `ρ_r^{⊗n}`, and
 a base-factor non-commutativity certificate. Honest scope, stated in the module docstrings: this is the
-**growing-finite** tower, not the completed `⊗_ℤ M₂` chain (that idealization is open issue #71); the
+**growing-finite** tower, not the completed `⊗_ℤ M₂` chain (that idealization's directed-local first cut
+is issue #71 below; the completed C\*-chain itself stays out of reach — Mathlib has no non-commutative
+inductive limit); the
 step is capacity enlargement, not forgetting; the seal is a **channel-level (single-step) seal per
 stage**, not a flow seal; and the spatial per-step rate is complementary to — with no tension against —
 the fixed-`d` temporal `cntDynamicalEntropy_eq_zero`. The CNT/QIT ingredients are standard
 (Connes–Narnhofer–Thirring, *Comm. Math. Phys.* **112** (1987) 691–719; Ohya–Petz, *Quantum Entropy and
 Its Use*; Nielsen–Chuang §11.3; Petz 1986/2003); the reservoir-tightness and the bundling of rate + seal
 + non-commutativity on one growing object are this repository's contribution.
+
+The growing tower's **forgetting-twin** is then assembled as the **quantum Bernoulli shift** in the
+directed-local representation (issue #71). Where the spatial rate of issue #70 comes from *enlarging* the
+algebra one qubit per step, the temporal rate here comes from **forgetting on a fixed hierarchy**: the
+witness `quantumBernoulliShift_exists` / `QuantumBernoulliShift` bundles the fixed directed system of
+local algebras `M_{2ⁿ}` with a commuting unital `⋆`-injective inclusion (`appendQubit`, far-end site) and
+shift (`shiftAdjoinQubit`, capacity enlargement), a shift-invariant tracial state given by compatible
+finite marginals (`rhoPow_shiftAdjoinQubit_pairing` is shift-invariance of *every* product state;
+`appendQubit_maximallyMixed_pairing`), the temporal **site-window entropy rate** `= log 2`
+(`windowEntropy_tracial`, `tendsto_windowEntropy_div_tracial`) certified stationary by the
+site-translation identity `shiftIter_pairing`, and a per-level dephasing seal at the tracial blocks
+(`ChainSealed`, `chain_seal_dephase_faithful`) — rate and seal on one fixed non-commutative object.
+Alongside it, the **finite modular clock** `modAut` (`σ_t(a) = ρ^{it} a ρ^{-it}`, on the existing Lieb
+`cpow`/`upow` infrastructure) carries the automorphism-group laws, the `β = 1` KMS boundary identity
+`kms_boundary`, tower compatibility `modAut_shiftAdjoinQubit`, and the **intrinsic-clock dichotomy** that
+makes the modular reading non-vacuous: the tracial state has trivial flow (`modAut_maximallyMixed_eq_id`)
+while a non-tracial faithful (Powers-type) product state has provably nontrivial flow
+(`modAut_diagState_ne_id`, witness `E₀₁ ↦ −E₀₁`). Honest scope, disclosed prominently in the module
+docstrings: this is the **growing-finite / directed-local** representation, **not** the completed C\*-chain
+`⊗_ℤ M₂` (Mathlib has no non-commutative inductive limit — `Ring.DirectLimit` is `CommRing`-only, and no
+GNS/Tomita–Takesaki is built); the entropy is a **bespoke site-window rate**, not the full CNT supremum
+over all finite subalgebras; and the KMS boundary identity is trace cyclicity (holding for every invertible
+ρ), with the modular content residing in the dichotomy and the group/tower laws. Sources:
+Connes–Narnhofer–Thirring, *Comm. Math. Phys.* **112** (1987) 691–719 (shift entropy `= log 2 =` entropy
+density); Bratteli–Robinson, *Operator Algebras and Quantum Statistical Mechanics II*, §5.3; Ohya–Petz,
+*Quantum Entropy and Its Use*; R. T. Powers, *Ann. of Math.* **86** (1967).
 
 ### Status and documented frontiers
 
@@ -478,7 +508,9 @@ ErgodicTheory/
                       --   tightness), Petz recovery + equality, the dephasing recovery seals +
                       --   per-resolution non-commutativity + canonical-MASA certificates, and the
                       --   growing-finite qubit tower (GrowingTower/: linear block entropy n·S(ρ),
-                      --   Kronecker-lifted dephasing seal, the bundled sealed-and-alive world)
+                      --   Kronecker-lifted dephasing seal, the bundled sealed-and-alive world; plus
+                      --   its forgetting-twin, the directed-local quantum Bernoulli shift with
+                      --   temporal site-window rate log 2 + the finite modular-clock dichotomy)
   MeasureTheory/      -- descriptive-set residuals (Lusin, Novikov first separation, Kunugui–Novikov,
                       --   the Novikov compact-section projection theorem, covering numbers; P(X)
                       --   Polish + joint pushforward continuity; analyticity of section-existence)
